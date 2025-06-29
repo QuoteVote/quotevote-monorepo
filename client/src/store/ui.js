@@ -27,6 +27,7 @@ export const uiInitialState = {
   selectedPlan: 'personal',
   focusedComment: null,
   sharedComment: null,
+  globalLoading: false,
 }
 
 const uiSlice = createSlice({
@@ -54,6 +55,9 @@ const uiSlice = createSlice({
     SET_SHARED_COMMENT: (state, action) => {
       state.sharedComment = action.payload
     },
+    SET_GLOBAL_LOADING: (state, action) => {
+      state.globalLoading = action.payload
+    },
   },
 })
 
@@ -65,6 +69,7 @@ export const {
   SET_SELECTED_PLAN,
   SET_FOCUSED_COMMENT,
   SET_SHARED_COMMENT,
+  SET_GLOBAL_LOADING,
 } = uiSlice.actions
 
 export default uiSlice.reducer

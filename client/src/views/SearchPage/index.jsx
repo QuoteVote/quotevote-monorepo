@@ -16,6 +16,7 @@ import Carousel from '../../components/Carousel/Carousel';
 import PostCard from '../../components/Post/PostCard';
 import Divider from '@material-ui/core/Divider';
 import LatestQuotes from '../../components/Quotes/LatestQuotes';
+import { SET_GLOBAL_LOADING } from '../../store/ui';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -228,6 +229,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.contrastText,
       borderRadius: '50%',
     },
+  
   },
 }));
 
@@ -307,6 +309,11 @@ export default function SearchPage() {
   })
 
   const { data: featuredData } = useQuery(GET_FEATURED_POSTS)
+
+  // Dispatch global loading state
+  useEffect(() => {
+    dispatch(SET_GLOBAL_LOADING(loading))
+  }, [loading, dispatch])
 
   // Auto-show results for guest mode
   useEffect(() => {
@@ -692,11 +699,6 @@ export default function SearchPage() {
             )}
             
             <Grid item style={{ width: '100%', maxWidth: '800px' }}>
-              {loading && (
-                <div style={{ textAlign: 'center', padding: '2rem' }}>
-                  <Typography>Loading posts...</Typography>
-                </div>
-              )}
               {processedData && (
                 <Carousel
                   navButtonsAlwaysVisible
