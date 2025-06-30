@@ -21,6 +21,7 @@ import Snackbar from 'mui-pro/Snackbar/Snackbar'
 import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
+import BlueLinearProgress from '../components/BlueLinearProgress/BlueLinearProgress'
 
 const theme = createTheme({
   palette: {
@@ -44,6 +45,7 @@ function Scoreboard(props) {
   const history = useHistory()
   const dispatch = useDispatch()
   const snackbar = useSelector((state) => state.ui.snackbar)
+  const globalLoading = useSelector((state) => state.ui.globalLoading)
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [page, setPage] = React.useState('Home')
   // styles
@@ -134,6 +136,9 @@ function Scoreboard(props) {
             dispatch={dispatch}
           />
         </Hidden>
+        {globalLoading && (
+          <BlueLinearProgress />
+        )}
         <main className={classes.content}>
           {getRoute() ? (
             <Switch>
