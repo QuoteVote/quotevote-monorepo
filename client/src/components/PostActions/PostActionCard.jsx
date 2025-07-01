@@ -1,25 +1,27 @@
-import { useEffect, useState } from 'react'
-import {
-  Card, CardActions, CardContent, IconButton, Typography, SvgIcon,
-} from '@material-ui/core'
-import { InsertLink } from '@material-ui/icons'
-import { makeStyles } from '@material-ui/core/styles'
-import PropTypes from 'prop-types'
 import { useQuery } from '@apollo/react-hooks'
-import { useDispatch, useSelector } from 'react-redux'
-import { get } from 'lodash'
+import {
+  Card, CardActions, CardContent, IconButton,
+  SvgIcon,
+  Typography,
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { InsertLink } from '@material-ui/icons'
 import copy from 'clipboard-copy'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import SweetAlert from 'react-bootstrap-sweetalert'
+import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import AvatarDisplay from '../Avatar'
-import { parseCommentDate } from '../../utils/momentUtils'
-import { SET_FOCUSED_COMMENT, SET_SHARED_COMMENT } from '../../store/ui'
-import { GET_ACTION_REACTIONS } from '../../graphql/query'
+import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
 import DislikeIcon from '../../assets/svg/Dislike.jsx'
 import LikeIcon from '../../assets/svg/Like.jsx'
-import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
-import PostChatMessage from '../PostChat/PostChatMessage'
+import { GET_ACTION_REACTIONS } from '../../graphql/query'
+import { SET_FOCUSED_COMMENT, SET_SHARED_COMMENT } from '../../store/ui'
+import { parseCommentDate } from '../../utils/momentUtils'
+import AvatarDisplay from '../Avatar'
 import CommentReactions from '../Comment/CommentReactions'
+import PostChatMessage from '../PostChat/PostChatMessage'
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -94,7 +96,7 @@ function PostActionCard({ postAction, postUrl, selected }) {
   }
 
   const handleRedirectToProfile = () => {
-    history.push(`/Profile/${username}`)
+    history.push(`/profile/${username}`)
   }
 
   if (voteType) {

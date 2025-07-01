@@ -1,26 +1,26 @@
-import PropTypes from 'prop-types'
+import { useQuery } from '@apollo/react-hooks'
+import { IconButton } from '@material-ui/core'
+import Avatar from '@material-ui/core/Avatar'
+import CardContent from '@material-ui/core/CardContent'
+import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import { IconButton } from '@material-ui/core'
-import Card from 'mui-pro/Card/Card'
+import withWidth from '@material-ui/core/withWidth'
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import classNames from 'classnames'
+import AvatarDisplay from 'components/Avatar'
+import gql from 'graphql-tag'
 import { isEmpty } from 'lodash'
 import moment from 'moment'
+import Card from 'mui-pro/Card/Card'
+import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { SET_SELECTED_POST } from 'store/ui'
 import { useHistory } from 'react-router-dom'
-import AvatarDisplay from 'components/Avatar'
-import Avatar from '@material-ui/core/Avatar'
-import Grid from '@material-ui/core/Grid'
-import CardContent from '@material-ui/core/CardContent'
-import stringLimit from 'string-limit'
-import withWidth from '@material-ui/core/withWidth'
-import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
-import { useQuery } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
+import { SET_SELECTED_POST } from 'store/ui'
 import { tokenValidator } from 'store/user'
+import stringLimit from 'string-limit'
+import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
 
 const GET_GROUP = gql`
   query getGroup($groupId: String!) {
@@ -268,7 +268,7 @@ function PostCard(props) {
   const cardBg = getCardBg(activityType)
   const postTitleStringLimit = width === 'xs' ? 25 : 50
   const handleRedirectToProfile = (username) => {
-    history.push(`/Profile/${username}`)
+    history.push(`/profile/${username}`)
   }
 
   const upvotes = votes.filter(vote => vote.type === 'UPVOTE').length

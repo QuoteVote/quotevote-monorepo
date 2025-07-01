@@ -20,7 +20,7 @@ describe('Login', () => {
     cy.findByPlaceholderText('Email/Username').type(username)
     cy.findByPlaceholderText('Password').type(password)
     cy.findByText('Log in').click()
-    // cy.url().should('include', '/Profile/hhsb/avatar')
+    // cy.url().should('include', '/profile/hhsb/avatar')
   })
 
   // it('should display error message if wrong credentials', () => {

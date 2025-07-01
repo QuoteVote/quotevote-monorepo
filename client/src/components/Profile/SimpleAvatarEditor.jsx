@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
-import { Button, Grid, FormControl, InputLabel, Select, MenuItem, Paper } from '@material-ui/core';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import AvatarDisplay from '../Avatar';
-import { avatarOptions } from '../../utils/display';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { UPDATE_USER_AVATAR } from '../../graphql/mutations';
 import { updateAvatar } from '../../store/user';
+import { avatarOptions } from '../../utils/display';
+import AvatarDisplay from '../Avatar';
 
 const useStyles = makeStyles({
   editor: { 
@@ -54,7 +54,7 @@ function SimpleAvatarEditor() {
       variables: { user_id: user._id, avatarQualities: avatar },
     })
     updateAvatar(dispatch, result.data.updateUserAvatar.avatar)
-    history.push('/Profile')
+    history.push('/profile')
   }
 
   return (
