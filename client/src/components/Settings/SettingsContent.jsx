@@ -140,7 +140,7 @@ function SettingsContent({ setOpen }) {
   }
 
   const handleInvite = () => {
-    history.push('/ControlPanel')
+    history.push('/controlpanel')
     setOpen(false)
   }
   const hasChange = Object.keys(formState.dirtyFields).length
