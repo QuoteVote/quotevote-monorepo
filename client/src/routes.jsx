@@ -1,17 +1,17 @@
-import HomePage from 'views/Homepage/Homepage'
-import Profile from 'views/Profile'
-import ControlPanel from 'views/ControlPanel/ControlPanel'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import ControlPanel from 'views/ControlPanel/ControlPanel'
+import HomePage from 'views/Homepage/Homepage'
 import PostPage from 'views/PostsPage'
-import LogoutPage from './components/LogoutPage'
-import HomeSvg from './assets/svg/Home'
-import ProfileAvatar from './components/Profile/ProfileAvatar'
-import NotificationMobileView from './components/Notifications/NotificationMobileView'
+import Profile from 'views/Profile'
 import SearchPage from 'views/SearchPage'
+import HomeSvg from './assets/svg/Home'
+import LogoutPage from './components/LogoutPage'
+import NotificationMobileView from './components/Notifications/NotificationMobileView'
+import ProfileAvatar from './components/Profile/ProfileAvatar'
 
 const routes = [
   {
-    path: 'Home',
+    path: 'home',
     name: 'Home Page',
     rtlName: 'لوحة القيادة',
     icon: HomeSvg,
@@ -34,7 +34,7 @@ const routes = [
     layout: '/',
   },
   {
-    path: 'Notifications',
+    path: 'notifications',
     name: 'Notifications',
     rtlName: 'التقويم',
     icon: () => <img src="/assets/NotificationsActive.svg" alt="Notifications" style={{width: '100%', height: '100%'}} />,
@@ -43,7 +43,7 @@ const routes = [
     requiresAuth: true,
   },
   {
-    path: 'Profile',
+    path: 'profile',
     name: 'My Profile',
     rtlName: 'الحاجيات',
     icon: ProfileAvatar,
@@ -62,7 +62,7 @@ const routes = [
     layout: '/logout',
   },
   {
-    path: 'ControlPanel',
+    path: 'controlpanel',
     name: 'Control Panel',
     component: ControlPanel,
     layout: '/',
