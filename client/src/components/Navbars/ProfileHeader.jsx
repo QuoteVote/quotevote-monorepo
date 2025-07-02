@@ -1,23 +1,23 @@
-import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
+import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 //  MUI
+import Button from '@material-ui/core/Button'
+import Grid from '@material-ui/core/Grid'
 import { makeStyles, MuiThemeProvider as ThemeProvider } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
 import ChatIcon from '@material-ui/icons/Chat'
 
 //  Local
-import FollowButton from 'components/CustomButtons/FollowButton'
-import { Avatar } from '@material-ui/core'
 import { useQuery } from '@apollo/react-hooks'
-import mainTheme from '../../themes/MainTheme'
-import AvatarDisplay from '../Avatar'
+import { Avatar } from '@material-ui/core'
+import FollowButton from 'components/CustomButtons/FollowButton'
 import { GET_CHAT_ROOM } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import mainTheme from '../../themes/MainTheme'
+import AvatarDisplay from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -113,7 +113,7 @@ export default function ProfileHeader(props) {
                     {username}
                   </Typography>
                   <Typography
-                    onClick={() => history.push(`/Profile/${username}/followers`)}
+                    onClick={() => history.push(`/profile/${username}/followers`)}
                     variant="overline"
                     noWrap
                   >
@@ -122,7 +122,7 @@ export default function ProfileHeader(props) {
                     </span>
                   </Typography>
                   <Typography
-                    onClick={() => history.push(`/Profile/${username}/following`)}
+                    onClick={() => history.push(`/profile/${username}/following`)}
                     variant="overline"
                     noWrap
                   >
@@ -141,7 +141,7 @@ export default function ProfileHeader(props) {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => history.push(`/Profile/${username}/avatar`)}
+                    onClick={() => history.push(`/profile/${username}/avatar`)}
                     className={classes.button}
                   >
                     Change Photo

@@ -1,23 +1,23 @@
-import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
-import InfiniteScroll from 'react-infinite-scroller'
-import { Box } from '@material-ui/core'
 import { useMutation } from '@apollo/react-hooks'
-import { useHistory } from 'react-router-dom'
+import { Box } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
-import AlertSkeletonLoader from '../AlertSkeletonLoader'
-import ActivityEmptyList from './ActivityEmptyList'
-import LoadingSpinner from '../LoadingSpinner'
-import { useWidth } from '../../utils/display'
-import { ActivityCard } from '../../ui/ActivityCard'
-import getCardBackgroundColor from '../../utils/getCardBackgroundColor'
+import PropTypes from 'prop-types'
+import InfiniteScroll from 'react-infinite-scroller'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { tokenValidator } from 'store/user'
 import { CREATE_POST_MESSAGE_ROOM, UPDATE_POST_BOOKMARK } from '../../graphql/mutations'
 import {
-    GET_CHAT_ROOMS, GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY,
+  GET_CHAT_ROOMS, GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY,
 } from '../../graphql/query'
 import { SET_SELECTED_POST } from '../../store/ui'
+import { ActivityCard } from '../../ui/ActivityCard'
+import { useWidth } from '../../utils/display'
 import getActivityContent from '../../utils/getActivityContent'
-import { tokenValidator } from 'store/user'
+import getCardBackgroundColor from '../../utils/getCardBackgroundColor'
+import AlertSkeletonLoader from '../AlertSkeletonLoader'
+import LoadingSpinner from '../LoadingSpinner'
+import ActivityEmptyList from './ActivityEmptyList'
 
 function LoadActivityCard({ width, activity }) {
   const {
@@ -77,7 +77,7 @@ function LoadActivityCard({ width, activity }) {
   }
   const history = useHistory()
   const handleRedirectToProfile = () => {
-    history.push(`/Profile/${username}`)
+    history.push(`/profile/${username}`)
   }
   const isLiked = bookmarkedBy.includes(currentUser._id)
   const dispatch = useDispatch()

@@ -1,28 +1,27 @@
-import React from 'react'
-import { Avatar, Typography } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
-import Paper from '@material-ui/core/Paper'
-import classNames from 'classnames'
-import InputLabel from '@material-ui/core/InputLabel'
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera'
-import IconButton from '@material-ui/core/IconButton'
-import { useDispatch, useSelector } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { useForm } from 'react-hook-form'
-import TextField from '@material-ui/core/TextField'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import { Avatar, Typography } from '@material-ui/core'
 import Backdrop from '@material-ui/core/Backdrop'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Grid from '@material-ui/core/Grid'
+import IconButton from '@material-ui/core/IconButton'
+import InputLabel from '@material-ui/core/InputLabel'
 import Link from '@material-ui/core/Link'
-import AvatarDisplay from '../Avatar'
-import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
-import SignOutButton from '../CustomButtons/SignOutButton'
-import ManageInviteButton from '../CustomButtons/ManageInviteButton'
+import Paper from '@material-ui/core/Paper'
+import { makeStyles } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
+import PhotoCameraIcon from '@material-ui/icons/PhotoCamera'
+import classNames from 'classnames'
+import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
+import AvatarDisplay from '../Avatar'
+import ManageInviteButton from '../CustomButtons/ManageInviteButton'
+import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
+import SignOutButton from '../CustomButtons/SignOutButton'
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
@@ -177,7 +176,7 @@ function SettingsContent({ setOpen }) {
   console.log(otherUserData)
   const handleChangeAvatar = () => {
     setOpen(false)
-    history.push(`/Profile/${username}/avatar`)
+    history.push(`/profile/${username}/avatar`)
   }
   
   const defaultValues = {
@@ -224,7 +223,7 @@ function SettingsContent({ setOpen }) {
   }
 
   const handleInvite = () => {
-    history.push('/ControlPanel')
+    history.push('/controlpanel')
     setOpen(false)
   }
   

@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
+import { useApolloClient } from '@apollo/react-hooks'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import Grow from '@material-ui/core/Grow'
-import Paper from '@material-ui/core/Paper'
-import Popper from '@material-ui/core/Popper'
+import IconButton from '@material-ui/core/IconButton'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
+import Paper from '@material-ui/core/Paper'
+import Popper from '@material-ui/core/Popper'
 import { makeStyles } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
 import SvgIcon from '@material-ui/core/SvgIcon'
 import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
-import { useApolloClient } from '@apollo/react-hooks'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import SettingsSvg from '../../assets/svg/Settings'
 import SettingsActiveSvg from '../../assets/svg/SettingsActive'
 
@@ -54,7 +54,7 @@ export default function SettingsIconButton({ fontSize }) {
   }
 
   const handleInviteControlPanel = () => {
-    history.push('/hhsb/ControlPanel')
+    history.push('/hhsb/controlpanel')
     setOpen(false)
   }
 

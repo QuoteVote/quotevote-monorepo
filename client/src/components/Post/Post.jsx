@@ -1,52 +1,52 @@
-import { useState } from 'react'
+import { useMutation } from '@apollo/react-hooks'
 import {
   Card,
   CardActions,
   CardContent,
   CardHeader,
-  IconButton,
   FormControlLabel,
+  IconButton,
 } from '@material-ui/core'
 import Switch from '@material-ui/core/Switch'
 import { makeStyles } from '@material-ui/core/styles'
 import BlockIcon from '@material-ui/icons/Block'
-import LinkIcon from '@material-ui/icons/Link'
 import DeleteIcon from '@material-ui/icons/Delete'
-import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
-import { useMutation } from '@apollo/react-hooks'
-import { useHistory } from 'react-router-dom'
-import { cloneDeep, findIndex, includes } from 'lodash'
+import LinkIcon from '@material-ui/icons/Link'
 import copy from 'clipboard-copy'
-import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert'
 import FollowButton from 'components/CustomButtons/FollowButton'
-import VotingBoard from '../VotingComponents/VotingBoard'
-import VotingPopup from '../VotingComponents/VotingPopup'
-import { SET_SNACKBAR } from '../../store/ui'
+import { cloneDeep, findIndex, includes } from 'lodash'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+import SweetAlert from 'react-bootstrap-sweetalert'
+import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import useGuestGuard from 'utils/useGuestGuard'
-import RequestInviteDialog from '../RequestInviteDialog'
+import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
 import {
   ADD_COMMENT,
   ADD_QUOTE,
-  REPORT_POST,
-  VOTE,
   APPROVE_POST,
+  DELETE_POST,
   REJECT_POST,
-  DELETE_POST
+  REPORT_POST,
+  VOTE
 } from '../../graphql/mutations'
 import {
   GET_POST,
   GET_TOP_POSTS,
   GET_USER_ACTIVITY,
 } from '../../graphql/query'
-import AvatarDisplay from '../Avatar'
-import BookmarkIconButton from '../CustomButtons/BookmarkIconButton'
-import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
-import ApproveButton from '../CustomButtons/ApproveButton'
-import RejectButton from '../CustomButtons/RejectButton'
-import ApproveRejectPopover from '../ApproveRejectPopver/ApproveRejectPopover'
+import { SET_SNACKBAR } from '../../store/ui'
 import { serializeVotedBy } from '../../utils/objectIdSerializer'
+import ApproveRejectPopover from '../ApproveRejectPopver/ApproveRejectPopover'
+import AvatarDisplay from '../Avatar'
+import ApproveButton from '../CustomButtons/ApproveButton'
+import BookmarkIconButton from '../CustomButtons/BookmarkIconButton'
+import RejectButton from '../CustomButtons/RejectButton'
+import RequestInviteDialog from '../RequestInviteDialog'
+import VotingBoard from '../VotingComponents/VotingBoard'
+import VotingPopup from '../VotingComponents/VotingPopup'
 
 const useStyles = makeStyles(() => ({
   header2: {
@@ -408,7 +408,7 @@ function Post({
   }
 
   const handleRedirectToProfile = (profileUsername) => {
-    history.push(`/Profile/${profileUsername}`)
+    history.push(`/profile/${profileUsername}`)
   }
 
   const pointsHeader = (

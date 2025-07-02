@@ -1,17 +1,16 @@
-import React from 'react'
 import { Grid } from '@material-ui/core'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import { Skeleton } from '@material-ui/lab'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import PropTypes from 'prop-types'
 import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
+import ListItemText from '@material-ui/core/ListItemText'
 import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
 import LaunchIcon from '@material-ui/icons/Launch'
+import { Skeleton } from '@material-ui/lab'
+import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import NotificationLists from './NotificationLists'
 import { useMobileDetection } from '../../utils/display'
@@ -43,7 +42,7 @@ function Notification({
   const history = useHistory()
   const handleClick = () => {
     setOpenPopUp(false)
-    history.push('/Notifications')
+    history.push('/notifications')
   }
 
   return (

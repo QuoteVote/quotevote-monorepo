@@ -1,25 +1,30 @@
-import UserModel from '../../models/UserModel';
-import { logger } from '../../../utils/logger';
-import { sendEmail } from '~/resolvers/mutations/userInvite';
-import { UserInputError } from 'apollo-server-express';
-import { addCreatorToUser } from '~/utils/authentication';
+import { UserInputError } from 'apollo-server-express'
+import { sendEmail } from '~/resolvers/mutations/userInvite'
+import { addCreatorToUser } from '~/utils/authentication'
+import { logger } from '../../../utils/logger'
+import UserModel from '../../models/UserModel'
 
 export const sendPasswordResetEmail = (pubsub) => {
   return async (_, args) => {
     try {
-      const { email } = args;
-      const user = await UserModel.findOne({ email });
+      const { email } = args
+      const user = await UserModel.findOne({ email })
       if (user) {
         //  ***   Send the email   ***
-        const { username } = user;
-        const expiresIn = 60 * 60; // seconds * minutes
-        const token = await addCreatorToUser({
-          username,
-          password: '',
-          requirePassword: false
-        }, () => {
-        }, false, expiresIn, true);
-        const clientUrl = process.env.CLIENT_URL;
+        const { username } = user
+        const expiresIn = 60 * 60 // seconds * minutes
+        const token = await addCreatorToUser(
+          {
+            username,
+            password: '',
+            requirePassword: false,
+          },
+          () => {},
+          false,
+          expiresIn,
+          true,
+        )
+        const clientUrl = process.env.CLIENT_URL
         const mailOptions = {
           to: email,
           from: `"Quote Admin" <${process.env.FROM_EMAIL}>`, // sender address
@@ -127,11 +132,16 @@ export const sendPasswordResetEmail = (pubsub) => {
                 <a
                   href="https://quote.vote/"
                 >
-                  <img src=${process.env.CLIENT_URL + "/email-images/QuoteIcon.png"} />
+                  <img src=${
+                    process.env.CLIENT_URL + '/email-images/QuoteIcon.png'
+                  } />
                 </a>
               </div>
               <div class="email-body_inner">
-                <img src=${process.env.CLIENT_URL + "/email-images/password-reset-banner.png"} />
+                <img src=${
+                  process.env.CLIENT_URL +
+                  '/email-images/password-reset-banner.png'
+                } />
                   <div class="content-cell">
                     <p>
                       We received your request to change your password, this reset link will expire 
@@ -141,7 +151,7 @@ export const sendPasswordResetEmail = (pubsub) => {
                       If you did not request a password reset, no further action is required.
                     </p>
                     <a
-                      href="${clientUrl}auth/password-reset?token=${token}&username=${username}"
+                      href="${clientUrl}/auth/password-reset?token=${token}&username=${username}"
                       class="button"
                     >CHANGE PASSWORD
                     </a>
@@ -167,25 +177,24 @@ export const sendPasswordResetEmail = (pubsub) => {
             </body>
           </html>
           `,
-        };
-
-        const sendMailResult = await sendEmail(mailOptions);
-        if (sendMailResult) {
-          console.log(`SUCCESS: Password reset sent successfully to ${email}.`);
-        } else {
-          console.log(`FAILURE: Mail transporter failed to return a response`);
         }
 
-        return user;
+        const sendMailResult = await sendEmail(mailOptions)
+        if (sendMailResult) {
+          console.log(`SUCCESS: Password reset sent successfully to ${email}.`)
+        } else {
+          console.log(`FAILURE: Mail transporter failed to return a response`)
+        }
+
+        return user
       } else {
         throw new UserInputError('Email not found', {
           invalidArgs: Object.keys(args),
-        });
+        })
       }
-
     } catch (err) {
-      logger.error(JSON.stringify(err));
-      throw `Update failed! ${err}`;
+      logger.error(JSON.stringify(err))
+      throw `Update failed! ${err}`
     }
-  };
-};
+  }
+}
