@@ -15,6 +15,12 @@ const useStyles = makeStyles(() => ({
     letterSpacing: 'normal',
     textAlign: 'right',
     color: '#ffffff',
+    '&:disabled': {
+      color: 'rgba(255, 255, 255, 0.6)', // Semi-transparent white for disabled state
+    },
+    '&.Mui-disabled': {
+      color: 'rgba(255, 255, 255, 0.6)', // Ensure Material-UI disabled class also works
+    },
   },
 }))
 

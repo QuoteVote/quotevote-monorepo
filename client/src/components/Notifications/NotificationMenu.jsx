@@ -8,6 +8,8 @@ import Badge from '@material-ui/core/Badge'
 import withStyles from '@material-ui/core/styles/withStyles'
 import RichTooltip from '../Chat/RichToolTip'
 import NotificationContent from './Notification'
+import MobileDrawer from './MobileDrawer'
+import { useMobileDetection } from '../../utils/display'
 import { GET_NOTIFICATIONS } from '../../graphql/query'
 import { NEW_NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscription'
 
@@ -32,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 function NotificationMenu({ fontSize }) {
   const classes = useStyles()
+  const isMobileDevice = useMobileDetection()
   const [open, setOpen] = React.useState(false)
   const selectedRoom = useSelector((state) => state.chat.selectedRoom)
   const tipColor = classes.tipColor.backgroundColor
@@ -52,44 +55,102 @@ function NotificationMenu({ fontSize }) {
 
   const { notifications } = loading || error || !data ? { notifications: [] } : data
 
+  const handleToggle = () => {
+    setOpen(!open)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  // Desktop popover content
+  const popoverContent = (
+    <RichTooltip
+      content={<NotificationContent loading={loading} notifications={notifications} refetch={refetch} setOpenPopUp={setOpen} />}
+      open={open}
+      placement="bottom-start"
+      onClose={() => setOpen(false)}
+      tipColor={tipColor}
+      tipBackgroundImage={tipBackgroundImage}
+      spacing={selectedRoom ? 0 : 2}
+    >
+      <StyledBadge
+        color="error"
+        badgeContent={notifications.length}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <IconButton
+          aria-label="Chat"
+          color="inherit"
+          onClick={handleToggle}
+        >
+          {isHovered ? (
+            <img 
+              src="/assets/NotificationsActive.svg" 
+              alt="notifications active" 
+              style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+            />
+          ) : (
+            <img 
+              src="/assets/Notifications.svg" 
+              alt="notifications" 
+              style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+            />
+          )}
+        </IconButton>
+      </StyledBadge>
+    </RichTooltip>
+  )
+
   return (
     <div className={classes.root}>
-      <RichTooltip
-        content={<NotificationContent loading={loading} notifications={notifications} refetch={refetch} setOpenPopUp={setOpen} />}
-        open={open}
-        placement="bottom"
-        onClose={() => setOpen(false)}
-        tipColor={tipColor}
-        tipBackgroundImage={tipBackgroundImage}
-        spacing={selectedRoom ? 0 : 2}
-      >
-        <StyledBadge
-          color="error"
-          badgeContent={notifications.length}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <IconButton
-            aria-label="Chat"
-            color="inherit"
-            onClick={() => setOpen(!open)}
+      {isMobileDevice ? (
+        <>
+          <StyledBadge
+            color="error"
+            badgeContent={notifications.length}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            {isHovered ? (
-              <img 
-                src="/assets/NotificationsActive.svg" 
-                alt="notifications active" 
-                style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
-              />
-            ) : (
-              <img 
-                src="/assets/Notifications.svg" 
-                alt="notifications" 
-                style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
-              />
-            )}
-          </IconButton>
-        </StyledBadge>
-      </RichTooltip>
+            <IconButton
+              aria-label="Notifications"
+              color="inherit"
+              onClick={handleToggle}
+            >
+              {isHovered ? (
+                <img 
+                  src="/assets/NotificationsActive.svg" 
+                  alt="notifications active" 
+                  style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+                />
+              ) : (
+                <img 
+                  src="/assets/Notifications.svg" 
+                  alt="notifications" 
+                  style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+                />
+              )}
+            </IconButton>
+          </StyledBadge>
+          <MobileDrawer
+            open={open}
+            onClose={handleClose}
+            title="Notifications"
+            anchor="right"
+          >
+            <NotificationContent 
+              loading={loading} 
+              notifications={notifications} 
+              refetch={refetch} 
+              setOpenPopUp={setOpen}
+              pageView={true}
+            />
+          </MobileDrawer>
+        </>
+      ) : (
+        popoverContent
+      )}
     </div>
   )
 }

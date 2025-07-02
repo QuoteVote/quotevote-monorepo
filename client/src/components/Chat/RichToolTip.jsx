@@ -11,6 +11,7 @@ const useStyles = (props) => makeStyles((theme) => {
     popoverRoot: {
       backgroundColor: color,
       maxWidth: 1000,
+      position: 'relative',
     },
     content: {
       padding: theme.spacing(props.spacing || 0),
@@ -21,6 +22,16 @@ const useStyles = (props) => makeStyles((theme) => {
     popper: {
       zIndex: 2000,
       '&[x-placement*="bottom"] $arrow': {
+        top: 0,
+        left: 0,
+        marginTop: '-0.71em',
+        marginLeft: 4,
+        marginRight: 4,
+        '&::before': {
+          transformOrigin: '0 100%',
+        },
+      },
+      '&[x-placement*="bottom-start"] $arrow': {
         top: 0,
         left: 0,
         marginTop: '-0.71em',
@@ -71,6 +82,7 @@ const useStyles = (props) => makeStyles((theme) => {
       height: '0.71em' /* = width / sqrt(2) = (length of the hypotenuse) */,
       boxSizing: 'border-box',
       color,
+      zIndex: 1,
       '&::before': {
         content: '""',
         margin: 'auto',
@@ -117,8 +129,11 @@ const RichTooltip = ({
             enabled: arrow,
             element: arrowRef,
           },
+          offset: {
+            enabled: true,
+            offset: '0, 8', // Add some offset to prevent overlap
+          },
         }}
-        disablePortal
       >
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>

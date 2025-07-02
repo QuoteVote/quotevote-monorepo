@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux'
 import CardBody from '../../mui-pro/Card/CardBody'
 import Card from '../../mui-pro/Card/Card'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   header: {
     fontFamily: 'Montserrat',
     fontWeight: 600,
@@ -28,6 +28,10 @@ const useStyles = makeStyles({
   },
   card: {
     width: 350,
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      maxWidth: 350,
+    },
   },
   loginButton: {
     textTransform: 'none',
@@ -46,7 +50,18 @@ const useStyles = makeStyles({
   link: {
     color: '#00bcd4',
   },
-})
+  forgotPasswordContainer: {
+    width: '100%',
+    textAlign: 'right',
+    [theme.breakpoints.down('sm')]: {
+      textAlign: 'right',
+      paddingRight: theme.spacing(2),
+    },
+  },
+  formContainer: {
+    width: '100%',
+  },
+}))
 
 function LoginForm({ onSubmit = () => {}, loading, loginError }) {
   const classes = useStyles()
@@ -69,7 +84,7 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
   }, [loginError, setError])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className={classes.formContainer}>
       <TextField
         InputProps={{
           startAdornment: (
@@ -178,7 +193,7 @@ function Login({ onSubmit = () => {}, loading = false }) {
           <Grid item>
             <LoginForm onSubmit={onSubmit} loading={loading} loginError={loginError} />
           </Grid>
-          <Grid item>
+          <Grid item className={classes.forgotPasswordContainer}>
             <Typography variant="body1">
               <Link className={classes.link} href="/auth/forgot">
                 Forgot password?

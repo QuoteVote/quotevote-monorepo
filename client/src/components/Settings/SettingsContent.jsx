@@ -22,15 +22,42 @@ import AvatarDisplay from '../Avatar'
 import ManageInviteButton from '../CustomButtons/ManageInviteButton'
 import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
 import SignOutButton from '../CustomButtons/SignOutButton'
+import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 350,
     minWidth: 350,
-    height: '80vh',
+    height: '90vh',
     marginLeft: 5,
     marginRight: 5,
     overflow: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '100%',
+      minWidth: '100%',
+      height: '90vh',
+      marginLeft: 0,
+      marginRight: 0,
+      padding: theme.spacing(2),
+    },
+  },
+  contentArea: {
+    flex: 1,
+    overflow: 'auto',
+  },
+  buttonContainer: {
+    marginTop: 'auto',
+    paddingTop: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+      position: 'sticky',
+      bottom: 0,
+      backgroundColor: 'inherit',
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+      borderTop: `1px solid ${theme.palette.divider}`,
+    },
   },
   title: {
     fontFamily: 'Montserrat',
@@ -42,26 +69,49 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 'normal',
     textAlign: 'left',
     color: '#ffffff',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '20px',
+      marginBottom: theme.spacing(2),
+    },
   },
   paperName: {
     maxWidth: 200,
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '100%',
+      flex: 1,
+    },
   },
   avatar: {
     width: theme.spacing(10),
     height: theme.spacing(10),
+    [theme.breakpoints.down('sm')]: {
+      width: theme.spacing(8),
+      height: theme.spacing(8),
+    },
   },
   cameraIcon: {
     marginTop: 25,
     margin: 0,
     position: 'absolute',
     display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      marginTop: 20,
+    },
   },
   paper: {
     padding: 15,
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
   },
   footerButtons: {
     position: 'fixed',
     bottom: 0,
+    [theme.breakpoints.down('sm')]: {
+      position: 'static',
+      marginTop: theme.spacing(3),
+      padding: theme.spacing(2),
+    },
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -71,11 +121,17 @@ const useStyles = makeStyles((theme) => ({
     padding: 15,
     color: 'red',
     font: 'bold',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
   },
   success: {
     padding: 15,
     color: 'white',
     font: 'bold',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
   },
   required: {
     color: 'red',
@@ -84,29 +140,56 @@ const useStyles = makeStyles((theme) => ({
     right: 10,
     position: 'absolute',
     marginTop: 5,
+    [theme.breakpoints.down('sm')]: {
+      position: 'relative',
+      float: 'right',
+      padding: theme.spacing(1),
+    },
+  },
+  avatarContainer: {
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 0,
+      flexShrink: 0,
+    },
+  },
+  nameContainer: {
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing(2),
+    },
   },
 }))
 
 function SettingsContent({ setOpen }) {
   const classes = useStyles()
+  const isMobileDevice = useMobileDetection()
   const history = useHistory()
   const dispatch = useDispatch()
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
-  } = useSelector((state) => state.user.data)
+  } = useSelector((state) => {
+    console.log(state)
+    return state.user.data
+  })
+  console.log(otherUserData)
   const handleChangeAvatar = () => {
     setOpen(false)
     history.push(`/profile/${username}/avatar`)
   }
+  
   const defaultValues = {
     username, password: username, name,
   }
+  
   const {
     register, handleSubmit, errors, formState, reset,
   } = useForm({ defaultValues })
+  
   const isPasswordTouched = 'password' in Object.keys(formState.dirtyFields)
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
+  
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
     const otherVariables = values.password === password ? otherValues : values
@@ -143,9 +226,10 @@ function SettingsContent({ setOpen }) {
     history.push('/controlpanel')
     setOpen(false)
   }
+  
   const hasChange = Object.keys(formState.dirtyFields).length
+  
   return (
-
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid
         container
@@ -155,7 +239,7 @@ function SettingsContent({ setOpen }) {
         className={classes.root}
         spacing={2}
       >
-        <Grid item>
+        <Grid item className={classes.contentArea}>
           <Grid
             container
             direction="column"
@@ -164,9 +248,11 @@ function SettingsContent({ setOpen }) {
             spacing={2}
           >
             <Grid item>
-              <Typography className={classes.title}>
-                Settings
-              </Typography>
+              {!isMobileDevice && (
+                 <Typography className={classes.title}>
+                    Settings
+                  </Typography>
+              )}
             </Grid>
             <Grid item>
               <Grid
@@ -174,8 +260,10 @@ function SettingsContent({ setOpen }) {
                 direction="row"
                 justify="flex-start"
                 alignItems="center"
+                className={classes.nameContainer}
+                spacing={0}
               >
-                <Grid item>
+                <Grid item className={classes.avatarContainer}>
                   <IconButton onClick={handleChangeAvatar}>
                     <Avatar className={classes.avatar}>
                       <AvatarDisplay height={75} width={75} {...avatar} />
@@ -183,7 +271,7 @@ function SettingsContent({ setOpen }) {
                     </Avatar>
                   </IconButton>
                 </Grid>
-                <Grid item>
+                <Grid item className={classes.paperName}>
                   <Paper className={classNames(classes.paperName, classes.paper)}>
                     <InputLabel>Name</InputLabel>
                     <TextField
@@ -212,7 +300,7 @@ function SettingsContent({ setOpen }) {
                       message: 'Username should be more than 4 characters',
                     },
                     maxLength: {
-                      value: 20,
+                      value: 50,
                       message: 'Username should be less than twenty characters',
                     },
                   })}
@@ -260,7 +348,7 @@ function SettingsContent({ setOpen }) {
                         message: 'Password should be more than 3 characters',
                       },
                       maxLength: {
-                        value: 20,
+                        value: 50,
                         message: 'Password should be less than twenty characters',
                       },
                       pattern: isPasswordTouched ? {
@@ -292,7 +380,8 @@ function SettingsContent({ setOpen }) {
             {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
           </Grid>
         </Grid>
-        <Grid item>
+        
+        <Grid item className={classes.buttonContainer}>
           <Grid
             container
             direction="row"

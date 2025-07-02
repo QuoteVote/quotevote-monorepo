@@ -1,6 +1,7 @@
 import { useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import moment from 'moment'
+import { isMobile } from 'react-device-detect'
 
 export const getGridListCols = {
   xl: 3,
@@ -20,6 +21,13 @@ export function useWidth() {
       return !output && matches ? key : output
     }, null) || 'xs'
   )
+}
+
+// Custom hook for mobile detection that combines device detection and responsive breakpoints
+export function useMobileDetection() {
+  const theme = useTheme()
+  const isMobileBreakpoint = useMediaQuery(theme.breakpoints.down('sm'))
+  return isMobile || isMobileBreakpoint
 }
 
 export function composePost(activity, theme) {
