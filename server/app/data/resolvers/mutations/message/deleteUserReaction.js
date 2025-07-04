@@ -1,4 +1,4 @@
-import ReactionModel from '../../models/ReactionModel';
+import prisma from '~/utils/prisma';
 import { USER_REACTION } from '../../../utils/constants';
 
 export const deleteUserReaction = pubsub => {
@@ -6,8 +6,12 @@ export const deleteUserReaction = pubsub => {
     console.log('[MUTATION] deleteUserReaction');
     try {
       const { reactionId } = args;
-      const userReaction = await ReactionModel.findById(reactionId);
-      await ReactionModel.findByIdAndRemove(reactionId);
+      const userReaction = await prisma.reaction.findUnique({
+        where: { id: reactionId },
+      });
+      await prisma.reaction.delete({
+        where: { id: reactionId },
+      });
       pubsub.publish(USER_REACTION, { userReaction });
       return userReaction;
     } catch (err) {
