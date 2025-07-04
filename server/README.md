@@ -15,6 +15,8 @@ WS_PORT=
 SECRET=
 LYRICIST_TOKEN=
 DATABASE_URL=
+# Example format for MongoDB Atlas connection string
+# DATABASE_URL="mongodb+srv://<username>:<password>@<cluster-url>/<database-name>?retryWrites=true&w=majority"
 SMTP_HOST=
 SMTP_PORT=
 SMTP_USER=
@@ -51,6 +53,21 @@ npm run dev-db-start
 ```
 npm run dev-db-stop
 ```
+
+## Prisma Pilot
+
+We are beginning to migrate from Mongoose to [Prisma ORM](https://www.prisma.io/).
+The initial `Reaction` model is defined in `prisma/schema.prisma`.
+
+Install dependencies and generate the Prisma client:
+
+```bash
+npm install --workspace=server
+npm run prisma:db-push --workspace=server
+npm run prisma:generate --workspace=server
+```
+Ensure your `.env` has `DATABASE_URL` pointing to a MongoDB replica set instance.
+Prisma Migrate does not support MongoDB. Use `prisma db push` to sync your schema.
 
 ## License
 

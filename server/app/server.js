@@ -6,6 +6,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import dotenvConfig from 'dotenv';
 import { logger } from './data/utils/logger';
+import prisma from './data/utils/prisma';
 
 import {
   authenticate,
@@ -152,6 +153,16 @@ async function startServer() {
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
+});
+
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  await prisma.$disconnect();
+  process.exit(0);
 });
 
 export { GRAPHQL_PORT };
