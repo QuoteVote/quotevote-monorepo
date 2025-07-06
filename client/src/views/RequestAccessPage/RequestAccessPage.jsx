@@ -110,6 +110,14 @@ export default function RequestAccessPage() {
           </Grid>
 
           <Grid item xs={12}>
+            <Typography
+              variant="body1"
+              align="center"
+              style={{ marginBottom: 16 }}
+            >
+              You need an account to contribute. Viewing is public, but posting,
+              voting, and quoting require an invite.
+            </Typography>
             <Input
               disableUnderline
               placeholder="Enter Email"
