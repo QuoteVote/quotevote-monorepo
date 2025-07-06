@@ -99,20 +99,30 @@ export default function RequestAccessPage() {
               marginBottom: '2rem',
             }}
           >
-            <img
-              src="/assets/quote-vote-white.svg"
-              alt="logo"
-              style={{
-                width: '100%',
-                height: 'auto',
-              }}
-            />
-          </Grid>
+          <img
+            src="/assets/quote-vote-white.svg"
+            alt="logo"
+            style={{
+              width: '100%',
+              height: 'auto',
+            }}
+          />
+        </Grid>
 
-          <Grid item xs={12}>
-            <Input
-              disableUnderline
-              placeholder="Enter Email"
+        <Grid item xs={12}>
+          <Typography
+            variant="body1"
+            style={{ marginBottom: '1rem', textAlign: 'center' }}
+          >
+            You need an account to contribute. Viewing is public, but posting,
+            voting, and quoting require an invite.
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Input
+            disableUnderline
+            placeholder="Enter Email"
               className={classes.input}
               onChange={(event) => setUserDetails(event.target.value)}
             />

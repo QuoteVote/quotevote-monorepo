@@ -106,14 +106,7 @@ function NotificationLists({ notifications, pageView }) {
     if (notificationType === 'FOLLOW') {
       history.push(`/Profile/${userBy.username}`)
     } else {
-      // Check if user is in guest mode (no valid token)
-      if (!tokenValidator(dispatch)) {
-        // Redirect to search page for guest users
-        history.push('/search')
-        return
-      }
-      
-      // For authenticated users, proceed with normal post navigation
+      // Navigate to post
       dispatch(SET_SELECTED_POST(post._id))
       history.push(post.url.replace(/\?/g, ''))
     }
