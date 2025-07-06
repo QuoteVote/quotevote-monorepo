@@ -10,7 +10,7 @@ function PrivateRoute({ component: Component, requiresAuth, ...rest }) {
       {...rest}
       render={(props) => {
         if (requiresAuth && !tokenValidator(dispatch)) {
-          return <Redirect to="/search" />
+          return <Redirect to="/auth/request-access" />
         }
         return <Component {...props} />
       }}

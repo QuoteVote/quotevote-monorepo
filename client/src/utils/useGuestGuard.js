@@ -8,7 +8,7 @@ export default function useGuestGuard() {
 
   return () => {
     if (!tokenValidator(dispatch)) {
-      history.push('/search')
+      history.push('/auth/request-access')
       return false
     }
     return true

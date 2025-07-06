@@ -108,8 +108,8 @@ function NotificationLists({ notifications, pageView }) {
     } else {
       // Check if user is in guest mode (no valid token)
       if (!tokenValidator(dispatch)) {
-        // Redirect to search page for guest users
-        history.push('/search')
+        // Redirect unauthenticated users to request access page
+        history.push('/auth/request-access')
         return
       }
       
