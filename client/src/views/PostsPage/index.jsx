@@ -24,7 +24,8 @@ export default function PostRouter() {
 
   if (location.pathname === '/post') {
     if (!tokenValidator(dispatch)) {
-      return <Redirect to="/search" />
+      const from = encodeURIComponent(location.pathname + location.search)
+      return <Redirect to={`/auth/request-access?from=${from}`} />
     }
     return <SubmitPost setOpen={setOpen} />
   }

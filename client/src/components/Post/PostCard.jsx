@@ -335,8 +335,8 @@ function PostCard(props) {
   const handleCardClick = () => {
     // Check if user is in guest mode (no valid token)
     if (!tokenValidator(dispatch)) {
-      // Redirect to search page for guest users
-      history.push('/search')
+      const from = encodeURIComponent(history.location.pathname + history.location.search)
+      history.push(`/auth/request-access?from=${from}`)
       return
     }
 
