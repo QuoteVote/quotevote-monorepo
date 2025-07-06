@@ -22,7 +22,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
-import { tokenValidator } from 'store/user'
 import { useState, useMemo } from 'react'
 
 const GET_GROUP = gql`
@@ -333,14 +332,6 @@ function PostCard(props) {
   })
 
   const handleCardClick = () => {
-    // Check if user is in guest mode (no valid token)
-    if (!tokenValidator(dispatch)) {
-      // Redirect to search page for guest users
-      history.push('/search')
-      return
-    }
-
-    // For authenticated users, proceed with normal post navigation
     dispatch(SET_SELECTED_POST(_id))
     history.push(url.replace(/\?/g, ''))
   }

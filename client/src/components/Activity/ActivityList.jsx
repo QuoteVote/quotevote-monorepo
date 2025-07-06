@@ -17,7 +17,6 @@ import {
 } from '../../graphql/query'
 import { SET_SELECTED_POST } from '../../store/ui'
 import getActivityContent from '../../utils/getActivityContent'
-import { tokenValidator } from 'store/user'
 
 function LoadActivityCard({ width, activity }) {
   const {
@@ -82,14 +81,6 @@ function LoadActivityCard({ width, activity }) {
   const isLiked = bookmarkedBy.includes(currentUser._id)
   const dispatch = useDispatch()
   const handleCardClick = () => {
-    // Check if user is in guest mode (no valid token)
-    if (!tokenValidator(dispatch)) {
-      // Redirect to search page for guest users
-      history.push('/search')
-      return
-    }
-    
-    // For authenticated users, proceed with normal post navigation
     dispatch(SET_SELECTED_POST(postId))
     history.push(url.replace(/\?/g, ''))
   }
