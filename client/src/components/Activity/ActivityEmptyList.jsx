@@ -59,7 +59,7 @@ function ActivityEmptyList() {
   const dispatch = useDispatch()
   const handleGoToTrending = () => {
     dispatch(SET_SELECTED_PAGE(1))
-    history.push('/TrendingContent')
+    history.push('/search')
   }
   return (
     <GridContainer className={classes.root}>
