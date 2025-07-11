@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { tokenValidator } from 'store/user'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
 import PersonalForm from 'components/RequestAccess/PersonalForm/PersonalForm'
@@ -24,6 +24,10 @@ export default function RequestAccessPage() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
+  const location = useLocation()
+
+  const query = new URLSearchParams(location.search)
+  const fromParam = query.get('from')
 
   const [userDetails, setUserDetails] = useState('')
   const [errorMessage, setErrorMessage] = useState()
@@ -108,6 +112,14 @@ export default function RequestAccessPage() {
               }}
             />
           </Grid>
+
+          {fromParam && (
+            <Grid item xs={12}>
+              <Typography style={{ color: 'white', textAlign: 'center' }}>
+                You need an account to contribute. Viewing is public, but posting, voting, and quoting require an invite.
+              </Typography>
+            </Grid>
+          )}
 
           <Grid item xs={12}>
             <Input

@@ -9,6 +9,7 @@ import Paper from '@material-ui/core/Paper'
 import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
+import useGuestGuard from 'utils/useGuestGuard'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 
@@ -61,7 +62,10 @@ function PostChatSend(props) {
     }],
   })
 
+  const ensureAuth = useGuestGuard()
+
   const handleSubmit = async () => {
+    if (!ensureAuth()) return
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
