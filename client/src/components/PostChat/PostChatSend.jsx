@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -49,6 +50,7 @@ function PostChatSend(props) {
   const [text, setText] = useState('')
   const [error, setError] = useState(null) // eslint-disable-line no-unused-vars
   const user = useSelector((state) => state.user.data)
+  const ensureAuth = useGuestGuard()
   const [createMessage] = useMutation(SEND_MESSAGE, {
     onError: (err) => {
       setError(err)
@@ -62,6 +64,7 @@ function PostChatSend(props) {
   })
 
   const handleSubmit = async () => {
+    if (!ensureAuth()) return
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {

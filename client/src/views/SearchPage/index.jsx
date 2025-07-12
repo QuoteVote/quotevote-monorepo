@@ -324,7 +324,7 @@ export default function SearchPage() {
   const { loading, error, data, fetchMore, refetch } = useQuery(GET_TOP_POSTS, {
     variables,
     fetchPolicy: 'network-only',
-    skip: !showResults && !isGuestMode, // Show results automatically for guest mode
+    skip: !showResults, // Always show results when showResults is true
     errorPolicy: 'all', // Allow partial errors
     notifyOnNetworkStatusChange: true,
     pollInterval: 3000, // Poll every 3 seconds
@@ -345,7 +345,7 @@ export default function SearchPage() {
       interactions: activeFilters.interactions,
       // Don't apply sort order for guest mode - let backend use default ordering
     },
-    skip: !isGuestMode,
+    skip: !isGuestMode || searchKey.trim() !== '', // Skip featured posts when guest is searching
     fetchPolicy: 'cache-first', // Use cache for better performance
     errorPolicy: 'all',
     notifyOnNetworkStatusChange: false, // Reduce unnecessary updates
@@ -416,6 +416,13 @@ export default function SearchPage() {
   const handleSearch = (e) => {
     e.preventDefault()
     setShowResults(true)
+    // For guests, ensure they see search results from all posts
+    if (isGuestMode && searchKey.trim()) {
+      // Trigger a refetch of the main posts query for guests
+      setTimeout(() => {
+        refetch(variables)
+      }, 100)
+    }
   }
 
   const handleFriendsFilter = () => {
@@ -891,14 +898,13 @@ export default function SearchPage() {
             </Grid>
           )}
 
-          {isGuestMode && (
+          {isGuestMode && !searchKey.trim() && (
             <>
               {featuredData?.featuredPosts ? (
                 featuredPosts.length > 0 ? (
                   <Grid item style={{ width: '100%', maxWidth: '800px' }}>
                     <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
                       Featured Posts
-                      {searchKey && ` - "${searchKey}"`}
                     </Typography>
                     <Carousel navButtonsAlwaysVisible autoplay={false}>
                       {createCarouselItems}
@@ -916,9 +922,7 @@ export default function SearchPage() {
                       variant="body2"
                       style={{ color: '#999', marginTop: '0.5rem' }}
                     >
-                      {searchKey 
-                        ? `No featured posts match "${searchKey}"`
-                        : hasActiveFilters()
+                      {hasActiveFilters()
                         ? 'No featured posts match your filters'
                         : 'Check back later for featured content'
                       }
@@ -945,7 +949,7 @@ export default function SearchPage() {
             </>
           )}
 
-          {!isGuestMode && (
+          {(!isGuestMode || (isGuestMode && searchKey.trim())) && (
             <Grid item xs={12} className={classes.list}>
               {loading && !processedData && (
                 <div style={{ textAlign: 'center', padding: '2rem' }}>

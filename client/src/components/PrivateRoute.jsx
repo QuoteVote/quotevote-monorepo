@@ -10,7 +10,10 @@ function PrivateRoute({ component: Component, requiresAuth, ...rest }) {
       {...rest}
       render={(props) => {
         if (requiresAuth && !tokenValidator(dispatch)) {
-          return <Redirect to="/search" />
+          // Redirect to invite request page with current URL as query parameter
+          const currentPath = props.location.pathname + props.location.search
+          const redirectUrl = `/auth/request-access?from=${encodeURIComponent(currentPath)}`
+          return <Redirect to={redirectUrl} />
         }
         return <Component {...props} />
       }}

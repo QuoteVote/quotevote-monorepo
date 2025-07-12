@@ -10,6 +10,7 @@ import { SELECTED_CHAT_ROOM } from '../../store/chat'
 import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
 import { GET_CHAT_ROOMS } from '../../graphql/query'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
@@ -136,6 +137,7 @@ function Content() {
 
 function MessageBox() {
   const classes = useStyles()
+  const ensureAuth = useGuestGuard()
 
   const [updateMessageReadBy] = useMutation(READ_MESSAGES)
   const { _id: messageRoomId, title, messageType } = useSelector(
@@ -143,11 +145,12 @@ function MessageBox() {
   )
 
   useEffect(() => {
+    if (!ensureAuth()) return
     updateMessageReadBy({
       variables: { messageRoomId },
       refetchQueries: [{ query: GET_CHAT_ROOMS }],
     })
-  }, [messageRoomId, updateMessageReadBy])
+  }, [messageRoomId, updateMessageReadBy, ensureAuth])
 
   return (
     <>

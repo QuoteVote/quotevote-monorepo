@@ -21,7 +21,8 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const GET_GROUP = gql`
   query getGroup($groupId: String!) {
@@ -291,8 +292,12 @@ function PostCard(props) {
 
   const cardBg = getCardBg(activityType)
   const postTitleStringLimit = width === 'xs' ? 25 : 50
+  const guestGuard = useGuestGuard()
+  
   const handleRedirectToProfile = (username) => {
-    history.push(`/Profile/${username}`)
+    if (guestGuard()) {
+      history.push(`/Profile/${username}`)
+    }
   }
 
   // TODO: show quote up/down
@@ -316,14 +321,7 @@ function PostCard(props) {
   })
 
   const handleCardClick = () => {
-    // Check if user is in guest mode (no valid token)
-    if (!tokenValidator(dispatch)) {
-      // Redirect to search page for guest users
-      history.push('/search')
-      return
-    }
-
-    // For authenticated users, proceed with normal post navigation
+    // For all users (including guests), allow viewing posts
     dispatch(SET_SELECTED_POST(_id))
     history.push(url.replace(/\?/g, ''))
   }

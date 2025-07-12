@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { tokenValidator } from 'store/user'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
 import PersonalForm from 'components/RequestAccess/PersonalForm/PersonalForm'
@@ -24,6 +24,7 @@ export default function RequestAccessPage() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
+  const location = useLocation()
 
   const [userDetails, setUserDetails] = useState('')
   const [errorMessage, setErrorMessage] = useState()
@@ -31,6 +32,11 @@ export default function RequestAccessPage() {
   const { errors } = useForm({ userDetails })
 
   const client = useApolloClient()
+
+  // Check if user was redirected from a contribution action
+  const searchParams = new URLSearchParams(location.search)
+  const fromPath = searchParams.get('from')
+  const wasRedirected = !!fromPath
 
   const [requestUserAccess] = useMutation(REQUEST_USER_ACCESS_MUTATION)
   const onSubmit = async () => {
@@ -109,6 +115,25 @@ export default function RequestAccessPage() {
             />
           </Grid>
 
+          {/* Show explanatory message if user was redirected from a contribution action */}
+          {wasRedirected && (
+            <Grid item xs={12}>
+              <Typography
+                variant="body1"
+                style={{
+                  textAlign: 'center',
+                  color: '#fff',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  marginBottom: '16px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                }}
+              >
+                You need an account to contribute. Viewing is public, but posting, voting, and quoting require an invite.
+              </Typography>
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Input
               disableUnderline

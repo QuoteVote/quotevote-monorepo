@@ -15,6 +15,7 @@ import 'emoji-mart/css/emoji-mart.css'
 import { parseCommentDate } from '../../utils/momentUtils'
 import { ADD_MESSAGE_REACTION, UPDATE_MESSAGE_REACTION } from '../../graphql/mutations'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -55,6 +56,7 @@ function PostChatReactions(props) {
     created, messageId, reactions, isDefaultDirection,
   } = props
   const parsedTime = parseCommentDate(created)
+  const ensureAuth = useGuestGuard()
   const [addReaction] = useMutation(ADD_MESSAGE_REACTION, {
     onError: (err) => {
       // eslint-disable-next-line no-console
@@ -86,15 +88,17 @@ function PostChatReactions(props) {
   const groupedReactions = _.groupBy(reactions, 'emoji')
 
   const handleClick = useCallback((event) => {
+    if (!ensureAuth()) return
     setAnchorEl(event.target)
     setOpen(true)
-  }, [])
+  }, [ensureAuth])
 
   const handleClose = useCallback(() => {
     setOpen(false)
   }, [])
 
   const handleEmojiSelect = useCallback(async (emoji) => {
+    if (!ensureAuth()) return
     const newEmoji = emoji.native
     const reaction = {
       userId,
@@ -113,7 +117,7 @@ function PostChatReactions(props) {
     }
 
     setOpen(false)
-  }, [userId, messageId, userReaction, updateReaction, addReaction])
+  }, [userId, messageId, userReaction, updateReaction, addReaction, ensureAuth])
 
   const emojiElements = []
 

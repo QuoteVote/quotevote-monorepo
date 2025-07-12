@@ -10,6 +10,7 @@ import SendIcon from '@material-ui/icons/Send'
 import { Typography } from '@material-ui/core'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 import { SEND_MESSAGE } from '../../graphql/mutations'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -26,6 +27,7 @@ export default function MessageSend({ messageRoomId, type, title }) {
   const [text, setText] = React.useState('')
   const user = useSelector((state) => state.user.data)
   const { error, setError } = React.useState('')
+  const ensureAuth = useGuestGuard()
   const [createMessage, { loading }] = useMutation(SEND_MESSAGE, {
     onError: (err) => {
       setError(err)
@@ -39,6 +41,7 @@ export default function MessageSend({ messageRoomId, type, title }) {
   })
 
   const handleSubmit = async () => {
+    if (!ensureAuth()) return
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
