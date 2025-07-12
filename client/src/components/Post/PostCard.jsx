@@ -35,7 +35,10 @@ const GET_GROUP = gql`
 const useStyles = makeStyles((theme) => ({
   cardRootStyle: {
     [theme.breakpoints.down('sm')]: {
-      padding: 0,
+      // padding: 0,
+      padding: theme.spacing(2),
+      margin: theme.spacing(1, 'auto'),
+      maxWidth: '95vw',
     },
     borderRadius: 7,
     border: '1px solid',
@@ -69,17 +72,20 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     paddingTop: 10,
     [theme.breakpoints.down('sm')]: {
-      padding: 0,
+      // padding: 0,
+      padding: theme.spacing(1, 2),
     },
   },
   cardBodyStyle: {
     marginLeft: 0,
     [theme.breakpoints.down('sm')]: {
-      marginLeft: 0,
+      // marginLeft: 0,
+      padding: theme.spacing(2),
     },
     color: '#000000',
     position: 'relative',
     paddingTop: '5px',
+    maxWidth: '100%',
   },
   interactions: {
     fontSize: '14px',
@@ -87,6 +93,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     padding: '4px 8px',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1),
+    },
     borderRadius: '4px',
     backgroundColor: 'rgba(0, 0, 0, 0.03)',
   },
@@ -94,6 +103,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     padding: '8px 16px',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1, 2),
+    },
   },
   profileSection: {
     display: 'flex',
@@ -106,6 +118,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     marginBottom: '16px',
     padding: '8px 0',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1, 0),
+    },
     borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
   },
   voteSection: {
@@ -143,7 +158,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     fontWeight: 'bold',
     color: '#000000',
-    whiteSpace: 'nowrap',
+    // whiteSpace: 'nowrap',
+    whiteSpace: 'normal',
     padding: 0,
     top: 16,
   },
@@ -159,10 +175,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000000',
-    whiteSpace: 'nowrap',
+    // whiteSpace: 'nowrap',
+    whiteSpace: 'normal',
     cursor: 'pointer',
     [theme.breakpoints.down('sm')]: {
-      fontSize: 18,
+      // fontSize: 18,
+      fontSize: 20,
     },
   },
   rankNumber: {
@@ -187,7 +205,8 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '72px',
     textAlign: 'left',
     [theme.breakpoints.down('sm')]: {
-      fontSize: 14,
+      // fontSize: 14,
+      fontSize: 16,
     },
   },
   contentSection: {
@@ -329,12 +348,13 @@ function PostCard(props) {
   }
 
 
-  const truncatedTitle = stringLimit(
-    title,
-    limitText ? 20 : postTitleStringLimit,
-  )
-  const isTitleTruncated =
-    title.length > (limitText ? 20 : postTitleStringLimit)
+  // const truncatedTitle = stringLimit(
+  //   title,
+  //   limitText ? 20 : postTitleStringLimit,
+  // )
+  // const isTitleTruncated =
+  //   title.length > (limitText ? 20 : postTitleStringLimit)
+  const displayTitle = title
 
   return (
     <Card
@@ -381,12 +401,14 @@ function PostCard(props) {
         >
           <Grid item xs={12}>
             <Tooltip
-              title={isTitleTruncated ? title : ''}
+              // title={isTitleTruncated ? title : ''}
+              title={title}
               placement="top"
               arrow
             >
               <Typography className={classes.postTitle}>
-                {truncatedTitle}
+                {/* {truncatedTitle} */}
+                {displayTitle}
               </Typography>
             </Tooltip>
           </Grid>
