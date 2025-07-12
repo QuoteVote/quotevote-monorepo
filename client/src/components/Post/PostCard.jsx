@@ -18,12 +18,10 @@ import withWidth from '@material-ui/core/withWidth'
 import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpandLessIcon from '@material-ui/icons/ExpandLess'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 
 const GET_GROUP = gql`
   query getGroup($groupId: String!) {
@@ -192,20 +190,6 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 14,
     },
   },
-  postContentExpanded: {
-    display: 'block',
-    WebkitLineClamp: 'unset',
-    maxHeight: 'none',
-    overflow: 'visible',
-  },
-  toggleButton: {
-    padding: '4px',
-    marginTop: '8px',
-    color: '#666',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    },
-  },
   contentSection: {
     display: 'flex',
     flexDirection: 'column',
@@ -264,7 +248,6 @@ function PostCard(props) {
   const user = useSelector((state) => state.user.data)
   const classes = useStyles(props)
   const { width } = props
-  const [isContentExpanded, setIsContentExpanded] = useState(false)
   const {
     _id,
     text,
@@ -345,10 +328,6 @@ function PostCard(props) {
     history.push(url.replace(/\?/g, ''))
   }
 
-  const handleToggleContent = (e) => {
-    e.stopPropagation()
-    setIsContentExpanded(!isContentExpanded)
-  }
 
   const truncatedTitle = stringLimit(
     title,
@@ -413,33 +392,9 @@ function PostCard(props) {
           </Grid>
           <Grid item xs={12}>
             <div className={classes.contentSection}>
-              <Typography
-                className={classNames(
-                  classes.postContent,
-                  isContentExpanded && classes.postContentExpanded,
-                )}
-              >
-                {isContentExpanded ? text : postText}
+              <Typography className={classes.postContent}>
+                {postText}
               </Typography>
-              {text.length > contentLimit && (
-                <Tooltip
-                  title={isContentExpanded ? 'Show less' : 'Show more'}
-                  placement="bottom"
-                  arrow
-                >
-                  <IconButton
-                    className={classes.toggleButton}
-                    onClick={handleToggleContent}
-                    size="small"
-                  >
-                    {isContentExpanded ? (
-                      <ExpandLessIcon />
-                    ) : (
-                      <ExpandMoreIcon />
-                    )}
-                  </IconButton>
-                </Tooltip>
-              )}
             </div>
           </Grid>
         </Grid>
