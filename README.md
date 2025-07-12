@@ -36,7 +36,8 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **Node.js** - Runtime environment
 - **Express** - Web framework
 - **Apollo Server** - GraphQL server
-- **MongoDB** - Database with Mongoose ODM
+- **MongoDB** - Database with Mongoose ODM (transitioning to Prisma ORM)
+- **Prisma** - Type-safe ORM for database access
 - **JWT** - Authentication
 - **WebSocket** - Real-time subscriptions
 - **Stripe** - Payment processing

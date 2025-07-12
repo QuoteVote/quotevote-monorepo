@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Reaction {
+  id        String   @id @map("_id") @default(auto()) @db.ObjectId
+  userId    String   @db.ObjectId
+  messageId String?  @db.ObjectId
+  actionId  String?  @db.ObjectId
+  created   DateTime @default(now())
+  emoji     String?
+
+  @@map("reactions")
+}
