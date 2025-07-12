@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import Card from 'mui-pro/Card/Card'
 import classNames from 'classnames'
 import { isEmpty } from 'lodash'
@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
   cardRootStyle: {
     [theme.breakpoints.down('sm')]: {
       padding: 0,
+      width: '120%',
+      height: '110%',
     },
     borderRadius: 7,
     border: '1px solid',
@@ -159,8 +161,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000000',
-    whiteSpace: 'nowrap',
     cursor: 'pointer',
+    lineHeight: '1.2',
     [theme.breakpoints.down('sm')]: {
       fontSize: 18,
     },
@@ -290,7 +292,6 @@ function PostCard(props) {
   }
 
   const cardBg = getCardBg(activityType)
-  const postTitleStringLimit = width === 'xs' ? 25 : 50
   const handleRedirectToProfile = (username) => {
     history.push(`/Profile/${username}`)
   }
@@ -329,12 +330,6 @@ function PostCard(props) {
   }
 
 
-  const truncatedTitle = stringLimit(
-    title,
-    limitText ? 20 : postTitleStringLimit,
-  )
-  const isTitleTruncated =
-    title.length > (limitText ? 20 : postTitleStringLimit)
 
   return (
     <Card
@@ -380,15 +375,7 @@ function PostCard(props) {
           spacing={2}
         >
           <Grid item xs={12}>
-            <Tooltip
-              title={isTitleTruncated ? title : ''}
-              placement="top"
-              arrow
-            >
-              <Typography className={classes.postTitle}>
-                {truncatedTitle}
-              </Typography>
-            </Tooltip>
+            <Typography className={classes.postTitle}>{title}</Typography>
           </Grid>
           <Grid item xs={12}>
             <div className={classes.contentSection}>
