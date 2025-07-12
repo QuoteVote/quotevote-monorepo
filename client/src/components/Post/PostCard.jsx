@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
+// import { IconButton, Tooltip } from '@material-ui/core'
 import Card from 'mui-pro/Card/Card'
 import classNames from 'classnames'
 import { isEmpty } from 'lodash'
@@ -35,7 +36,12 @@ const GET_GROUP = gql`
 const useStyles = makeStyles((theme) => ({
   cardRootStyle: {
     [theme.breakpoints.down('sm')]: {
-      padding: 0,
+      // padding: 0,
+      // width: '120%',
+      // height: '110%',
+      padding: theme.spacing(2),
+      maxWidth: '95vw',
+      margin: `${theme.spacing(1)}px auto`,
     },
     borderRadius: 7,
     border: '1px solid',
@@ -69,13 +75,15 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
     paddingTop: 10,
     [theme.breakpoints.down('sm')]: {
-      padding: 0,
+      // padding: 0,
+      padding: theme.spacing(1),
     },
   },
   cardBodyStyle: {
     marginLeft: 0,
     [theme.breakpoints.down('sm')]: {
-      marginLeft: 0,
+      // marginLeft: 0,
+      padding: theme.spacing(1),
     },
     color: '#000000',
     position: 'relative',
@@ -159,8 +167,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#000000',
-    whiteSpace: 'nowrap',
+    // whiteSpace: 'nowrap',
     cursor: 'pointer',
+    lineHeight: '1.2',
     [theme.breakpoints.down('sm')]: {
       fontSize: 18,
     },
@@ -290,7 +299,7 @@ function PostCard(props) {
   }
 
   const cardBg = getCardBg(activityType)
-  const postTitleStringLimit = width === 'xs' ? 25 : 50
+  // const postTitleStringLimit = width === 'xs' ? 25 : 50
   const handleRedirectToProfile = (username) => {
     history.push(`/Profile/${username}`)
   }
@@ -327,14 +336,14 @@ function PostCard(props) {
     dispatch(SET_SELECTED_POST(_id))
     history.push(url.replace(/\?/g, ''))
   }
+  // const truncatedTitle = stringLimit(
+  //   title,
+  //   limitText ? 20 : postTitleStringLimit,
+  // )
+  // const isTitleTruncated =
+  //   title.length > (limitText ? 20 : postTitleStringLimit)
 
 
-  const truncatedTitle = stringLimit(
-    title,
-    limitText ? 20 : postTitleStringLimit,
-  )
-  const isTitleTruncated =
-    title.length > (limitText ? 20 : postTitleStringLimit)
 
   return (
     <Card
@@ -380,15 +389,16 @@ function PostCard(props) {
           spacing={2}
         >
           <Grid item xs={12}>
-            <Tooltip
-              title={isTitleTruncated ? title : ''}
-              placement="top"
-              arrow
-            >
-              <Typography className={classes.postTitle}>
-                {truncatedTitle}
-              </Typography>
-            </Tooltip>
+              // <Tooltip
+              //   title={isTitleTruncated ? title : ''}
+              //   placement="top"
+              //   arrow
+              // >
+              //   <Typography className={classes.postTitle}>
+              //     {truncatedTitle}
+              //   </Typography>
+              // </Tooltip>
+            <Typography className={classes.postTitle}>{title}</Typography>
           </Grid>
           <Grid item xs={12}>
             <div className={classes.contentSection}>
