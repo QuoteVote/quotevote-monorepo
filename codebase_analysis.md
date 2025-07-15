@@ -139,7 +139,7 @@ Well-organized monorepo scripts:
 
 ## Team & Maintenance
 Large development team with clear roles (Frontend, Backend, AI, Design, Operations)
-MIT licensed with comprehensive documentation and contribution guidelines.
+Licensed under GNU Lesser General Public License Version 3 (LGPL v3) with comprehensive documentation and contribution guidelines.
 
 ## Summary
 Quote Vote represents an ambitious and well-architected civic engagement platform with a unique approach to content interaction through targeted voting and quoting. The codebase demonstrates modern web development practices with a focus on user experience and real-time collaboration.
