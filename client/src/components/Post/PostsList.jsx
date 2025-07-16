@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SET_HIDDEN_POSTS } from 'store/ui'
 import InfiniteScroll from 'react-infinite-scroller'
 import { Grid } from '@material-ui/core'
+import { useTheme } from '@material-ui/core/styles'
 import PostCard from './PostCard'
 import AlertSkeletonLoader from '../AlertSkeletonLoader'
 import LoadingSpinner from '../LoadingSpinner'
@@ -11,6 +12,7 @@ export function LoadPostsList({
   data, onLoadMore,
 }) {
   const dispatch = useDispatch()
+  const theme = useTheme()
   const user = useSelector((state) => state.user.data)
   const hiddenPosts = useSelector((state) => state.ui.hiddenPosts) || []
   const handleHidePost = (post) => {
@@ -47,7 +49,12 @@ export function LoadPostsList({
         spacing={0}
       >
         {rankedPosts.map((prop) => (
-          <Grid item style={{ marginBottom: -25 }} key={prop._id}>
+          <Grid
+            item
+            // style={{ marginBottom: -25 }}
+            style={{ marginBottom: theme.spacing(2) }}
+            key={prop._id}
+          >
             <PostCard
               {...prop}
               onHidePost={handleHidePost}

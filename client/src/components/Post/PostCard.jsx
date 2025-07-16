@@ -34,9 +34,11 @@ const GET_GROUP = gql`
 
 const useStyles = makeStyles((theme) => ({
   cardRootStyle: {
+    margin: theme.spacing(1, 0),
     [theme.breakpoints.down('sm')]: {
       // padding: 0,
       padding: theme.spacing(2),
+      // margin: theme.spacing(1, 'auto'),
       margin: theme.spacing(1, 'auto'),
       maxWidth: '95vw',
     },
