@@ -1,11 +1,14 @@
-import ReactionModel from '../../models/ReactionModel';
+import prisma from '~/utils/prisma';
 
 export const updateReaction = () => {
   return async (_, args, context) => {
     console.log('[MUTATION] updateReaction');
     try {
       const { _id } = args;
-      const userReaction = await ReactionModel.findByIdAndUpdate(_id, {emoji: args.emoji});
+      const userReaction = await prisma.reaction.update({
+        where: { id: _id },
+        data: { emoji: args.emoji },
+      });
       return userReaction;
     } catch (err) {
       throw new Error(err);

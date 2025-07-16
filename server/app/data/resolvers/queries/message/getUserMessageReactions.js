@@ -1,4 +1,4 @@
-import ReactionModel from '../../models/ReactionModel';
+import prisma from '~/utils/prisma';
 
 export const getUserMessageReactions = pubsub => {
   return async (_, args, context) => { 
@@ -6,7 +6,7 @@ export const getUserMessageReactions = pubsub => {
     if (!messageId) {
       throw new Error('Message Id is empty or invalid.');
     }
-    const messageReactions = await ReactionModel.find(args);
+    const messageReactions = await prisma.reaction.findMany({ where: args });
     return messageReactions;
   };
 };
