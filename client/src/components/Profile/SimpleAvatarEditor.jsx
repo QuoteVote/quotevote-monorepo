@@ -65,7 +65,7 @@ function SimpleAvatarEditor() {
       variables: { user_id: user._id, avatarQualities: avatar },
     })
     updateAvatar(dispatch, result.data.updateUserAvatar.avatar)
-    history.push('/Profile')
+    history.push('/profile')
   }
 
   const isMobile = useMobileDetection()

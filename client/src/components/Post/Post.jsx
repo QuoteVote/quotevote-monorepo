@@ -22,9 +22,8 @@ import RequestInviteDialog from '../RequestInviteDialog';
 import {
   ADD_COMMENT,
   ADD_QUOTE,
-  REPORT_POST,
-  VOTE,
   APPROVE_POST,
+  DELETE_POST,
   REJECT_POST,
   DELETE_POST,
   TOGGLE_VOTING,
@@ -524,7 +523,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   }
 
   const handleRedirectToProfile = (profileUsername) => {
-    history.push(`/Profile/${profileUsername}`)
+    history.push(`/profile/${profileUsername}`)
   }
 
   const pointsHeader = (

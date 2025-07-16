@@ -1,19 +1,19 @@
 /* eslint-disable no-console */
-import React, { useState, useEffect } from 'react'
 import {
   Card, CardActions, CardContent, CardHeader, IconButton,
 } from '@material-ui/core'
-import { InsertEmoticon, InsertLink } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
+import { InsertEmoticon, InsertLink } from '@material-ui/icons'
+import copy from 'clipboard-copy'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
+import SweetAlert from 'react-bootstrap-sweetalert'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import copy from 'clipboard-copy'
-import SweetAlert from 'react-bootstrap-sweetalert'
-import AvatarDisplay from '../Avatar'
-import { parseCommentDate } from '../../utils/momentUtils'
-import { SET_FOCUSED_COMMENT } from '../../store/ui'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
+import { SET_FOCUSED_COMMENT } from '../../store/ui'
+import { parseCommentDate } from '../../utils/momentUtils'
+import AvatarDisplay from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -77,7 +77,7 @@ function Comment({ comment, postUrl, selected }) {
         avatar={(
           <IconButton
             size="small"
-            onClick={() => history.push(`/Profile/${username}`)}
+            onClick={() => history.push(`/profile/${username}`)}
           >
             <AvatarDisplay height={40} width={40} {...avatar} />
           </IconButton>

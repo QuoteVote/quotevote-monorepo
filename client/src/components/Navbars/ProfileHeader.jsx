@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
+import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 //  MUI
 import {
@@ -9,19 +9,17 @@ import {
   MuiThemeProvider as ThemeProvider,
 } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
 import ChatIcon from '@material-ui/icons/Chat'
 import { Tooltip } from '@material-ui/core'
 
 //  Local
-import FollowButton from 'components/CustomButtons/FollowButton'
-import { Avatar } from '@material-ui/core'
 import { useQuery } from '@apollo/react-hooks'
-import mainTheme from '../../themes/MainTheme'
-import AvatarDisplay from '../Avatar'
+import { Avatar } from '@material-ui/core'
+import FollowButton from 'components/CustomButtons/FollowButton'
 import { GET_CHAT_ROOM } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import mainTheme from '../../themes/MainTheme'
+import AvatarDisplay from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({
   button: {

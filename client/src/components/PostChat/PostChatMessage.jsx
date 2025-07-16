@@ -5,10 +5,12 @@ import {
     Grid, Paper, Typography, Avatar,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import { useQuery } from '@apollo/react-hooks'
+import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
 import AvatarDisplay from '../Avatar'
 import PostChatReactions from './PostChatReactions'
-import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -74,7 +76,7 @@ function PostChatMessage(props) {
   const { messageReactions } = (!loading && data) || []
 
   const handleRedirectToProfile = () => {
-    history.push(`/Profile/${username}`)
+    history.push(`/profile/${username}`)
   }
 
   return (

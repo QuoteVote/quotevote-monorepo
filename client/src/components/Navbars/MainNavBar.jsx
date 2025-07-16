@@ -6,13 +6,19 @@ import Dialog from '@material-ui/core/Dialog'
 import { NavLink, useHistory } from 'react-router-dom'
 import { Tooltip, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
+import Dialog from '@material-ui/core/Dialog'
+import Grid from '@material-ui/core/Grid'
 import withWidth from '@material-ui/core/withWidth'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink, useHistory } from 'react-router-dom'
 
-import { SET_SELECTED_PAGE } from 'store/ui'
 import { useApolloClient } from '@apollo/react-hooks'
+import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import Hidden from '@material-ui/core/Hidden'
-import Avatar from '@material-ui/core/Avatar'
+import { SET_SELECTED_PAGE } from 'store/ui'
 import AvatarPreview from '../Avatar'
 import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
@@ -179,6 +185,7 @@ function MainNavBar(props) {
                 </a>
               </Tooltip>
             </Grid>
+
 
             <Grid item>
               <Grid
