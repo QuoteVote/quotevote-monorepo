@@ -2,6 +2,7 @@ import React from 'react'
 import {
   Card, CardContent, Grid, List, ListItem,
 } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import moment from 'moment'
@@ -11,14 +12,29 @@ import { useDispatch } from 'react-redux'
 import PostActionCard from './PostActionCard'
 import { SET_FOCUSED_COMMENT, SET_SHARED_COMMENT } from '../../store/ui'
 
+const useStyles = makeStyles((theme) => ({
+  actionList: {
+    height: 'auto',
+    marginTop: 5,
+    width: '100%',
+    position: 'relative',
+    overflow: 'auto',
+    [theme.breakpoints.up('md')]: {
+      height: (props) => props.postActions && props.postActions.length > 2 ? '75vh' : 'auto',
+    },
+  },
+}))
+
 function PostActionList({
   postActions,
   loading,
   postUrl,
 }) {
+  const classes = useStyles({ postActions })
   const location = useLocation()
   const { hash } = location
   const dispatch = useDispatch()
+
   React.useEffect(() => {
     if (!hash) {
       dispatch(SET_FOCUSED_COMMENT(null))
@@ -50,15 +66,7 @@ function PostActionList({
         </>
       )}
       {!isEmpty(postActions) ? (
-        <List
-          style={{
-            height: postActions.length > 2 ? '75vh' : 'auto',
-            marginTop: 5,
-            width: '100%',
-            position: 'relative',
-            overflow: 'auto',
-          }}
-        >
+        <List className={classes.actionList}>
           {postActions.sort((a, b) => moment(b.created).diff(moment(a.created))).map((action) => (
             <ListItem
               id={`#${action._id}`}

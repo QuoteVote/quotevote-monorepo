@@ -1,6 +1,5 @@
 import { withStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
-import React from 'react'
 import PropTypes from 'prop-types'
 import { isMobile } from 'react-device-detect'
 
@@ -14,7 +13,7 @@ const InvestButtonStyle = withStyles((theme) => ({
     },
     padding: '10px 15px 10px 15px',
     borderRadius: '8px',
-    boxShadow: '1px 2px #00CF6E',
+    boxShadow: '1px 2px #52b274',
     [theme.breakpoints.down('sm')]: {
       minWidth: ((props) => props.isMobile ? 250 : 300),
       marginLeft: ((props) => props.isMobile ? 25 : 60),

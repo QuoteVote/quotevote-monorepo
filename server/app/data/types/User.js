@@ -16,4 +16,5 @@ type User {
   admin: Boolean
   upvotes: Int
   downvotes: Int
+  contributorBadge: Boolean
 }`;

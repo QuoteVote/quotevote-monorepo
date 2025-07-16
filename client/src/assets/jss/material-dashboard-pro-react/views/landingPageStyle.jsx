@@ -1,17 +1,19 @@
-import React from 'react';
-
 import {
   cardTitle, container, grayColor, whiteColor,
-} from 'assets/jss/material-dashboard-pro-react'
-import { green } from '@material-ui/core/colors'
+} from 'assets/jss/material-dashboard-pro-react';
+import { green } from '@material-ui/core/colors';
 
 const landingPageStyle = (theme) => ({
+  logoImage: {
+    width: '100%',
+    maxWidth: 500,
+    height: 'auto',
+  },
   container: {
     ...container,
     zIndex: '4',
     minWidth: '100%',
-    minHeight: '70vh',
-    display: 'flex',
+    minHeight: '100vh',
     flexDirection: 'column',
     justifyContent: 'center',
   },
@@ -324,13 +326,14 @@ const landingPageStyle = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       marginBottom: 20,
       marginRight: 0,
+      width: '100%',
     },
   },
   requestAccessBtn: {
     textTransform: 'none',
     backgroundColor: '#00cf6e',
     color: 'white',
-    width: 150,
+    width: 200,
     height: 45,
     fontSize: 16,
     marginRight: 5,
@@ -338,7 +341,34 @@ const landingPageStyle = (theme) => ({
       backgroundColor: '#00cf6e',
     },
     [theme.breakpoints.down('sm')]: {
-      width: 250,
+      width: "100%",
+    },
+  },
+  overlayContainer: {
+    position: 'relative',
+    width: '70%',
+    padding: '16px',
+    [theme.breakpoints.down('lg')]: {
+      width: '100%',
+      padding: '2px',
+    },
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0,0,0,0.45)',
+    zIndex: 1,
+    borderRadius: 8,
+  },
+  overlayContent: {
+    position: 'relative',
+    zIndex: 2,
+    padding: '16px',
+    [theme.breakpoints.down('md')]: {
+      padding: '8px',
     },
   },
 })

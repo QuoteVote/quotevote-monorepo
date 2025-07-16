@@ -17,10 +17,10 @@ type Query {
   post(postId: String!): Post
 
   " This will query the list of posts "
-  posts(offset: Int, limit: Int, searchKey: String, startDateRange: String, endDateRange: String, friendsOnly: Boolean, groupId: String, userId: String, approved: Boolean, deleted: Boolean, interactions: Boolean): Posts
+  posts(offset: Int, limit: Int, searchKey: String, startDateRange: String, endDateRange: String, friendsOnly: Boolean, groupId: String, userId: String, approved: Boolean, deleted: Boolean, interactions: Boolean, sortOrder: String): Posts
 
   " Posts selected for homepage carousel "
-  featuredPosts: [Post]
+  featuredPosts(offset: Int, limit: Int, searchKey: String, startDateRange: String, endDateRange: String, friendsOnly: Boolean, groupId: String, userId: String, approved: Boolean, deleted: Boolean, interactions: Boolean, sortOrder: String): Posts
 
   " This will query a post message room"
   postMessageRoom(postId: String!): MessageRoom

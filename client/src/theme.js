@@ -1,14 +1,19 @@
-import green from '@material-ui/core/colors/green'
-import purple from '@material-ui/core/colors/purple'
-import red from '@material-ui/core/colors/red'
 import lightBlue from '@material-ui/core/colors/lightBlue'
 import teal from '@material-ui/core/colors/teal'
 
 const theme = {
   palette: {
-    primary: green,
-    secondary: purple,
-    error: red,
+    primary: {
+      main: '#fff',
+      contrastText: '#52b274',
+    },
+    secondary: {
+      main: '#52b274',
+      contrastText: '#fff',
+    },
+    background: {
+      default: '#EEF4F9',
+    },
   },
   activityCards: {
     quoted: {
@@ -20,7 +25,7 @@ const theme = {
       fontColor: '#000000',
     },
     upvote: {
-      color: '#00CF6E',
+      color: '#52b274',
       fontColor: '#000000',
     },
     downvote: {
@@ -52,7 +57,7 @@ const theme = {
       color: 'black',
     },
     followButton: {
-      backgroundColor: '#00CF6E',
+      backgroundColor: '#52b274',
       color: 'white',
     },
   },
@@ -65,7 +70,7 @@ const theme = {
     gray1: '#454545',
     downvotedCardAndError: '#DA3849',
     blackCard: '#2D2A2A',
-    greenPrimary: '#00CF6E',
+    greenPrimary: '#52b274',
     heartedPinkCard: '#F16C99',
     backgroundOffWhite: '#FAFAFA',
     mintyGreen: '#00E676',

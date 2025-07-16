@@ -37,5 +37,6 @@ const schema = mongoose.Schema({
 });
 
 schema.index({ content: 'text' });
+schema.index({ postId: 1, userId: 1 }, { unique: true });
 
 export default mongoose.model('votes', schema);

@@ -252,3 +252,12 @@ export const UPDATE_FEATURED_SLOT = gql`
     }
   }
 `
+
+export const TOGGLE_VOTING = gql`
+  mutation toggleVoting($postId: String!) {
+    toggleVoting(postId: $postId) {
+      _id
+      enable_voting
+    }
+  }
+`

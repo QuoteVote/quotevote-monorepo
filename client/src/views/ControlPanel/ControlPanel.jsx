@@ -21,12 +21,14 @@ import makeStyles from '@material-ui/core/styles/makeStyles'
 import Box from '@material-ui/core/Box'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
+import Switch from '@material-ui/core/Switch'
 
 import { useMutation, useQuery } from '@apollo/react-hooks'
-import { USER_INVITE_REQUESTS, GET_TOP_POSTS } from '@/graphql/query'
+import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
 import {
   UPDATE_USER_INVITE_STATUS,
   UPDATE_FEATURED_SLOT,
+  UPDATE_USER,
 } from '@/graphql/mutations'
 
 // react plugin for creating charts
@@ -116,7 +118,7 @@ const ActionButtons = ({ status, id }) => {
             color="primary"
             className={classes.button}
             style={{
-              backgroundColor: '#00cf6e',
+              backgroundColor: '#52b274',
             }}
             onClick={handleAccept}
             disabled={loading}
@@ -145,7 +147,7 @@ const ActionButtons = ({ status, id }) => {
           variant="contained"
           className={classes.button}
           style={{
-            backgroundColor: '#00cf6e',
+            backgroundColor: '#52b274',
           }}
           onClick={handleAccept}
           disabled={loading}
@@ -536,6 +538,63 @@ const StatisticsTab = ({ data }) => {
   )
 }
 
+const UserManagementTab = () => {
+  const classes = useStyles()
+  const { data, loading, refetch } = useQuery(GET_USERS)
+  const [updateUser] = useMutation(UPDATE_USER)
+
+  if (loading || !data) return <Skeleton animation="wave" height={200} />
+
+  const handleToggle = async (user) => {
+    await updateUser({
+      variables: {
+        user: {
+          _id: user._id,
+          contributorBadge: !user.contributorBadge,
+        },
+      },
+    })
+    refetch()
+  }
+
+  return (
+    <Card>
+      <CardContent>
+        <Typography className={classes.cardHeader}>User Management</Typography>
+        <TableContainer className={classes.tableContainer}>
+          <Table stickyHeader aria-label="user management table">
+            <TableHead classes={{ head: classes.columnHeader }}>
+              <TableRow>
+                <TableCell align="center" className={classes.columnHeader}>User ID</TableCell>
+                <TableCell align="center" className={classes.columnHeader}>Username</TableCell>
+                <TableCell align="center" className={classes.columnHeader}>Name</TableCell>
+                <TableCell align="center" className={classes.columnHeader}>Contributor Badge</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data.users.map((user) => (
+                <TableRow key={user._id}>
+                  <TableCell align="center">{user._id}</TableCell>
+                  <TableCell align="center">{user.username}</TableCell>
+                  <TableCell align="center">{user.name}</TableCell>
+                  <TableCell align="center">
+                    <Switch
+                      checked={!!user.contributorBadge}
+                      onChange={() => handleToggle(user)}
+                      color="primary"
+                      inputProps={{ 'aria-label': 'toggle contributor badge' }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
+    </Card>
+  )
+}
+
 const ControlPanelContainer = ({ data }) => {
   const classes = useStyles()
   const [tabValue, setTabValue] = React.useState(0)
@@ -565,6 +624,7 @@ const ControlPanelContainer = ({ data }) => {
           <Tab label="User Invitation Requests" />
           <Tab label="Statistics" />
           <Tab label="Featured Posts" />
+          <Tab label="User Management" />
         </Tabs>
       </Grid>
 
@@ -577,6 +637,9 @@ const ControlPanelContainer = ({ data }) => {
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
           <FeaturedPostsTable />
+        </TabPanel>
+        <TabPanel value={tabValue} index={3}>
+          <UserManagementTab />
         </TabPanel>
       </Grid>
     </Grid>

@@ -32,6 +32,7 @@ export const GET_USERS = gql`
       _id
       name
       username
+      contributorBadge
     }
   }
 `
@@ -52,11 +53,13 @@ export const GET_POST = gql`
       rejectedBy
       reportedBy
       bookmarkedBy
+      enable_voting
       creator {
         _id
         name
         avatar
         username
+        contributorBadge
       }
       comments {
         _id
@@ -73,6 +76,7 @@ export const GET_POST = gql`
           username
           name
           avatar
+          contributorBadge
         }
       }
       votes {
@@ -87,6 +91,7 @@ export const GET_POST = gql`
           username
           name
           avatar
+          contributorBadge
         }
       }
       quotes {
@@ -100,6 +105,7 @@ export const GET_POST = gql`
           username
           name
           avatar
+          contributorBadge
         }
       }
       messageRoom {
@@ -177,6 +183,7 @@ export const GET_ROOM_MESSAGES = gql`
         name
         username
         avatar
+        contributorBadge
       }
     }
   }
@@ -214,6 +221,7 @@ export const GET_TOP_POSTS = gql`
     $friendsOnly: Boolean
     $interactions: Boolean
     $userId: String
+    $sortOrder: String
   ) {
     posts(
       limit: $limit
@@ -224,6 +232,7 @@ export const GET_TOP_POSTS = gql`
       friendsOnly: $friendsOnly
       interactions: $interactions
       userId: $userId
+      sortOrder: $sortOrder
     ) {
       entities {
         _id
@@ -235,11 +244,14 @@ export const GET_TOP_POSTS = gql`
         bookmarkedBy
         created
         url
+        rejectedBy
+        approvedBy
         creator {
           name
           username
           avatar
           _id
+          contributorBadge
         }
         votes {
           _id
@@ -303,6 +315,7 @@ export const GET_FRIENDS_POSTS = gql`
           username
           avatar
           _id
+          contributorBadge
         }
         votes {
           _id
@@ -343,6 +356,7 @@ export const GET_USER = gql`
       _followingId
       _followersId
       avatar
+      contributorBadge
     }
   }
 `
@@ -375,6 +389,7 @@ export const GET_USER_ACTIVITY = gql`
           name
           username
           avatar
+          contributorBadge
         }
         activityType
         content
@@ -402,12 +417,13 @@ export const GET_USER_ACTIVITY = gql`
           }
           bookmarkedBy
           created
-          creator {
-            _id
-            name
-            username
-            avatar
-          }
+                  creator {
+          _id
+          name
+          username
+          avatar
+          contributorBadge
+        }
         }
         voteId
         vote {
@@ -473,6 +489,7 @@ export const GET_NOTIFICATIONS = gql`
         name
         avatar
         username
+        contributorBadge
       }
       label
       status
@@ -495,45 +512,80 @@ export const GET_LATEST_QUOTES = gql`
       user {
         _id
         username
+        contributorBadge
       }
     }
   }
 `
-export const GET_FEATURED_POSTS = gql`
-  query featuredPosts {
-    featuredPosts {
-      _id
-      userId
-      title
-      text
-      upvotes
-      downvotes
-      bookmarkedBy
-      created
-      url
-      creator {
-        name
-        username
-        avatar
+export const GET_FEATURED_POSTS = gql` 
+  query featuredPosts(
+    $limit: Int
+    $offset: Int
+    $searchKey: String
+    $startDateRange: String
+    $endDateRange: String
+    $friendsOnly: Boolean
+    $groupId: String
+    $userId: String
+    $approved: Boolean
+    $deleted: Boolean
+    $interactions: Boolean
+    $sortOrder: String
+  ) {
+    featuredPosts(
+      limit: $limit
+      offset: $offset
+      searchKey: $searchKey
+      startDateRange: $startDateRange
+      endDateRange: $endDateRange
+      friendsOnly: $friendsOnly
+      groupId: $groupId
+      userId: $userId
+      approved: $approved
+      deleted: $deleted
+      interactions: $interactions
+      sortOrder: $sortOrder
+    ) {
+      entities {
         _id
-      }
-      votes {
-        _id
-        startWordIndex
-        endWordIndex
-        type
-      }
-      comments {
-        _id
-      }
-      quotes {
-        _id
-      }
-      messageRoom {
-        _id
-        messages {
+        userId
+        title
+        text
+        upvotes
+        downvotes
+        bookmarkedBy
+        created
+        url
+        creator {
+          name
+          username
+          avatar
+          _id
+          contributorBadge
+        }
+        votes {
+          _id
+          startWordIndex
+          endWordIndex
+          type
+        }
+        comments {
           _id
         }
+        quotes {
+          _id
+        }
+        messageRoom {
+          _id
+          messages {
+            _id
+          }
+        }
+      }
+      pagination {
+        total_count
+        limit
+        offset
       }
     }
   }

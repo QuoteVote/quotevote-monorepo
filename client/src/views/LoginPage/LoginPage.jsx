@@ -1,6 +1,5 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import GridContainer from 'mui-pro/Grid/GridContainer'
 import { tokenValidator, userLogin } from 'store/user'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -28,11 +27,5 @@ export default function LoginPage() {
     setLoading(false)
   }
 
-  return (
-    <div className={classes.container}>
-      <GridContainer justify="center" style={{ marginRight: 24 }}>
-        <Login onSubmit={handleSubmit} loading={loading} />
-      </GridContainer>
-    </div>
-  )
+  return <Login onSubmit={handleSubmit} loading={loading} />
 }

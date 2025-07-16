@@ -81,7 +81,7 @@ function AvatarIconButton(props) {
       message: 'Avatar has been updated',
       open: true,
     }))
-    history.push('/TrendingContent')
+    history.push('/search')
   }
 
   const groupedAvatarOptions = _.groupBy(avatarOptions, 'name')

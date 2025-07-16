@@ -356,7 +356,7 @@ above.
 ### Content Page.
   + View the entire content of a post and interact with it through comments, quotes, upvotes/downvotes_
   
-### Trending Page
+### Search Page
   + Pages are listed in terms of highest to lowest interactions
   
 ### User profile.

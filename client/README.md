@@ -20,9 +20,9 @@ and democratic technologists alike.
   - [Home Page](#1-home-page)
   - [Post Creation Page](#2-post-creation-page)
   - [Content Page](#3-content-page)
-  - [Trending Page](#4-trending-page)
+  - [Search Page](#4-search-page)
   - [User Profile Page](#5-user-profile-page)
-  - [Activity Feed Page](#6-activity-feed-page)
+  - [Activity Feed](#6-activity-feed)
 - [GraphQL API Documentation](#graphql-api-documentation)
 - [Feature Development](#feature-development)
 - [Storybook Guide](docs/storybook-guide.md)
@@ -260,7 +260,7 @@ and democratic technologists alike.
 
 ---
 
-### 4. Trending Page
+### 4. Search Page
 
 **Components & Features**
 
@@ -356,7 +356,7 @@ and democratic technologists alike.
 
 ---
 
-### 6. Activity Feed Page
+### 6. Activity Feed
 
 **Components & Features**
 

@@ -279,10 +279,30 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Louis Girifalco** - Mastermind
-- **Oliver Molina** - Developer
+- **Louis Girifalco** - Creator
+- **Oliver Molina** - Lead Developer
 - **Neo Isaac Amao** - Developer
-
+- **Jovan Cahiles** - Developer
+- **Camila Riedel** - Designer
+- **Micah Shute** - Developer
+- **Sarah Naas** - Developer
+- **Mike Nayyar** - Product
+- **David Nicholson** - AI Developer
+- **Kira Rose Wojack** - Operations
+- **Robert Palmer** - Operations
+- **John May** - Blockchain Developer
+- **Rafael Rodríguez** - Developer
+- **Vishal Thukral** - Developer
+- **Matt Polini** - Developer
+- **Greddys Martinez** - Designer
+- **Jason Ribble** - Developer Operations
+- **Krishna Biradar** - Backend Developer
+- **Brahmananda Reddy** - AI Developer
+- **Akunna Nwosu** - Developer
+- **Jay Evans** - Mobile Developer
+- **Abed Gheith** - Product
+- **Jon Kolman** - Frontend Developer
+  
 ## 🐛 Issues
 
 If you encounter any issues, please:

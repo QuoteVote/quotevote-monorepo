@@ -3,16 +3,16 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useState, useEffect } from 'react'
 
 import {
-  Paper,
-  Input,
-  InputAdornment,
-  IconButton,
-  Button,
-  ButtonGroup,
-  Zoom,
-  Tooltip,
-  SvgIcon,
-  Grid,
+    Paper,
+    Input,
+    InputAdornment,
+    IconButton,
+    Button,
+    ButtonGroup,
+    Zoom,
+    Tooltip,
+    SvgIcon,
+    Grid,
 } from '@material-ui/core'
 import { isEmpty, findIndex } from 'lodash'
 import { useSelector } from 'react-redux'
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   button: {
-    backgroundColor: '#00cf6e',
+    backgroundColor: '#52b274',
     color: 'white',
   },
   btnGroup: {
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const VotingPopup = ({
-  votedBy, onVote, onAddComment, onAddQuote, selectedText,
+  votedBy, onVote, onAddComment, onAddQuote, selectedText, hasVoted, userVoteType,
 }) => {
   const classes = useStyles()
   const { user } = useSelector((state) => state)
@@ -106,6 +106,9 @@ const VotingPopup = ({
     }
   }
   const handleVote = (tags) => {
+    if (hasVoted) {
+      return // Don't allow voting if user has already voted
+    }
     onVote({ type: expand.type, tags })
     setExpand({ open: false, type: '' })
   }
@@ -156,7 +159,20 @@ const VotingPopup = ({
       >
         <Grid container>
           <Grid item xs={3} style={{ backgroundColor: expand.type === 'up' ? '#2475b0' : 'transparent' }}>
-            {showUpvoteTooltip ? (
+            {hasVoted ? (
+              <Tooltip title={`You have already ${userVoteType === 'up' ? 'upvoted' : 'downvoted'} this post`} placement="bottom" arrow>
+                <span>
+                  <IconButton disabled>
+                    <SvgIcon
+                      component={LikeIcon}
+                      fontSize="large"
+                      viewBox="0 0 30 30"
+                      style={{ opacity: 0.5 }}
+                    />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : showUpvoteTooltip ? (
               <Tooltip title="Upvoted" placement="bottom" arrow>
                 <IconButton>
                   <SvgIcon
@@ -167,7 +183,13 @@ const VotingPopup = ({
                 </IconButton>
               </Tooltip>
             ) : (
-              <IconButton onClick={() => setExpand({ open: expand.type !== 'up' || !expand.open, type: 'up' })}>
+              <IconButton 
+                onClick={() => {
+                  if (!hasVoted) {
+                    setExpand({ open: expand.type !== 'up' || !expand.open, type: 'up' })
+                  }
+                }}
+              >
                 <SvgIcon
                   component={LikeIcon}
                   fontSize="large"
@@ -177,7 +199,20 @@ const VotingPopup = ({
             )}
           </Grid>
           <Grid item xs={3} style={{ backgroundColor: expand.type === 'down' ? '#2475b0' : 'transparent' }}>
-            {showDownvoteTooltip ? (
+            {hasVoted ? (
+              <Tooltip title={`You have already ${userVoteType === 'up' ? 'upvoted' : 'downvoted'} this post`} placement="bottom" arrow>
+                <span>
+                  <IconButton disabled>
+                    <SvgIcon
+                      component={DislikeIcon}
+                      fontSize="large"
+                      viewBox="0 0 30 30"
+                      style={{ opacity: 0.5 }}
+                    />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            ) : showDownvoteTooltip ? (
               <Tooltip title="Downvoted" placement="bottom" arrow>
                 <IconButton>
                   <SvgIcon
@@ -188,7 +223,13 @@ const VotingPopup = ({
                 </IconButton>
               </Tooltip>
             ) : (
-              <IconButton onClick={() => setExpand({ open: expand.type !== 'down' || !expand.open, type: 'down' })}>
+              <IconButton 
+                onClick={() => {
+                  if (!hasVoted) {
+                    setExpand({ open: expand.type !== 'down' || !expand.open, type: 'down' })
+                  }
+                }}
+              >
                 <SvgIcon
                   component={DislikeIcon}
                   fontSize="large"

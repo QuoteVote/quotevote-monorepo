@@ -10,7 +10,7 @@ import SelectionPopover from './SelectionPopover'
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: '#00CF6E',
+    backgroundColor: '#52b274',
     color: 'white',
   },
 })
@@ -20,6 +20,7 @@ const VotingBoard = ({
   highlights,
   content,
   children,
+  votes = [],
   ...props
 }) => {
   const classes = useStyles()
@@ -28,6 +29,14 @@ const VotingBoard = ({
   const focusedComment = useSelector((state) => state.ui.focusedComment)
   const { startWordIndex, endWordIndex } = focusedComment || { startWordIndex: 0, endWordIndex: 0 }
   const highlightedText = content.substring(startWordIndex, endWordIndex).replace(/(\r\n|\n|\r)/gm, '')
+
+  console.log({
+    startWordIndex,
+    endWordIndex,
+    highlightedText,
+    focusedComment,
+  })
+  
   const handleSelect = (select) => {
     const text = select.toString()
 
@@ -42,14 +51,17 @@ const VotingBoard = ({
       setSelection({})
     }
   }
+  
   const findChunksAtBeginningOfWords = () => ([{ start: startWordIndex > 0 ? startWordIndex : 0, end: endWordIndex }])
 
   const disableContextMenu = (e) => {
     e.preventDefault()
     e.nativeEvent.stopImmediatePropagation()
   }
+  
   const renderHighlights = () => {
     if (highlights) {
+      // If there's a focused comment, highlight it
       if (endWordIndex > startWordIndex) {
         return (
           <Highlighter

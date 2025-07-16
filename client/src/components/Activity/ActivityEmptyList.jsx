@@ -8,7 +8,7 @@ import { SET_SELECTED_PAGE } from '../../store/ui'
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: '#00CF6E',
+      main: '#52b274',
     },
     secondary: {
       main: '#E91E63',
@@ -57,16 +57,16 @@ function ActivityEmptyList() {
 
   const history = useHistory()
   const dispatch = useDispatch()
-  const handleGoToTrending = () => {
+  const handleGoToSearch = () => {
     dispatch(SET_SELECTED_PAGE(1))
-    history.push('/TrendingContent')
+    history.push('/search')
   }
   return (
     <GridContainer className={classes.root}>
       <GridItem xs={12}>
         <p className={classes.paragraph}>
           Welcome to Quote Vote. To read some ideas you need to start following people. You can find your friends or you
-          could go to the trending page and follow anyone.
+          could go to the search page and follow anyone.
         </p>
       </GridItem>
       <GridItem xs={12}>
@@ -84,9 +84,9 @@ function ActivityEmptyList() {
             variant="contained"
             color="primary"
             className={classes.buttons}
-            onClick={handleGoToTrending}
+            onClick={handleGoToSearch}
           >
-            GO TO TRENDING
+            GO TO SEARCH
           </Button>
         </MuiThemeProvider>
       </GridItem>

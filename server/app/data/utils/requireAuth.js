@@ -9,6 +9,7 @@ const PUBLIC_QUERIES = [
   'popPrediction',
   'posts',
   'featuredPosts',
+  'post',
   // add more public queries/mutations
 ];
 

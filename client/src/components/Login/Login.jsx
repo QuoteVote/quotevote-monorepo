@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 
@@ -13,7 +13,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import FaceIcon from '@material-ui/icons/Face'
 import LockIcon from '@material-ui/icons/Lock'
 
-import { CircularProgress } from '@material-ui/core'
+import { CircularProgress, Checkbox, FormControlLabel } from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import CardBody from '../../mui-pro/Card/CardBody'
 import Card from '../../mui-pro/Card/Card'
@@ -66,8 +66,14 @@ const useStyles = makeStyles((theme) => ({
 function LoginForm({ onSubmit = () => {}, loading, loginError }) {
   const classes = useStyles()
   const {
-    register, handleSubmit, errors, setError,
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    watch,
   } = useForm()
+  const tosAccepted = watch('tos')
+  const cocAccepted = watch('coc')
 
   useEffect(() => {
     if (loginError && loginError.data && loginError.data.message) {
@@ -140,14 +146,74 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
         error={errors.password}
         helperText={errors.password && errors.password.message}
       />
+      <FormControlLabel
+        control={(
+          <Checkbox
+            color="default"
+            style={{ color: 'gray' }}
+            name="tos"
+            inputRef={register({ required: true })}
+          />
+        )}
+        label={(
+          <Typography variant="body2">
+            I agree to the
+            {' '}
+            <Link
+              href="/quote_vote_terms_of_service.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classes.link}
+              underline="always"
+            >
+              Terms of Service
+            </Link>
+          </Typography>
+        )}
+      />
+      {errors.tos && (
+        <Typography color="error" variant="caption">
+          Acceptance required
+        </Typography>
+      )}
+      <FormControlLabel
+        control={(
+          <Checkbox
+            color="default"
+            style={{ color: 'gray' }}
+            name="coc"
+            inputRef={register({ required: true })}
+          />
+        )}
+        label={(
+          <Typography variant="body2">
+            I agree to the
+            {' '}
+            <Link
+              href="/quote_vote_code_of_conduct.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={classes.link}
+              underline="always"
+            >
+              Code of Conduct
+            </Link>
+          </Typography>
+        )}
+      />
+      {errors.coc && (
+        <Typography color="error" variant="caption">
+          Acceptance required
+        </Typography>
+      )}
       <Button
         className={classes.loginButton}
         size="large"
-        color="primary"
+        color="secondary"
         variant="contained"
         fullWidth
         type="submit"
-        disabled={loading}
+        disabled={loading || !tosAccepted || !cocAccepted}
       >
         <Typography variant="body1">
           Log in

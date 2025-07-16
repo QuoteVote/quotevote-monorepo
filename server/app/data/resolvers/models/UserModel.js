@@ -79,6 +79,10 @@ const schema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  contributorBadge: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 schema.index({ content: 'text' });

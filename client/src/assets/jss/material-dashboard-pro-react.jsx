@@ -56,7 +56,7 @@ const hexToRgb = (input) => {
 
 const drawerWidth = 270
 
-const drawerMiniWidth = 80
+const drawerMiniWidth = 120
 
 const transition = {
   transition: 'all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1)',
@@ -105,7 +105,7 @@ const defaultFont = {
   lineHeight: '1.5em',
 }
 
-const primaryColor = ['#9c27b0', '#ab47bc', '#8e24aa', '#af2cc5', '#7b1fa2']
+const primaryColor = ['#52b274', '#ab47bc', '#8e24aa', '#af2cc5', '#7b1fa2']
 const warningColor = [
   '#ff9800',
   '#ffa726',

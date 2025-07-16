@@ -1,14 +1,14 @@
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { tokenValidator } from 'store/user'
 
 export default function useGuestGuard() {
   const dispatch = useDispatch()
-  const history = useHistory()
+  const location = useLocation()
 
   return () => {
     if (!tokenValidator(dispatch)) {
-      history.push('/search')
+      window.location.assign(`https://quote.vote/auth/request-access?from=${location.pathname}`)
       return false
     }
     return true

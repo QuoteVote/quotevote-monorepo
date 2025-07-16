@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import {
-  Avatar, Grid, IconButton, Typography,
-} from '@material-ui/core'
+import { Avatar, Grid, IconButton, Typography } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
@@ -44,10 +42,14 @@ function useWindowSize() {
   return windowSize
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   header: {
     backgroundColor: '#FFFFFF',
-    width: 380,
+    [theme.breakpoints.down('lg')]: {
+      width: '100%',
+    },
+    marginBottom: 10,
+    borderRadius: 10,
     padding: 5,
   },
   content: {
@@ -62,13 +64,6 @@ const useStyles = makeStyles(() => ({
     alignContent: 'stretch',
     height: '90%',
   },
-  sendMessage: {
-    flexGrow: 1,
-    width: '95%',
-    position: 'fixed',
-    bottom: 0,
-    padding: 10,
-  },
 }))
 
 function Header() {
@@ -77,7 +72,9 @@ function Header() {
     dispatch(SELECTED_CHAT_ROOM(null))
   }
 
-  const { title, avatar, messageType } = useSelector((state) => state.chat.selectedRoom.room)
+  const { title, avatar, messageType } = useSelector(
+    (state) => state.chat.selectedRoom.room,
+  )
 
   return (
     <Grid
@@ -94,46 +91,56 @@ function Header() {
       </Grid>
       <Grid item>
         <Avatar>
-          {messageType === 'USER' ?
-            <AvatarDisplay height={40} width={40} {...avatar} /> :
-            title[0]}
+          {messageType === 'USER' ? (
+            <AvatarDisplay height={40} width={40} {...avatar} />
+          ) : (
+            title[0]
+          )}
         </Avatar>
       </Grid>
       <Grid item>
         <Typography>{title}</Typography>
       </Grid>
-
     </Grid>
   )
 }
 
 function Content() {
   const classes = useStyles()
-  const { _id: messageRoomId, title, messageType } = useSelector((state) => state.chat.selectedRoom.room)
 
   return (
-    <Grid
-      container
-      direction="column"
-      justify="center"
-      alignItems="stretch"
-    >
-      <Grid item>
-        <MessageItemList />
+    <>
+      <Grid
+        container
+        direction="column"
+        justifyContent="space-between"
+        style={{ height: '100%' }}
+      >
+        <Grid
+          item
+          style={{
+            flex: 1,
+            overflow: 'auto',
+            backgroundColor: '#F1F1F1',
+            borderRadius: 10,
+            padding: 10,
+            marginBottom: 10,
+          }}
+        >
+          <MessageItemList />
+        </Grid>
       </Grid>
-      <Grid item className={classes.sendMessage}>
-        <MessageSend messageRoomId={messageRoomId} type={messageType} title={title} />
-      </Grid>
-    </Grid>
+    </>
   )
 }
 
 function MessageBox() {
   const classes = useStyles()
-  const size = useWindowSize()
-  const maxHeight = size.height - 100
-  const { _id: messageRoomId } = useSelector((state) => state.chat.selectedRoom.room)
+
   const [updateMessageReadBy] = useMutation(READ_MESSAGES)
+  const { _id: messageRoomId, title, messageType } = useSelector(
+    (state) => state.chat.selectedRoom.room || {},
+  )
 
   useEffect(() => {
     updateMessageReadBy({
@@ -143,20 +150,18 @@ function MessageBox() {
   }, [messageRoomId, updateMessageReadBy])
 
   return (
-    <Grid
-      container
-      direction="column"
-      justify="flex-start"
-      alignItems="stretch"
-      style={{ height: maxHeight }}
-    >
-      <Grid item className={classes.header}>
+    <>
+      <div className={classes.header}>
         <Header />
-      </Grid>
-      <Grid item className={classes.content}>
-        <Content />
-      </Grid>
-    </Grid>
+      </div>
+      <Content />
+
+      <MessageSend
+        messageRoomId={messageRoomId}
+        type={messageType}
+        title={title}
+      />  
+    </>
   )
 }
 

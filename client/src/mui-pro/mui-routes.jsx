@@ -11,6 +11,7 @@ import PasswordResetPage from "../views/PasswordResetPage/PasswordResetPage";
 import SignupPage from "../views/SignupPage/SignupPage";
 import AboutPage from "../views/AboutPage";
 import PlanCarouselPage from "../views/PlanCarouselPage/PlanCarouselPage";
+import TermsPage from "../views/TermsPage";
 
 const dashRoutes = [
   {
@@ -37,6 +38,15 @@ const dashRoutes = [
         mini: 'L',
         rtlMini: 'هعذا',
         component: AboutPage,
+        layout: '/auth',
+      },
+      {
+        path: '/terms',
+        name: 'Terms of Service',
+        rtlName: 'هعذاتسجيل الدخول',
+        mini: 'T',
+        rtlMini: 'هعذا',
+        component: TermsPage,
         layout: '/auth',
       },
       {

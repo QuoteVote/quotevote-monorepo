@@ -1,60 +1,48 @@
-import { useMutation } from '@apollo/react-hooks'
-import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  FormControlLabel,
-  IconButton,
-} from '@material-ui/core'
-import Switch from '@material-ui/core/Switch'
-import { makeStyles } from '@material-ui/core/styles'
-import BlockIcon from '@material-ui/icons/Block'
-import DeleteIcon from '@material-ui/icons/Delete'
-import LinkIcon from '@material-ui/icons/Link'
-import copy from 'clipboard-copy'
-import FollowButton from 'components/CustomButtons/FollowButton'
-import { cloneDeep, findIndex, includes } from 'lodash'
-import moment from 'moment'
-import PropTypes from 'prop-types'
-import { useState } from 'react'
-import SweetAlert from 'react-bootstrap-sweetalert'
-import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
-import useGuestGuard from 'utils/useGuestGuard'
-import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
+import { useState } from 'react';
+import { Card, CardActions, CardContent, CardHeader, IconButton, FormControlLabel, Tooltip } from '@material-ui/core';
+import Switch from '@material-ui/core/Switch';
+import { makeStyles } from '@material-ui/core/styles';
+import BlockIcon from '@material-ui/icons/Block';
+import LinkIcon from '@material-ui/icons/Link';
+import DeleteIcon from '@material-ui/icons/Delete';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
+import { includes } from 'lodash';
+import copy from 'clipboard-copy';
+import moment from 'moment';
+import SweetAlert from 'react-bootstrap-sweetalert';
+import FollowButton from 'components/CustomButtons/FollowButton';
+import VotingBoard from '../VotingComponents/VotingBoard';
+import VotingPopup from '../VotingComponents/VotingPopup';
+import { SET_SNACKBAR } from '../../store/ui';
+import useGuestGuard from 'utils/useGuestGuard';
+import RequestInviteDialog from '../RequestInviteDialog';
 import {
   ADD_COMMENT,
   ADD_QUOTE,
   APPROVE_POST,
   DELETE_POST,
   REJECT_POST,
-  REPORT_POST,
-  VOTE
-} from '../../graphql/mutations'
-import {
-  GET_POST,
-  GET_TOP_POSTS,
-  GET_USER_ACTIVITY,
-} from '../../graphql/query'
-import { SET_SNACKBAR } from '../../store/ui'
-import { serializeVotedBy } from '../../utils/objectIdSerializer'
-import ApproveRejectPopover from '../ApproveRejectPopver/ApproveRejectPopover'
-import AvatarDisplay from '../Avatar'
-import ApproveButton from '../CustomButtons/ApproveButton'
-import BookmarkIconButton from '../CustomButtons/BookmarkIconButton'
-import RejectButton from '../CustomButtons/RejectButton'
-import RequestInviteDialog from '../RequestInviteDialog'
-import VotingBoard from '../VotingComponents/VotingBoard'
-import VotingPopup from '../VotingComponents/VotingPopup'
+  DELETE_POST,
+  TOGGLE_VOTING,
+} from '../../graphql/mutations';
+import { GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY, GET_USERS } from '../../graphql/query';
+import AvatarDisplay from '../Avatar';
+import BookmarkIconButton from '../CustomButtons/BookmarkIconButton';
+import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle';
+import ApproveButton from '../CustomButtons/ApproveButton';
+import RejectButton from '../CustomButtons/RejectButton';
+import { serializeVotedBy } from '../../utils/objectIdSerializer';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   header2: {
     padding: 0,
     marginLeft: 10,
   },
   title: {
-    color: '#00cf6e',
+    color: '#52b274',
     marginRight: 5,
     fontFamily: 'Montserrat',
     fontSize: '20px',
@@ -66,7 +54,7 @@ const useStyles = makeStyles(() => ({
     marginLeft: 20,
   },
   votes: {
-    color: '#00cf6e',
+    color: '#52b274',
   },
   downVote: {
     color: 'red',
@@ -85,54 +73,133 @@ const useStyles = makeStyles(() => ({
   button: {
     margin: 10,
   },
+  postCard: {
+    height: 'auto',
+    overflow: 'auto',
+    [theme.breakpoints.up('md')]: {
+      height: (props) => props.postHeight >= 742 ? '83vh' : 'auto',
+    },
+  },
   ...buttonStyle,
 }))
 
-function Post({
-  post,
-  user,
-  postHeight,
-  postActions,
-}) {
-  const classes = useStyles()
-  const {
-    title, creator, created, _id, userId,
-  } = post
+function Post({ post, user, postHeight, postActions, refetchPost }) {
+  const classes = useStyles({ postHeight })
+  const { title, creator, created, _id, userId } = post
   const { name, avatar, username } = creator
   const { _followingId } = user
   const dispatch = useDispatch()
   const history = useHistory()
   const ensureAuth = useGuestGuard()
   const parsedCreated = moment(created).format('LLL')
-  
+
   // State declarations
   const [selectedText, setSelectedText] = useState('')
   const [open, setOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [popoverType, setPopoverType] = useState('')
   const [openInvite, setOpenInvite] = useState(false)
-  const [showVoteButtons, setShowVoteButtons] = useState(() => {
-    const stored = localStorage.getItem(`showVoteButtons-${_id}`)
-    return stored ? JSON.parse(stored) : false
-  })
-  
+
   const isFollowing = includes(_followingId, userId)
 
-  const handlePopoverOpen = (event, type) => {
-    console.log('Popover open:', { type, anchor: event.currentTarget });
-    setAnchorEl(event.currentTarget);
-    setPopoverType(type);
-  };
+  // Query to get user details for tooltips
+  const { loading: usersLoading, data: usersData } = useQuery(GET_USERS)
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null)
-    setPopoverType('')
+  const getRejectTooltipContent = () => {
+    if (!post.rejectedBy || post.rejectedBy.length === 0) {
+      return 'No users rejected this post.'
+    }
+    
+    if (usersLoading || !usersData) {
+      return 'Loading...'
+    }
+
+    const rejectedUsers = usersData.users.filter((user) => 
+      post.rejectedBy.includes(user._id)
+    )
+    
+    if (rejectedUsers.length === 0) {
+      return 'No users rejected this post.'
+    }
+
+    const MAX_DISPLAY = 5
+    const displayUsers = rejectedUsers.slice(0, MAX_DISPLAY)
+    const remaining = rejectedUsers.length - MAX_DISPLAY
+
+    let content = `Users who rejected this post:\n`
+    displayUsers.forEach((user) => {
+      content += `• @${user.username}\n`
+    })
+    
+    if (remaining > 0) {
+      content += `\n... and ${remaining} more`
+    }
+
+    return content
   }
 
-  const handleToggleVoteButtons = () => {
-    if (!showVoteButtons) {
-      setShowVoteButtons(true)
-      localStorage.setItem(`showVoteButtons-${_id}`, 'true')
+  const getApproveTooltipContent = () => {
+    if (!post.approvedBy || post.approvedBy.length === 0) {
+      return 'No users approved this post.'
+    }
+    
+    if (usersLoading || !usersData) {
+      return 'Loading...'
+    }
+
+    const approvedUsers = usersData.users.filter((user) => 
+      post.approvedBy.includes(user._id)
+    )
+    
+    if (approvedUsers.length === 0) {
+      return 'No users approved this post.'
+    }
+
+    const MAX_DISPLAY = 5
+    const displayUsers = approvedUsers.slice(0, MAX_DISPLAY)
+    const remaining = approvedUsers.length - MAX_DISPLAY
+
+    let content = `Users who approved this post:\n`
+    displayUsers.forEach((user) => {
+      content += `• @${user.username}\n`
+    })
+    
+    if (remaining > 0) {
+      content += `\n... and ${remaining} more`
+    }
+
+    return content
+  }
+
+  const RejectTooltipContent = () => (
+    <div style={{ whiteSpace: 'pre-line' }}>
+      {getRejectTooltipContent()}
+    </div>
+  )
+
+  const ApproveTooltipContent = () => (
+    <div style={{ whiteSpace: 'pre-line' }}>
+      {getApproveTooltipContent()}
+    </div>
+  )
+
+  const handleToggleVoteButtons = async () => {
+    if (!ensureAuth()) return
+    try {
+      await toggleVoting({ variables: { postId: _id } })
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: post.enable_voting ? 'Voting disabled' : 'Voting enabled',
+          type: 'success',
+        }),
+      )
+    } catch (err) {
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: `Toggle voting error: ${err.message}`,
+          type: 'danger',
+        }),
+      )
     }
   }
 
@@ -144,40 +211,7 @@ function Post({
         data: { addVote: voteData },
       },
     ) {
-      const data = cache.readQuery({
-        query: GET_POST,
-        variables: { postId: _id },
-      })
-      const clonedPost = cloneDeep(data)
-
-      const index = findIndex(
-        clonedPost.post.votedBy,
-        (vote) => vote.userId === user._id,
-      )
-      if (index !== -1) {
-        clonedPost.post.votedBy[index].type = voteData.type
-        clonedPost.post.upvotes =
-          voteData.type === 'up' ?
-            clonedPost.post.upvotes + 1 :
-            clonedPost.post.upvotes - 1
-
-        clonedPost.post.downvotes =
-          voteData.type === 'down' ?
-            clonedPost.post.downvotes + 1 :
-            clonedPost.post.downvotes - 1
-      } else {
-        clonedPost.post.votedBy.push({ type: voteData.type, userId: user._id })
-        if (voteData.type === 'up') {
-          clonedPost.post.upvotes++
-        } else {
-          clonedPost.post.downvotes++
-        }
-      }
-      cache.writeQuery({
-        query: GET_POST,
-        variables: { postId: _id },
-        data: { ...clonedPost },
-      })
+      refetchPost?.() // refetch the post to update the votes
     },
     refetchQueries: [
       {
@@ -243,45 +277,113 @@ function Post({
   const [approvePost] = useMutation(APPROVE_POST, {
     refetchQueries: [
       { query: GET_POST, variables: { postId: _id } },
-      { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '', interactions: false },
+      },
     ],
-  });
+  })
   const [rejectPost] = useMutation(REJECT_POST, {
     refetchQueries: [
       { query: GET_POST, variables: { postId: _id } },
-      { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '', interactions: false },
+      },
     ],
-  });
+  })
 
-  const userIdStr = user._id?.toString();
-  const hasApproved = Array.isArray(post.approvedBy) && post.approvedBy.some(id => id?.toString() === userIdStr);
-  const hasRejected = Array.isArray(post.rejectedBy) && post.rejectedBy.some(id => id?.toString() === userIdStr);
+  const userIdStr = user._id?.toString()
+  const hasApproved =
+    Array.isArray(post.approvedBy) &&
+    post.approvedBy.some((id) => id?.toString() === userIdStr)
+  const hasRejected =
+    Array.isArray(post.rejectedBy) &&
+    post.rejectedBy.some((id) => id?.toString() === userIdStr)
+
+  // Check if user has already voted on this post
+  const hasVoted = Array.isArray(post.votedBy) && 
+    post.votedBy.some((vote) => vote.userId?.toString() === userIdStr)
+
+  // Get the user's vote type if they have voted
+  const getUserVoteType = () => {
+    if (!hasVoted) return null
+    const userVote = post.votedBy.find((vote) => vote.userId?.toString() === userIdStr)
+    return userVote ? userVote.type : null
+  }
 
   const [removeApprove] = useMutation(APPROVE_POST, {
     variables: { postId: _id, userId: user._id },
     refetchQueries: [
       { query: GET_POST, variables: { postId: _id } },
-      { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '', interactions: false },
+      },
     ],
-  });
+  })
   const [removeReject] = useMutation(REJECT_POST, {
     variables: { postId: _id, userId: user._id },
     refetchQueries: [
       { query: GET_POST, variables: { postId: _id } },
-      { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '', interactions: false },
+      },
     ],
-  });
+  })
 
   const [deletePost] = useMutation(DELETE_POST, {
+    update(cache, { data: { deletePost } }) {
+      cache.modify({
+        fields: {
+          posts(existing = {}, { readField }) {
+            if (!existing.entities) return existing
+            return {
+              ...existing,
+              entities: existing.entities.filter(
+                (postRef) => readField('_id', postRef) !== deletePost._id,
+              ),
+            }
+          },
+          featuredPosts(existing = {}, { readField }) {
+            if (!existing.entities) return existing
+            return {
+              ...existing,
+              entities: existing.entities.filter(
+                (postRef) => readField('_id', postRef) !== deletePost._id,
+              ),
+            }
+          },
+        },
+      })
+      cache.evict({ id: cache.identify({ __typename: 'Post', _id: deletePost._id }) })
+      cache.gc()
+    },
     refetchQueries: [
-      { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '', interactions: false },
+      },
     ],
-  });
+  })
+
+  const [toggleVoting] = useMutation(TOGGLE_VOTING, {
+    refetchQueries: [
+      { query: GET_POST, variables: { postId: _id } },
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '', interactions: false },
+      },
+    ],
+  })
 
   const handleReportPost = async () => {
     if (!ensureAuth()) return
     try {
-      const res = await reportPost({ variables: { postId: _id, userId: user._id } })
+      const res = await reportPost({
+        variables: { postId: _id, userId: user._id },
+      })
       const { reportedBy } = res.data.reportPost
       const reported = reportedBy.length
       dispatch(
@@ -349,6 +451,19 @@ function Post({
   }
   const handleVoting = async (obj) => {
     if (!ensureAuth()) return
+    
+    // Check if user has already voted
+    if (hasVoted) {
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'You have already voted on this post',
+          type: 'warning',
+        }),
+      )
+      return
+    }
+    
     const vote = {
       content: selectedText.text,
       postId: post._id,
@@ -447,81 +562,116 @@ function Post({
     if (hasApproved) {
       // Remove approval (toggle off)
       try {
-        await removeApprove({ variables: { postId: _id, userId: user._id, remove: true } });
+        await removeApprove({
+          variables: { postId: _id, userId: user._id, remove: true },
+        })
         dispatch(
-          SET_SNACKBAR({ open: true, message: 'Approval removed', type: 'success' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: 'Approval removed',
+            type: 'success',
+          }),
+        )
       } catch (err) {
         dispatch(
-          SET_SNACKBAR({ open: true, message: `Approve Error: ${err.message}`, type: 'danger' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: `Approve Error: ${err.message}`,
+            type: 'danger',
+          }),
+        )
       }
     } else {
       // Approve (and override reject if needed)
       try {
-        await approvePost({ variables: { postId: _id, userId: user._id } });
+        await approvePost({ variables: { postId: _id, userId: user._id } })
         dispatch(
-          SET_SNACKBAR({ open: true, message: 'Post Approved', type: 'success' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: 'Post Approved',
+            type: 'success',
+          }),
+        )
       } catch (err) {
         dispatch(
-          SET_SNACKBAR({ open: true, message: `Approve Error: ${err.message}`, type: 'danger' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: `Approve Error: ${err.message}`,
+            type: 'danger',
+          }),
+        )
       }
     }
-  };
+  }
 
   const handleRejectPost = async () => {
     if (!ensureAuth()) return
     if (hasRejected) {
       // Remove rejection (toggle off)
       try {
-        await removeReject({ variables: { postId: _id, userId: user._id, remove: true } });
+        await removeReject({
+          variables: { postId: _id, userId: user._id, remove: true },
+        })
         dispatch(
-          SET_SNACKBAR({ open: true, message: 'Rejection removed', type: 'success' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: 'Rejection removed',
+            type: 'success',
+          }),
+        )
       } catch (err) {
         dispatch(
-          SET_SNACKBAR({ open: true, message: `Reject Error: ${err.message}`, type: 'danger' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: `Reject Error: ${err.message}`,
+            type: 'danger',
+          }),
+        )
       }
     } else {
       // Reject (and override approve if needed)
       try {
-        await rejectPost({ variables: { postId: _id, userId: user._id } });
+        await rejectPost({ variables: { postId: _id, userId: user._id } })
         dispatch(
-          SET_SNACKBAR({ open: true, message: 'Post Rejected', type: 'success' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: 'Post Rejected',
+            type: 'success',
+          }),
+        )
       } catch (err) {
         dispatch(
-          SET_SNACKBAR({ open: true, message: `Reject Error: ${err.message}`, type: 'danger' })
-        );
+          SET_SNACKBAR({
+            open: true,
+            message: `Reject Error: ${err.message}`,
+            type: 'danger',
+          }),
+        )
       }
     }
-  };
+  }
 
   const handleDelete = async () => {
     try {
-      await deletePost({ variables: { postId: _id } });
+      await deletePost({ variables: { postId: _id } })
       dispatch(
         SET_SNACKBAR({ open: true, message: 'Post deleted', type: 'success' }),
-      );
-      history.push('/home');
+      )
+      history.push('/home')
     } catch (err) {
       dispatch(
-        SET_SNACKBAR({ open: true, message: `Delete Error: ${err.message}`, type: 'danger' }),
-      );
+        SET_SNACKBAR({
+          open: true,
+          message: `Delete Error: ${err.message}`,
+          type: 'danger',
+        }),
+      )
     }
-  };
+  }
 
   return (
     <>
-      <Card
-        style={{
-          height: postHeight >= 742 ? '83vh' : 'auto',
-          overflow: 'auto',
-        }}
-      >
+      <Card className={classes.postCard}>
         <CardHeader
           className={classes.header1}
           title={cardTitle}
@@ -529,23 +679,37 @@ function Post({
         />
         <CardHeader
           className={classes.header2}
-          avatar={(
+          avatar={
             <IconButton
               size="small"
               onClick={() => handleRedirectToProfile(creator.username)}
             >
               <AvatarDisplay height={40} width={40} {...avatar} />
             </IconButton>
-          )}
+          }
           title={name}
           subheader={parsedCreated}
         />
         <CardContent style={{ fontSize: '16px' }}>
+          {hasVoted && (
+            <div style={{ 
+              backgroundColor: '#e3f2fd', 
+              padding: '8px 12px', 
+              borderRadius: '4px', 
+              marginBottom: '12px',
+              border: '1px solid #2196f3',
+              color: '#1976d2',
+              fontSize: '14px'
+            }}>
+              ✓ You have already {getUserVoteType() === 'up' ? 'upvoted' : 'downvoted'} this post
+            </div>
+          )}
           <VotingBoard
             content={post.text}
             onSelect={setSelectedText}
             selectedText={selectedText}
             highlights
+            votes={post.votes}
           >
             {({ text }) => (
               <VotingPopup
@@ -555,45 +719,83 @@ function Post({
                 text={text}
                 selectedText={selectedText}
                 votedBy={serializeVotedBy(post.votedBy)}
+                hasVoted={hasVoted}
+                userVoteType={getUserVoteType()}
               />
             )}
           </VotingBoard>
         </CardContent>
 
-        {user._id === userId && !showVoteButtons && (
+        {user._id === userId && !post.enable_voting && (
           <FormControlLabel
-            control={(
+            control={
               <Switch
-                checked={showVoteButtons}
+                checked={post.enable_voting}
                 onChange={handleToggleVoteButtons}
-                color="primary"
+                color="secondary"
               />
-            )}
+            }
             label="Enable Voting"
             style={{ marginLeft: 20 }}
           />
         )}
 
-        <CardActions disableSpacing style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginLeft: 20 }}>
-          {showVoteButtons && (
-          <div style={{ display: 'flex', gap: 8 }}>
-            <RejectButton
-              onMouseOver={(e) => handlePopoverOpen(e, 'rejected')}
-              onClick={handleRejectPost}
-              selected={hasRejected}
-            />
-            <ApproveButton
-              onMouseOver={(e) => handlePopoverOpen(e, 'approved')}
-              onClick={handleApprovePost}
-              selected={hasApproved}
-            />
-            <ApproveRejectPopover
-              anchorEl={anchorEl}
-              handlePopoverClose={handlePopoverClose}
-              type={popoverType}
-              rejectedBy={post.rejectedBy}
-            />
-          </div>
+        <CardActions
+          disableSpacing
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginLeft: 20,
+          }}
+        >
+          {post.enable_voting && (
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Tooltip 
+                title={<RejectTooltipContent />} 
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      bgcolor: 'rgba(0, 0, 0, 0.87)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'rgba(0, 0, 0, 0.87)',
+                      },
+                    },
+                  },
+                }}
+              >
+                <div>
+                  <RejectButton
+                    onClick={handleRejectPost}
+                    selected={hasRejected}
+                    count={post.rejectedBy ? post.rejectedBy.length : 0}
+                  />
+                </div>
+              </Tooltip>
+              <Tooltip 
+                title={<ApproveTooltipContent />} 
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      bgcolor: 'rgba(0, 0, 0, 0.87)',
+                      '& .MuiTooltip-arrow': {
+                        color: 'rgba(0, 0, 0, 0.87)',
+                      },
+                    },
+                  },
+                }}
+              >
+                <div>
+                  <ApproveButton
+                    onClick={handleApprovePost}
+                    selected={hasApproved}
+                    count={post.approvedBy ? post.approvedBy.length : 0}
+                  />
+                </div>
+              </Tooltip>
+            </div>
           )}
           <div style={{ display: 'flex', gap: 8 }}>
             <FollowButton
@@ -622,7 +824,10 @@ function Post({
           />
         )}
       </Card>
-      <RequestInviteDialog open={openInvite} onClose={() => setOpenInvite(false)} />
+      <RequestInviteDialog
+        open={openInvite}
+        onClose={() => setOpenInvite(false)}
+      />
     </>
   )
 }

@@ -7,3 +7,4 @@ export * from './updateActionReaction';
 export * from './reportPost';
 export * from './deletePost';
 export * from './updateFeaturedSlot';
+export * from './toggleVoting';

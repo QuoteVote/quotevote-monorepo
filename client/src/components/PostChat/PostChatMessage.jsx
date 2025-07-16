@@ -1,7 +1,8 @@
-import { useQuery } from '@apollo/react-hooks'
+import PropTypes from 'prop-types'
+import { useHistory } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import {
-  Avatar,
-  Grid, Paper, Typography,
+    Grid, Paper, Typography, Avatar,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
@@ -43,7 +44,7 @@ const useStyles = makeStyles(() => ({
   },
   bubbleReverse: {
     position: 'relative',
-    background: '#00cf6e',
+    background: '#52b274',
     minHeight: 30,
     color: 'white',
     borderRadius: '6px',
@@ -52,7 +53,7 @@ const useStyles = makeStyles(() => ({
       content: "''",
       position: 'absolute',
       border: '10px solid transparent',
-      borderTop: '10px solid #00cf6e',
+      borderTop: '10px solid #52b274',
       top: '0px',
       right: '-10px',
     },

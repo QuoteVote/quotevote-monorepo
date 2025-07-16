@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 const customTheme = createTheme({
   palette: {
     primary: {
-      main: '#00cf6e',
+      main: '#52b274',
     },
   },
   typography: {
@@ -30,19 +30,13 @@ const useStyles = makeStyles((theme) => ({
     alignContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    [theme.breakpoints.down('sm')]: {
-      maxWidth: 400,
-      paddingLeft: 20,
-    },
+    padding: 0,
+    margin: 0,
   },
   content: {
     alignContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    [theme.breakpoints.down('sm')]: {
-      maxWidth: 400,
-      paddingLeft: 20,
-    },
   },
   navigationButton: {
     position: 'absolute',
@@ -91,7 +85,7 @@ function SwipeableTextMobileStepper({
   const handleStepChange = (step) => {
     setActiveStep(step)
     if (step !== activeStepProp) {
-      setActiveStepProp(step)
+      setActiveStepProp?.(step)
     }
   }
 

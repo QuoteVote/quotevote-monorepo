@@ -22,6 +22,7 @@ export const resolver_mutations = function () {
     updateActionReaction: postMutations.updateActionReaction(),
     reportPost: postMutations.reportPost(),
     deletePost: postMutations.deletePost(),
+    toggleVoting: postMutations.toggleVoting(),
 
     // Domain
     createGroup: groupMutations.createGroup(),

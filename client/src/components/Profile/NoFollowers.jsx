@@ -50,7 +50,7 @@ function NoFollowers({ filter }) {
             {
               filter === 'following' ? (
                 <Typography variant="p">
-                  Here you are going to see people that you like their ideas.  You couple fellow people on the trending page or find some friends.
+                  Here you are going to see people that you like their ideas.  You could search for new people to follow or find some friends.
                 </Typography>
               ) : (
                 <Typography variant="p">
@@ -83,7 +83,7 @@ function NoFollowers({ filter }) {
                     Find Friends
                   </Button>
                   <Button variant="contained" color="primary">
-                    Go to Trending
+                    Go to Search
                   </Button>
                 </>
               ) : (

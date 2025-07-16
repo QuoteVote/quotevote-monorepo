@@ -18,6 +18,7 @@ type Post {
   dayPoints: Int,
   pointTimestamp: String
   featuredSlot: Int
+  enable_voting: Boolean
   creator: User
   comments: [Comment]
   votes: [Vote]

@@ -1,34 +1,51 @@
-import React from 'react';
+import React from 'react'
 
 import { title } from 'assets/jss/material-dashboard-pro-react'
 
-const errorPageStyles = () => ({
-  contentCenter: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    zIndex: '3',
-    transform: 'translate(-50%,-50%)',
+const errorPageStyles = (theme) => ({
+  root: {
+    minHeight: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     textAlign: 'center',
-    padding: '0 15px',
+    padding: theme.spacing(4),
+  },
+  inner: {
     width: '100%',
-    maxWidth: '880px',
+    maxWidth: 600,
   },
   title: {
     ...title,
-    fontSize: '13.7em',
-    letterSpacing: '14px',
-    fontWeight: '700',
+    margin: 0,
+    fontSize: '10rem',
+    fontWeight: 700,
+    letterSpacing: '4px',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '6rem',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '4rem',
+    },
   },
   subTitle: {
-    fontSize: '2.25rem',
-    marginTop: '0',
-    marginBottom: '8px',
+    fontSize: '2rem',
+    margin: 0,
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.5rem',
+    },
   },
   description: {
-    fontSize: '1.125rem',
-    marginTop: '0',
-    marginBottom: '8px',
+    fontSize: '1.25rem',
+    margin: 0,
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1rem',
+    },
+  },
+  button: {
+    marginTop: theme.spacing(3),
   },
 })
 

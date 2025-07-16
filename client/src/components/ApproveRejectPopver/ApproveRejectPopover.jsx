@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),
     overflow: 'hidden',
+    marginTop: theme.spacing(1), // Add margin to separate from button
   },
   nested: {
     paddingLeft: theme.spacing(4),
@@ -73,16 +74,15 @@ const ApproveRejectPopover = (props) => {
       open={Boolean(anchorEl)}
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'center',
       }}
       transformOrigin={{
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'center',
       }}
       onClose={handlePopoverClose}
       disableRestoreFocus
-      onMouseLeave={handlePopoverClose}
     >
       <List
         component="nav"

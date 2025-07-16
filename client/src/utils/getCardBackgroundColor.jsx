@@ -5,7 +5,7 @@ const getCardBackgroundColor = (activityType) => {
     case 'COMMENTED':
       return '#FDD835'
     case 'UPVOTED':
-      return '#00CF6E'
+      return '#52b274'
     case 'DOWNVOTED':
       return '#FF6060'
     case 'LIKED':

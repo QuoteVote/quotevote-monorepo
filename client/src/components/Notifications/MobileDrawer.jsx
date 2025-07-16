@@ -1,4 +1,3 @@
-import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Drawer, AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
@@ -8,6 +7,10 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: '100%',
     maxWidth: 400,
+    height: '100vh',
+    minHeight: 0,
+    display: 'flex',
+    flexDirection: 'column',
     [theme.breakpoints.up('sm')]: {
       width: 400,
     },
@@ -16,12 +19,16 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: '100%',
     maxWidth: 400,
+    height: '100vh',
+    minHeight: 0,
     [theme.breakpoints.up('sm')]: {
       width: 400,
     },
   },
   drawerContent: {
     flex: 1,
+    minHeight: 0,
+    height: '100%',
     overflowX: 'hidden',
     display: 'flex',
     flexDirection: 'column',

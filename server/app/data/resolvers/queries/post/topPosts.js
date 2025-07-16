@@ -15,6 +15,7 @@ export const topPosts = () => {
       userId,
       approved,
       interactions,
+      sortOrder,
     } = args;
 
     // Build search arguments
@@ -111,6 +112,9 @@ export const topPosts = () => {
       searchArgs.approved = approved;
     }
 
+    // Determine sort direction based on sortOrder parameter
+    const sortDirection = sortOrder === 'asc' ? 1 : -1;
+
     let trendingPosts;
     let totalPosts;
 
@@ -145,12 +149,12 @@ export const topPosts = () => {
         },
         {
           $sort: {
-            totalInteractions: -1,
-            commentCount: -1,
-            voteCount: -1,
-            dayPoints: -1,
-            pointTimestamp: -1,
-            created: -1,
+            totalInteractions: sortDirection,
+            commentCount: sortDirection,
+            voteCount: sortDirection,
+            dayPoints: sortDirection,
+            pointTimestamp: sortDirection,
+            created: sortDirection,
           },
         },
         {
@@ -180,9 +184,9 @@ export const topPosts = () => {
       // Original logic for when interactions is false
       totalPosts = await PostModel.find(searchArgs).count();
 
-      // Build sort criteria
+      // Build sort criteria with configurable direction
       const sortCriteria = {
-        created: 'desc', // Secondary sort by creation date for chronological ordering
+        created: sortOrder === 'asc' ? 'asc' : 'desc', // Use sortOrder parameter
       };
 
       console.log('Search query details:', {
@@ -193,6 +197,7 @@ export const topPosts = () => {
         limit,
         totalPosts,
         sortCriteria,
+        sortOrder,
         filtersApplied: {
           friendsOnly,
           interactions,

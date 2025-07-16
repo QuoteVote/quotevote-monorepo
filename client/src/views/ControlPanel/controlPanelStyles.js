@@ -26,7 +26,7 @@ const requestAccessStyles = (theme) => ({
     fontSize: '18px',
     fontWeight: 'bold',
     letterSpacing: '0.2px',
-    color: '#00cf6e',
+    color: '#52b274',
     marginBottom: 10,
   },
   columnHeader: {

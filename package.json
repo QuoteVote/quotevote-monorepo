@@ -50,5 +50,8 @@
     "npm": ">=8"
   },
   "author": "Oliver Molina <olivermolina10@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react-swipeable-views": "^0.14.0"
+  }
 }

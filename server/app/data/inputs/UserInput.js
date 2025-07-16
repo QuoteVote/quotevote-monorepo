@@ -7,5 +7,6 @@ input UserInput {
   password: String
   quotes: [String]
   avatar: String
+  contributorBadge: Boolean
 }
 `;

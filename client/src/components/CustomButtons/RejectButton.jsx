@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import CloseIcon from '@material-ui/icons/Close'
@@ -21,10 +21,20 @@ const useStyles = makeStyles(() => ({
     color: '#f44336',
     borderColor: '#f44336',
   },
+  buttonText: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  },
+  count: {
+    fontSize: '12px',
+    fontWeight: 'bold',
+    marginLeft: '4px',
+  },
 }))
 
 function RejectButton(props) {
-  const { selected, ...rest } = props;
+  const { selected, count = 0, ...rest } = props;
   const classes = useStyles();
 
   return (
@@ -34,9 +44,22 @@ function RejectButton(props) {
       className={selected ? `${classes.button} ${classes.contained}` : `${classes.button} ${classes.outlined}`}
       startIcon={<CloseIcon style={{ width: 24, height: 24 }} />}
     >
-      DISAGREE
+      <div className={classes.buttonText}>
+        DISAGREE
+        {count > 0 && <span className={classes.count}>👎 {count}</span>}
+      </div>
     </Button>
   );
+}
+
+RejectButton.propTypes = {
+  selected: PropTypes.bool,
+  count: PropTypes.number,
+}
+
+RejectButton.defaultProps = {
+  selected: false,
+  count: 0,
 }
 
 export default RejectButton

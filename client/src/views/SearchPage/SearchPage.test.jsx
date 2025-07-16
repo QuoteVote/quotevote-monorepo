@@ -47,7 +47,8 @@ const mocks = [
         searchKey: '',
         startDateRange: '',
         endDateRange: '',
-        interactions: false
+        interactions: false,
+        sortOrder: 'desc'
       }
     },
     result: {
@@ -85,6 +86,7 @@ describe('SearchPage Filters', () => {
     expect(screen.getByLabelText('friends')).toBeInTheDocument()
     expect(screen.getByLabelText('filter')).toBeInTheDocument()
     expect(screen.getByLabelText('calendar')).toBeInTheDocument()
+    expect(screen.getByLabelText('sort')).toBeInTheDocument()
   })
 
   test('friends filter works when user is logged in', async () => {
@@ -148,6 +150,44 @@ describe('SearchPage Filters', () => {
       // Post 2 should come first (4 interactions) before Post 1 (3 interactions)
       expect(posts[0]).toHaveTextContent('Post 2')
       expect(posts[1]).toHaveTextContent('Post 1')
+    })
+  })
+
+  test('sort order toggle works correctly', async () => {
+    render(
+      <Provider store={store}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <SearchPage />
+        </MockedProvider>
+      </Provider>
+    )
+
+    // Perform search first
+    const searchInput = screen.getByPlaceholderText('Search...')
+    const searchButton = screen.getByLabelText('search')
+    
+    fireEvent.change(searchInput, { target: { value: 'test' } })
+    fireEvent.click(searchButton)
+
+    await waitFor(() => {
+      expect(screen.getByText('Post 1')).toBeInTheDocument()
+    })
+
+    // Click sort order button
+    const sortButton = screen.getByLabelText('sort')
+    fireEvent.click(sortButton)
+
+    // Should show sort order is now ascending (oldest first)
+    await waitFor(() => {
+      expect(sortButton).toHaveTextContent('🕐')
+    })
+
+    // Click again to toggle back to descending
+    fireEvent.click(sortButton)
+
+    // Should show sort order is back to descending (newest first)
+    await waitFor(() => {
+      expect(sortButton).toHaveTextContent('��')
     })
   })
 }) 

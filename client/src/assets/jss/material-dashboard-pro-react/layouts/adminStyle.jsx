@@ -48,11 +48,6 @@ const appStyle = (theme) => ({
   avatarRoundedButton: {
     borderRadius: '25px',
   },
-  quote: {
-    padding: '10px 30px',
-    marginBottom: 10,
-    height: 70,
-  },
   rightMenuButton: {
     marginLeft: theme.spacing(1),
   },
@@ -104,9 +99,7 @@ const appStyle = (theme) => ({
     marginRight: 'auto',
     [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(7),
-      marginRight: 5,
-      marginLeft: 5,
-      width: '95%',
+      width: '100%',
     },
   },
   contentChat: {

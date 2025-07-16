@@ -99,7 +99,8 @@ export const userLogin = async (username, password, dispatch, history) => {
         loginError: null,
       }),
     )
-    history.push(`/profile/${username}/avatar`)
+
+    history.push('/search')
   }
 }
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   defaultFont,
   container,
@@ -7,7 +5,7 @@ import {
   primaryColor,
   whiteColor,
   grayColor,
-} from 'assets/jss/material-dashboard-pro-react'
+} from 'assets/jss/material-dashboard-pro-react';
 
 const footerStyle = (theme) => ({
   block: {
@@ -30,12 +28,16 @@ const footerStyle = (theme) => ({
     bottom: '0',
     borderTop: `1px solid ${grayColor[15]}`,
     ...defaultFont,
+    background: 'rgba(0,0,0,0.7)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    boxShadow: '0 4px 32px 0 rgba(0,0,0,0.15)',
   },
   container: {
     zIndex: 3,
     ...container,
     position: 'relative',
-    width: '95%!important',
+    width: '100%',
   },
   containerFluid: {
     zIndex: 3,

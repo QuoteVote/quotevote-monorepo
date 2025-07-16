@@ -85,4 +85,7 @@ export const Mutation = `type Mutation {
   # Mutation for deleting a post
     deletePost(postId: String!): DeletedPost
 
+  # Mutation for toggling voting on a post
+    toggleVoting(postId: String!): Post
+
 }`;

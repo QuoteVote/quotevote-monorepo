@@ -5,9 +5,8 @@ import CardContent from '@material-ui/core/CardContent'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import withWidth from '@material-ui/core/withWidth'
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
+import { IconButton, Tooltip } from '@material-ui/core'
+import Card from 'mui-pro/Card/Card'
 import classNames from 'classnames'
 import AvatarDisplay from 'components/Avatar'
 import gql from 'graphql-tag'
@@ -21,6 +20,12 @@ import { SET_SELECTED_POST } from 'store/ui'
 import { tokenValidator } from 'store/user'
 import stringLimit from 'string-limit'
 import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
+import { useQuery } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
+import { tokenValidator } from 'store/user'
+import { useMemo } from 'react'
 
 const GET_GROUP = gql`
   query getGroup($groupId: String!) {
@@ -42,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       animationName: 'post',
       animationDuration: '0.25s',
-      boxShadow: '10px 7px 10px 0 rgba(0, 188, 212, 0.4), 0 4px 20px 0 rgba(0, 0, 0, 0.14)',
+      boxShadow:
+        '10px 7px 10px 0 rgba(0, 188, 212, 0.4), 0 4px 20px 0 rgba(0, 0, 0, 0.14)',
     },
   },
   postedBg: {
@@ -52,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: '#fdd835',
   },
   upVotedBg: {
-    borderColor: '#00cf6e',
+    borderColor: '#52b274',
   },
   downVotedBg: {
     borderColor: '#ff6060',
@@ -127,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
   },
   upvoteIcon: {
-    color: '#00cf6e',
+    color: '#52b274',
   },
   downvoteIcon: {
     color: '#ff6060',
@@ -160,7 +166,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     cursor: 'pointer',
     [theme.breakpoints.down('sm')]: {
-      fontSize: 12,
+      fontSize: 18,
     },
   },
   rankNumber: {
@@ -184,6 +190,14 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1.5',
     maxHeight: '72px',
     textAlign: 'left',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 14,
+    },
+  },
+  contentSection: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   votes: {
     height: 12,
@@ -209,7 +223,7 @@ const useStyles = makeStyles((theme) => ({
     '&:before': {
       content: '"•"',
       marginRight: '4px',
-    }
+    },
   },
 }))
 
@@ -239,12 +253,26 @@ function PostCard(props) {
   const classes = useStyles(props)
   const { width } = props
   const {
-    _id, text, title, url, bookmarkedBy, created, creator,
-    activityType, limitText, votes, comments, quotes, messageRoom,
+    _id,
+    text,
+    title,
+    url,
+    bookmarkedBy,
+    approvedBy,
+    rejectedBy,
+    created,
+    creator,
+    activityType,
+    limitText,
+    votes,
+    comments,
+    quotes,
+    messageRoom,
     groupId,
   } = props
   const { messages } = messageRoom
-  let postText = stringLimit(text, limitText ? 20 : 10000)
+  const contentLimit = limitText ? 20 : 200
+  let postText = stringLimit(text, contentLimit)
 
   let interactions = []
 
@@ -271,8 +299,20 @@ function PostCard(props) {
     history.push(`/profile/${username}`)
   }
 
-  const upvotes = votes.filter(vote => vote.type === 'UPVOTE').length
-  const downvotes = votes.filter(vote => vote.type === 'DOWNVOTE').length
+  // TODO: show quote up/down
+  const { upQuote, downQuote } = useMemo(() => {
+    if (!votes || votes?.length === 0) {
+      return {
+        upQuote: 0,
+        downQuote: 0,
+      }
+    }
+
+    return {
+      upQuote: votes.filter((vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP').length,
+      downQuote: votes.filter((vote) => vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN').length,
+    }
+  }, [votes])
 
   const { data: groupData } = useQuery(GET_GROUP, {
     variables: { groupId },
@@ -286,27 +326,45 @@ function PostCard(props) {
       history.push('/search')
       return
     }
-    
+
     // For authenticated users, proceed with normal post navigation
     dispatch(SET_SELECTED_POST(_id))
     history.push(url.replace(/\?/g, ''))
   }
 
+
+  const truncatedTitle = stringLimit(
+    title,
+    limitText ? 20 : postTitleStringLimit,
+  )
+  const isTitleTruncated =
+    title.length > (limitText ? 20 : postTitleStringLimit)
+
   return (
     <Card
-      className={classNames(classes.cardRootStyle, classes[cardBg], classes.fontColor)}
+      className={classNames(
+        classes.cardRootStyle,
+        classes[cardBg],
+        classes.fontColor,
+      )}
       onClick={handleCardClick}
     >
       <CardContent className={classes.cardBodyStyle}>
         <div className={classes.voteCounts}>
           <div className={classes.voteSection}>
             <div className={classes.voteItem}>
-              <ArrowUpwardIcon className={classNames(classes.voteIcon, classes.upvoteIcon)} />
-              <Typography className={classes.voteNumber}>{upvotes}</Typography>
+              <ArrowUpwardIcon
+                className={classNames(classes.voteIcon, classes.upvoteIcon)}
+              />
+              <Typography className={classes.voteNumber}>{approvedBy?.length}</Typography>
             </div>
             <div className={classes.voteItem}>
-              <ArrowDownwardIcon className={classNames(classes.voteIcon, classes.downvoteIcon)} />
-              <Typography className={classes.voteNumber}>{downvotes}</Typography>
+              <ArrowDownwardIcon
+                className={classNames(classes.voteIcon, classes.downvoteIcon)}
+              />
+              <Typography className={classes.voteNumber}>
+                {rejectedBy?.length}
+              </Typography>
             </div>
             {groupData?.group && (
               <Typography className={classes.groupName}>
@@ -326,16 +384,22 @@ function PostCard(props) {
           spacing={2}
         >
           <Grid item xs={12}>
-            <Typography
-              className={classes.postTitle}
+            <Tooltip
+              title={isTitleTruncated ? title : ''}
+              placement="top"
+              arrow
             >
-              {stringLimit(title, limitText ? 20 : postTitleStringLimit)}
-            </Typography>
+              <Typography className={classes.postTitle}>
+                {truncatedTitle}
+              </Typography>
+            </Tooltip>
           </Grid>
           <Grid item xs={12}>
-            <Typography className={classes.postContent}>
-              {postText}
-            </Typography>
+            <div className={classes.contentSection}>
+              <Typography className={classes.postContent}>
+                {postText}
+              </Typography>
+            </div>
           </Grid>
         </Grid>
       </CardContent>

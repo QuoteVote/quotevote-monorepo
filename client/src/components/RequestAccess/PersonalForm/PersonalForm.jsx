@@ -34,7 +34,7 @@ const PersonalForm = (props) => {
         <Typography align="center" className={classes.header}>
           {requestInviteSuccessful ? 'Thank you for' : 'Get access to your'}
           {' '}
-          <span className={classes.header} style={{ color: '#00cf6e' }}>
+          <span className={classes.header} style={{ color: '#52b274' }}>
             {requestInviteSuccessful ? 'joining us' : 'Personal Plan!'}
           </span>
         </Typography>
@@ -60,14 +60,16 @@ const PersonalForm = (props) => {
           </Grid>
           {requestInviteSuccessful ? (
             <Grid container item xs={12} md={6} justify="center" alignItems="center">
-              <Typography className={classes.message}>
-                <br />
-                When an account becomes available, an
-                <br />
-                invite will be sent to the email address you
-                <br />
-                provided.
-              </Typography>
+              <div className={classes.opaqueBackground}>
+                <Typography className={classes.message}>
+                  <br />
+                  When an account becomes available, an
+                  <br />
+                  invite will be sent to the email address you
+                  <br />
+                  provided.
+                </Typography>
+              </div>
             </Grid>
           ) : (
             <Grid item container xs={11} md={6} spacing={2}>

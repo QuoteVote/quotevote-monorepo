@@ -1,16 +1,27 @@
-import { useMutation } from '@apollo/react-hooks';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { UPDATE_USER_AVATAR } from '../../graphql/mutations';
-import { updateAvatar } from '../../store/user';
-import { avatarOptions } from '../../utils/display';
-import AvatarDisplay from '../Avatar';
+import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+import { useMutation } from '@apollo/react-hooks'
+import {
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Paper,
+  Box,
+  Typography,
+  IconButton,
+  Tooltip,
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import AvatarDisplay from '../Avatar'
+import { avatarOptions, useMobileDetection } from '../../utils/display'
+import { UPDATE_USER_AVATAR } from '../../graphql/mutations'
+import { updateAvatar } from '../../store/user'
 
 const useStyles = makeStyles({
-  editor: { 
+  editor: {
     marginTop: 20,
     maxWidth: 600,
     margin: '20px auto 0',
@@ -57,18 +68,57 @@ function SimpleAvatarEditor() {
     history.push('/profile')
   }
 
+  const isMobile = useMobileDetection()
+
   return (
     <Paper elevation={2} className={classes.paper}>
-      <Grid container className={classes.editor} direction="column" alignItems="center">
+      <Grid
+        container
+        className={classes.editor}
+        direction="column"
+        alignItems="center"
+      >
         <Grid item className={classes.avatar}>
-          <AvatarDisplay height={180} width={180} {...avatar} />
+          <Box
+            display="flex"
+            flexDirection="row"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <AvatarDisplay height={180} width={180} {...avatar} />
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              style={{ gap: 1 }}
+            >
+              <Tooltip title="Randomize" placement="top">
+                <IconButton
+                  onClick={handleRandomize}
+                  color="secondary"
+                  size="small"
+                >
+                  <Typography variant="h4" style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>🎲</Typography>
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Save" placement="top">
+                <IconButton onClick={handleSave} color="primary" size="small">
+                  <Typography variant="h4" style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>💾</Typography>
+                </IconButton>
+              </Tooltip>
+            </Box>
+          </Box>
         </Grid>
         <Grid item container spacing={2} justify="center">
           {avatarOptions.map((opt) => (
             <Grid item key={opt.name}>
               <FormControl className={classes.select}>
                 <InputLabel>{opt.displayName}</InputLabel>
-                <Select value={avatar[opt.name] || ''} onChange={handleChange(opt.name)}>
+                <Select
+                  value={avatar[opt.name] || ''}
+                  onChange={handleChange(opt.name)}
+                >
                   {opt.options.map((option) => (
                     <MenuItem key={option} value={option}>
                       {option}
@@ -78,18 +128,6 @@ function SimpleAvatarEditor() {
               </FormControl>
             </Grid>
           ))}
-        </Grid>
-        <Grid item container className={classes.buttonRow} spacing={2} justify="center">
-          <Grid item>
-            <Button variant="contained" color="primary" onClick={handleRandomize}>
-              Randomize
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="contained" color="secondary" onClick={handleSave}>
-              Save Avatar
-            </Button>
-          </Grid>
         </Grid>
       </Grid>
     </Paper>

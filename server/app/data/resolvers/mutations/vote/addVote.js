@@ -14,6 +14,16 @@ export const addVote = pubsub => {
     };
 
     try {
+      // Check if user has already voted on this post
+      const existingVote = await VoteModel.findOne({
+        postId: voteData.postId,
+        userId: voteData.userId
+      });
+
+      if (existingVote) {
+        throw new Error('You have already voted on this post');
+      }
+
       const vote = await new VoteModel(voteData).save();
       await updateScore(vote);
       const post = await PostModel.findById(vote.postId);

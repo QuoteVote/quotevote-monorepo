@@ -15,6 +15,8 @@ module.exports = {
           FROM_EMAIL: process.env.FROM_EMAIL || '',
           CLIENT_URL: process.env.CLIENT_URL || '',
           REQUEST_ACCESS_URL: process.env.REQUEST_ACCESS_URL || '',
+          SENDGRID_API_KEY: process.env.SENDGRID_API_KEY || '',
+          SENDGRID_SENDER_EMAIL: process.env.SENDGRID_SENDER_EMAIL
         },
       },
     ],

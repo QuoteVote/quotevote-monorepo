@@ -1,4 +1,3 @@
-import React from 'react'
 import { Avatar, Grid, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
@@ -25,7 +24,7 @@ const useStyles = makeStyles(() => ({
   },
   bubbleReverse: {
     position: 'relative',
-    background: '#00cf6e',
+          background: '#52b274',
     minHeight: 30,
     minWidth: 250,
     color: 'white',
@@ -36,7 +35,7 @@ const useStyles = makeStyles(() => ({
       content: "''",
       position: 'absolute',
       border: '10px solid transparent',
-      borderTop: '10px solid #00cf6e',
+      borderTop: '10px solid #52b274',
       top: '0px',
       right: '-10px',
     },

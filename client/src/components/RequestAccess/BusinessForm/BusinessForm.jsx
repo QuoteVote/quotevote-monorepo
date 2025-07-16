@@ -34,7 +34,7 @@ const BusinessForm = (props) => {
         <Typography align="center" className={classes.header}>
           {requestInviteSuccessful ? 'Thank you for' : 'Get access to your'}
           {' '}
-          <span className={classes.header} style={{ color: '#00cf6e' }}>
+          <span className={classes.header} style={{ color: '#52b274' }}>
             {requestInviteSuccessful ? 'joining us' : 'Business Plan!'}
           </span>
         </Typography>
