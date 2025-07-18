@@ -10,17 +10,25 @@ export const addPost = pubsub => {
     console.log("ARGS:   ", args);
     logger.info('Function: add post');
     let newPost = {};
-    const hash = nanoid(6);
     const group = await GroupModel.findById(args.post.groupId);
     const title = args.post.title.replace(/ /g, '-').toLowerCase();
-    const url = `/post${group.url}/${title}/${hash}`;
-
+    
+    // Create the post first to get the ID
     const postObj = {
-      ...args.post, url,
+      ...args.post,
+      url: '', // Temporary URL, will be updated after creation
     };
 
     try {
       newPost = await new PostModel(postObj).save();
+      
+      // Now create the URL using the actual post ID
+      const url = `/post${group.url}/${title}/${newPost._id}`;
+      
+      // Update the post with the correct URL
+      await PostModel.findByIdAndUpdate(newPost._id, { url });
+      newPost.url = url;
+
       const messageRoom = await MessageRoomModel.create({users: newPost.userId, postId: newPost._id, messageType: "POST"});
 
       const ids = {

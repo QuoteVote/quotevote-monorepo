@@ -13,6 +13,7 @@ import _ from 'lodash'
 import 'emoji-mart/css/emoji-mart.css'
 import { ADD_ACTION_REACTION, UPDATE_ACTION_REACTION } from '../../graphql/mutations'
 import { GET_ACTION_REACTIONS } from '../../graphql/query'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -37,6 +38,8 @@ function CommentReactions(props) {
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const { actionId, reactions } = props
+  const ensureAuth = useGuestGuard()
+  
   const [addReaction] = useMutation(ADD_ACTION_REACTION, {
     onError: (err) => {
       // eslint-disable-next-line no-console
@@ -69,15 +72,17 @@ function CommentReactions(props) {
 
   // Handle emoji button interaction
   const handleClick = useCallback((event) => {
+    if (!ensureAuth()) return
     setAnchorEl(event.target)
     setOpen(true)
-  }, [])
+  }, [ensureAuth])
 
   const handleClose = useCallback(() => {
     setOpen(false)
   }, [])
 
   const handleEmojiSelect = useCallback(async (emoji) => {
+    if (!ensureAuth()) return
     const newEmoji = emoji.native
     const reaction = {
       userId,
@@ -96,7 +101,7 @@ function CommentReactions(props) {
     }
 
     setOpen(false)
-  }, [userId, actionId, userReaction, addReaction, updateReaction])
+  }, [userId, actionId, userReaction, addReaction, updateReaction, ensureAuth])
 
   const emojiElements = []
 

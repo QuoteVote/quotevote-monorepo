@@ -12,6 +12,7 @@ import PostSkeleton from '../../components/Post/PostSkeleton';
 import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query';
 import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription';
 import PostChatSend from '../../components/PostChat/PostChatSend';
+import { tokenValidator } from 'store/user';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +58,9 @@ function PostPage({ postId }) {
   const idSelector = useSelector((state) => state.ui.selectedPost.id)
   const user = useSelector((state) => state.user.data)
 
+  // Check if user is authenticated
+  const isAuthenticated = user && user._id && tokenValidator()
+
   const {
     loading: loadingPost,
     error: postError,
@@ -92,12 +96,12 @@ function PostPage({ postId }) {
     data: messageData,
     refetch: refetchMessages,
   } = useQuery(GET_ROOM_MESSAGES, {
-    skip: !messageRoomId,
+    skip: !messageRoomId || !isAuthenticated, // Skip for guests
     variables: { messageRoomId },
   })
 
   useSubscription(NEW_MESSAGE_SUBSCRIPTION, {
-    skip: !messageRoomId,
+    skip: !messageRoomId || !isAuthenticated, // Skip for guests
     variables: { messageRoomId },
     onSubscriptionData: async () => {
       await refetchMessages()
@@ -142,12 +146,13 @@ function PostPage({ postId }) {
       postActions = postActions.concat(quotes)
     }
 
-    if (!isEmpty(messages)) {
+    // Only include messages for authenticated users
+    if (isAuthenticated && !isEmpty(messages)) {
       postActions = postActions.concat(messages)
     }
 
     return postActions
-  }, [comments, votes, quotes, messages, post])
+  }, [comments, votes, quotes, messages, post, isAuthenticated])
 
   if (!loadingPost && !post) {
     return <Redirect to="/error" />
@@ -168,7 +173,7 @@ function PostPage({ postId }) {
       <Grid 
         item 
         xs={12} 
-        md={6} 
+        md={isAuthenticated ? 6 : 12} // Full width for guests
         id="post"
         className={isMobile ? classes.mobilePostSection : ''}
       >
@@ -185,19 +190,22 @@ function PostPage({ postId }) {
           />
         )}
       </Grid>
-      <Grid 
-        item 
-        xs={12} 
-        md={6}
-        className={isMobile ? classes.mobileInteractionSection : ''}
-      >
-        <PostChatSend messageRoomId={messageRoomId} title={title} />
-        <PostActionList
-          loading={loadingPost}
-          postActions={postActions}
-          postUrl={url}
-        />
-      </Grid>
+      {/* Only show interaction section for authenticated users */}
+      {isAuthenticated && (
+        <Grid 
+          item 
+          xs={12} 
+          md={6}
+          className={isMobile ? classes.mobileInteractionSection : ''}
+        >
+          <PostChatSend messageRoomId={messageRoomId} title={title} />
+          <PostActionList
+            loading={loadingPost}
+            postActions={postActions}
+            postUrl={url}
+          />
+        </Grid>
+      )}
     </Grid>
   )
 }

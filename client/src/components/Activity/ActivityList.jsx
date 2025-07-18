@@ -1,3 +1,4 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroller'
@@ -18,6 +19,7 @@ import {
 import { SET_SELECTED_POST } from '../../store/ui'
 import getActivityContent from '../../utils/getActivityContent'
 import { tokenValidator } from 'store/user'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 function LoadActivityCard({ width, activity }) {
   const {
@@ -38,10 +40,12 @@ function LoadActivityCard({ width, activity }) {
   const currentUser = useSelector((state) => state.user.data)
   const [createPostMessageRoom] = useMutation(CREATE_POST_MESSAGE_ROOM)
   const [updatePostBookmark] = useMutation(UPDATE_POST_BOOKMARK)
+  const ensureAuth = useGuestGuard()
   const limit = 5
   const type = activityType === 'VOTED' ? `${vote.type}${activity.activityType}` : activity.activityType
   const content = getActivityContent(type, post, quote, vote, comment)
   const handleLike = async () => {
+    if (!ensureAuth()) return
     await updatePostBookmark({
       variables: { postId, userId: currentUser._id },
     })

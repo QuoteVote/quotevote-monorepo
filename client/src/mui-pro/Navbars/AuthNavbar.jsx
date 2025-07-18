@@ -101,16 +101,6 @@ export default function AuthNavbar(props) {
       {activeRoute('/auth/learn-more') && (
         <div className={classes.buttonDisplay}>
           <ListItem className={classes.listItem}>
-            <Button
-              variant="contained"
-              className={classes.listItemTextRequestInvite}
-              type="submit"
-              onClick={() => history.push('/auth/request-access')}
-            >
-              Request Invite
-            </Button>
-          </ListItem>
-          <ListItem className={classes.listItem}>
             <NavLink
               to="/auth/login"
               className={cx(classes.navLink, {
@@ -128,16 +118,6 @@ export default function AuthNavbar(props) {
       )}
       {activeRoute('/auth/request-access') && (
         <div className={classes.buttonDisplay}>
-          <ListItem className={classes.listItem}>
-            <Button
-              variant="contained"
-              className={classes.listItemTextRequestInvite}
-              type="submit"
-              onClick={() => history.push('/auth/request-access')}
-            >
-              Request Invite
-            </Button>
-          </ListItem>
           <ListItem className={classes.listItem}>
             <NavLink
               to="/auth/login"

@@ -39,6 +39,7 @@ import moment from 'moment'
 import { useSelector } from 'react-redux'
 import controlPanelStylwa from './controlPanelStyles'
 import Unauthorized from '@/components/Unauthorized/Unauthorized'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const useStyles = makeStyles(controlPanelStylwa)
 
@@ -68,10 +69,12 @@ TabPanel.propTypes = {
 
 const ActionButtons = ({ status, id }) => {
   const classes = useStyles()
+  const ensureAuth = useGuestGuard()
   const [sendUserInviteApproval, { loading }] = useMutation(
     UPDATE_USER_INVITE_STATUS,
   )
   const submitData = async (selectedStatus) => {
+    if (!ensureAuth()) return
     await sendUserInviteApproval({
       variables: {
         userId: id,
@@ -162,6 +165,7 @@ const ActionButtons = ({ status, id }) => {
 
 const FeaturedPostsTable = () => {
   const classes = useStyles()
+  const ensureAuth = useGuestGuard()
   const queryVars = {
     limit: 50,
     offset: 0,
@@ -202,6 +206,7 @@ const FeaturedPostsTable = () => {
   }
 
   const handleSave = async (id) => {
+    if (!ensureAuth()) return
     const slot = selection[id]
     await updateSlot({
       variables: { postId: id, featuredSlot: slot ? Number(slot) : null },
@@ -540,12 +545,14 @@ const StatisticsTab = ({ data }) => {
 
 const UserManagementTab = () => {
   const classes = useStyles()
+  const ensureAuth = useGuestGuard()
   const { data, loading, refetch } = useQuery(GET_USERS)
   const [updateUser] = useMutation(UPDATE_USER)
 
   if (loading || !data) return <Skeleton animation="wave" height={200} />
 
   const handleToggle = async (user) => {
+    if (!ensureAuth()) return
     await updateUser({
       variables: {
         user: {

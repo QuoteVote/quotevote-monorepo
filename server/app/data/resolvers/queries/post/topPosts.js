@@ -19,7 +19,9 @@ export const topPosts = () => {
     } = args;
 
     // Build search arguments
-    const searchArgs = {};
+    const searchArgs = {
+      deleted: { $ne: true } // Exclude deleted posts
+    };
 
     // Handle text search - can be combined with other filters
     if (searchKey && searchKey.trim()) {

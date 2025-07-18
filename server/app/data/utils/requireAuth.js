@@ -10,6 +10,8 @@ const PUBLIC_QUERIES = [
   'posts',
   'featuredPosts',
   'post',
+  'topPosts',
+  'featuredPosts'
   // add more public queries/mutations
 ];
 

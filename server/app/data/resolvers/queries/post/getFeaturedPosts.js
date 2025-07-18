@@ -19,8 +19,11 @@ export const getFeaturedPosts = () => {
       sortOrder,
     } = args;
 
-    // Build search arguments - always include featured slot requirement
-    const searchArgs = { featuredSlot: { $ne: null } };
+    // Build search arguments - always include featured slot requirement and exclude deleted posts
+    const searchArgs = { 
+      featuredSlot: { $ne: null },
+      deleted: { $ne: true } // Exclude deleted posts
+    };
 
     // Handle text search - can be combined with other filters
     if (searchKey && searchKey.trim()) {
