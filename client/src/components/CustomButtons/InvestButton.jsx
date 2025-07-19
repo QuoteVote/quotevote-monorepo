@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { withStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
 import PropTypes from 'prop-types'
 import { isMobile } from 'react-device-detect'
 

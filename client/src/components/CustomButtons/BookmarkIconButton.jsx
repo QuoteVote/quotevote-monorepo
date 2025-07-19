@@ -1,6 +1,6 @@
-import BookmarkIcon from '@material-ui/icons/Bookmark'
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
-import { IconButton } from '@material-ui/core'
+import Bookmark from '@mui/icons-material/Bookmark'
+import BookmarkBorder from '@mui/icons-material/BookmarkBorder'
+import { IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useMutation } from '@apollo/react-hooks'
 import { requireAuth } from 'utils/auth'
@@ -58,7 +58,7 @@ function BookmarkIconButton(props) {
   return (
     <>
       <IconButton {...props} onClick={requireAuth(handleClick)}>
-        {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+        {isBookmarked ? <Bookmark /> : <BookmarkBorder />}
       </IconButton>
     </>
   )

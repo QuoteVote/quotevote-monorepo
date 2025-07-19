@@ -1,6 +1,6 @@
-import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import { green } from '@material-ui/core/colors'
+import { withStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
+import { green } from '@mui/material/colors'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 

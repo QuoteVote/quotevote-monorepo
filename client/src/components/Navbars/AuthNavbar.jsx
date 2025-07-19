@@ -4,20 +4,20 @@ import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Hidden from '@material-ui/core/Hidden'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+import { makeStyles } from '@mui/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
 
 // @material-ui/icons
-import Menu from '@material-ui/icons/Menu'
-import PersonAdd from '@material-ui/icons/PersonAdd'
-import Fingerprint from '@material-ui/icons/Fingerprint'
-import LockOpen from '@material-ui/icons/LockOpen'
+import Menu from '@mui/icons-material/Menu'
+import PersonAdd from '@mui/icons-material/PersonAdd'
+import Fingerprint from '@mui/icons-material/Fingerprint'
+import LockOpen from '@mui/icons-material/LockOpen'
 
 // core components
 import Button from 'mui-pro/CustomButtons/Button'
@@ -90,22 +90,22 @@ export default function AuthNavbar(props) {
   return (
     <AppBar position="static" className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.container}>
-        <Hidden smDown>
+        <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
           <div className={classes.flex}>
             <Button href="#" className={classes.title} color="transparent">
               {brandText}
             </Button>
           </div>
-        </Hidden>
-        <Hidden mdUp>
+        </Box>
+        <Box sx={{ display: { md: 'none' } }}>
           <div className={classes.flex}>
             <Button href="#" className={classes.title} color="transparent">
               MD Pro React
             </Button>
           </div>
-        </Hidden>
-        <Hidden smDown>{list}</Hidden>
-        <Hidden mdUp>
+        </Box>
+        <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>{list}</Box>
+        <Box sx={{ display: { md: 'none' } }}>
           <Button
             className={classes.sidebarButton}
             color="transparent"
@@ -115,9 +115,9 @@ export default function AuthNavbar(props) {
           >
             <Menu />
           </Button>
-        </Hidden>
-        <Hidden mdUp>
-          <Hidden mdUp>
+        </Box>
+        <Box sx={{ display: { md: 'none' } }}>
+          <Box sx={{ display: { md: 'none' } }}>
             <Drawer
               variant="temporary"
               anchor="right"
@@ -132,8 +132,8 @@ export default function AuthNavbar(props) {
             >
               {list}
             </Drawer>
-          </Hidden>
-        </Hidden>
+          </Box>
+        </Box>
       </Toolbar>
     </AppBar>
   )

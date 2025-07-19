@@ -8,9 +8,10 @@ import PrivateRoute from '../components/PrivateRoute'
 // creates a beautiful scrollbar
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import Hidden from '@material-ui/core/Hidden'
-import { createTheme, makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import Box from '@mui/material/Box'
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { createTheme, makeStyles } from '@mui/styles'
+import CssBaseline from '@mui/material/CssBaseline'
 
 import appRoutes from '../routes'
 import styles from 'assets/jss/material-dashboard-pro-react/layouts/adminStyle'
@@ -116,13 +117,13 @@ function Scoreboard(props) {
     <MuiThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
-        <Hidden only={['xs', 'sm']}>
+        <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
           <MainNavBar
             classes={classes}
             page={page}
           />
-        </Hidden>
-        <Hidden only={['md', 'lg', 'xl']}>
+        </Box>
+        <Box sx={{ display: { xs: 'block', sm: 'block', md: 'none' } }}>
           <Sidebar
             routes={appRoutes}
             logo={logo}
@@ -135,7 +136,7 @@ function Scoreboard(props) {
             miniActive
             dispatch={dispatch}
           />
-        </Hidden>
+        </Box>
         <main className={classes.content}>
           {getRoute() ? (
             <Switch>

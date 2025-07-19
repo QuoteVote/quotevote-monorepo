@@ -1,12 +1,9 @@
 import React from 'react'
-import {
-  Card, CardContent, Grid, IconButton, Typography,
-} from '@material-ui/core'
+import { Card, CardContent, Grid, IconButton, Typography, Skeleton } from '@mui/material'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Skeleton } from '@material-ui/lab'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 import { useLocation } from 'react-router-dom'
 import { Filter as FilterIcon } from '../Icons'
 import Comment from './Comment'

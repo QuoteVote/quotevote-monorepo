@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useHistory } from 'react-router-dom'
 import GridContainer from 'mui-pro/Grid/GridContainer'
 import React from 'react'

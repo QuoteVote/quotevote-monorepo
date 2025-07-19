@@ -4,21 +4,21 @@ import PropTypes from 'prop-types'
 // import { Manager, Target, Popper } from "react-popper";
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import MenuItem from '@material-ui/core/MenuItem'
-import MenuList from '@material-ui/core/MenuList'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Paper from '@material-ui/core/Paper'
-import Grow from '@material-ui/core/Grow'
-import Hidden from '@material-ui/core/Hidden'
-import Popper from '@material-ui/core/Popper'
-import Divider from '@material-ui/core/Divider'
+import { makeStyles } from '@mui/styles'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Paper from '@mui/material/Paper'
+import Grow from '@mui/material/Grow'
+import Box from '@mui/material/Box'
+import Popper from '@mui/material/Popper'
+import Divider from '@mui/material/Divider'
 
 // @material-ui/icons
-import Person from '@material-ui/icons/Person'
-import Notifications from '@material-ui/icons/Notifications'
-import Dashboard from '@material-ui/icons/Dashboard'
-import Search from '@material-ui/icons/Search'
+import Person from '@mui/icons-material/Person'
+import Notifications from '@mui/icons-material/Notifications'
+import Dashboard from '@mui/icons-material/Dashboard'
+import Search from '@mui/icons-material/Search'
 
 // core components
 import CustomInput from 'mui-pro/CustomInput/CustomInput'
@@ -115,7 +115,7 @@ export default function HeaderLinks(props) {
           <span className={classes.linkText}>
             {rtlActive ? 'لوحة القيادة' : 'Dashboard'}
           </span>
-        </Hidden>
+        </Box>
       </Button>
       <div className={managerClasses}>
         <Button
@@ -147,7 +147,7 @@ export default function HeaderLinks(props) {
             >
               {rtlActive ? 'إعلام' : 'Notification'}
             </span>
-          </Hidden>
+          </Box>
         </Button>
         <Popper
           open={Boolean(openNotification)}
@@ -240,7 +240,7 @@ export default function HeaderLinks(props) {
             <span onClick={handleClickProfile} className={classes.linkText}>
               {rtlActive ? 'الملف الشخصي' : 'Profile'}
             </span>
-          </Hidden>
+          </Box>
         </Button>
         <Popper
           open={Boolean(openProfile)}

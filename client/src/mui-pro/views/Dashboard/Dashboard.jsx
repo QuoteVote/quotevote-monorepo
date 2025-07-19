@@ -5,25 +5,25 @@ import ChartistGraph from 'react-chartist'
 import { VectorMap } from 'react-jvectormap'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Tooltip from '@material-ui/core/Tooltip'
-import Icon from '@material-ui/core/Icon'
+import { makeStyles } from '@mui/styles'
+import Tooltip from '@mui/material/Tooltip'
+import Icon from '@mui/material/Icon'
 
 // @material-ui/icons
-// import ContentCopy from "@material-ui/icons/ContentCopy";
-import Store from '@material-ui/icons/Store'
-// import InfoOutline from "@material-ui/icons/InfoOutline";
-import Warning from '@material-ui/icons/Warning'
-import DateRange from '@material-ui/icons/DateRange'
-import LocalOffer from '@material-ui/icons/LocalOffer'
-import Update from '@material-ui/icons/Update'
-import ArrowUpward from '@material-ui/icons/ArrowUpward'
-import AccessTime from '@material-ui/icons/AccessTime'
-import Refresh from '@material-ui/icons/Refresh'
-import Edit from '@material-ui/icons/Edit'
-import Place from '@material-ui/icons/Place'
-import ArtTrack from '@material-ui/icons/ArtTrack'
-import Language from '@material-ui/icons/Language'
+// import ContentCopy from '@mui/icons-material/ContentCopy';
+import Store from '@mui/icons-material/Store'
+// import InfoOutline from '@mui/icons-material/InfoOutline';
+import Warning from '@mui/icons-material/Warning'
+import DateRange from '@mui/icons-material/DateRange'
+import LocalOffer from '@mui/icons-material/LocalOffer'
+import Update from '@mui/icons-material/Update'
+import ArrowUpward from '@mui/icons-material/ArrowUpward'
+import AccessTime from '@mui/icons-material/AccessTime'
+import Refresh from '@mui/icons-material/Refresh'
+import Edit from '@mui/icons-material/Edit'
+import Place from '@mui/icons-material/Place'
+import ArtTrack from '@mui/icons-material/ArtTrack'
+import Language from '@mui/icons-material/Language'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

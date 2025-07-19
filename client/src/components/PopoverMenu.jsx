@@ -1,12 +1,12 @@
 import React from 'react'
-import Hidden from '@material-ui/core/Hidden'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import Typography from '@material-ui/core/Typography'
+import Box from '@mui/material/Box'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/icons-material/Menu'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -23,7 +23,7 @@ function PopoverMenu({
             aria-label="menu"
             onClick={handleClick}
           >
-            <MenuIcon />
+            <Menu />
           </IconButton>
           <Menu
             id="simple-menu"
@@ -48,7 +48,7 @@ function PopoverMenu({
           </Typography>
         </Toolbar>
       </AppBar>
-    </Hidden>
+    </Box>
   )
 }
 PopoverMenu.propTypes = {

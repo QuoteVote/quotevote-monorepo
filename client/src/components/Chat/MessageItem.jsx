@@ -1,5 +1,5 @@
-import { Avatar, Grid, Paper } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import { Avatar, Grid, Paper } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import AvatarDisplay from '../Avatar'

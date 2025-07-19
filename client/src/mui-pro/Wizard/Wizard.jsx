@@ -3,7 +3,7 @@ import cx from 'classnames'
 import PropTypes from 'prop-types'
 
 // @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles'
+import withStyles from '@mui/styles/withStyles'
 // core components
 import Button from 'mui-pro/CustomButtons/Button'
 import Card from 'mui-pro/Card/Card'

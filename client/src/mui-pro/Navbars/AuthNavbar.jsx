@@ -6,14 +6,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SET_SELECTED_PLAN } from 'store/ui'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Hidden from '@material-ui/core/Hidden'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import IconButton from '@material-ui/core/IconButton'
+import { makeStyles } from '@mui/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import IconButton from '@mui/material/IconButton'
 
 // @material-ui/icons
 
@@ -53,7 +53,7 @@ export default function AuthNavbar(props) {
   const planButtons = (
     <div>
       {activeRoute('/auth/plans') && (
-        <Hidden smDown>
+        <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
           <div className={classes.buttonSpacing}>
             <SelectPlansButton
               variant={isPersonal ? 'contained' : 'outlined'}
@@ -80,7 +80,7 @@ export default function AuthNavbar(props) {
               Investors
             </SelectPlansButton>
           </div>
-        </Hidden>
+        </Box>
       )}
     </div>
   )
@@ -232,7 +232,7 @@ export default function AuthNavbar(props) {
   return (
     <AppBar position="static" className={classes.appBar + appBarClasses}>
       <Toolbar className={classes.display}>
-        <Hidden smDown>
+        <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
           <div className={classes.flex}>
             <IconButton
               color="primary"
@@ -247,8 +247,8 @@ export default function AuthNavbar(props) {
               />
             </IconButton>
           </div>
-        </Hidden>
-        <Hidden mdUp>
+        </Box>
+        <Box sx={{ display: { md: 'none' } }}>
           <div className={classes.flex}>
             <IconButton
               color="primary"
@@ -264,7 +264,7 @@ export default function AuthNavbar(props) {
               />
             </IconButton>
           </div>
-        </Hidden>
+        </Box>
         {planButtons}
         {list}
       </Toolbar>

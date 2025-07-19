@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import CloseIcon from '@material-ui/icons/Close'
+import { makeStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
+import Close from '@mui/icons-material/Close'
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -42,7 +42,7 @@ function RejectButton(props) {
       {...rest}
       variant={selected ? 'contained' : 'outlined'}
       className={selected ? `${classes.button} ${classes.contained}` : `${classes.button} ${classes.outlined}`}
-      startIcon={<CloseIcon style={{ width: 24, height: 24 }} />}
+      startIcon={<Close style={{ width: 24, height: 24 }} />}
     >
       <div className={classes.buttonText}>
         DISAGREE

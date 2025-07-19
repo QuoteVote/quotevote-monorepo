@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

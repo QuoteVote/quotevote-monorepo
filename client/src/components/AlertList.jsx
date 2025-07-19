@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Skeleton from '@material-ui/lab/Skeleton'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
+import Skeleton from '@mui/material/Skeleton'
+import ImageList from '@mui/material/ImageList'
+import ImageListItem from '@mui/material/ImageListItem'
 import { getGridListCols, useWidth } from 'utils/display'
 import Alert from './Alert'
 
@@ -37,9 +37,9 @@ function LoadAlertList({ data, width, selectedEvent }) {
   }
 
   return (
-    <GridList cols={getGridListCols[width]}>
+    <ImageList cols={getGridListCols[width]}>
       {data.map((item) => (
-        <GridListTile key={item.AlertTitle} cols={1}>
+        <ImageListItem key={item.AlertTitle} cols={1}>
           <Alert
             color={item.color}
             AlertTitle={item.AlertTitle}
@@ -48,9 +48,9 @@ function LoadAlertList({ data, width, selectedEvent }) {
             points={item.points}
             creator={item.creator}
           />
-        </GridListTile>
+        </ImageListItem>
       ))}
-    </GridList>
+    </ImageList>
   )
 }
 LoadAlertList.propTypes = {

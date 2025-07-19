@@ -3,8 +3,8 @@ import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import {
     Grid, Paper, Typography, Avatar,
-} from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+} from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { useQuery } from '@apollo/react-hooks'
 import AvatarDisplay from '../Avatar'
 import PostChatReactions from './PostChatReactions'

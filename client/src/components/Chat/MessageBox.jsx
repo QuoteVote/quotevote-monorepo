@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { Avatar, Grid, IconButton, Typography } from '@material-ui/core'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import { makeStyles } from '@mui/styles'
+import { Avatar, Grid, IconButton, Typography } from '@mui/material'
+import ArrowBack from '@mui/icons-material/ArrowBack'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
 import MessageSend from './MessageSend'
@@ -86,7 +86,7 @@ function Header() {
     >
       <Grid item>
         <IconButton onClick={handleBack}>
-          <ArrowBackIcon />
+          <ArrowBack />
         </IconButton>
       </Grid>
       <Grid item>

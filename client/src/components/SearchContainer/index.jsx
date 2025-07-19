@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-import { makeStyles, fade } from '@material-ui/core/styles'
-import InputBase from '@material-ui/core/InputBase'
-import SearchIcon from '@material-ui/icons/Search'
+import { makeStyles, fade } from '@mui/styles'
+import InputBase from '@mui/material/InputBase'
+import Search from '@mui/icons-material/Search'
 import Card from 'mui-pro/Card/Card'
 import CardHeader from 'mui-pro/Card/CardHeader'
 import { useQuery } from '@apollo/react-hooks'
@@ -143,7 +143,7 @@ function SidebarSearchView(props) {
         >
           <div className={classes.search}>
             <div className={classes.searchIcon}>
-              <SearchIcon />
+              <Search />
             </div>
             <InputBase
               placeholder="Search…"

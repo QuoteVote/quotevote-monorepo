@@ -3,10 +3,10 @@
 import ChartistGraph from "react-chartist";
 
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@mui/styles';
 
 // @material-ui/icons
-import Timeline from "@material-ui/icons/Timeline";
+import Timeline from '@mui/icons-material/Timeline';
 
 // core components
 import Heading from "mui-pro/Heading/Heading";

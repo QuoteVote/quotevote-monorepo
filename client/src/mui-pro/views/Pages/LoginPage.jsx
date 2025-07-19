@@ -1,14 +1,14 @@
 import React from 'react'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import Icon from '@material-ui/core/Icon'
+import { makeStyles } from '@mui/styles'
+import InputAdornment from '@mui/material/InputAdornment'
+import Icon from '@mui/material/Icon'
 
 // @material-ui/icons
-import Face from '@material-ui/icons/Face'
-import Email from '@material-ui/icons/Email'
-// import LockOutline from "@material-ui/icons/LockOutline";
+import Face from '@mui/icons-material/Face'
+import Email from '@mui/icons-material/Email'
+// import LockOutline from '@mui/icons-material/LockOutline';
 
 // core Material UI Pro components
 import GridContainer from 'mui-pro/Grid/GridContainer'
