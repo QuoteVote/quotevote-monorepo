@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { InsertEmoticon } from '@material-ui/icons'
 import { useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
+import { useHistory } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
 import Emoji from 'a11y-react-emoji'
 import _ from 'lodash'
@@ -15,6 +16,7 @@ import 'emoji-mart/css/emoji-mart.css'
 import { parseCommentDate } from '../../utils/momentUtils'
 import { ADD_MESSAGE_REACTION, UPDATE_MESSAGE_REACTION } from '../../graphql/mutations'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,6 +25,27 @@ const useStyles = makeStyles(() => ({
   },
   time: {
     paddingRight: 10,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  },
+  userName: {
+    fontSize: '1rem',
+    color: '#666',
+    fontFamily: 'Roboto',
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
+  userNameReverse: {
+    fontSize: '1rem',
+    color: '#ffffff',
+    fontFamily: 'Roboto',
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
   },
   emoji: {
     padding: 3,
@@ -49,12 +72,14 @@ const useStyles = makeStyles(() => ({
 function PostChatReactions(props) {
   const userId = useSelector((state) => state.user.data._id)
   const classes = useStyles()
+  const history = useHistory()
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const {
-    created, messageId, reactions, isDefaultDirection,
+    created, messageId, reactions, isDefaultDirection, userName, username,
   } = props
   const parsedTime = parseCommentDate(created)
+  const ensureAuth = useGuestGuard()
   const [addReaction] = useMutation(ADD_MESSAGE_REACTION, {
     onError: (err) => {
       // eslint-disable-next-line no-console
@@ -86,15 +111,17 @@ function PostChatReactions(props) {
   const groupedReactions = _.groupBy(reactions, 'emoji')
 
   const handleClick = useCallback((event) => {
+    if (!ensureAuth()) return
     setAnchorEl(event.target)
     setOpen(true)
-  }, [])
+  }, [ensureAuth])
 
   const handleClose = useCallback(() => {
     setOpen(false)
   }, [])
 
   const handleEmojiSelect = useCallback(async (emoji) => {
+    if (!ensureAuth()) return
     const newEmoji = emoji.native
     const reaction = {
       userId,
@@ -113,7 +140,11 @@ function PostChatReactions(props) {
     }
 
     setOpen(false)
-  }, [userId, messageId, userReaction, updateReaction, addReaction])
+  }, [userId, messageId, userReaction, updateReaction, addReaction, ensureAuth])
+
+  const handleRedirectToProfile = () => {
+    history.push(`/Profile/${username}`)
+  }
 
   const emojiElements = []
 
@@ -132,6 +163,12 @@ function PostChatReactions(props) {
       alignItems="center"
     >
       <Grid item className={classes.time}>
+        <Typography
+          className={isDefaultDirection ? classes.userName : classes.userNameReverse}
+          onClick={handleRedirectToProfile}
+        >
+          {userName}
+        </Typography>
         <Typography>{parsedTime}</Typography>
       </Grid>
       <Grid item className={classes.container}>
@@ -168,6 +205,8 @@ PostChatReactions.propTypes = {
   messageId: PropTypes.string,
   reactions: PropTypes.array,
   isDefaultDirection: PropTypes.bool,
+  userName: PropTypes.string,
+  username: PropTypes.string,
 }
 
 export default PostChatReactions

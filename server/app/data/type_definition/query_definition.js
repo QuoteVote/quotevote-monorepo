@@ -19,6 +19,9 @@ type Query {
   " This will query the list of posts "
   posts(offset: Int, limit: Int, searchKey: String, startDateRange: String, endDateRange: String, friendsOnly: Boolean, groupId: String, userId: String, approved: Boolean, deleted: Boolean, interactions: Boolean, sortOrder: String): Posts
 
+  " This will query the top posts (alias for posts) "
+  topPosts(limit: Int!, offset: Int!, searchKey: String!, startDateRange: String, endDateRange: String, friendsOnly: Boolean, interactions: Boolean, userId: String, sortOrder: String): Posts
+
   " Posts selected for homepage carousel "
   featuredPosts(offset: Int, limit: Int, searchKey: String, startDateRange: String, endDateRange: String, friendsOnly: Boolean, groupId: String, userId: String, approved: Boolean, deleted: Boolean, interactions: Boolean, sortOrder: String): Posts
 

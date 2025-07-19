@@ -160,7 +160,7 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
             I agree to the
             {' '}
             <Link
-              href="/quote_vote_terms_of_service.md"
+              href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_terms_of_service.md"
               target="_blank"
               rel="noopener noreferrer"
               className={classes.link}
@@ -190,7 +190,7 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
             I agree to the
             {' '}
             <Link
-              href="/quote_vote_code_of_conduct.md"
+              href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_code_of_conduct.md"
               target="_blank"
               rel="noopener noreferrer"
               className={classes.link}

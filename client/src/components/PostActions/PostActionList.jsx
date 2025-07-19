@@ -19,9 +19,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     position: 'relative',
     overflow: 'auto',
-    [theme.breakpoints.up('md')]: {
-      height: (props) => props.postActions && props.postActions.length > 2 ? '75vh' : 'auto',
-    },
+    // Remove the fixed height calculation since the parent container now handles scrolling
   },
 }))
 
@@ -67,7 +65,7 @@ function PostActionList({
       )}
       {!isEmpty(postActions) ? (
         <List className={classes.actionList}>
-          {postActions.sort((a, b) => moment(b.created).diff(moment(a.created))).map((action) => (
+          {postActions.sort((a, b) => moment(a.created).diff(moment(b.created))).map((action) => (
             <ListItem
               id={`#${action._id}`}
               key={action._id}

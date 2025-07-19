@@ -24,7 +24,10 @@ export default function PostRouter() {
 
   if (location.pathname === '/post') {
     if (!tokenValidator(dispatch)) {
-      return <Redirect to="/search" />
+      // Redirect to invite request page with current URL as query parameter
+      const currentPath = location.pathname + location.search
+      const redirectUrl = `/auth/request-access?from=${encodeURIComponent(currentPath)}`
+      return <Redirect to={redirectUrl} />
     }
     return <SubmitPost setOpen={setOpen} />
   }

@@ -11,22 +11,21 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
+import useGuestGuard from '../../utils/useGuestGuard'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     padding: 10,
+    [theme.breakpoints.down('xs')]: {
+      padding: 0,
+    },
   },
   chat: {
-    width: 59,
-    height: 30,
-    fontSize: '1.7rem',
-    lineHeight: 1.25,
-    letterSpacing: 0.25,
-    color: '#474646',
-    fontFamily: 'Montserrat',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    marginBottom: 10, // Changed from marginTop to marginBottom for bottom positioning
+    fontWeight: 600,
+    fontSize: 14,
+    color: '#666',
   },
   input: {
     borderRadius: 6,
@@ -49,6 +48,7 @@ function PostChatSend(props) {
   const [text, setText] = useState('')
   const [error, setError] = useState(null) // eslint-disable-line no-unused-vars
   const user = useSelector((state) => state.user.data)
+  const ensureAuth = useGuestGuard()
   const [createMessage] = useMutation(SEND_MESSAGE, {
     onError: (err) => {
       setError(err)
@@ -62,6 +62,7 @@ function PostChatSend(props) {
   })
 
   const handleSubmit = async () => {
+    if (!ensureAuth()) return
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {

@@ -10,6 +10,7 @@ export const resolver_query = function () {
         activities: activityQuery.getUserActivities(),
         post: postQuery.getPost(),
         posts: postQuery.topPosts(),
+        topPosts: postQuery.topPosts(),
         featuredPosts: postQuery.getFeaturedPosts(),
         postMessageRoom: postQuery.getPostChatRoom(),
         userInviteRequests: userQuery.getUserInvites(),

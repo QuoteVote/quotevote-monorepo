@@ -25,6 +25,7 @@ import Avatar from '@material-ui/core/Avatar'
 import AvatarPreview from '../../components/Avatar'
 import Typography from '@material-ui/core/Typography'
 import { useSelector } from 'react-redux'
+import Hidden from '@material-ui/core/Hidden'
 
 // We've created this component so we can have a ref to the wrapper of the links that appears in our sidebar.
 // This was necessary so that we could initialize PerfectScrollbar on the links.
@@ -114,11 +115,13 @@ const MenuSidebar = (props) => {
   const createGuestLinks = () => {
     return [
       <ListItem key="logo">
-        <img
-          src="/icons/android-chrome-192x192.png"
-          alt="QuoteVote Logo"
-          style={{ height: '30px', width: 'auto' }}
-        />
+        <NavLink to="/" style={{ display: 'inline-block', width: '100%' }}>
+          <img
+            src="/icons/android-chrome-192x192.png"
+            alt="QuoteVote Logo"
+            style={{ height: '30px', width: 'auto', cursor: 'pointer' }}
+          />
+        </NavLink>
       </ListItem>,
       <ListItem key="donate" style={{ padding: '4px 8px' }}>
         <a
@@ -456,11 +459,13 @@ const MenuSidebar = (props) => {
               >
                 <MenuIcon />
               </IconButton>
-              <img
-                src="/icons/android-chrome-192x192.png"
-                alt="QuoteVote Logo"
-                style={{ height: '30px', width: 'auto' }}
-              />
+              <NavLink to="/" style={{ display: 'inline-block' }}>
+                <img
+                  src="/icons/android-chrome-192x192.png"
+                  alt="QuoteVote Logo"
+                  style={{ height: '30px', width: 'auto', cursor: 'pointer' }}
+                />
+              </NavLink>
             </Grid>
 
             {!loggedIn && (
@@ -504,27 +509,29 @@ const MenuSidebar = (props) => {
                       </Button>
                     </Tooltip>
                   </Grid>
-                  <Grid item>
-                    <a
-                      href="https://github.com/QuoteVote/quotevote-monorepo"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="GitHub"
-                      style={{
-                        color: 'black',
-                        textDecoration: 'none',
-                        width: '100%',
-                        display: 'block',
-                        padding: '8px 12px',
-                        fontSize: '18px',
-                      }}
-                    >
-                      <i
-                        className="fab fa-github"
-                        style={{ fontSize: 28, marginRight: '8px', color: "black" }}
-                      />
-                    </a>
-                  </Grid>
+                  <Hidden smDown>
+                    <Grid item>
+                      <a
+                        href="https://github.com/QuoteVote/quotevote-monorepo"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="GitHub"
+                        style={{
+                          color: 'black',
+                          textDecoration: 'none',
+                          width: '100%',
+                          display: 'block',
+                          padding: '8px 12px',
+                          fontSize: '18px',
+                        }}
+                      >
+                        <i
+                          className="fab fa-github"
+                          style={{ fontSize: 28, marginRight: '8px', color: "black" }}
+                        />
+                      </a>
+                    </Grid>
+                  </Hidden>
                   <Grid item>
                     <ChatMenu />
                   </Grid>

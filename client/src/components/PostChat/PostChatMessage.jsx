@@ -60,7 +60,7 @@ const useStyles = makeStyles(() => ({
 
 function PostChatMessage(props) {
   const { message } = props
-  const { username } = message.user
+  const { username, name } = message.user
   const history = useHistory()
   const classes = useStyles()
   const userId = useSelector((state) => state.user.data._id)
@@ -98,7 +98,14 @@ function PostChatMessage(props) {
           <Typography className={classes.text}>
             {message.text}
           </Typography>
-          <PostChatReactions created={message.created} messageId={message._id} reactions={messageReactions} isDefaultDirection={isDefaultDirection} />
+          <PostChatReactions 
+            created={message.created} 
+            messageId={message._id} 
+            reactions={messageReactions} 
+            isDefaultDirection={isDefaultDirection}
+            userName={name}
+            username={username}
+          />
         </Paper>
       </Grid>
     </Grid>

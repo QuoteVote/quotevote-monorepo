@@ -1,26 +1,22 @@
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import Avatar from '@material-ui/core/Avatar'
-import IconButton from '@material-ui/core/IconButton'
-import Badge from '@material-ui/core/Badge'
-import CloseIcon from '@material-ui/icons/Close'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import moment from 'moment'
+import React from 'react'
 import PropTypes from 'prop-types'
-import stringLimit from 'string-limit'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import DisplayAvatar from '../Avatar'
+import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import {
+  Avatar, Badge, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography,
+} from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
+import CloseIcon from '@material-ui/icons/Close'
+import moment from 'moment'
+import stringLimit from 'string-limit'
 import { DELETE_NOTIFICATION } from '../../graphql/mutations'
 import { GET_NOTIFICATIONS } from '../../graphql/query'
+import DisplayAvatar from '../Avatar'
 import { SET_SELECTED_POST } from '../../store/ui'
 import { tokenValidator } from 'store/user'
+import useGuestGuard from '../../utils/useGuestGuard'
 
 const NotificationBadge = withStyles(() => ({
   badge: {
@@ -81,10 +77,12 @@ function NotificationLists({ notifications, pageView }) {
   const client = useApolloClient()
   const dispatch = useDispatch()
   const history = useHistory()
+  const ensureAuth = useGuestGuard()
 
   const [removeNotification] = useMutation(DELETE_NOTIFICATION)
 
   const handleDelete = async (notificationId) => {
+    if (!ensureAuth()) return
     const newNotifications = notifications.filter((notification) => notification._id !== notificationId)
 
     client.writeQuery({

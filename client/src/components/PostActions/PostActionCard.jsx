@@ -53,6 +53,12 @@ const useStyles = makeStyles((theme) => ({
   date: {
     color: '#949292',
   },
+  userName: {
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
 }))
 
 function PostActionCard({ postAction, postUrl, selected }) {
@@ -131,7 +137,15 @@ function PostActionCard({ postAction, postUrl, selected }) {
         <AvatarDisplay height={20} width={20} {...avatar} />
       </IconButton>
       <Typography display="inline">
-        {name} <span className={classes.date}>{parsedDate}</span>
+        <span 
+          className={classes.userName}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRedirectToProfile();
+          }}
+        >
+          {name}
+        </span> <span className={classes.date}>{parsedDate}</span>
       </Typography>
       {type === 'Vote' && (
         <CardContent className={classes.content}>

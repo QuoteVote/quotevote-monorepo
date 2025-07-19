@@ -523,8 +523,8 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     }
   }
 
-  const handleRedirectToProfile = (profileUsername) => {
-    history.push(`/Profile/${profileUsername}`)
+  const handleRedirectToProfile = () => {
+    history.push(`/Profile/${username}`)
   }
 
   const pointsHeader = (
@@ -545,18 +545,6 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   const hideAlert = () => {
     setOpen(false)
   }
-
-  const cardTitle = (
-    <div>
-      <span className={classes.title}>{title}</span>
-      <IconButton size="small" id="copyBtn" onClick={copyToClipBoard}>
-        <LinkIcon />
-      </IconButton>
-      <IconButton size="small" onClick={handleReportPost}>
-        <BlockIcon className={classes.blockIcon} />
-      </IconButton>
-    </div>
-  )
 
   const handleApprovePost = async () => {
     if (!ensureAuth()) return
@@ -675,21 +663,34 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       <Card className={classes.postCard}>
         <CardHeader
           className={classes.header1}
-          title={cardTitle}
-          action={pointsHeader}
-        />
-        <CardHeader
-          className={classes.header2}
+          title={
+            <div>
+              <span className={classes.title}>{title}</span>
+              <IconButton size="small" id="copyBtn" onClick={copyToClipBoard}>
+                <LinkIcon />
+              </IconButton>
+              <IconButton size="small" onClick={handleReportPost}>
+                <BlockIcon className={classes.blockIcon} />
+              </IconButton>
+            </div>
+          }
+          subheader={
+            <div>
+              <span
+                style={{ cursor: 'pointer', fontWeight: 600, color: '#52b274' }}
+                onClick={handleRedirectToProfile}
+              >
+                {name}
+              </span>
+              <span style={{ color: '#888', marginLeft: 8 }}>{parsedCreated}</span>
+            </div>
+          }
           avatar={
-            <IconButton
-              size="small"
-              onClick={() => handleRedirectToProfile(creator.username)}
-            >
+            <IconButton size="small" onClick={handleRedirectToProfile}>
               <AvatarDisplay height={40} width={40} {...avatar} />
             </IconButton>
           }
-          title={name}
-          subheader={parsedCreated}
+          action={pointsHeader}
         />
         <CardContent style={{ fontSize: '16px' }}>
           {hasVoted && (

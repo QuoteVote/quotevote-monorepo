@@ -10,6 +10,11 @@ const PUBLIC_QUERIES = [
   'posts',
   'featuredPosts',
   'post',
+  'topPosts',
+  'featuredPosts',
+  'messages',
+  'actionReactions',
+  'messageReactions',
   // add more public queries/mutations
 ];
 
