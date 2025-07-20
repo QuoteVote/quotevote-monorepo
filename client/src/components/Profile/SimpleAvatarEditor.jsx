@@ -13,8 +13,8 @@ import {
   Typography,
   IconButton,
   Tooltip,
-} from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+} from '@mui/material'
+import { makeStyles } from '@mui/material/styles'
 import AvatarDisplay from '../Avatar'
 import { avatarOptions, useMobileDetection } from '../../utils/display'
 import { UPDATE_USER_AVATAR } from '../../graphql/mutations'

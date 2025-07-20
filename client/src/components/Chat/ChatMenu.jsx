@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
+import { makeStyles } from '@mui/material/styles'
+import { IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import ChatContent from './ChatContent'
 import { SET_CHAT_OPEN } from '../../store/chat'
 import { useMobileDetection } from '../../utils/display'
 import MobileDrawer from '../Notifications/MobileDrawer'
-import { withStyles } from '@material-ui/core/styles'
-import Badge from '@material-ui/core/Badge'
+import { withStyles } from '@mui/material/styles'
+import Badge from '@mui/material/Badge'
 
 const StyledBadge = withStyles(() => ({
   badge: {

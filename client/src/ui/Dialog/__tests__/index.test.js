@@ -1,5 +1,5 @@
 import React from 'react'
-import { ThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import theme from 'themes/SecondTheme'
 import { render } from '@testing-library/react'
 

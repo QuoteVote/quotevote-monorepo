@@ -1,5 +1,5 @@
-import { createTheme, makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
-import { Button } from '@material-ui/core'
+import { createTheme, makeStyles, ThemeProvider } from '@mui/material/styles'
+import { Button } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import GridContainer from '../../mui-pro/Grid/GridContainer'
@@ -76,7 +76,7 @@ function ActivityEmptyList() {
         />
       </GridItem>
       <GridItem xs={12}>
-        <MuiThemeProvider theme={customTheme}>
+        <ThemeProvider theme={customTheme}>
           <Button variant="contained" color="secondary" className={classes.buttons}>
             FIND FRIENDS
           </Button>
@@ -88,7 +88,7 @@ function ActivityEmptyList() {
           >
             GO TO SEARCH
           </Button>
-        </MuiThemeProvider>
+        </ThemeProvider>
       </GridItem>
     </GridContainer>
   )

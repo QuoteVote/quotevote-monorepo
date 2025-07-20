@@ -1,12 +1,12 @@
 /* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
-// @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormControl from '@material-ui/core/FormControl'
+// @mui/material components
+import withStyles from '@mui/material/styles/withStyles'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 // core components
 import CustomInput from 'mui-pro/CustomInput/CustomInput'

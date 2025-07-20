@@ -1,8 +1,8 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/material/styles'
 import styles from 'assets/jss/material-dashboard-pro-react/views/landingPageStyle'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import { isMobile } from 'react-device-detect'
-import withWidth from '@material-ui/core/withWidth'
+import withWidth from '@mui/material/withWidth'
 import GridItem from '../../mui-pro/Grid/GridItem'
 import GridContainer from '../../mui-pro/Grid/GridContainer'
 

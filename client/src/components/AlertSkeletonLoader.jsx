@@ -1,10 +1,10 @@
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
-import Skeleton from '@material-ui/lab/Skeleton'
+import GridList from '@mui/material/GridList'
+import GridListTile from '@mui/material/GridListTile'
+import Skeleton from '@mui/lab/Skeleton'
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Grid } from '@material-ui/core'
-import withWidth from '@material-ui/core/withWidth'
+import { Grid } from '@mui/material'
+import withWidth from '@mui/material/withWidth'
 
 function AlertSkeletonLoader({ cols, width }) {
   const iterator = cols > 1 ? 12 : 3

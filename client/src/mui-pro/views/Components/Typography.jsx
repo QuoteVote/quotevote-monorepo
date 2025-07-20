@@ -1,7 +1,7 @@
 import React from 'react'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
 
 // core components
 import Quote from 'mui-pro/Typography/Quote'

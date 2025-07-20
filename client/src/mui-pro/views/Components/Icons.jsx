@@ -2,9 +2,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Hidden from "@material-ui/core/Hidden";
+// @mui/material components
+import { makeStyles } from "@mui/material/styles";
+import Hidden from "@mui/material/Hidden";
 
 // core components
 import Heading from "mui-pro/Heading/Heading";

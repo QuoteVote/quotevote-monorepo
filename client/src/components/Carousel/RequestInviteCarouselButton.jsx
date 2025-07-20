@@ -1,9 +1,9 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 import { useHistory } from 'react-router'
 import PropTypes from 'prop-types'
-import Hidden from '@material-ui/core/Hidden'
-import Grid from '@material-ui/core/Grid'
+import Hidden from '@mui/material/Hidden'
+import Grid from '@mui/material/Grid'
 
 function RequestInviteCarouselButton({ classes }) {
   const history = useHistory()
