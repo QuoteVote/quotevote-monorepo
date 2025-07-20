@@ -9,8 +9,8 @@ import PrivateRoute from '../components/PrivateRoute'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 import Box from '@mui/material/Box'
-import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
-import { createTheme, makeStyles } from '@mui/styles'
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles'
+import { makeStyles } from '@mui/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
 import appRoutes from '../routes'
