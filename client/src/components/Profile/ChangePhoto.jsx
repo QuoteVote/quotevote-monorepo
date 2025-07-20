@@ -2,10 +2,10 @@ import React, { useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
 // MUI
-import { MuiThemeProvider as ThemeProvider, makeStyles } from '@material-ui/core/styles'
+import { ThemeProvider as ThemeProvider, makeStyles } from '@mui/material/styles'
 import {
   Typography, Grid,
-} from '@material-ui/core'
+} from '@mui/material'
 
 // Local
 import AvatarIconButtons from './AvatarIconButtons'

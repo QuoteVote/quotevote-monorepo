@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@material-ui/core'
+import { Button, Grid, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import { REQUEST_USER_ACCESS_MUTATION } from '../../graphql/mutations'

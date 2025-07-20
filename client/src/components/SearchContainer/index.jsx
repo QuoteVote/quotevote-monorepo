@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-import { makeStyles, fade } from '@material-ui/core/styles'
-import InputBase from '@material-ui/core/InputBase'
-import SearchIcon from '@material-ui/icons/Search'
+import { alpha } from '@mui/material/styles'
+import { makeStyles } from '@mui/styles'
+import InputBase from '@mui/material/InputBase'
+import SearchIcon from '@mui/icons-material/Search'
 import Card from 'mui-pro/Card/Card'
 import CardHeader from 'mui-pro/Card/CardHeader'
 import { useQuery } from '@apollo/react-hooks'
@@ -18,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,

@@ -3,22 +3,22 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 // import { Manager, Target, Popper } from "react-popper";
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import MenuItem from '@material-ui/core/MenuItem'
-import MenuList from '@material-ui/core/MenuList'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Paper from '@material-ui/core/Paper'
-import Grow from '@material-ui/core/Grow'
-import Hidden from '@material-ui/core/Hidden'
-import Popper from '@material-ui/core/Popper'
-import Divider from '@material-ui/core/Divider'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Paper from '@mui/material/Paper'
+import Grow from '@mui/material/Grow'
+import Hidden from '@mui/material/Hidden'
+import Popper from '@mui/material/Popper'
+import Divider from '@mui/material/Divider'
 
-// @material-ui/icons
-import Person from '@material-ui/icons/Person'
-import Notifications from '@material-ui/icons/Notifications'
-import Dashboard from '@material-ui/icons/Dashboard'
-import Search from '@material-ui/icons/Search'
+// @mui/icons-material
+import Person from '@mui/icons-material/Person'
+import Notifications from '@mui/icons-material/Notifications'
+import Dashboard from '@mui/icons-material/Dashboard'
+import Search from '@mui/icons-material/Search'
 
 // core components
 import CustomInput from 'mui-pro/CustomInput/CustomInput'

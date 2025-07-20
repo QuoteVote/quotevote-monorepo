@@ -5,10 +5,10 @@ import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 
 // MUI
-import { MuiThemeProvider as ThemeProvider, makeStyles } from '@material-ui/core/styles'
+import { ThemeProvider as ThemeProvider, makeStyles } from '@mui/material/styles'
 import {
   Avatar, Typography, Grid, Button,
-} from '@material-ui/core'
+} from '@mui/material'
 
 // Local
 import { updateAvatar } from 'store/user'

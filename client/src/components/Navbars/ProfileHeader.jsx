@@ -6,17 +6,17 @@ import _ from 'lodash'
 //  MUI
 import {
   makeStyles,
-  MuiThemeProvider as ThemeProvider,
-} from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import Button from '@material-ui/core/Button'
-import ChatIcon from '@material-ui/icons/Chat'
-import { Tooltip } from '@material-ui/core'
+  ThemeProvider as ThemeProvider,
+} from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
+import ChatIcon from '@mui/icons-material/Chat'
+import { Tooltip } from '@mui/material'
 
 //  Local
 import FollowButton from 'components/CustomButtons/FollowButton'
-import { Avatar } from '@material-ui/core'
+import { Avatar } from '@mui/material'
 import { useQuery } from '@apollo/react-hooks'
 import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'

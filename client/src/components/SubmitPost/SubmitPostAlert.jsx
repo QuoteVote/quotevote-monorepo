@@ -2,10 +2,10 @@ import React from 'react'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import {
   Grid, IconButton, Tooltip, Typography,
-} from '@material-ui/core'
-import AssignmentIcon from '@material-ui/icons/Assignment'
+} from '@mui/material'
+import AssignmentIcon from '@mui/icons-material/Assignment'
 import { useHistory } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/material/styles'
 import * as copy from 'clipboard-copy'
 import PropTypes from 'prop-types'
 import GridItem from '../../mui-pro/Grid/GridItem'

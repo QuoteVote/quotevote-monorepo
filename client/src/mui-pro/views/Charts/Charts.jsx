@@ -2,11 +2,11 @@
 // react plugin for creating charts
 import ChartistGraph from "react-chartist";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+// @mui/material components
+import { makeStyles } from "@mui/material/styles";
 
-// @material-ui/icons
-import Timeline from "@material-ui/icons/Timeline";
+// @mui/icons-material
+import Timeline from "@mui/icons-material/Timeline";
 
 // core components
 import Heading from "mui-pro/Heading/Heading";

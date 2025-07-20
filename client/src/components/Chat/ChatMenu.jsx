@@ -1,52 +1,22 @@
 import { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
+import { IconButton } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import ChatContent from './ChatContent'
 import { SET_CHAT_OPEN } from '../../store/chat'
 import { useMobileDetection } from '../../utils/display'
 import MobileDrawer from '../Notifications/MobileDrawer'
-import { withStyles } from '@material-ui/core/styles'
-import Badge from '@material-ui/core/Badge'
+import Badge from '@mui/material/Badge'
 
-const StyledBadge = withStyles(() => ({
-  badge: {
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
     right: 20,
     top: 20,
   },
-}))(Badge)
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  paper: {
-    marginRight: theme.spacing(2),
-  },
-  tipColor: {
-    backgroundColor: '',
-    backgroundImage: '',
-  },
-  drawerPaperStyle: {
-    width: '100%',
-    maxWidth: 400,
-    [theme.breakpoints.up('sm')]: {
-      width: 400,
-    },
-    backgroundImage: 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)',
-  },
-  titleStyle: {
-    color: '#ffffff',
-    fontWeight: 600,
-    textTransform: 'none',
-  },
-  tooltipPopper: {
-    marginTop: '-8px',
-  },
 }))
+
 function ChatMenu({ fontSize }) {
-  const classes = useStyles()
   const dispatch = useDispatch()
   const setOpen = (open) => {
     dispatch(SET_CHAT_OPEN(open))
@@ -61,6 +31,18 @@ function ChatMenu({ fontSize }) {
   const [isHovered, setIsHovered] = useState(false)
 
   const isMobileDevice = useMobileDetection()
+
+  const drawerPaperStyle = {
+    width: { xs: '100%', sm: 400 },
+    maxWidth: 400,
+    backgroundImage: 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)',
+  }
+
+  const titleStyle = {
+    color: '#ffffff',
+    fontWeight: 600,
+    textTransform: 'none',
+  }
 
   const appBarStyle = {
     backgroundColor: 'transparent',
@@ -110,9 +92,9 @@ function ChatMenu({ fontSize }) {
         onClose={() => setOpen(false)}
         title="Chat"
         anchor="right"
-        drawerPaperStyle={classes.drawerPaperStyle}
+        drawerPaperStyle={drawerPaperStyle}
         appBarStyle={appBarStyle}
-        titleStyle={classes.titleStyle}
+        titleStyle={titleStyle}
         backButtonStyle={backButtonStyle}
       >
         <ChatContent />

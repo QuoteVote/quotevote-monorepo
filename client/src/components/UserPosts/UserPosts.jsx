@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
-import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Button, Dialog, CircularProgress, Box } from '@material-ui/core';
+import { makeStyles } from '@mui/material/styles';
+import { Typography, Button, Dialog, CircularProgress, Box } from '@mui/material';
 import PostList from '../Post/PostsList';
 import { GET_TOP_POSTS } from '../../graphql/query';
 import ErrorBoundary from '../ErrorBoundary';

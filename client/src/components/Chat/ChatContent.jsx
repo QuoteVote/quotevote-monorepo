@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/material/styles'
 import { useSelector } from 'react-redux'
 import ChatSearchInput from './ChatSearchInput'
 import BuddyList from '../BuddyList'

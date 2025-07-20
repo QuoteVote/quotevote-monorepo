@@ -3,16 +3,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Hidden from '@material-ui/core/Hidden'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Hidden from '@mui/material/Hidden'
 
 // material-ui icons
-import Menu from '@material-ui/icons/Menu'
-import MoreVert from '@material-ui/icons/MoreVert'
-import ViewList from '@material-ui/icons/ViewList'
+import Menu from '@mui/icons-material/Menu'
+import MoreVert from '@mui/icons-material/MoreVert'
+import ViewList from '@mui/icons-material/ViewList'
 
 // core components
 import Button from 'mui-pro/CustomButtons/Button'

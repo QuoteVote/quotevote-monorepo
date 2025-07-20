@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
+import { styled } from '@mui/material/styles'
+import { IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { useQuery, useSubscription } from '@apollo/react-hooks'
-import Badge from '@material-ui/core/Badge'
-import withStyles from '@material-ui/core/styles/withStyles'
+import Badge from '@mui/material/Badge'
 import RichTooltip from '../Chat/RichToolTip'
 import NotificationContent from './Notification'
 import MobileDrawer from './MobileDrawer'
@@ -13,47 +12,36 @@ import { useMobileDetection } from '../../utils/display'
 import { GET_NOTIFICATIONS } from '../../graphql/query'
 import { NEW_NOTIFICATION_SUBSCRIPTION } from '../../graphql/subscription'
 
-const StyledBadge = withStyles(() => ({
-  badge: {
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
     right: 20,
     top: 20,
   },
-}))(Badge)
+}))
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  paper: {
-    marginRight: theme.spacing(2),
-  },
-  tipColor: {
-    backgroundColor: '#F1F1F1',
-  },
+const Root = styled('div')(() => ({
+  display: 'flex',
 }))
 
 function NotificationMenu({ fontSize }) {
-  const classes = useStyles()
   const isMobileDevice = useMobileDetection()
   const [open, setOpen] = React.useState(false)
   const selectedRoom = useSelector((state) => state.chat.selectedRoom)
-  const tipColor = classes.tipColor.backgroundColor
-  const tipBackgroundImage = classes.tipColor.backgroundColor
+  const tipColor = '#F1F1F1'
+  const tipBackgroundImage = '#F1F1F1'
   const [isHovered, setIsHovered] = useState(false)
 
   const { loading, data, refetch, error } = useQuery(GET_NOTIFICATIONS)
   const userId = useSelector((state) => state.user.data._id)
-  useSubscription(
-    NEW_NOTIFICATION_SUBSCRIPTION,
-    {
-      variables: { userId },
-      onSubscriptionData: async () => {
-        await refetch()
-      },
+  useSubscription(NEW_NOTIFICATION_SUBSCRIPTION, {
+    variables: { userId },
+    onSubscriptionData: async () => {
+      await refetch()
     },
-  )
+  })
 
-  const { notifications } = loading || error || !data ? { notifications: [] } : data
+  const { notifications } =
+    loading || error || !data ? { notifications: [] } : data
 
   const handleToggle = () => {
     setOpen(!open)
@@ -66,7 +54,14 @@ function NotificationMenu({ fontSize }) {
   // Desktop popover content
   const popoverContent = (
     <RichTooltip
-      content={<NotificationContent loading={loading} notifications={notifications} refetch={refetch} setOpenPopUp={setOpen} />}
+      content={
+        <NotificationContent
+          loading={loading}
+          notifications={notifications}
+          refetch={refetch}
+          setOpenPopUp={setOpen}
+        />
+      }
       open={open}
       placement="bottom-start"
       onClose={() => setOpen(false)}
@@ -80,22 +75,25 @@ function NotificationMenu({ fontSize }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <IconButton
-          aria-label="Chat"
-          color="inherit"
-          onClick={handleToggle}
-        >
+        <IconButton aria-label="Chat" color="inherit" onClick={handleToggle}>
           {isHovered ? (
-            <img 
-              src="/assets/NotificationsActive.svg" 
-              alt="notifications active" 
-              style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+            <img
+              src="/assets/NotificationsActive.svg"
+              alt="notifications active"
+              style={{
+                width: fontSize === 'large' ? '49px' : '32px',
+                height: fontSize === 'large' ? '46px' : '30px',
+              }}
             />
           ) : (
-            <img 
-              src="/assets/Notifications.svg" 
-              alt="notifications" 
-              style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+            <img
+              src="/assets/Notifications.svg"
+              alt="notifications"
+              style={{
+                fontSize: fontSize,
+                width: fontSize === 'large' ? '49px' : '32px',
+                height: fontSize === 'large' ? '46px' : '30px',
+              }}
             />
           )}
         </IconButton>
@@ -104,7 +102,7 @@ function NotificationMenu({ fontSize }) {
   )
 
   return (
-    <div className={classes.root}>
+    <Root>
       {isMobileDevice ? (
         <>
           <StyledBadge
@@ -119,16 +117,23 @@ function NotificationMenu({ fontSize }) {
               onClick={handleToggle}
             >
               {isHovered ? (
-                <img 
-                  src="/assets/NotificationsActive.svg" 
-                  alt="notifications active" 
-                  style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+                <img
+                  src="/assets/NotificationsActive.svg"
+                  alt="notifications active"
+                  style={{
+                    width: fontSize === 'large' ? '49px' : '32px',
+                    height: fontSize === 'large' ? '46px' : '30px',
+                  }}
                 />
               ) : (
-                <img 
-                  src="/assets/Notifications.svg" 
-                  alt="notifications" 
-                  style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+                <img
+                  src="/assets/Notifications.svg"
+                  alt="notifications"
+                  style={{
+                    fontSize: fontSize,
+                    width: fontSize === 'large' ? '49px' : '32px',
+                    height: fontSize === 'large' ? '46px' : '30px',
+                  }}
                 />
               )}
             </IconButton>
@@ -139,10 +144,10 @@ function NotificationMenu({ fontSize }) {
             title="Notifications"
             anchor="right"
           >
-            <NotificationContent 
-              loading={loading} 
-              notifications={notifications} 
-              refetch={refetch} 
+            <NotificationContent
+              loading={loading}
+              notifications={notifications}
+              refetch={refetch}
               setOpenPopUp={setOpen}
               pageView={true}
             />
@@ -151,7 +156,7 @@ function NotificationMenu({ fontSize }) {
       ) : (
         popoverContent
       )}
-    </div>
+    </Root>
   )
 }
 NotificationMenu.propTypes = {

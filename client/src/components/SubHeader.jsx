@@ -1,40 +1,27 @@
 import PropTypes from 'prop-types'
-import Tooltip from '@material-ui/core/Tooltip'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import { Grid, Typography } from '@material-ui/core'
+import Tooltip from '@mui/material/Tooltip'
+import { styled } from '@mui/material/styles'
+import { Grid, Typography } from '@mui/material'
 
-const useStyles = makeStyles((theme) => ({
-  header: {
-    marginTop: 10,
-    height: '85px',
-    borderRadius: '6px',
-  },
-  headerName: {
-    color: '#424556',
-    font: 'Montserrat',
-    fontWeight: 'bold',
-    height: '28px',
-    fontSize: '24px',
-    textAlign: 'center',
-    [theme.breakpoints.down('xs')]: {
-      fontSize: '18px',
-      paddingLeft: 5,
-      textAlign: 'left',
-    },
-  },
-}))
-
-const StyledTooltip = withStyles({
-  tooltip: {
+const StyledTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(() => ({
+  '& .MuiTooltip-tooltip': {
     backgroundColor: '#20e08e',
   },
-})(Tooltip)
+}))
 
 const ValueLabelComponent = (props) => {
   const { children, open, value } = props
   const prefix = value < 0 ? '-' : '+'
   return (
-    <StyledTooltip open={open} enterTouchDelay={0} placement="top" title={`${prefix} ${value}`} arrow>
+    <StyledTooltip
+      open={open}
+      enterTouchDelay={0}
+      placement="top"
+      title={`${prefix} ${value}`}
+      arrow
+    >
       {children}
     </StyledTooltip>
   )
@@ -46,19 +33,31 @@ ValueLabelComponent.propTypes = {
   value: PropTypes.number.isRequired,
 }
 
-export default function SubHeader({ headerName, showFilterIconButton = true, setOffset }) {
-  const classes = useStyles()
-
+export default function SubHeader({
+  headerName,
+  showFilterIconButton = true,
+  setOffset,
+}) {
   return (
     <Grid
       container
       direction="row"
       justify="center"
       alignItems="center"
-      className={classes.header}
+      sx={{ mt: 1, height: '85px', borderRadius: '6px' }}
     >
       <Grid item xs={12} sm={3} md={3}>
-        <Typography className={classes.headerName}>
+        <Typography
+          sx={{
+            color: '#424556',
+            fontFamily: 'Montserrat',
+            fontWeight: 'bold',
+            height: '28px',
+            fontSize: { xs: '18px', sm: '24px' },
+            textAlign: { xs: 'left', sm: 'center' },
+            pl: { xs: 0.625, sm: 0 },
+          }}
+        >
           {headerName}
         </Typography>
       </Grid>

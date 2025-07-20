@@ -1,19 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Checkbox from '@material-ui/core/Checkbox'
-import Tooltip from '@material-ui/core/Tooltip'
-import IconButton from '@material-ui/core/IconButton'
-import Table from '@material-ui/core/Table'
-import TableRow from '@material-ui/core/TableRow'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-// @material-ui/icons
-import Edit from '@material-ui/icons/Edit'
-import Close from '@material-ui/icons/Close'
-import Check from '@material-ui/icons/Check'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import Checkbox from '@mui/material/Checkbox'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
+import Table from '@mui/material/Table'
+import TableRow from '@mui/material/TableRow'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+// @mui/icons-material
+import Edit from '@mui/icons-material/Edit'
+import Close from '@mui/icons-material/Close'
+import Check from '@mui/icons-material/Check'
 // core components
 import styles from 'assets/jss/material-dashboard-pro-react/components/tasksStyle'
 
