@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-// @material-ui/icons
-import ExpandMore from '@material-ui/icons/ExpandMore'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import ExpansionPanel from '@mui/material/ExpansionPanel'
+import ExpansionPanelSummary from '@mui/material/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@mui/material/ExpansionPanelDetails'
+// @mui/icons-material
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import styles from 'assets/jss/material-dashboard-pro-react/components/accordionStyle'
 
 const useStyles = makeStyles(styles)

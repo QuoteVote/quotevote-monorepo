@@ -2,21 +2,21 @@ import React from 'react'
 
 // firebase
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Icon from '@material-ui/core/Icon'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import InputAdornment from '@mui/material/InputAdornment'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Icon from '@mui/material/Icon'
 
-// @material-ui/icons
-import Timeline from '@material-ui/icons/Timeline'
-import Code from '@material-ui/icons/Code'
-import Group from '@material-ui/icons/Group'
-import Face from '@material-ui/icons/Face'
-import Email from '@material-ui/icons/Email'
-// import LockOutline from "@material-ui/icons/LockOutline";
-import Check from '@material-ui/icons/Check'
+// @mui/icons-material
+import Timeline from '@mui/icons-material/Timeline'
+import Code from '@mui/icons-material/Code'
+import Group from '@mui/icons-material/Group'
+import Face from '@mui/icons-material/Face'
+import Email from '@mui/icons-material/Email'
+// import LockOutline from "@mui/icons-material/LockOutline";
+import Check from '@mui/icons-material/Check'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

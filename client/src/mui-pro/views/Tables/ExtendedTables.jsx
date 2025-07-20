@@ -1,17 +1,17 @@
 import React from 'react'
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Checkbox from '@material-ui/core/Checkbox'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import Checkbox from '@mui/material/Checkbox'
 
 // material-ui icons
-import Assignment from '@material-ui/icons/Assignment'
-import Person from '@material-ui/icons/Person'
-import Edit from '@material-ui/icons/Edit'
-import Close from '@material-ui/icons/Close'
-import Check from '@material-ui/icons/Check'
-import Remove from '@material-ui/icons/Remove'
-import Add from '@material-ui/icons/Add'
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
+import Assignment from '@mui/icons-material/Assignment'
+import Person from '@mui/icons-material/Person'
+import Edit from '@mui/icons-material/Edit'
+import Close from '@mui/icons-material/Close'
+import Check from '@mui/icons-material/Check'
+import Remove from '@mui/icons-material/Remove'
+import Add from '@mui/icons-material/Add'
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

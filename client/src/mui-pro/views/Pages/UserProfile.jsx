@@ -1,9 +1,9 @@
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import InputLabel from '@material-ui/core/InputLabel'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+import InputLabel from '@mui/material/InputLabel'
 
-// @material-ui/icons
-import PermIdentity from '@material-ui/icons/PermIdentity'
+// @mui/icons-material
+import PermIdentity from '@mui/icons-material/PermIdentity'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

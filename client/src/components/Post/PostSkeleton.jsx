@@ -1,8 +1,8 @@
 import React from 'react'
 import {
   Card, CardActions, CardContent, CardHeader, Grid,
-} from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
+} from '@mui/material'
+import { Skeleton } from '@mui/lab'
 
 function PostSkeleton() {
   return (

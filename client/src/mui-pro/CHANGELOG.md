@@ -26,8 +26,8 @@
 + gulp-append-prepend@1.0.8
 ### Updated dependencies
 ```
-@material-ui/core         4.1.0   →    4.3.2
-@material-ui/icons        4.1.0   →    4.2.1
+@mui/material         4.1.0   →    4.3.2
+@mui/icons-material        4.1.0   →    4.2.1
 nouislider               13.1.5   →   14.0.2
 react                    16.8.6   →   16.9.0
 react-big-calendar       0.21.0   →   0.22.0
@@ -65,8 +65,8 @@ typescript                3.5.1   →    3.5.3
 - eslint@5.16.0
 ### Updated dependencies
 ```
-@material-ui/core          3.9.2   →    4.1.0
-@material-ui/icons         3.0.2   →    4.1.0
+@mui/material          3.9.2   →    4.1.0
+@mui/icons-material         3.0.2   →    4.1.0
 history                    4.7.2   →    4.9.0
 node-sass                 4.11.0   →   4.12.0
 nouislider                13.1.0   →   13.1.5
@@ -119,8 +119,8 @@ prettier                  1.16.4   →   1.18.2
 ### Added dependencies
 - `node-sass` version: **4.11.0**
 ### Updated dependencies
-- `@material-ui/core`          *3.1.1*   →     **3.9.1**
-- `@material-ui/icons`         *3.0.1*   →     **3.0.2**
+- `@mui/material`          *3.1.1*   →     **3.9.1**
+- `@mui/icons-material`         *3.0.1*   →     **3.0.2**
 - `moment`                    *2.22.2*   →    **2.24.0**
 - `nouislider`                *12.0.0*   →    **13.1.0**
 - `perfect-scrollbar`           *1.4.0*   →     **1.4.4**
@@ -168,8 +168,8 @@ prettier                  1.16.4   →   1.18.2
 - `@babel/core`                      `7.0.0`
 - `nouislider`                      `12.0.0` (instead of `react-nouislider`)
 ### Updated dependencies
-- `@material-ui/core`                `1.4.3`   →     `3.1.1`
-- `@material-ui/icons`               `2.0.1`   →     `3.0.1`
+- `@mui/material`                `1.4.3`   →     `3.1.1`
+- `@mui/icons-material`               `2.0.1`   →     `3.0.1`
 - `@types/googlemaps`              `3.30.11`   →   `3.30.13`
 - `ajv`                              `6.5.2`   →     `5.0.0`
 - `react`                           `16.4.1`   →    `16.5.2`
@@ -209,9 +209,9 @@ prettier                  1.16.4   →   1.18.2
 - Run `prettier` (minor code writting bugs)
 - Added lint commands (please read the live docs)
 - Added back the `helpText` prop on `CustomInput` component (if the `CustomInput` has the `error` prop set, the `helpText` wil have error color, if the `success` prop is set on `CustomInput` then the `helpText` will have success color)
-- Deleted the `Clear` (icon that appeared on `error` for `CustomInput`) and `Check` (icon that appeared on `success` for `CustomInput`) - now you should use `InputAdornment` from `@material-ui/core`
-- Changed `CustomDropdown`, now it uses `@material-ui/core/Popper`, instead of `{ Manager, Target, Popper }` from `react-popper`
-- Changed the dropdown link in `HeaderLinks`, now it uses `@material-ui/core/Popper`, instead of `{ Manager, Target, Popper }` from `react-popper`
+- Deleted the `Clear` (icon that appeared on `error` for `CustomInput`) and `Check` (icon that appeared on `success` for `CustomInput`) - now you should use `InputAdornment` from `@mui/material`
+- Changed `CustomDropdown`, now it uses `@mui/material/Popper`, instead of `{ Manager, Target, Popper }` from `react-popper`
+- Changed the dropdown link in `HeaderLinks`, now it uses `@mui/material/Popper`, instead of `{ Manager, Target, Popper }` from `react-popper`
 - Github issues solved:
   - `https://github.com/creativetimofficial/ct-material-dashboard-pro-react/issues/34`
   - `https://github.com/creativetimofficial/ct-material-dashboard-pro-react/issues/35`
@@ -224,8 +224,8 @@ prettier                  1.16.4   →   1.18.2
 ### Added dependencies
 - `@babel/runtime v7.0.0-beta.55`
 ### Updated dependencies
-- `@material-ui/core v1.2.0` to `@material-ui/core v1.4.3`
-- `@material-ui/icons v1.1.0` to `@material-ui/icons v2.0.1`
+- `@mui/material v1.2.0` to `@mui/material v1.4.3`
+- `@mui/icons-material v1.1.0` to `@mui/icons-material v2.0.1`
 - `@types/googlemaps v3.30.8` to `@types/googlemaps v3.30.11`
 - `ajv v6.5.0` to `ajv v6.5.2`
 - `moment v2.22.1` to `moment v2.22.2`
@@ -317,12 +317,12 @@ prettier                  1.16.4   →   1.18.2
 ### Deleted dependencies
 - `material-ui@1.0.0-beta.41`
 ### Added dependencies
-- `@material-ui/core@1.2.0` (instead of `material-ui@1.0.0-beta.41`)
+- `@mui/material@1.2.0` (instead of `material-ui@1.0.0-beta.41`)
 - `ajv@6.5.0` to stop the warning `npm **WARN** ajv-keywords@3.2.0 requires a peer of ajv@^6.0.0 but none is installed. You must install peer dependencies yourself.`
 - `@types/markerclustererplus@2.1.33` to stop the warning `npm **WARN** react-google-maps@9.4.5 requires a peer of @types/markerclustererplus@^2.1.29 but none is installed. You must install peer dependencies yourself.`
 - `@types/googlemaps@3.30.8` to stop the warning `npm **WARN** react-google-maps@9.4.5 requires a peer of @types/googlemaps@^3.0.0 but none is installed. You must install peer dependencies yourself.`
 ### Updated dependencies
-- `@material-ui/icons@1.0.0-beta.42` to `@material-ui/icons@1.1.0`
+- `@mui/icons-material@1.0.0-beta.42` to `@mui/icons-material@1.1.0`
 - `node-sass-chokidar@1.2.2` to `node-sass-chokidar@1.3.0`
 - `npm-run-all@4.1.2` to `npm-run-all@4.1.3`
 - `react@16.2.0` to `react@16.4.0`
@@ -343,7 +343,7 @@ prettier                  1.16.4   →   1.18.2
 ### Deleted dependencies
 - `material-ui-icons@1.0.0-beta.36`
 ### Added dependencies
-- `@material-ui/icons@1.0.0-beta.42` (instead of `material-ui-icons@1.0.0-beta.36`)
+- `@mui/icons-material@1.0.0-beta.42` (instead of `material-ui-icons@1.0.0-beta.36`)
 ### Updated dependencies
 - `material-ui@1.0.0-beta.34` to `material-ui@1.0.0-beta.41`
 - `npm-run-all@4.1.1` to `npm-run-all@4.1.2`

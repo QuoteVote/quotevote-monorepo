@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
-import { Avatar } from '@material-ui/core'
+import { makeStyles } from '@mui/material/styles'
+import { Avatar } from '@mui/material'
 import DisplayAvatar from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({

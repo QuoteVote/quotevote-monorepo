@@ -10,8 +10,8 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
 
 // core components
 import AdminNavbar from 'mui-pro/Navbars/AdminNavbar'

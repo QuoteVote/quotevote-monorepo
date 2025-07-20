@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/material/styles'
 import {
   Grid,
   Typography,
@@ -6,11 +6,11 @@ import {
   Paper,
   IconButton,
   Button,
-} from '@material-ui/core'
+} from '@mui/material'
 import { useQuery } from '@apollo/react-hooks'
 import { useSelector } from 'react-redux'
 import { useState, useEffect, useMemo } from 'react'
-import SearchIcon from '@material-ui/icons/Search'
+import SearchIcon from '@mui/icons-material/Search'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import format from 'date-fns/format'
@@ -22,7 +22,7 @@ import ErrorBoundary from '../../components/ErrorBoundary'
 import Carousel from '../../components/Carousel/Carousel'
 import PostCard from '../../components/Post/PostCard'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import Tooltip from '@material-ui/core/Tooltip'
+import Tooltip from '@mui/material/Tooltip'
 import SearchGuestSections from '../../components/SearchContainer/SearchGuestSections'
 import GuestFooter from '../../components/GuestFooter'
 
