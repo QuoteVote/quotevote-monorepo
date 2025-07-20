@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { tokenValidator, userLogin } from 'store/user'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'

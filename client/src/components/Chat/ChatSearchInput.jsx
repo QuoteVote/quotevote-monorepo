@@ -1,9 +1,9 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import InputBase from '@material-ui/core/InputBase'
-import IconButton from '@material-ui/core/IconButton'
-import SearchIcon from '@material-ui/icons/Search'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
+import InputBase from '@mui/material/InputBase'
+import IconButton from '@mui/material/IconButton'
+import Search from '@mui/icons-material/Search'
 import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +42,7 @@ function ChatSearchInput({ setSearch }) {
         onChange={handleInput}
       />
       <IconButton type="submit" className={classes.iconButton} aria-label="search">
-        <SearchIcon />
+        <Search />
       </IconButton>
     </Paper>
   )

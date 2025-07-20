@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { tokenValidator } from 'store/user'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -9,7 +9,7 @@ import {
   Grid,
   Button,
   Hidden,
-} from '@material-ui/core'
+} from '@mui/material'
 import { SET_SELECTED_PLAN } from 'store/ui'
 import { isMobile } from 'react-device-detect'
 

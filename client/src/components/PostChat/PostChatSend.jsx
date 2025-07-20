@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING } from 'store/chat'
 import { useMutation } from '@apollo/react-hooks'
-import { Grid, InputBase } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Hidden from '@material-ui/core/Hidden'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
+import { Grid, InputBase } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 
@@ -127,11 +127,11 @@ function PostChatSend(props) {
       alignItems="center"
       className={classes.root}
     >
-      <Hidden only={['xs']}>
+      <Box sx={{ display: { xs: 'block', sm: 'block', md: 'block' } }}>
         <Grid item sm={2}>
           <Typography className={classes.chat}>Chat</Typography>
         </Grid>
-      </Hidden>
+      </Box>
       <Grid item sm={10} xs={12}>
         <Paper elevation={0}>
           <InputBase

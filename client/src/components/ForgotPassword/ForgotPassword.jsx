@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
-import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import Link from '@material-ui/core/Link'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import EmailIcon from '@material-ui/icons/Email'
-import { CircularProgress } from '@material-ui/core'
-import IconButton from '@material-ui/core/IconButton'
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import { makeStyles } from '@mui/styles'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
+import InputAdornment from '@mui/material/InputAdornment'
+import Email from '@mui/icons-material/Email'
+import { CircularProgress } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import ArrowBackIos from '@mui/icons-material/ArrowBackIos'
 import { useHistory } from 'react-router-dom'
 import Card from '../../mui-pro/Card/Card'
 import CardBody from '../../mui-pro/Card/CardBody'
@@ -82,7 +82,7 @@ function ForgotPasswordForm({
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <EmailIcon className={classes.icon} />
+              <Email className={classes.icon} />
             </InputAdornment>
           ),
         }}
@@ -148,7 +148,7 @@ function ForgotPassword({
               color="inherit"
               onClick={handleGoBack}
             >
-              <ArrowBackIosIcon />
+              <ArrowBackIos />
             </IconButton>
             <span className={classes.header}>
               Forgot password?

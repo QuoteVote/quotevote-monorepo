@@ -2,13 +2,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 // @material-ui/icons
-import Face from '@material-ui/icons/Face'
-import RecordVoiceOver from '@material-ui/icons/RecordVoiceOver'
-import Email from '@material-ui/icons/Email'
+import Face from '@mui/icons-material/Face'
+import RecordVoiceOver from '@mui/icons-material/RecordVoiceOver'
+import Email from '@mui/icons-material/Email'
 
 // @material-ui/core components
-import withStyles from '@material-ui/core/styles/withStyles'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import withStyles from '@mui/styles/withStyles'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

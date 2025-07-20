@@ -1,14 +1,14 @@
 import React from 'react'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Icon from '@material-ui/core/Icon'
+import { makeStyles } from '@mui/styles'
+import Icon from '@mui/material/Icon'
 
 // @material-ui/icons
-// import Weekend from "@material-ui/icons/Weekend";
-import Home from '@material-ui/icons/Home'
-import Business from '@material-ui/icons/Business'
-import AccountBalance from '@material-ui/icons/AccountBalance'
+// import Weekend from '@mui/icons-material/Weekend';
+import Home from '@mui/icons-material/Home'
+import Business from '@mui/icons-material/Business'
+import AccountBalance from '@mui/icons-material/AccountBalance'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

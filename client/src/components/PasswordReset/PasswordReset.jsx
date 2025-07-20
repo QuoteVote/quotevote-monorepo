@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
-import { makeStyles } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import LockIcon from '@material-ui/icons/LockOutlined'
-import { CircularProgress } from '@material-ui/core'
-import IconButton from '@material-ui/core/IconButton'
-import Visibility from '@material-ui/icons/Visibility'
-import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import { makeStyles } from '@mui/styles'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Grid from '@mui/material/Grid'
+import InputAdornment from '@mui/material/InputAdornment'
+import Lock from '@mui/icons-material/Lock'
+import { CircularProgress } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useHistory } from 'react-router-dom'
-import Link from '@material-ui/core/Link'
-import SentimentDissatisfiedOutlinedIcon from '@material-ui/icons/SentimentDissatisfiedOutlined'
-import ErrorIcon from '@material-ui/icons/Error'
+import Link from '@mui/material/Link'
+import SentimentDissatisfiedOutlined from '@mui/icons-material/SentimentDissatisfiedOutlined'
+import Error from '@mui/icons-material/Error'
 import CardBody from '../../mui-pro/Card/CardBody'
 import Card from '../../mui-pro/Card/Card'
 import Loader from '../common/Loader'
@@ -102,7 +102,7 @@ function PasswordResetForm({
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <LockIcon className={classes.icon} />
+              <Lock className={classes.icon} />
             </InputAdornment>
           ),
           endAdornment: (
@@ -147,7 +147,7 @@ function PasswordResetForm({
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <LockIcon className={classes.icon} />
+              <Lock className={classes.icon} />
             </InputAdornment>
           ),
         }}
@@ -261,7 +261,7 @@ function PasswordReset({
               {!isValidToken && (
                 <>
                   <Grid item>
-                    <SentimentDissatisfiedOutlinedIcon fontSize="large" />
+                    <SentimentDissatisfiedOutlined fontSize="large" />
                   </Grid>
                   <Grid item>
                     <Typography className={classes.header}>
@@ -270,7 +270,7 @@ function PasswordReset({
                   </Grid>
                   <Grid item>
                     <Typography className={classes.errorSubText}>
-                      <ErrorIcon fontSize="medium" />
+                      <Error fontSize="medium" />
                       Sorry, your password reset link is invalid or expired.
                     </Typography>
                   </Grid>

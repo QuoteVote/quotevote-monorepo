@@ -6,9 +6,9 @@ import {
   IconButton,
   Typography,
   SvgIcon,
-} from '@material-ui/core'
-import { InsertLink } from '@material-ui/icons'
-import { makeStyles } from '@material-ui/core/styles'
+} from '@mui/material'
+import { InsertLink } from '@mui/icons-material'
+import { makeStyles } from '@mui/styles'
 import PropTypes from 'prop-types'
 import { useQuery } from '@apollo/react-hooks'
 import { useDispatch, useSelector } from 'react-redux'

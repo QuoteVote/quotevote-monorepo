@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { tokenValidator } from 'store/user'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -8,8 +8,8 @@ import {
   Typography,
   Grid,
   Button,
-  Hidden,
-} from '@material-ui/core'
+  Box,
+} from '@mui/material'
 import { SET_SELECTED_PLAN } from 'store/ui'
 import { isMobile } from 'react-device-detect'
 
@@ -73,10 +73,10 @@ export default function Plans() {
       <Grid container justify="center" style={{ marginRight: 24 }}>
         <Grid item container justify="center" xs={12}>
           <Typography className={classes.select}>Select To Learn More</Typography>
-          <Hidden smUp>
+          <Box sx={{ display: { sm: 'none' } }}>
             {buttonList}
-          </Hidden>
-          <Hidden xsDown>
+          </Box>
+          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             <Grid container direction="row" justify="space-evenly" className={classes.plans}>
               <Grid item>
                 <Grid container direction="column" alignItems="center">
@@ -124,7 +124,7 @@ export default function Plans() {
                 </Grid>
               </Grid>
             </Grid>
-          </Hidden>
+          </Box>
         </Grid>
       </Grid>
     </div>

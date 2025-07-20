@@ -4,11 +4,11 @@ import PropTypes from 'prop-types'
 // nod library that concatenates classes
 import classNames from 'classnames'
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import Input from '@material-ui/core/Input'
+import { makeStyles } from '@mui/styles'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import FormHelperText from '@mui/material/FormHelperText'
+import Input from '@mui/material/Input'
 
 import styles from 'assets/jss/material-dashboard-pro-react/components/customInputStyle'
 

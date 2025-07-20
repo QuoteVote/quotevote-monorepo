@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { makeStyles } from '@mui/styles'
+import Typography from '@mui/material/Typography'
+import { IconButton, Tooltip } from '@mui/material'
 import Card from 'mui-pro/Card/Card'
 import classNames from 'classnames'
 import { isEmpty } from 'lodash'
@@ -10,14 +10,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SET_SELECTED_POST } from 'store/ui'
 import { useHistory } from 'react-router-dom'
 import AvatarDisplay from 'components/Avatar'
-import Avatar from '@material-ui/core/Avatar'
-import Grid from '@material-ui/core/Grid'
-import CardContent from '@material-ui/core/CardContent'
+import Avatar from '@mui/material/Avatar'
+import Grid from '@mui/material/Grid'
+import CardContent from '@mui/material/CardContent'
 import stringLimit from 'string-limit'
-import withWidth from '@material-ui/core/withWidth'
+import withWidth from '../../utils/withWidth'
 import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
+import ArrowUpward from '@mui/icons-material/ArrowUpward'
+import ArrowDownward from '@mui/icons-material/ArrowDownward'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
@@ -349,13 +349,13 @@ function PostCard(props) {
         <div className={classes.voteCounts}>
           <div className={classes.voteSection}>
             <div className={classes.voteItem}>
-              <ArrowUpwardIcon
+              <ArrowUpward
                 className={classNames(classes.voteIcon, classes.upvoteIcon)}
               />
               <Typography className={classes.voteNumber}>{approvedBy?.length}</Typography>
             </div>
             <div className={classes.voteItem}>
-              <ArrowDownwardIcon
+              <ArrowDownward
                 className={classNames(classes.voteIcon, classes.downvoteIcon)}
               />
               <Typography className={classes.voteNumber}>

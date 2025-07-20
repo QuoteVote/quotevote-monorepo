@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
-import CloseIcon from '@material-ui/icons/Close'
-import Box from '@material-ui/core/Box'
-import Avatar from '@material-ui/core/Avatar'
-import Typography from '@material-ui/core/Typography'
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
+import { makeStyles } from '@mui/styles'
+import Grid from '@mui/material/Grid'
+import Close from '@mui/icons-material/Close'
+import Box from '@mui/material/Box'
+import Avatar from '@mui/material/Avatar'
+import Typography from '@mui/material/Typography'
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,7 +64,7 @@ export default function Alert(props) {
           </Typography>
         </Grid>
         <Grid item xs={1}>
-          <CloseIcon className={classes.closeIcon} />
+          <Close className={classes.closeIcon} />
         </Grid>
 
         <Grid
@@ -96,7 +96,7 @@ export default function Alert(props) {
             </Grid>
           </Grid>
           <Grid item xs={1}>
-            <FavoriteBorderIcon className={classes.favoriteIcon} />
+            <FavoriteBorder className={classes.favoriteIcon} />
           </Grid>
         </Grid>
 

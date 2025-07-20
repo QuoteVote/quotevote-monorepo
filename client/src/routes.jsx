@@ -1,7 +1,7 @@
 import HomePage from 'views/Homepage/Homepage'
 import Profile from 'views/Profile'
 import ControlPanel from 'views/ControlPanel/ControlPanel'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import ExitToApp from '@mui/icons-material/ExitToApp'
 import PostPage from 'views/PostsPage'
 import LogoutPage from './components/LogoutPage'
 import HomeSvg from './assets/svg/Home'
@@ -57,7 +57,7 @@ const routes = [
     rtlName: 'هعذاتسجيل الدخول',
     mini: 'L',
     rtlMini: 'هعذا',
-    icon: ExitToAppIcon,
+          icon: ExitToApp,
     component: LogoutPage,
     layout: '/logout',
   },

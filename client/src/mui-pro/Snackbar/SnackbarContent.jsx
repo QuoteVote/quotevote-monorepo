@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Snack from '@material-ui/core/SnackbarContent'
-import IconButton from '@material-ui/core/IconButton'
+import { makeStyles } from '@mui/styles'
+import Snack from '@mui/material/SnackbarContent'
+import IconButton from '@mui/material/IconButton'
 
 // @material-ui/icons
-import Close from '@material-ui/icons/Close'
+import Close from '@mui/icons-material/Close'
 
 import styles from 'assets/jss/material-dashboard-pro-react/components/snackbarContentStyle'
 

@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 import cx from 'classnames'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Hidden from '@material-ui/core/Hidden'
+import { makeStyles } from '@mui/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Box from '@mui/material/Box'
 
 // material-ui icons
-import Menu from '@material-ui/icons/Menu'
-import MoreVert from '@material-ui/icons/MoreVert'
-import ViewList from '@material-ui/icons/ViewList'
+import Menu from '@mui/icons-material/Menu'
+import MoreVert from '@mui/icons-material/MoreVert'
+import ViewList from '@mui/icons-material/ViewList'
 
 // core components
 import Button from 'mui-pro/CustomButtons/Button'
@@ -59,7 +59,7 @@ export default function AdminNavbar(props) {
               </Button>
             )}
           </div>
-        </Hidden>
+        </Box>
         <div className={classes.flex}>
           {/* Here we create navbar brand, based on route name */}
           <Button href="#" className={classes.title} color="transparent">
@@ -68,7 +68,7 @@ export default function AdminNavbar(props) {
         </div>
         <Hidden smDown implementation="css">
           <AdminNavbarLinks rtlActive={rtlActive} />
-        </Hidden>
+        </Box>
         <Hidden mdUp implementation="css">
           <Button
             className={classes.appResponsive}
@@ -79,7 +79,7 @@ export default function AdminNavbar(props) {
           >
             <Menu />
           </Button>
-        </Hidden>
+        </Box>
       </Toolbar>
     </AppBar>
   )

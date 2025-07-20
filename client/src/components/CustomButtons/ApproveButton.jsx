@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import CheckIcon from '@material-ui/icons/Check'
+import { makeStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
+import Check from '@mui/icons-material/Check'
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -42,7 +42,7 @@ function ApproveButton(props) {
       {...rest}
       variant={selected ? 'contained' : 'outlined'}
       className={selected ? `${classes.button} ${classes.contained}` : `${classes.button} ${classes.outlined}`}
-      startIcon={<CheckIcon style={{ width: 24, height: 24 }} />}
+      startIcon={<Check style={{ width: 24, height: 24 }} />}
     >
       <div className={classes.buttonText}>
         SUPPORT

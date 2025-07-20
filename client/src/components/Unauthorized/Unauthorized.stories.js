@@ -4,7 +4,7 @@ import { withKnobs } from '@storybook/addon-knobs/react'
 import { withA11y } from '@storybook/addon-a11y'
 
 // If you want to apply theme
-import { MuiThemeProvider as ThemeProvider } from '@material-ui/core/styles'
+import { as ThemeProvider, ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 
 // The component
 import Unauthorized from './Unauthorized'

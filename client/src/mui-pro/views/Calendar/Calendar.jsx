@@ -8,7 +8,7 @@ import moment from "moment";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@mui/styles';
 
 // core components
 import Heading from "mui-pro/Heading/Heading";

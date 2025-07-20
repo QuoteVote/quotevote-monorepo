@@ -1,7 +1,7 @@
 import React from 'react'
-import Grid from '@material-ui/core/Grid'
-import makeStyles from '@material-ui/core/styles/makeStyles'
-import Typography from '@material-ui/core/Typography'
+import Grid from '@mui/material/Grid'
+import { makeStyles } from '@mui/styles'
+import Typography from '@mui/material/Typography'
 
 const useStyles = makeStyles((theme) => ({
   panelContainer: {

@@ -7,20 +7,20 @@ import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import { loadCSS } from 'fg-loadcss'
 
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import moment from 'moment'
 import { isEmpty } from 'lodash'
 import stringLimit from 'string-limit'
-import BookmarkIcon from '@material-ui/icons/Bookmark'
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
+import Bookmark from '@mui/icons-material/Bookmark'
+import BookmarkBorder from '@mui/icons-material/BookmarkBorder'
 import AvatarDisplay from '../../components/Avatar'
 
 const useStyles = makeStyles((theme) => ({
@@ -184,9 +184,9 @@ function ActivityActions({
         className={classes.expand}
       >
         {liked ? (
-          <BookmarkIcon />
+          <Bookmark />
         ) : (
-          <BookmarkBorderIcon />
+          <BookmarkBorder />
         )}
       </IconButton>
     </>

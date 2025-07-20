@@ -3,8 +3,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Hidden from "@material-ui/core/Hidden";
+import { makeStyles } from '@mui/styles';
+import Box from '@mui/material/Box';
 
 // core components
 import Heading from "mui-pro/Heading/Heading";
@@ -47,7 +47,7 @@ export default function Icons() {
               >
                 <p>Your browser does not support iframes.</p>
               </iframe>
-            </Hidden>
+            </Box>
             <Hidden only={["lg", "md"]} implementation="css">
               <GridItem xs={12} sm={12} md={6}>
                 <h5>
@@ -62,7 +62,7 @@ export default function Icons() {
                   </a>
                 </h5>
               </GridItem>
-            </Hidden>
+            </Box>
           </CardBody>
         </Card>
       </GridItem>

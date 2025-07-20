@@ -1,9 +1,9 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { makeStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import ExitToApp from '@mui/icons-material/ExitToApp'
 const useStyles = makeStyles(() => ({
   button: {
     fontFamily: 'Roboto',
@@ -26,7 +26,7 @@ function SignOutButton(props) {
     <Button
       {...props}
       className={classNames(classes.button, className)}
-      startIcon={<ExitToAppIcon />}
+      startIcon={<ExitToApp />}
     >
       Sign out
     </Button>

@@ -91,8 +91,9 @@ export default defineConfig(({ mode }) => {
       include: [
         'react',
         'react-dom',
-        '@material-ui/core',
-        '@material-ui/icons',
+        '@mui/material',
+        '@mui/icons-material',
+        '@mui/styles',
         '@apollo/client',
         'react-router-dom',
       ],

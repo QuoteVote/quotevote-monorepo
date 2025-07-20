@@ -2,7 +2,7 @@ import Card from 'mui-pro/Card/Card'
 import CardBody from 'mui-pro/Card/CardBody'
 import CardFooter from 'mui-pro/Card/CardFooter'
 import CardHeader from 'mui-pro/Card/CardHeader'
-import Divider from '@material-ui/core/Divider'
+import Divider from '@mui/material/Divider'
 import GridContainer from 'mui-pro/Grid/GridContainer'
 import GridItem from 'mui-pro/Grid/GridItem'
 
@@ -10,8 +10,8 @@ import GridItem from 'mui-pro/Grid/GridItem'
 
 // import styles from "assets/jss/material-dashboard-pro-react/views/dashboardStyle";
 
-import FaceIcon from '@material-ui/icons/Face'
-import Skeleton from '@material-ui/lab/Skeleton'
+import Face from '@mui/icons-material/Face'
+import Skeleton from '@mui/material/Skeleton'
 
 const PostPageSkeleton = () => (
   <div>
@@ -170,7 +170,7 @@ const PostPageSkeleton = () => (
                   paddingTop: 17,
                 }}
               >
-                <FaceIcon />
+                <Face />
               </span>
               <h5 style={{ margin: 0 }}>
                 <Skeleton variant="text" width={100} />

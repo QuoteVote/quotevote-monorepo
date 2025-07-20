@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { CircularProgress, TextField, Typography } from '@material-ui/core'
-import Button from '@material-ui/core/Button'
+import { CircularProgress, TextField, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
 import PropTypes from 'prop-types'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import InputAdornment from '@mui/material/InputAdornment'
 import { useHistory } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import { useMutation } from '@apollo/react-hooks'
 import { useForm } from 'react-hook-form'
 import Carousel from 'react-material-ui-carousel'
-import Grid from '@material-ui/core/Grid'
-import withWidth from '@material-ui/core/withWidth'
-import Hidden from '@material-ui/core/Hidden'
+import Grid from '@mui/material/Grid'
+import withWidth from '../../../utils/withWidth'
+import Box from '@mui/material/Box'
 import GridItem from '../../../mui-pro/Grid/GridItem'
 import InvestButton from '../../CustomButtons/InvestButton'
 import { SEND_INVESTOR_EMAIL } from '../../../graphql/mutations'
@@ -64,23 +64,23 @@ function InvestorCarouselFirstContent({ classes, setContentIndex, width }) {
             <br />
           </div>
         </Typography>
-        <Hidden mdUp>
+        <Box sx={{ display: { md: 'none' } }}>
           <InvestButton
             width={width}
             handleClick={() => {
               setContentIndex(2)
             }}
           />
-        </Hidden>
+        </Box>
         <Typography className={bottomText}>
-          <Hidden smDown>
+          <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
             <InvestButton
               width={width}
               handleClick={() => {
                 setContentIndex(2)
               }}
             />
-          </Hidden>
+          </Box>
           {' '}
           What is
           <span className={greenText}> the deal </span>
@@ -138,23 +138,23 @@ function InvestorCarouselSecondContent({ classes, setContentIndex, width }) {
             <br />
           </div>
         </Typography>
-        <Hidden mdUp>
+        <Box sx={{ display: { md: 'none' } }}>
           <InvestButton
             width={width}
             handleClick={() => {
               setContentIndex(2)
             }}
           />
-        </Hidden>
+        </Box>
         <Typography className={bottomText}>
-          <Hidden smDown>
+          <Box sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}>
             <InvestButton
               width={width}
               handleClick={() => {
                 setContentIndex(2)
               }}
             />
-          </Hidden>
+          </Box>
           {'  '}
           I want to
           {' '}

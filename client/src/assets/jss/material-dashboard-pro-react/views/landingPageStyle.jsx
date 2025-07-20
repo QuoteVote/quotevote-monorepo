@@ -1,7 +1,7 @@
 import {
   cardTitle, container, grayColor, whiteColor,
 } from 'assets/jss/material-dashboard-pro-react';
-import { green } from '@material-ui/core/colors';
+import { green } from '@mui/material/colors';
 
 const landingPageStyle = (theme) => ({
   logoImage: {

@@ -1,13 +1,13 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useMutation } from '@apollo/react-hooks'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING } from 'store/chat'
-import Paper from '@material-ui/core/Paper'
-import InputBase from '@material-ui/core/InputBase'
-import IconButton from '@material-ui/core/IconButton'
-import SendIcon from '@material-ui/icons/Send'
-import { Typography } from '@material-ui/core'
+import Paper from '@mui/material/Paper'
+import InputBase from '@mui/material/InputBase'
+import IconButton from '@mui/material/IconButton'
+import Send from '@mui/icons-material/Send'
+import { Typography } from '@mui/material'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 
@@ -117,7 +117,7 @@ export default function MessageSend({ messageRoomId, type, title }) {
         disabled={loading}
         onClick={handleSubmit}
       >
-        <SendIcon />
+        <Send />
       </IconButton>
     </Paper>
   )

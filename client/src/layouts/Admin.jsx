@@ -12,7 +12,7 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css'
 // import sidebar2 from '/assets/sidebar-2.jpg'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 // core components
 import AdminNavbar from 'mui-pro/Navbars/AdminNavbar'
