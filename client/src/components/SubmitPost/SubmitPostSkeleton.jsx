@@ -1,5 +1,5 @@
-import { Grid, Typography } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
+import { Grid, Typography } from '@mui/material'
+import { Skeleton } from '@mui/lab'
 import React from 'react'
 import CardBody from '../../mui-pro/Card/CardBody'
 import Card from '../../mui-pro/Card/Card'

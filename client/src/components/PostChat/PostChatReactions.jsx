@@ -3,9 +3,9 @@ import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import {
   Grid, Typography, IconButton, Popover,
-} from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import { InsertEmoticon } from '@material-ui/icons'
+} from '@mui/material'
+import { makeStyles } from '@mui/material/styles'
+import { InsertEmoticon } from '@mui/icons-material'
 import { useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
 import { Picker } from 'emoji-mart'

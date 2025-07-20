@@ -1,6 +1,6 @@
-// import { red } from '@material-ui/core/colors'
+// import { red } from '@mui/material/colors'
 
-import { createTheme } from '@material-ui/core/styles'
+import { createTheme } from '@mui/material/styles'
 
 export default createTheme({
   palette: {

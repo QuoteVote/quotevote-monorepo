@@ -1,9 +1,9 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { makeStyles } from '@mui/material/styles'
+import Button from '@mui/material/Button'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 const useStyles = makeStyles(() => ({
   button: {
     fontFamily: 'Roboto',

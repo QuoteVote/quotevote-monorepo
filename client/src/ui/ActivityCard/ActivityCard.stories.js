@@ -10,7 +10,7 @@ import {
   files,
 } from '@storybook/addon-knobs'
 
-import { ThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import theme from '../../themes/SecondTheme'
 
 import { ActivityCard } from './index'

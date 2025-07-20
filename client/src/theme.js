@@ -1,5 +1,5 @@
-import lightBlue from '@material-ui/core/colors/lightBlue'
-import teal from '@material-ui/core/colors/teal'
+import lightBlue from '@mui/material/colors/lightBlue'
+import teal from '@mui/material/colors/teal'
 
 const theme = {
   palette: {

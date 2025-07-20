@@ -42,6 +42,10 @@ export default defineConfig(({ mode }) => {
         hoc: resolve(__dirname, 'src/hoc'),
         themes: resolve(__dirname, 'src/themes'),
         'react/jsx-runtime': 'react/jsx-runtime.js',
+        '@material-ui/core': '@mui/material',
+        '@material-ui/icons': '@mui/icons-material',
+        '@material-ui/lab': '@mui/lab',
+        '@material-ui/core/styles': '@mui/styles',
       },
     },
     css: {
@@ -91,8 +95,8 @@ export default defineConfig(({ mode }) => {
       include: [
         'react',
         'react-dom',
-        '@material-ui/core',
-        '@material-ui/icons',
+        '@mui/material',
+        '@mui/icons-material',
         '@apollo/client',
         'react-router-dom',
       ],

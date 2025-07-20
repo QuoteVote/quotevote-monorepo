@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useState } from 'react'
-import { Container } from '@material-ui/core'
+import { Container } from '@mui/material'
 
 import { parser } from 'utils/parser'
 import Highlighter from 'react-highlight-words'
 import { useSelector } from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/material/styles'
 import SelectionPopover from './SelectionPopover'
 
 const useStyles = makeStyles({

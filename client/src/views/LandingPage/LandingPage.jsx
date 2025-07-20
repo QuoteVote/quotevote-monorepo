@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/material/styles'
 import { tokenValidator } from 'store/user'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -9,7 +9,7 @@ import {
   Link,
   ListItem,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import { isMobile } from 'react-device-detect'
 import GridContainer from '../../mui-pro/Grid/GridContainer'
 import GridItem from '../../mui-pro/Grid/GridItem'

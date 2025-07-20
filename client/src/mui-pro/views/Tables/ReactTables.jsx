@@ -2,13 +2,13 @@ import React from 'react'
 // react component for creating dynamic tables
 import ReactTable from 'react-table'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-// @material-ui/icons
-import Assignment from '@material-ui/icons/Assignment'
-import Dvr from '@material-ui/icons/Dvr'
-import Favorite from '@material-ui/icons/Favorite'
-import Close from '@material-ui/icons/Close'
+// @mui/material components
+import { makeStyles } from '@mui/material/styles'
+// @mui/icons-material
+import Assignment from '@mui/icons-material/Assignment'
+import Dvr from '@mui/icons-material/Dvr'
+import Favorite from '@mui/icons-material/Favorite'
+import Close from '@mui/icons-material/Close'
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'
 import GridItem from 'mui-pro/Grid/GridItem'

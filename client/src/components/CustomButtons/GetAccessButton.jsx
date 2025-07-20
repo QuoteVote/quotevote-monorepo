@@ -1,20 +1,18 @@
-import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import { green } from '@material-ui/core/colors'
+import { styled } from '@mui/material/styles'
+import Button from '@mui/material/Button'
+import { green } from '@mui/material/colors'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 
-const GetAccessButtonStyle = withStyles(() => ({
-  root: {
-    color: 'white',
-    backgroundColor: green[500],
-    '&:hover': {
-      backgroundColor: green[700],
-    },
-    padding: '5px 10px 5px 10px',
-    borderRadius: '8px',
+const GetAccessButtonStyle = styled(Button)(() => ({
+  color: 'white',
+  backgroundColor: green[500],
+  '&:hover': {
+    backgroundColor: green[700],
   },
-}))(Button)
+  padding: '5px 10px',
+  borderRadius: '8px',
+}))
 
 function GetAccessButton() {
   const history = useHistory()

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { Paper, Typography, List, ListItem } from '@material-ui/core';
+import { Paper, Typography, List, ListItem } from '@mui/material';
 import PropTypes from 'prop-types';
 import { GET_LATEST_QUOTES } from '../../graphql/query';
 

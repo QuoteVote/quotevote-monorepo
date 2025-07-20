@@ -6,9 +6,9 @@ import PropTypes from 'prop-types'
 import SwipeableViews from 'react-swipeable-views'
 
 // material-ui components
-import { makeStyles } from '@material-ui/core/styles'
-import Tab from '@material-ui/core/Tab'
-import Tabs from '@material-ui/core/Tabs'
+import { makeStyles } from '@mui/material/styles'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

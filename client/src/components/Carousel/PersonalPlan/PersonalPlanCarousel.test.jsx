@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 
-import { makeStyles, MuiThemeProvider as ThemeProvider } from '@material-ui/core/styles'
+import { makeStyles, ThemeProvider as ThemeProvider } from '@mui/material/styles'
 import PersonalPlanCarousel from './PersonalPlanCarousel'
 import styles from '../../../assets/jss/material-dashboard-pro-react/views/landingPageStyle'
 import theme from '../../../themes/MainTheme'
