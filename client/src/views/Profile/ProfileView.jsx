@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import AppBar from 'components/Navbars/ProfileHeader'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { Link, Typography } from '@material-ui/core'
-import UserPosts from '../../components/UserPosts'
+import Activity from '../../components/Activity/Activity'
 
 const useStyles = makeStyles(({
   root: {
@@ -77,7 +77,7 @@ function ProfileView({
       </div>
 
       <div className={classes.content}>
-        <UserPosts userId={profileUser._id} />
+        <Activity showSubHeader={false} userId={profileUser._id} />
       </div>
     </div>
   )

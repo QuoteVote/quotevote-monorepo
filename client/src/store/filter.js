@@ -6,7 +6,7 @@ const uiSlice = createSlice({
   initialState: {
     filter: {
       visibility: false,
-      value: ['POSTED'],
+      value: ['POSTED', 'VOTED', 'COMMENTED', 'QUOTED', 'LIKED'],
     },
     date: {
       visibility: false,

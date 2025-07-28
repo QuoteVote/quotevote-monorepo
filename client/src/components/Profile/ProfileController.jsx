@@ -8,7 +8,7 @@ import { SET_SELECTED_PAGE } from 'store/ui'
 
 function ProfileController() {
   //  Set state for events and use viewModel props for redux/apollo?
-  const conditions = ['POSTED', 'VOTED', 'COMMENTED', 'QUOTED']
+  const conditions = ['POSTED', 'VOTED', 'COMMENTED', 'QUOTED', 'LIKED']
   const [selectedEvent, setSelectedEvent] = useState(conditions)
   const [selectAll, setSelectAll] = useState('ALL')
   const [offset, setOffset] = useState(1)
@@ -24,7 +24,7 @@ function ProfileController() {
       setSelectAll(['ALL'])
       setSelectedEvent(conditions)
     } else {
-      const isAllToggled = newActivityEvent.length === 4
+      const isAllToggled = newActivityEvent.length === conditions.length
       setSelectAll(isAllToggled ? ['ALL'] : [])
       setSelectedEvent(newActivityEvent)
     }
