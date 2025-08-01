@@ -99,8 +99,12 @@ const server = new ApolloServer({
       authToken = connection.context.authorization || connection.context.token || connection.context.authToken;
       isSubscription = true;
       console.log('[SUBSCRIPTION CONNECTION]');
-    } else {
+    } else if (req) {
       authToken = req.headers.authorization || req.headers.token;
+    }
+
+    if (typeof authToken === 'string' && authToken.startsWith('Bearer ')) {
+      authToken = authToken.slice(7);
     }
 
     const isIntrospection = req && req.body.operationName === 'IntrospectionQuery';

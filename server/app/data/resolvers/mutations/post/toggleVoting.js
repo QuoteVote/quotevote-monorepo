@@ -6,6 +6,7 @@ export const toggleVoting = () => {
     logger.info('Function: toggle voting');
     const { postId } = args;
     const { user } = context;
+    console.log('toggleVoting user context:', user);
 
     if (!user) {
       throw new Error('Authentication required');
