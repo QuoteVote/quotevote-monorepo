@@ -190,6 +190,9 @@ export const authenticate = async (req, res) => {
 };
 
 export const verifyToken = async (authToken) => {
+  if (authToken && authToken.startsWith('Bearer ')) {
+    authToken = authToken.replace(/^Bearer\s+/i, '');
+  }
   const authSecret = process.env.SECRET;
   const jwt = (jsonwebtoken);
   const decodedJwtTokenRequest = jwt.decode(authToken, { complete: true });
