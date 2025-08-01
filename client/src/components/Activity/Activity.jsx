@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { Grid } from '@material-ui/core'
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import SubHeader from '../SubHeader'
 import ActivityList from './ActivityList'
 import { GET_USER_ACTIVITY } from '../../graphql/query'
@@ -25,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: '100%',
     },
   },
+  filters: {
+    marginBottom: 10,
+  },
 }))
 
 export default function Activity({ showSubHeader = true, userId = '' }) {
@@ -32,8 +36,7 @@ export default function Activity({ showSubHeader = true, userId = '' }) {
   const classes = useStyles()
   const limit = 15
   const [offset, setOffset] = useState(0)
-  // const conditions = ['POSTED', 'VOTED', 'COMMENTED', 'QUOTED', 'LIKED']
-  const conditions = ['POSTED']
+  const conditions = ['POSTED', 'VOTED', 'COMMENTED', 'QUOTED', 'LIKED']
   const [selectedEvent, setSelectedEvent] = useState(conditions)
   const [dateRangeFilter, setDateRangeFilter] = useState({ startDate: '', endDate: '' })
   const [selectAll, setSelectAll] = useState('ALL')
@@ -55,7 +58,7 @@ export default function Activity({ showSubHeader = true, userId = '' }) {
       setSelectedEvent(conditions)
       dispatch(FILTER_VALUE(conditions))
     } else {
-      const isAllToggled = newActivityEvent.length === 4
+      const isAllToggled = newActivityEvent.length === conditions.length
       setSelectAll(isAllToggled ? ['ALL'] : [])
       setSelectedEvent(newActivityEvent)
       dispatch(FILTER_VALUE(newActivityEvent))
@@ -101,6 +104,26 @@ export default function Activity({ showSubHeader = true, userId = '' }) {
             />
           </Grid>
         )}
+
+        <Grid item xs={12} className={classes.filters}>
+          <ToggleButtonGroup
+            value={selectAll}
+            exclusive
+            onChange={handleSelectAll}
+            size="small"
+          >
+            <ToggleButton value="ALL">ALL</ToggleButton>
+          </ToggleButtonGroup>
+          <ToggleButtonGroup
+            value={selectedEvent}
+            onChange={handleActivityEvent}
+            size="small"
+          >
+            {conditions.map((cond) => (
+              <ToggleButton key={cond} value={cond}>{cond}</ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Grid>
 
         <Grid item xs={12} className={classes.list}>
           <ActivityList
