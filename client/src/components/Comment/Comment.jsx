@@ -48,14 +48,14 @@ const useStyles = makeStyles((theme) => ({
 
 function Comment({ comment, postUrl, selected }) {
   const {
-    user, content, created, _id,
+    user: commentUser, content, created, _id,
   } = comment
-  const { username, avatar } = user
+  const { username, avatar } = commentUser
   const classes = useStyles()
   const history = useHistory()
   const parsedDate = parseCommentDate(created)
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.data)
+  const currentUser = useSelector((state) => state.user.data)
   const [open, setOpen] = useState(false)
   const hideAlert = () => {
     setOpen(false)
@@ -140,7 +140,7 @@ function Comment({ comment, postUrl, selected }) {
         <IconButton onClick={handleCopy}>
           <InsertLink />
         </IconButton>
-        {(user._id === comment.userId || user.admin) && (
+        {(currentUser._id === comment.userId || currentUser.admin) && (
           <IconButton onClick={handleDelete} className={classes.deleteIcon}>
             <Delete />
           </IconButton>
