@@ -8,6 +8,9 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
+import { useAuthModal } from '@/Context/AuthModalContext'
+import RequestInviteDialog from '@/components/RequestInviteDialog'
+
 // Images
 // import sidebar2 from '/assets/sidebar-2.jpg'
 
@@ -40,6 +43,7 @@ export default function Dashboard(props) {
   const [logo, setLogo] = React.useState('/assets/logo-white.svg')
   // styles
   const classes = useStyles()
+  const { isModalOpen, closeModal } = useAuthModal()
   const mainPanelClasses =
     `${classes.mainPanel
     } ${
@@ -192,6 +196,7 @@ export default function Dashboard(props) {
           miniActive={miniActive}
         />
       </div>
+      <RequestInviteDialog open={isModalOpen} onClose={closeModal} />
     </div>
   )
 }
