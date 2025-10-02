@@ -12,6 +12,7 @@ import PostChatReactions from './PostChatReactions'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
 import { DELETE_MESSAGE } from '../../graphql/mutations'
 import { SET_SNACKBAR } from '../../store/ui'
+import AutoLinkText from '../common/AutoLinkText'
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -153,7 +154,7 @@ function PostChatMessage(props) {
       <Grid item xs={10} className={classes.messageContainer}>
         <Paper elevation={0} className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}>
           <Typography className={classes.text}>
-            {message.text}
+            <AutoLinkText text={message.text} />
           </Typography>
           <PostChatReactions 
             created={message.created} 
