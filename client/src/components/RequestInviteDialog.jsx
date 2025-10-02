@@ -1,86 +1,76 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from '@material-ui/core/Dialog'
-import Grid from '@material-ui/core/Grid'
-import Input from '@material-ui/core/Input'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
-import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
-import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  makeStyles,
+} from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
+import RequestAccessForm from './RequestAccess/RequestAccessForm'
 
-export default function RequestInviteDialog({ open, onClose }) {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  const client = useApolloClient()
-  const [requestUserAccess] = useMutation(REQUEST_USER_ACCESS_MUTATION)
+const useStyles = makeStyles((theme) => ({
+  dialogWrapper: {
+    padding: theme.spacing(2),
+    position: 'absolute',
+    top: theme.spacing(5),
+    [theme.breakpoints.down('sm')]: {
+      top: 0,
+      margin: 0,
+      width: '100%',
+      height: '100%',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      borderRadius: 0,
+    },
+  },
+  dialogTitle: {
+    paddingRight: '0px',
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },  
+}))
 
-  const handleSubmit = async () => {
-    const pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i)
-    if (!pattern.test(email)) {
-      setError('This is not a valid email address')
-      return
+export default  function RequestInviteDialog({ open, onClose }) {
+  const classes = useStyles()
+
+  const handleSuccess = () => {
+    //implement a success message or action after successful request
+    //for now, just close the dialog to test the flow
+    setTimeout(() => {
+      onClose()}, 3000)
     }
-    const checkDuplicate = await client.query({
-      query: GET_CHECK_DUPLICATE_EMAIL,
-      variables: { email },
-      fetchPolicy: 'network-only',
-    })
-    if (checkDuplicate && checkDuplicate.data.checkDuplicateEmail.length) {
-      setError('This email already exists')
-      return
-    }
-    await requestUserAccess({ variables: { requestUserAccessInput: { email } } })
-    setSubmitted(true)
-  }
-
-  const handleClose = () => {
-    setEmail('')
-    setError('')
-    setSubmitted(false)
-    if (onClose) onClose()
-  }
-
-  return (
-    <Dialog open={open} onClose={handleClose}>
-      <Grid container direction="column" alignItems="center" style={{ padding: 24 }}>
-        {submitted ? (
-          <>
-            <Typography align="center">Thank you for joining us</Typography>
-            <Typography align="center" style={{ marginTop: 8 }}>
-              When an account becomes available, an invite will be sent to the email provided.
-            </Typography>
-            <Button variant="contained" color="primary" onClick={handleClose} style={{ marginTop: 16 }}>
-              Close
-            </Button>
-          </>
-        ) : (
-          <>
-            <Typography variant="h6" align="center">Request Invite</Typography>
-            <Input
-              autoFocus
-              placeholder="Enter Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ marginTop: 16 }}
-            />
-            {error && (
-              <Typography color="error" style={{ marginTop: 8 }}>
-                {error}
-              </Typography>
-            )}
-            <Button variant="contained" color="secondary" onClick={handleSubmit} style={{ marginTop: 16 }}>
-              Submit
-            </Button>
-          </>
-        )}
-      </Grid>
-    </Dialog>
-  )
+    return (
+      <Dialog
+        open={open}
+        onClose={onClose}
+        maxWidth="sm"
+        fullWidth
+        classes={{ paper: classes.dialogWrapper }}
+      >
+        <DialogTitle className={classes.dialogTitle}>
+          <div></div>
+          <IconButton
+            aria-label="close"
+            className={classes.closeButton}
+            onClick={onClose}
+          >
+            <CloseIcon /> 
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <RequestAccessForm onSuccess={handleSuccess} />
+        </DialogContent>
+      </Dialog>
+    )
 }
 
 RequestInviteDialog.propTypes = {
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
-}
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+} 
