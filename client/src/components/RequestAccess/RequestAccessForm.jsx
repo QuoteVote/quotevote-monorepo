@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useForms } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useApolloClient, useMutation } from "@apollo/react-hooks";
+import PropTypes from 'prop-types';
 import styles from 'assets/jss/material-dashboard-pro-react/views/landingPageStyle'
 
 import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
@@ -17,12 +18,12 @@ import { set } from "lodash";
 
 const useStyles = makeStyles(styles)
 
-export default function RequestAccessForm() {
+export default function RequestAccessForm({onSuccess}) {
     const classes = useStyles()
     const [userDetails, setUserDetails] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [requestInviteSuccessful, setRequestInviteSuccessful] = useState(false)
-    const { errors} = useForm({userDetails})
+    const { register, handleSubmit, formState: { errors } } = useForm()
 
 
     const client = useApolloClient()
@@ -34,7 +35,7 @@ export default function RequestAccessForm() {
                   /^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i,
         )
 
-        const isValidEmail = pattern.test(String(userDetails.email).toLowerCase())
+        const isValidEmail = pattern.test(String(userDetails).toLowerCase())
         if (!isValidEmail) {
             setErrorMessage('Please enter a valid email address')
             return
@@ -43,7 +44,7 @@ export default function RequestAccessForm() {
         try {
             const { data } = await client.query({
                 query: GET_CHECK_DUPLICATE_EMAIL,
-                variables: { email: userDetails.email },
+                variables: { email: userDetails },
                 fetchPolicy: 'network-only',
             })
 
@@ -54,8 +55,8 @@ export default function RequestAccessForm() {
         }
 
         if (!Object.keys(errors).length) {
-            const requestUserAccessInput = { email: userDetails.email }
-            await requestUserAccess({ variables: { input: requestUserAccessInput } })
+            const requestUserAccessInput = { email: userDetails }
+            await requestUserAccess({ variables: { requestUserAccessInput } })
             setRequestInviteSuccessful(true)
             if (onSuccess) onSuccess()
         }
@@ -78,7 +79,7 @@ export default function RequestAccessForm() {
     return (
         <Grid
             container
-            allignItems="center"
+            alignItems="center"
             justifyContent="center"
             direction="column"
             spacing={2}
@@ -92,6 +93,7 @@ export default function RequestAccessForm() {
                         placeholder="Enter Your Email Address"
                         type="email"
                         className={classes.input}
+                        value={userDetails}
                         onChange={(event) => setUserDetails(event.target.value)}
                         onKeyPress={(event) => event.key === 'Enter' && onSubmit()}
                         style={{width: '100%'}}
@@ -100,7 +102,7 @@ export default function RequestAccessForm() {
                         className={classes.requestAccessBtn}
                         onClick={onSubmit}
                         disabled={loading}
-                        style={{ width: '100%', marginTop }}
+                        style={{ width: '100%', marginTop: '1rem' }}
                     >
                         {loading ? 'Sending...' : 'Request Invite'}
                     </Button>
@@ -108,4 +110,8 @@ export default function RequestAccessForm() {
                 </Grid>
             </Grid>
     )
+}
+
+RequestAccessForm.propTypes = {
+    onSuccess: PropTypes.func,
 }
