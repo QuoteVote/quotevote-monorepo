@@ -14,7 +14,6 @@ import { Typography, Box } from '@material-ui/core'
 
 import Button from '../../mui-pro/CustomButtons/Button'
 import PersonalForm from 'components/RequestAccess/PersonalForm/PersonalForm'
-import { set } from "lodash";
 
 const useStyles = makeStyles(styles)
 
