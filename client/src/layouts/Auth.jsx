@@ -15,6 +15,8 @@ import routes from 'mui-pro/mui-routes'
 import styles from 'assets/jss/material-dashboard-pro-react/layouts/authStyle'
 
 import InfoSections from 'components/RequestAccess/InfoSections'
+import { useAuthModal } from '../Context/AuthModalContext'
+import RequestInviteDialog from '../components/RequestInviteDialog'
 
 const useStyles = makeStyles(styles)
 
@@ -40,6 +42,7 @@ export default function Pages(props) {
   const wrapper = React.createRef()
   // styles
   const classes = useStyles()
+  const { isModalOpen, closeAuthModal } = useAuthModal()
 
   // State to store the selected background image
   const [selectedBackground, setSelectedBackground] = React.useState(null)
@@ -154,6 +157,7 @@ export default function Pages(props) {
           <InfoSections />
         </div>
       )}
+      <RequestInviteDialog open={isModalOpen} onClose={closeAuthModal} />
     </div>
   )
 }
