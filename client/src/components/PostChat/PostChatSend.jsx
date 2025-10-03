@@ -141,14 +141,16 @@ function PostChatSend(props) {
       <Grid item sm={10} xs={12}>
         <Paper elevation={0}>
           <InputBase
-            inputRef={commentInputRef} 
+            multiline
+            minRows={2} // ⬅️ makes box bigger vertically
+            inputRef={commentInputRef}
             placeholder="type a message..."
             className={classes.input}
             value={text}
             onChange={(event) => setText(event.target.value)}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
-                event.preventDefault() 
+                event.preventDefault()
                 handleSubmit()
               }
             }}
