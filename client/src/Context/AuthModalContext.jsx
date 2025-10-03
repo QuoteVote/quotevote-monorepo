@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 const AuthModalContext = createContext();
 
+/**
+ * Provider for global invite modal state management
+ */
 export function AuthModalProvider({children}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -22,6 +25,10 @@ AuthModalProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
+/**
+ * Hook to access invite modal state and controls
+ * @throws {Error} When used outside AuthModalProvider
+ */
 export const useAuthModal = () => {
     const context = useContext(AuthModalContext);
     if (context === undefined) {

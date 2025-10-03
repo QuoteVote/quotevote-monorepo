@@ -55,12 +55,13 @@ export default  function RequestInviteDialog({ open, onClose }) {
   const classes = useStyles()
 
   const handleSuccess = () => {
-    //implement a success message or action after successful request
-    //for now, just close the dialog to test the flow
+    // Auto-close modal after 3 seconds on successful submission
     setTimeout(() => {
-      onClose()}, 3000)
-    }
-    return (
+      onClose()
+    }, 3000)
+  }
+
+  return (
       <Dialog
         open={open}
         onClose={onClose}

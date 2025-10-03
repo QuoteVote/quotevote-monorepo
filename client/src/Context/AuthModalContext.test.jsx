@@ -3,7 +3,6 @@ import { render } from '@testing-library/react'
 import { vi } from 'vitest'
 import { AuthModalProvider, useAuthModal } from './AuthModalContext'
 
-// Helper component to test the hook
 function TestComponent({ onRender }) {
   const authModal = useAuthModal()
   onRender(authModal)
@@ -36,7 +35,6 @@ describe('AuthModalContext', () => {
 
     hookValue.openAuthModal()
     
-    // Force re-render to get updated value
     rerender(
       <AuthModalProvider>
         <TestComponent onRender={(value) => { hookValue = value }} />
