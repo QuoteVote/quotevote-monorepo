@@ -48,10 +48,10 @@ const useStyles = makeStyles((theme) => ({
       top: theme.spacing(0.5),
       padding: theme.spacing(1),
     },
-  },  
+  },
 }))
 
-export default  function RequestInviteDialog({ open, onClose }) {
+export default function RequestInviteDialog({ open, onClose }) {
   const classes = useStyles()
 
   const handleSuccess = () => {
@@ -62,39 +62,39 @@ export default  function RequestInviteDialog({ open, onClose }) {
   }
 
   return (
-      <Dialog
-        open={open}
-        onClose={onClose}
-        maxWidth="sm"
-        fullWidth
-        scroll="body"
-        classes={{ paper: classes.dialogWrapper }}
-        PaperProps={{
-          style: {
-            backgroundColor: '#fff',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-          },
-        }}
-      >
-        <DialogTitle className={classes.dialogTitle}>
-          <div></div>
-          <IconButton
-            aria-label="close"
-            className={classes.closeButton}
-            onClick={onClose}
-            size="small"
-          >
-            <CloseIcon fontSize="small" /> 
-          </IconButton>
-        </DialogTitle>
-        <DialogContent className={classes.dialogContent}>
-          <RequestAccessForm onSuccess={handleSuccess} />
-        </DialogContent>
-      </Dialog>
-    )
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      scroll="body"
+      classes={{ paper: classes.dialogWrapper }}
+      PaperProps={{
+        style: {
+          backgroundColor: '#fff',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+        },
+      }}
+    >
+      <DialogTitle className={classes.dialogTitle}>
+        <div></div>
+        <IconButton
+          aria-label="close"
+          className={classes.closeButton}
+          onClick={onClose}
+          size="small"
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent className={classes.dialogContent}>
+        <RequestAccessForm onSuccess={handleSuccess} />
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 RequestInviteDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-} 
+}
