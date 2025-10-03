@@ -59,20 +59,18 @@ function PostChatSend(props) {
     onCompleted: () => {
       dispatch(CHAT_SUBMITTING(false))
     },
-    refetchQueries: [
-      {
-        query: GET_ROOM_MESSAGES,
-        variables: {
-          messageRoomId,
-        },
+    refetchQueries: [{
+      query: GET_ROOM_MESSAGES,
+      variables: {
+        messageRoomId,
       },
-    ],
+    }],
   })
 
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
-
+    
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
@@ -108,10 +106,7 @@ function PostChatSend(props) {
       // eslint-disable-next-line no-shadow
       update: (proxy, { data: { createMessage } }) => {
         // Read the data from our cache for this query.
-        const data = proxy.readQuery({
-          query: GET_ROOM_MESSAGES,
-          variables: { messageRoomId },
-        })
+        const data = proxy.readQuery({ query: GET_ROOM_MESSAGES, variables: { messageRoomId } })
         if (data) {
           // Write our data back to the cache with the new message in it
           proxy.writeQuery({
@@ -125,7 +120,7 @@ function PostChatSend(props) {
         }
       },
     })
-
+    
     // Clear the text input after successful submission
     setText('')
   }
