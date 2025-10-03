@@ -38,6 +38,39 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(1.5, 2),
     },
   },
+  emailInputWrapper: {
+    background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+    borderRadius: theme.spacing(1.5),
+    padding: theme.spacing(2.5),
+    margin: theme.spacing(1.5, 0),
+    border: '2px solid #e0e0e0',
+    transition: 'all 0.3s ease',
+    '&:focus-within': {
+      border: '2px solid #52b274',
+      boxShadow: '0 0 0 4px rgba(82, 178, 116, 0.1)',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(2),
+      margin: theme.spacing(1, 0),
+    },
+  },
+  emailInput: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    outline: 'none',
+    width: '100%',
+    fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
+    color: '#2c3e50',
+    fontWeight: 500,
+    '&::placeholder': {
+      color: '#6c757d',
+      fontWeight: 400,
+    },
+    '&:focus': {
+      color: '#1a252f',
+    },
+  },
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
