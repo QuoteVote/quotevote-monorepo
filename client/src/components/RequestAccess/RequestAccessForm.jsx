@@ -82,9 +82,19 @@ export default function RequestAccessForm({onSuccess}) {
             justifyContent="center"
             direction="column"
             spacing={2}
+            style={{ padding: '0' }}
             >
-                <Grid item xs={12}>
-                    <Typography variant="body1" style={{textAlign: 'center', color: "#000", marginBottom: '1rem'}}>
+                <Grid item xs={12} style={{ width: '100%' }}>
+                    <Typography 
+                        variant="body1" 
+                        style={{
+                            textAlign: 'center', 
+                            color: "#000", 
+                            marginBottom: '1.5rem',
+                            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                            lineHeight: 1.5,
+                        }}
+                    >
                          You need an account to contribute. Viewing is public, but posting, voting, and quoting require an invite.
                     </Typography>
                     <Input
@@ -95,13 +105,22 @@ export default function RequestAccessForm({onSuccess}) {
                         value={userDetails}
                         onChange={(event) => setUserDetails(event.target.value)}
                         onKeyPress={(event) => event.key === 'Enter' && onSubmit()}
-                        style={{width: '100%'}}
+                        style={{
+                            width: '100%',
+                            padding: '12px 16px',
+                            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                        }}
                     />
                     <Button
                         className={classes.requestAccessBtn}
                         onClick={onSubmit}
                         disabled={loading}
-                        style={{ width: '100%', marginTop: '1rem' }}
+                        style={{ 
+                            width: '100%', 
+                            marginTop: '1.5rem',
+                            padding: '12px 24px',
+                            fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                        }}
                     >
                         {loading ? 'Sending...' : 'Request Invite'}
                     </Button>
