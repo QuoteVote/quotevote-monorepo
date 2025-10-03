@@ -12,11 +12,15 @@ function TestComponent({ onRender }) {
 describe('AuthModalContext', () => {
   it('provides modal state and control functions', () => {
     let hookValue
-    
+
     render(
       <AuthModalProvider>
-        <TestComponent onRender={(value) => { hookValue = value }} />
-      </AuthModalProvider>
+        <TestComponent
+          onRender={(value) => {
+            hookValue = value
+          }}
+        />
+      </AuthModalProvider>,
     )
 
     expect(hookValue.isModalOpen).toBe(false)
@@ -26,19 +30,27 @@ describe('AuthModalContext', () => {
 
   it('opens modal when openAuthModal is called', () => {
     let hookValue
-    
+
     const { rerender } = render(
       <AuthModalProvider>
-        <TestComponent onRender={(value) => { hookValue = value }} />
-      </AuthModalProvider>
+        <TestComponent
+          onRender={(value) => {
+            hookValue = value
+          }}
+        />
+      </AuthModalProvider>,
     )
 
     hookValue.openAuthModal()
-    
+
     rerender(
       <AuthModalProvider>
-        <TestComponent onRender={(value) => { hookValue = value }} />
-      </AuthModalProvider>
+        <TestComponent
+          onRender={(value) => {
+            hookValue = value
+          }}
+        />
+      </AuthModalProvider>,
     )
 
     expect(hookValue.isModalOpen).toBe(true)
@@ -46,19 +58,27 @@ describe('AuthModalContext', () => {
 
   it('closes modal when closeAuthModal is called', () => {
     let hookValue
-    
+
     const { rerender } = render(
       <AuthModalProvider>
-        <TestComponent onRender={(value) => { hookValue = value }} />
-      </AuthModalProvider>
+        <TestComponent
+          onRender={(value) => {
+            hookValue = value
+          }}
+        />
+      </AuthModalProvider>,
     )
 
     // First open the modal
     hookValue.openAuthModal()
     rerender(
       <AuthModalProvider>
-        <TestComponent onRender={(value) => { hookValue = value }} />
-      </AuthModalProvider>
+        <TestComponent
+          onRender={(value) => {
+            hookValue = value
+          }}
+        />
+      </AuthModalProvider>,
     )
     expect(hookValue.isModalOpen).toBe(true)
 
@@ -66,8 +86,12 @@ describe('AuthModalContext', () => {
     hookValue.closeAuthModal()
     rerender(
       <AuthModalProvider>
-        <TestComponent onRender={(value) => { hookValue = value }} />
-      </AuthModalProvider>
+        <TestComponent
+          onRender={(value) => {
+            hookValue = value
+          }}
+        />
+      </AuthModalProvider>,
     )
     expect(hookValue.isModalOpen).toBe(false)
   })
