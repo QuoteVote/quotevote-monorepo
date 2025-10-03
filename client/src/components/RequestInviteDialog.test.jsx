@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { vi } from 'vitest'
 import RequestInviteDialog from './RequestInviteDialog'
 
-// Mock the RequestAccessForm component
 vi.mock('./RequestAccess/RequestAccessForm', () => ({
   default: ({ onSuccess }) => (
     <div data-testid="request-access-form">
@@ -30,7 +29,6 @@ describe('RequestInviteDialog', () => {
       <RequestInviteDialog open={false} onClose={mockOnClose} />
     )
     
-    // When dialog is closed, form should not be rendered
     expect(screen.queryByTestId('request-access-form')).toBeNull()
   })
 
@@ -42,14 +40,11 @@ describe('RequestInviteDialog', () => {
       <RequestInviteDialog open={true} onClose={mockOnClose} />
     )
     
-    // Click the mocked submit button
     const submitButton = screen.getByText('Submit')
     fireEvent.click(submitButton)
     
-    // Fast-forward time by 3 seconds
     vi.advanceTimersByTime(3000)
     
-    // onClose should be called after timeout
     expect(mockOnClose).toHaveBeenCalled()
     
     vi.useRealTimers()

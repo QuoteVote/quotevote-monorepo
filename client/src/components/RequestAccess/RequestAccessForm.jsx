@@ -10,13 +10,16 @@ import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'
 
 import Grid from '@material-ui/core/Grid'
 import Input from '@material-ui/core/Input'
-import { Typography, Box } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 
 import Button from '../../mui-pro/CustomButtons/Button'
 import PersonalForm from 'components/RequestAccess/PersonalForm/PersonalForm'
 
 const useStyles = makeStyles(styles)
 
+/**
+ * Form component for requesting platform access via email invitation
+ */
 export default function RequestAccessForm({onSuccess}) {
     const classes = useStyles()
     const [userDetails, setUserDetails] = useState('')
