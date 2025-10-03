@@ -184,6 +184,36 @@ export default function RequestAccessForm({ onSuccess }) {
             }}
           />
         </div>
+
+        <div
+          style={{
+            textAlign: 'center',
+            marginTop: '1rem',
+            marginBottom: '0.5rem',
+          }}
+        >
+          <a
+            href="/auth/request-access#mission"
+            style={{
+              color: '#52b274',
+              textDecoration: 'none',
+              fontSize: 'clamp(0.875rem, 2vw, 0.95rem)',
+              fontWeight: 500,
+              transition: 'color 0.3s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.color = '#4a9f63'
+              e.target.style.textDecoration = 'underline'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.color = '#52b274'
+              e.target.style.textDecoration = 'none'
+            }}
+          >
+            Learn more about our mission here
+          </a>
+        </div>
+
         <Button
           className={classes.requestAccessBtn}
           onClick={onSubmit}
