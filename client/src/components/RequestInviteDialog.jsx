@@ -110,7 +110,7 @@ export default function RequestInviteDialog({ open, onClose }) {
       }}
     >
       <DialogTitle className={classes.dialogTitle}>
-        <div></div>
+        
         <IconButton
           aria-label="close"
           className={classes.closeButton}
