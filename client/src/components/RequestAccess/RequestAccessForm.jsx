@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { useForm } from 'react-hook-form'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
 import PropTypes from 'prop-types'
 import styles from 'assets/jss/material-dashboard-pro-react/views/landingPageStyle'
@@ -25,11 +24,6 @@ export default function RequestAccessForm({ onSuccess }) {
   const [userDetails, setUserDetails] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [requestInviteSuccessful, setRequestInviteSuccessful] = useState(false)
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
 
   const client = useApolloClient()
   const [requestUserAccess, { loading }] = useMutation(
@@ -63,12 +57,10 @@ export default function RequestAccessForm({ onSuccess }) {
         return
       }
 
-      if (!Object.keys(errors).length) {
-        const requestUserAccessInput = { email: userDetails }
-        await requestUserAccess({ variables: { requestUserAccessInput } })
-        setRequestInviteSuccessful(true)
-        if (onSuccess) onSuccess()
-      }
+      const requestUserAccessInput = { email: userDetails }
+      await requestUserAccess({ variables: { requestUserAccessInput } })
+      setRequestInviteSuccessful(true)
+      if (onSuccess) onSuccess()
     } catch (err) {
       if (err.message.includes('email: Path `email` is required.')) {
         setErrorMessage('Email is required')
