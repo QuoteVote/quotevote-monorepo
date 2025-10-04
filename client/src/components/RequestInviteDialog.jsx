@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {
   Dialog,
   DialogContent,
-  DialogTitle,
   IconButton,
   makeStyles,
 } from '@material-ui/core'
@@ -22,14 +21,6 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2),
       borderRadius: theme.spacing(1.5),
       maxHeight: '90vh',
-    },
-  },
-  dialogTitle: {
-    paddingRight: '0px',
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    [theme.breakpoints.down('xs')]: {
-      padding: theme.spacing(1, 1, 0.5, 1),
     },
   },
   dialogContent: {
@@ -76,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(1),
     top: theme.spacing(1),
     color: theme.palette.grey[500],
+    zIndex: 1,
     [theme.breakpoints.down('xs')]: {
       right: theme.spacing(0.5),
       top: theme.spacing(0.5),
@@ -109,17 +101,14 @@ export default function RequestInviteDialog({ open, onClose }) {
         },
       }}
     >
-      <DialogTitle className={classes.dialogTitle}>
-        
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-          size="small"
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </DialogTitle>
+      <IconButton
+        aria-label="close"
+        className={classes.closeButton}
+        onClick={onClose}
+        size="small"
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
       <DialogContent className={classes.dialogContent}>
         <RequestAccessForm onSuccess={handleSuccess} />
       </DialogContent>
