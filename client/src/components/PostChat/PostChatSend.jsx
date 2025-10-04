@@ -28,12 +28,18 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     borderRadius: 6,
-    background: '#ffffff',
+    background: '#f5f7fa',
+    border: '1px solid #e1e8ed',
     height: 45,
     paddingLeft: 10,
     width: '80%',
     [theme.breakpoints.up('md')]: {
       width: '85%',
+    },
+    '&:focus-within': {
+      background: '#ffffff',
+      border: '1px solid #1976d2',
+      boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)',
     },
   },
   send: {
