@@ -43,15 +43,12 @@ export default function Dashboard(props) {
   const [logo, setLogo] = React.useState('/assets/logo-white.svg')
   // styles
   const classes = useStyles()
-  const { isModalOpen, closeModal } = useAuthModal()
-  const mainPanelClasses =
-    `${classes.mainPanel
-    } ${
-      cx({
-        [classes.mainPanelSidebarMini]: miniActive,
-        [classes.mainPanelWithPerfectScrollbar]:
-        navigator.platform.indexOf('Win') > -1,
-      })}`
+  const { isModalOpen, closeAuthModal } = useAuthModal()
+  const mainPanelClasses = `${classes.mainPanel} ${cx({
+    [classes.mainPanelSidebarMini]: miniActive,
+    [classes.mainPanelWithPerfectScrollbar]:
+      navigator.platform.indexOf('Win') > -1,
+  })}`
   // ref for main panel div
   const mainPanel = React.createRef()
   // effect instead of componentDidMount, componentDidUpdate and componentWillUnmount
@@ -118,21 +115,22 @@ export default function Dashboard(props) {
     }
     return activeRoute
   }
-  const getRoutes = (routes) => routes.map((prop, key) => {
-    if (prop.collapse) {
-      return getRoutes(prop.views)
-    }
-    if (prop.layout === '/admin') {
-      return (
-        <Route
-          path={prop.layout + prop.path}
-          component={prop.component}
-          key={key}
-        />
-      )
-    }
-    return null
-  })
+  const getRoutes = (routes) =>
+    routes.map((prop, key) => {
+      if (prop.collapse) {
+        return getRoutes(prop.views)
+      }
+      if (prop.layout === '/admin') {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+          />
+        )
+      }
+      return null
+    })
   const sidebarMinimize = () => {
     setMiniActive(!miniActive)
   }
@@ -196,7 +194,7 @@ export default function Dashboard(props) {
           miniActive={miniActive}
         />
       </div>
-      <RequestInviteDialog open={isModalOpen} onClose={closeModal} />
+      <RequestInviteDialog open={isModalOpen} onClose={closeAuthModal} />
     </div>
   )
 }
