@@ -14,4 +14,7 @@ describe('Post Page test -', () => {
     )
     expect(container.firstChild).toMatchSnapshot()
   })
+
+  test.todo('should render Open Graph and Twitter meta tags for static content');
+  test.todo('should render Open Graph and Twitter meta tags for dynamic post content');
 })
