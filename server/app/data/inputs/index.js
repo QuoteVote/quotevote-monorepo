@@ -3,6 +3,7 @@ export * from './GroupInput';
 export * from './MessageInput';
 export * from './PostInput';
 export * from './QuoteInput';
+export * from './ThemeInput';
 export * from './UserInput';
 export * from './VoteInput';
 export * from './StripeCustomerInput';

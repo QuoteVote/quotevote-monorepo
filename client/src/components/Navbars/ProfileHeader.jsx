@@ -22,6 +22,7 @@ import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'
 import { GET_CHAT_ROOM } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import { useTheme } from '../../contexts/ThemeContext'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -71,6 +72,7 @@ export default function ProfileHeader(props) {
   const { profileUser } = props
   const loggedInUserId = useSelector((state) => state.user.data._id)
   const dispatch = useDispatch()
+  const { muiTheme } = useTheme()
 
   const {
     username,
@@ -104,8 +106,27 @@ export default function ProfileHeader(props) {
     )
     dispatch(SET_CHAT_OPEN(true))
   }
+  // Create a custom theme for this profile based on the user's theme
+  const profileTheme = profileUser.theme ? {
+    ...mainTheme,
+    palette: {
+      ...mainTheme.palette,
+      primary: {
+        main: profileUser.theme.customColors?.primary || profileUser.theme.colors?.primary || mainTheme.palette.primary.main,
+        contrastText: '#fff',
+      },
+      secondary: {
+        main: profileUser.theme.customColors?.secondary || profileUser.theme.colors?.secondary || mainTheme.palette.secondary.main,
+        contrastText: '#fff',
+      },
+      background: {
+        default: profileUser.theme.customColors?.background || profileUser.theme.colors?.background || mainTheme.palette.background.default,
+      },
+    },
+  } : mainTheme;
+
   return (
-    <ThemeProvider theme={mainTheme}>
+    <ThemeProvider theme={profileTheme}>
       <Grid container direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>
         <Grid item>
           <Avatar className={classes.avatar}>

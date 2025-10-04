@@ -11,6 +11,7 @@ export * from './Post';
 export * from './Posts';
 export * from './Quote';
 export * from './Reaction';
+export * from './Theme';
 export * from './User';
 export * from './UserInvite';
 export * from './Vote';

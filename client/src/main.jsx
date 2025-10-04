@@ -30,8 +30,9 @@ import TokenExpired from 'layouts/TokenExpired'
 import store, { persistor } from 'store/store'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles'
 import customTheme from './theme'
+import { ThemeProvider } from './contexts/ThemeContext'
 import 'assets/scss/material-dashboard-pro-react.scss'
 import LogoutPage from './components/LogoutPage'
 
@@ -57,17 +58,19 @@ ReactDOM.render(
     <ApolloProvider client={client}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <Router history={hist}>
-              <Switch>
-                <Route path="/auth" component={AuthLayout} />
-                <Route path="/unauth" component={TokenExpired} />
-                <Route path="/logout" component={LogoutPage} />
-                <Route path="/error" component={ErrorPage} />
-                <Route path="/" component={Scoreboard} />
-                <Redirect from="*" to="/search" />
-              </Switch>
-            </Router>
+          <ThemeProvider>
+            <MuiThemeProvider theme={theme}>
+              <Router history={hist}>
+                <Switch>
+                  <Route path="/auth" component={AuthLayout} />
+                  <Route path="/unauth" component={TokenExpired} />
+                  <Route path="/logout" component={LogoutPage} />
+                  <Route path="/error" component={ErrorPage} />
+                  <Route path="/" component={Scoreboard} />
+                  <Redirect from="*" to="/search" />
+                </Switch>
+              </Router>
+            </MuiThemeProvider>
           </ThemeProvider>
         </PersistGate>
       </Provider>

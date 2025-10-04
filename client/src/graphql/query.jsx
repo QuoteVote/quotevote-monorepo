@@ -431,6 +431,15 @@ export const GET_USER = gql`
       _followersId
       avatar
       contributorBadge
+      theme {
+        type
+        customColors {
+          primary
+          secondary
+          background
+          text
+        }
+      }
     }
   }
 `

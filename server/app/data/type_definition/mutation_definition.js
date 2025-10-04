@@ -70,6 +70,9 @@ export const Mutation = `type Mutation {
   # Mutation for updating user details
     updateUser(user: UserInput!): User
 
+  # Mutation for updating user theme
+    updateUserTheme(theme: ThemeInput!): User
+
   # Mutation for updating user details
     sendUserInviteApproval(userId: String!, inviteStatus: String!): JSON
 

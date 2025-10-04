@@ -20,6 +20,7 @@ import AvatarDisplay from '../Avatar'
 import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
 import SignOutButton from '../CustomButtons/SignOutButton'
 import ManageInviteButton from '../CustomButtons/ManageInviteButton'
+import ThemeSettings from './ThemeSettings'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
@@ -399,6 +400,11 @@ function SettingsContent({ setOpen }) {
             )}
             <Grid item>
               <SettingsSaveButton disabled={!hasChange} />
+            </Grid>
+            
+            {/* Theme Settings */}
+            <Grid item>
+              <ThemeSettings />
             </Grid>
           </Grid>
         </Grid>

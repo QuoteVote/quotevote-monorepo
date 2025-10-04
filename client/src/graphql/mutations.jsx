@@ -178,6 +178,33 @@ export const UPDATE_USER = gql`
       email
       avatar
       admin
+      theme {
+        type
+        customColors {
+          primary
+          secondary
+          background
+          text
+        }
+      }
+    }
+  }
+`
+
+export const UPDATE_USER_THEME = gql`
+  mutation updateUserTheme($theme: ThemeInput!) {
+    updateUserTheme(theme: $theme) {
+      _id
+      username
+      theme {
+        type
+        customColors {
+          primary
+          secondary
+          background
+          text
+        }
+      }
     }
   }
 `

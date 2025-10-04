@@ -9,7 +9,7 @@ import PrivateRoute from '../components/PrivateRoute'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 import Hidden from '@material-ui/core/Hidden'
-import { createTheme, makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import appRoutes from '../routes'
@@ -21,31 +21,15 @@ import Snackbar from 'mui-pro/Snackbar/Snackbar'
 import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
+import { useTheme } from '../contexts/ThemeContext'
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#fff',
-      contrastText: '#52b274',
-    },
-    secondary: {
-      main: '#52b274',
-      contrastText: '#fff',
-    },
-    background: {
-      default: '#EEF4F9',
-    },
-  },
-  typography: {
-    useNextVariants: true,
-  },
-})
 const useStyles = makeStyles(styles)
 
 function Scoreboard(props) {
   const history = useHistory()
   const dispatch = useDispatch()
   const snackbar = useSelector((state) => state.ui.snackbar)
+  const { muiTheme } = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [page, setPage] = React.useState('Home')
   // styles
@@ -113,7 +97,7 @@ function Scoreboard(props) {
   }
 
   return (
-    <MuiThemeProvider theme={theme}>
+    <MuiThemeProvider theme={muiTheme}>
       <div className={classes.root}>
         <CssBaseline />
         <Hidden only={['xs', 'sm']}>
