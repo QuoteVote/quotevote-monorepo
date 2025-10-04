@@ -72,7 +72,7 @@ export default function RequestAccessForm({ onSuccess }) {
   }
 
   if (requestInviteSuccessful) {
-    return <PersonalForm requestInviteSuccessful={requestInviteSuccessful} />
+    return <PersonalForm requestInviteSuccessful />
   }
 
   const duplicate = (
