@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core'
+import { Grid } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { useQuery, useSubscription } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'

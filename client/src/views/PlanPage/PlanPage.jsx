@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { tokenValidator } from 'store/user'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -8,8 +8,9 @@ import {
   Typography,
   Grid,
   Button,
-  Hidden,
-} from '@material-ui/core'
+} from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { SET_SELECTED_PLAN } from 'store/ui'
 import { isMobile } from 'react-device-detect'
 
@@ -22,6 +23,9 @@ export default function Plans() {
   const dispatch = useDispatch()
   const history = useHistory()
   const [hover, setHover] = useState()
+  const theme = useTheme()
+  const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
+  const isXsDown = useMediaQuery(theme.breakpoints.down('xs'))
 
   React.useEffect(() => {
     if (tokenValidator(dispatch)) history.push('/search')
@@ -73,10 +77,10 @@ export default function Plans() {
       <Grid container justify="center" style={{ marginRight: 24 }}>
         <Grid item container justify="center" xs={12}>
           <Typography className={classes.select}>Select To Learn More</Typography>
-          <Hidden smUp>
-            {buttonList}
-          </Hidden>
-          <Hidden xsDown>
+          {!isSmUp && (
+            buttonList
+          )}
+          {isSmUp && (
             <Grid container direction="row" justify="space-evenly" className={classes.plans}>
               <Grid item>
                 <Grid container direction="column" alignItems="center">
@@ -124,7 +128,7 @@ export default function Plans() {
                 </Grid>
               </Grid>
             </Grid>
-          </Hidden>
+          )}
         </Grid>
       </Grid>
     </div>

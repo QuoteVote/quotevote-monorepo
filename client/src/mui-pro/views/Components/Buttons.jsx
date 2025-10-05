@@ -1,16 +1,16 @@
 import React from 'react'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+// @mui core components
+import { makeStyles } from '@mui/styles'
 
 // @material-ui/icons
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
-import PriorityHigh from '@material-ui/icons/PriorityHigh'
-import Check from '@material-ui/icons/Check'
-import Warning from '@material-ui/icons/Warning'
-import Close from '@material-ui/icons/Close'
-import Favorite from '@material-ui/icons/Favorite'
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
+import PriorityHigh from '@mui/icons-material/PriorityHigh'
+import Check from '@mui/icons-material/Check'
+import Warning from '@mui/icons-material/Warning'
+import Close from '@mui/icons-material/Close'
+import Favorite from '@mui/icons-material/Favorite'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

@@ -2,7 +2,7 @@ import ErrorPage from "mui-pro/views/Pages/ErrorPage.jsx";
 import LoginPage from "views/LoginPage/LoginPage";
 import RequestAccessPage from "views/RequestAccessPage/RequestAccessPage";
 
-import Image from "@material-ui/icons/Image";
+import Image from "@mui/icons-material/Image";
 import LandingPage from "../views/LandingPage/LandingPage";
 import PlanPage from "../views/PlanPage/PlanPage";
 import InvestorThanks from "../views/InvestorThanks/InvestorThanks";

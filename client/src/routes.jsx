@@ -1,6 +1,6 @@
 import Profile from 'views/Profile'
 import ControlPanel from 'views/ControlPanel/ControlPanel'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import PostPage from 'views/PostsPage'
 import LogoutPage from './components/LogoutPage'
 import ProfileAvatar from './components/Profile/ProfileAvatar'

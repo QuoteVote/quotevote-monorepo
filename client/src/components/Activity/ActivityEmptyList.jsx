@@ -1,5 +1,6 @@
-import { createTheme, makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
-import { Button } from '@material-ui/core'
+import { makeStyles } from '@mui/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { Button } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import GridContainer from '../../mui-pro/Grid/GridContainer'

@@ -2,13 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import cx from "classnames";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Snack from "@material-ui/core/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
+// @mui components
+import { makeStyles } from "@mui/styles";
+import Snack from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
 
-// @material-ui/icons
-import Close from "@material-ui/icons/Close";
+// @mui icons
+import Close from "@mui/icons-material/Close";
 
 import styles from "assets/jss/material-dashboard-pro-react/components/snackbarContentStyle";
 

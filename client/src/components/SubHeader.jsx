@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import Tooltip from '@material-ui/core/Tooltip'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
-import { Grid, Typography } from '@material-ui/core'
+import Tooltip from '@mui/material/Tooltip'
+import { makeStyles, withStyles } from '@mui/styles'
+import { Grid, Typography } from '@mui/material'
 
 const useStyles = makeStyles((theme) => ({
   header: {

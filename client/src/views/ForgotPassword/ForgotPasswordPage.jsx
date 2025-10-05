@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import GridContainer from 'mui-pro/Grid/GridContainer'
 import styles from 'assets/jss/material-dashboard-pro-react/views/loginPageStyle'
 import { useMutation } from '@apollo/react-hooks'

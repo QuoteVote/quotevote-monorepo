@@ -1,7 +1,7 @@
-import IconButton from '@material-ui/core/IconButton'
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow'
+import IconButton from '@mui/material/IconButton'
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import PropTypes from 'prop-types'
-import { createTheme, MuiThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 const customTheme = createTheme({
   palette: {

@@ -1,16 +1,17 @@
 import { useState } from 'react'
-import { CircularProgress, TextField, Typography } from '@material-ui/core'
-import Button from '@material-ui/core/Button'
+import { CircularProgress, TextField, Typography } from '@mui/material'
+import Button from '@mui/material/Button'
 import PropTypes from 'prop-types'
-import InputAdornment from '@material-ui/core/InputAdornment'
+import InputAdornment from '@mui/material/InputAdornment'
 import { useHistory } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
 import { useMutation } from '@apollo/react-hooks'
 import { useForm } from 'react-hook-form'
 import Carousel from 'react-material-ui-carousel'
-import Grid from '@material-ui/core/Grid'
-import withWidth from '@material-ui/core/withWidth'
-import Hidden from '@material-ui/core/Hidden'
+import Grid from '@mui/material/Grid'
+import withWidth from 'utils/withWidth'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import GridItem from '../../../mui-pro/Grid/GridItem'
 import InvestButton from '../../CustomButtons/InvestButton'
 import { SEND_INVESTOR_EMAIL } from '../../../graphql/mutations'
@@ -25,6 +26,9 @@ InvestorCarouselFirstContent.propTypes = {
 
 function InvestorCarouselFirstContent({ classes, setContentIndex, width }) {
   const { opinionsText, bottomText, greenText } = classes
+  const theme = useTheme()
+  const showMdUp = useMediaQuery(theme.breakpoints.up('md'))
+  const showMdDown = !showMdUp
   const browserWidth = '400.43px'
   const imageWidth = isMobile ? MOBILE_IMAGE_WIDTH : browserWidth
   return (
@@ -64,23 +68,23 @@ function InvestorCarouselFirstContent({ classes, setContentIndex, width }) {
             <br />
           </div>
         </Typography>
-        <Hidden mdUp>
+        {showMdDown && (
           <InvestButton
             width={width}
             handleClick={() => {
               setContentIndex(2)
             }}
           />
-        </Hidden>
+        )}
         <Typography className={bottomText}>
-          <Hidden smDown>
+          {showMdUp && (
             <InvestButton
               width={width}
               handleClick={() => {
                 setContentIndex(2)
               }}
             />
-          </Hidden>
+          )}
           {' '}
           What is
           <span className={greenText}> the deal </span>

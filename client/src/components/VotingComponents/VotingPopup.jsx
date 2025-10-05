@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useState, useEffect } from 'react'
 
 import {
@@ -13,7 +13,7 @@ import {
     Tooltip,
     SvgIcon,
     Grid,
-} from '@material-ui/core'
+} from '@mui/material'
 import { isEmpty, findIndex } from 'lodash'
 import { useSelector } from 'react-redux'
 import DislikeIcon from '../../assets/svg/Dislike.jsx'

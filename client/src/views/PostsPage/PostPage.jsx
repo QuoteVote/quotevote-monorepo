@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, useMediaQuery } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { Grid, useMediaQuery } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash';
