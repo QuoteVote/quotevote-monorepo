@@ -41,8 +41,10 @@ const useStyles = makeStyles({
   },
   sendButton: {
     textTransform: 'none',
-    color: 'white',
-    textColor: 'white',
+    color: '#00bcd4', // Normal state text color
+    '&:hover': {
+      color: '#ffffff', // Hover state text color
+    },
   },
   forgotPassword: {
     textTransform: 'none',
@@ -58,14 +60,9 @@ const useStyles = makeStyles({
   },
 })
 
-function ForgotPasswordForm({
-  onSubmit = () => {
-  }, loading, error,
-}) {
+function ForgotPasswordForm({ onSubmit = () => {}, loading, error }) {
   const classes = useStyles()
-  const {
-    register, handleSubmit, errors, setError,
-  } = useForm()
+  const { register, handleSubmit, errors, setError } = useForm()
 
   useEffect(() => {
     if (error) {
@@ -125,11 +122,7 @@ ForgotPasswordForm.propTypes = {
   error: PropTypes.any,
 }
 
-function ForgotPassword({
-  onSubmit = () => {
-  }, loading = false,
-  error,
-}) {
+function ForgotPassword({ onSubmit = () => {}, loading = false, error }) {
   const classes = useStyles()
   const history = useHistory()
   const handleGoBack = () => {
@@ -150,9 +143,7 @@ function ForgotPassword({
             >
               <ArrowBackIosIcon />
             </IconButton>
-            <span className={classes.header}>
-              Forgot password?
-            </span>
+            <span className={classes.header}>Forgot password?</span>
           </Typography>
           <p className={classes.headerSubText}>
             We will send you a link to reset your password.
@@ -166,7 +157,11 @@ function ForgotPassword({
           spacing={2}
         >
           <Grid item>
-            <ForgotPasswordForm onSubmit={onSubmit} loading={loading} error={error} />
+            <ForgotPasswordForm
+              onSubmit={onSubmit}
+              loading={loading}
+              error={error}
+            />
           </Grid>
           <Grid item>
             <Typography variant="body1">
