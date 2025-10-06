@@ -1,10 +1,81 @@
 import ngeohash from 'ngeohash';
 import NodeGeocoder from 'node-geocoder';
 
-// Configuration
-const COORDINATE_PRECISION = parseInt(process.env.GEO_PRECISION_DECIMALS || '3', 10);
-const DEFAULT_RADIUS_KM = parseFloat(process.env.GEO_DEFAULT_RADIUS_KM || '10');
-const MAX_RADIUS_KM = parseFloat(process.env.GEO_MAX_RADIUS_KM || '100');
+// Safe default values
+const SAFE_DEFAULTS = {
+  COORDINATE_PRECISION: 3,
+  DEFAULT_RADIUS_KM: 10,
+  MAX_RADIUS_KM: 100,
+};
+
+/**
+ * Parse and validate configuration from environment variables
+ * Falls back to safe defaults if parsing fails or values are invalid
+ */
+const parseConfig = () => {
+  const config = { ...SAFE_DEFAULTS };
+
+  // Parse COORDINATE_PRECISION
+  const precisionEnv = process.env.GEO_PRECISION_DECIMALS;
+  if (precisionEnv !== undefined) {
+    const precision = parseInt(precisionEnv, 10);
+    if (isNaN(precision) || precision < 0) {
+      console.warn(
+        `[Geolocation] Invalid GEO_PRECISION_DECIMALS="${precisionEnv}". ` +
+        `Must be a non-negative integer. Using default: ${SAFE_DEFAULTS.COORDINATE_PRECISION}`
+      );
+    } else {
+      config.COORDINATE_PRECISION = precision;
+    }
+  }
+
+  // Parse MAX_RADIUS_KM
+  const maxRadiusEnv = process.env.GEO_MAX_RADIUS_KM;
+  if (maxRadiusEnv !== undefined) {
+    const maxRadius = parseFloat(maxRadiusEnv);
+    if (isNaN(maxRadius) || maxRadius <= 0) {
+      console.warn(
+        `[Geolocation] Invalid GEO_MAX_RADIUS_KM="${maxRadiusEnv}". ` +
+        `Must be a positive number. Using default: ${SAFE_DEFAULTS.MAX_RADIUS_KM}`
+      );
+    } else {
+      config.MAX_RADIUS_KM = maxRadius;
+    }
+  }
+
+  // Parse DEFAULT_RADIUS_KM
+  const defaultRadiusEnv = process.env.GEO_DEFAULT_RADIUS_KM;
+  if (defaultRadiusEnv !== undefined) {
+    const defaultRadius = parseFloat(defaultRadiusEnv);
+    if (isNaN(defaultRadius) || defaultRadius <= 0) {
+      console.warn(
+        `[Geolocation] Invalid GEO_DEFAULT_RADIUS_KM="${defaultRadiusEnv}". ` +
+        `Must be a positive number. Using default: ${SAFE_DEFAULTS.DEFAULT_RADIUS_KM}`
+      );
+    } else {
+      // Ensure DEFAULT_RADIUS_KM does not exceed MAX_RADIUS_KM
+      if (defaultRadius > config.MAX_RADIUS_KM) {
+        console.warn(
+          `[Geolocation] GEO_DEFAULT_RADIUS_KM="${defaultRadius}" exceeds ` +
+          `GEO_MAX_RADIUS_KM="${config.MAX_RADIUS_KM}". Clamping to max.`
+        );
+        config.DEFAULT_RADIUS_KM = config.MAX_RADIUS_KM;
+      } else {
+        config.DEFAULT_RADIUS_KM = defaultRadius;
+      }
+    }
+  }
+
+  return config;
+};
+
+// Parse and validate configuration
+const CONFIG = parseConfig();
+
+// Export validated configuration constants
+const COORDINATE_PRECISION = CONFIG.COORDINATE_PRECISION;
+const DEFAULT_RADIUS_KM = CONFIG.DEFAULT_RADIUS_KM;
+const MAX_RADIUS_KM = CONFIG.MAX_RADIUS_KM;
 
 // Geocoding cache (in-memory, could be Redis in production)
 const geocodeCache = new Map();

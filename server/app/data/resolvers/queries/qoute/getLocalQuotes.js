@@ -1,12 +1,59 @@
 import QuoteModel from '~/resolvers/models/QuoteModel';
 import { validateCoordinates, getValidatedRadius, calculateDistance } from '~/utils/geolocation';
 
+// Constants for validation
+const DEFAULT_LIMIT = 50;
+const MAX_LIMIT = 100;
+const DEFAULT_OFFSET = 0;
+
+/**
+ * Sanitize and validate limit parameter
+ * @param {any} limit - User-provided limit value
+ * @returns {number} - Sanitized limit value (between 1 and MAX_LIMIT)
+ */
+const sanitizeLimit = (limit) => {
+  // Convert to number and floor it
+  const floorLimit = Math.floor(Number(limit));
+  
+  // Handle NaN, undefined, null, or invalid values - use default
+  if (isNaN(floorLimit) || limit === undefined || limit === null) {
+    return DEFAULT_LIMIT;
+  }
+  
+  // Enforce: minimum 1, maximum MAX_LIMIT
+  // limit = Math.min(MAX_LIMIT, Math.max(1, floorLimit))
+  return Math.min(MAX_LIMIT, Math.max(1, floorLimit));
+};
+
+/**
+ * Sanitize and validate offset parameter
+ * @param {any} offset - User-provided offset value
+ * @returns {number} - Sanitized offset value (non-negative integer)
+ */
+const sanitizeOffset = (offset) => {
+  // Convert to number and floor it
+  const floorOffset = Math.floor(Number(offset));
+  
+  // Handle NaN, undefined, null, or invalid values - use default
+  if (isNaN(floorOffset) || offset === undefined || offset === null) {
+    return DEFAULT_OFFSET;
+  }
+  
+  // Enforce: offset must be non-negative
+  // offset = Math.max(0, floorOffset)
+  return Math.max(0, floorOffset);
+};
+
 /**
  * Query local quotes within a radius of user's location
  */
 export const localQuotes = async (root, args, context) => {
   try {
-    const { near, radiusKm, limit = 50, offset = 0 } = args;
+    const { near, radiusKm } = args;
+    
+    // Sanitize pagination parameters to prevent MongoDB issues
+    const sanitizedLimit = sanitizeLimit(args.limit);
+    const sanitizedOffset = sanitizeOffset(args.offset);
 
     // Validate coordinates
     const validation = validateCoordinates(near.latitude, near.longitude);
@@ -33,10 +80,10 @@ export const localQuotes = async (root, args, context) => {
       },
     };
 
-    // Execute query with pagination
+    // Execute query with sanitized pagination parameters
     const quotes = await QuoteModel.find(query)
-      .skip(offset)
-      .limit(limit)
+      .skip(sanitizedOffset)
+      .limit(sanitizedLimit)
       .lean()
       .exec();
 

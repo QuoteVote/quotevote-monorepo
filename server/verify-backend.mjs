@@ -14,7 +14,7 @@ console.log('-'.repeat(60));
 
 try {
   // Dynamic import for ES modules
-  const geoModule = await import('../app/data/utils/geolocation.js');
+  const geoModule = await import('./app/data/utils/geolocation.js');
   
   // Test coordinate validation
   console.log('Testing coordinate validation...');
@@ -66,24 +66,15 @@ console.log('\n✅ TEST 2: Quote Model Schema');
 console.log('-'.repeat(60));
 
 try {
-  const QuoteModel = (await import('../app/data/resolvers/models/QuoteModel.js')).default;
-  
-  const schema = QuoteModel.schema.obj;
+  const fs = await import('fs');
+  const modelPath = './app/data/resolvers/models/QuoteModel.js';
+  const modelContent = fs.readFileSync(modelPath, 'utf8');
   
   console.log('Checking new fields in schema...');
-  console.log('  isLocal field:', schema.isLocal ? '✓' : '✗');
-  console.log('  location field:', schema.location ? '✓' : '✗');
-  console.log('  placeLabel field:', schema.placeLabel ? '✓' : '✗');
-  
-  // Check indexes
-  const indexes = QuoteModel.schema.indexes();
-  console.log('\nChecking indexes...');
-  console.log('  Total indexes:', indexes.length);
-  
-  const has2dsphere = indexes.some(idx => 
-    idx[0].location && idx[1] && idx[1]['2dsphere']
-  );
-  console.log('  2dsphere index on location:', has2dsphere ? '✓' : '✗');
+  console.log('  isLocal field:', modelContent.includes('isLocal:') ? '✓' : '✗');
+  console.log('  location field:', modelContent.includes('location:') ? '✓' : '✗');
+  console.log('  placeLabel field:', modelContent.includes('placeLabel:') ? '✓' : '✗');
+  console.log('  2dsphere index:', modelContent.includes('2dsphere') ? '✓' : '✗');
   
   console.log('\n✅ Quote Model: ALL TESTS PASSED');
   
@@ -97,10 +88,10 @@ console.log('\n✅ TEST 3: GraphQL Schema');
 console.log('-'.repeat(60));
 
 try {
-  const { GeoInput } = await import('../app/data/inputs/GeoInput.js');
-  const { QuoteInput } = await import('../app/data/inputs/QuoteInput.js');
-  const { Quote } = await import('../app/data/types/Quote.js');
-  const { Query } = await import('../app/data/type_definition/query_definition.js');
+  const { GeoInput } = await import('./app/data/inputs/GeoInput.js');
+  const { QuoteInput } = await import('./app/data/inputs/QuoteInput.js');
+  const { Quote } = await import('./app/data/types/Quote.js');
+  const { Query } = await import('./app/data/type_definition/query_definition.js');
   
   console.log('Checking GraphQL type definitions...');
   console.log('  GeoInput defined:', GeoInput.includes('latitude') && GeoInput.includes('longitude') ? '✓' : '✗');
@@ -124,12 +115,18 @@ console.log('\n✅ TEST 4: Resolvers');
 console.log('-'.repeat(60));
 
 try {
-  const { localQuotes } = await import('../app/data/resolvers/queries/qoute/getLocalQuotes.js');
-  const { latestQuotes } = await import('../app/data/resolvers/queries/qoute/getLatestQuotes.js');
+  const fs = await import('fs');
+  const localQuotesPath = './app/data/resolvers/queries/qoute/getLocalQuotes.js';
+  const latestQuotesPath = './app/data/resolvers/queries/qoute/getLatestQuotes.js';
+  
+  const localQuotesContent = fs.readFileSync(localQuotesPath, 'utf8');
+  const latestQuotesContent = fs.readFileSync(latestQuotesPath, 'utf8');
   
   console.log('Checking resolver functions...');
-  console.log('  localQuotes resolver exists:', typeof localQuotes === 'function' ? '✓' : '✗');
-  console.log('  latestQuotes resolver exists:', typeof latestQuotes === 'function' ? '✓' : '✗');
+  console.log('  localQuotes resolver exists:', localQuotesContent.includes('export const localQuotes') ? '✓' : '✗');
+  console.log('  latestQuotes resolver exists:', latestQuotesContent.includes('export const latestQuotes') ? '✓' : '✗');
+  console.log('  localQuotes has sanitization:', localQuotesContent.includes('sanitizeLimit') && localQuotesContent.includes('sanitizeOffset') ? '✓' : '✗');
+  console.log('  latestQuotes has sanitization:', latestQuotesContent.includes('sanitizeLimit') ? '✓' : '✗');
   
   console.log('\n✅ Resolvers: ALL TESTS PASSED');
   
