@@ -79,7 +79,17 @@ const MAX_RADIUS_KM = CONFIG.MAX_RADIUS_KM;
 
 // Geocoding cache (in-memory, could be Redis in production)
 const geocodeCache = new Map();
-const CACHE_TTL_MS = parseInt(process.env.GEOCODING_CACHE_TTL_HOURS || '168', 10) * 60 * 60 * 1000;
+
+// Parse and validate GEOCODING_CACHE_TTL_HOURS
+let cacheTTLHours = parseInt(process.env.GEOCODING_CACHE_TTL_HOURS || '168', 10);
+if (!Number.isInteger(cacheTTLHours) || cacheTTLHours <= 0) {
+  console.warn(
+    `[Geolocation] Invalid GEOCODING_CACHE_TTL_HOURS="${process.env.GEOCODING_CACHE_TTL_HOURS}". ` +
+    `Must be a positive integer. Using default: 168 hours`
+  );
+  cacheTTLHours = 168;
+}
+const CACHE_TTL_MS = cacheTTLHours * 60 * 60 * 1000;
 
 // Initialize geocoder
 const geocoderOptions = {
