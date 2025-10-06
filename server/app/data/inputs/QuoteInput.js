@@ -6,5 +6,7 @@ input QuoteInput {
     quote: String!
     startWordIndex: Int!
     endWordIndex: Int!
+    isLocal: Boolean
+    location: GeoInput
 }
 `;

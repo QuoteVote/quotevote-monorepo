@@ -168,3 +168,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+#static files to track workflow
+workflow.txt

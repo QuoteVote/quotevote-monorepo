@@ -66,6 +66,8 @@
     "mongodb": "^3.5.7",
     "mongoose": "^5.9.13",
     "nanoid": "^3.1.23",
+    "ngeohash": "^0.6.3",
+    "node-geocoder": "^4.4.1",
     "node-url-shortener": "^1.0.1",
     "nodemailer": "^6.4.11",
     "path": "^0.12.7",

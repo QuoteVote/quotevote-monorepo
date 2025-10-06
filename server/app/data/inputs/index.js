@@ -1,4 +1,5 @@
 export * from './CommentInput';
+export * from './GeoInput';
 export * from './GroupInput';
 export * from './MessageInput';
 export * from './PostInput';

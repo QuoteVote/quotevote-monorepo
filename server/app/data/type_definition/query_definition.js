@@ -60,4 +60,10 @@ type Query {
 
   " This will query the action Reactions"
   actionReactions(actionId: String!): [Reaction]
+
+  " This will query local quotes within a radius "
+  localQuotes(near: GeoInput!, radiusKm: Float, limit: Int, offset: Int): [Quote]
+
+  " This will query the latest quotes "
+  latestQuotes(limit: Int!): [Quote]
 }`;
