@@ -15,7 +15,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import Popper from '@mui/material/Popper'
 import Divider from '@mui/material/Divider'
 
-// @material-ui/icons
+// icons
 import Person from '@mui/icons-material/Person'
 import Notifications from '@mui/icons-material/Notifications'
 import Dashboard from '@mui/icons-material/Dashboard'

@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import GuestFooter from 'components/GuestFooter'
 import { useMobileDetection } from 'utils/display'
-import { Grid } from '@material-ui/core'
-import { Typography } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Grid } from '@mui/material'
+import { Typography } from '@mui/material'
+import { Button } from '@mui/material'
 import { DONATE_URL } from '../SearchContainer/SearchGuestSections'
 
 export default function InfoSections() {

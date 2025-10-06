@@ -9,7 +9,7 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Icon from '@mui/material/Icon'
 
-// @material-ui/icons
+// icons
 import Timeline from '@mui/icons-material/Timeline'
 import Code from '@mui/icons-material/Code'
 import Group from '@mui/icons-material/Group'

@@ -2,9 +2,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Hidden from "@material-ui/core/Hidden";
+// @mui styles + components
+import { makeStyles } from '@mui/styles'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 // core components
 import Heading from "mui-pro/Heading/Heading";
@@ -19,6 +20,9 @@ const useStyles = makeStyles(styles);
 
 export default function Icons() {
   const classes = useStyles();
+  const theme = useTheme()
+  const showDesktopIframe = useMediaQuery(theme.breakpoints.up('md'))
+  const showMobileMessage = useMediaQuery(theme.breakpoints.down('sm'))
   return (
     <GridContainer>
       <GridItem xs={12} sm={12} md={12}>
@@ -39,7 +43,7 @@ export default function Icons() {
         />
         <Card plain>
           <CardBody plain>
-            <Hidden only={["sm", "xs"]} implementation="css">
+            {showDesktopIframe && (
               <iframe
                 className={classes.iframe}
                 src="https://material.io/icons/"
@@ -47,8 +51,8 @@ export default function Icons() {
               >
                 <p>Your browser does not support iframes.</p>
               </iframe>
-            </Hidden>
-            <Hidden only={["lg", "md"]} implementation="css">
+            )}
+            {showMobileMessage && (
               <GridItem xs={12} sm={12} md={6}>
                 <h5>
                   The icons are visible on Desktop mode inside an iframe. Since
@@ -62,7 +66,7 @@ export default function Icons() {
                   </a>
                 </h5>
               </GridItem>
-            </Hidden>
+            )}
           </CardBody>
         </Card>
       </GridItem>

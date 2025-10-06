@@ -1,17 +1,17 @@
 /*eslint-disable*/
 import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import InputAdornment from "@material-ui/core/InputAdornment";
+// @mui styles + components
+import { makeStyles } from '@mui/styles'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormLabel from '@mui/material/FormLabel'
+import Checkbox from '@mui/material/Checkbox'
+import InputAdornment from '@mui/material/InputAdornment'
 
 // material ui icons
-import MailOutline from "@material-ui/icons/MailOutline";
-import Contacts from "@material-ui/icons/Contacts";
-import Check from "@material-ui/icons/Check";
-import Close from "@material-ui/icons/Close";
+import MailOutline from '@mui/icons-material/MailOutline'
+import Contacts from '@mui/icons-material/Contacts'
+import Check from '@mui/icons-material/Check'
+import Close from '@mui/icons-material/Close'
 
 // core components
 import GridContainer from "mui-pro/Grid/GridContainer";

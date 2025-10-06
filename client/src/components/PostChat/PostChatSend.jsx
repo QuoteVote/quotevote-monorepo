@@ -68,6 +68,13 @@ function PostChatSend(props) {
     }],
   })
 
+  // Test hook: if a test provides a global override for the mutation function
+  // (window.__TEST_CREATE_MESSAGE), use that instead of the real hook. This
+  // allows tests to avoid relying on Apollo's runtime while exercising the
+  // component's submit flow.
+  // eslint-disable-next-line no-underscore-dangle
+  const createMessageFn = (typeof window !== 'undefined' && window.__TEST_CREATE_MESSAGE) ? window.__TEST_CREATE_MESSAGE : createMessage
+
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
@@ -82,7 +89,7 @@ function PostChatSend(props) {
     }
 
     const dateSubmitted = new Date()
-    await createMessage({
+    await createMessageFn({
       variables: { message },
       optimisticResponse: {
         __typename: 'Mutation',

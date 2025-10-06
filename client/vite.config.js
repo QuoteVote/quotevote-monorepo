@@ -12,10 +12,12 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react({
-        jsxRuntime: 'automatic',
+        // Use classic runtime so transformed JSX doesn't import react/jsx-runtime
+        // which simplifies resolution in this hoisted monorepo environment.
+        jsxRuntime: 'classic',
         babel: {
           plugins: [
-            ['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }],
+            ['@babel/plugin-transform-react-jsx', { runtime: 'classic' }],
           ],
         },
       }),
@@ -28,21 +30,55 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     resolve: {
-      alias: {
-        '@': resolve(__dirname, 'src'),
+      alias: [
+        { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime', 'index.js') },
+        { find: 'react/jsx-runtime', replacement: resolve(__dirname, 'node_modules', 'react', 'jsx-runtime', 'index.js') },
+        { find: '@', replacement: resolve(__dirname, 'src') },
         // Add aliases for common directories
-        layouts: resolve(__dirname, 'src/layouts'),
-        components: resolve(__dirname, 'src/components'),
-        config: resolve(__dirname, 'src/config'),
-        store: resolve(__dirname, 'src/store'),
-        assets: resolve(__dirname, 'src/assets'),
-        utils: resolve(__dirname, 'src/utils'),
-        views: resolve(__dirname, 'src/views'),
-        'mui-pro': resolve(__dirname, 'src/mui-pro'),
-        hoc: resolve(__dirname, 'src/hoc'),
-        themes: resolve(__dirname, 'src/themes'),
-        'react/jsx-runtime': 'react/jsx-runtime.js',
-      },
+        { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
+        { find: 'components', replacement: resolve(__dirname, 'src/components') },
+        { find: 'config', replacement: resolve(__dirname, 'src/config') },
+        { find: 'store', replacement: resolve(__dirname, 'src/store') },
+        { find: 'assets', replacement: resolve(__dirname, 'src/assets') },
+        { find: 'utils', replacement: resolve(__dirname, 'src/utils') },
+        { find: 'views', replacement: resolve(__dirname, 'src/views') },
+        { find: 'mui-pro', replacement: resolve(__dirname, 'src/mui-pro') },
+        { find: 'hoc', replacement: resolve(__dirname, 'src/hoc') },
+        { find: 'themes', replacement: resolve(__dirname, 'src/themes') },
+        // Point react and react-dom to the monorepo root copies so imports from node_modules/@mui/* resolve
+        { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },
+        { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
+  // Route all @emotion/* imports through local shims which resolve to the
+  // hoisted root CJS dev builds when available. This prevents accidental
+  // resolution of client-local copies during Vitest runs.
+  // Route emotion imports through local shims which prefer the hoisted root; using
+  // local shims makes it easier to control resolution in both dev and tests.
+  { find: '@emotion/styled', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
+  { find: '@emotion/react', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
+  // Point @mui/styled-engine and its ESM subpath to a local shim that re-exports Emotion's styled default
+  { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
+  { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
+  // Ensure subpath imports like '@mui/styles/makeStyles' resolve to the hoisted package directory
+  // Keep subpath suffix ($1) so imports like '@mui/styles/makeStyles' -> <root>/node_modules/@mui/styles/makeStyles
+  { find: /^@mui\/styles(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '$1' },
+  // Map icons to a lightweight shim during dev and tests to avoid opening many files
+  // Map any import of @mui/icons-material or subpaths to a lightweight root shim
+  { find: /^@mui\/icons-material(\/.*)?$/, replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-root.js') },
+  // Also ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
+  // Map @mui material subpaths (e.g. @mui/material/styles) to the ESM build so Vite can
+  // statically resolve imports during transform/import-analysis.
+  { find: /^@mui\/material(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '$1' },
+  { find: /^@mui\/system(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '$1' },
+  // ensure '@mui/styles' direct import resolves too
+  { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
+  // shim legacy Hidden import
+  { find: '@material-ui/core/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Hidden.js') },
+        // Compatibility aliases for packages that import internal cheerio paths
+        // which are blocked by package exports in newer cheerio versions.
+        // Redirect requests like 'cheerio/lib/utils' -> cheerio/dist/commonjs/utils.js
+        { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'node_modules/cheerio/dist/commonjs/utils.js') },
+        { find: 'cheerio/lib', replacement: resolve(__dirname, 'node_modules/cheerio/dist/commonjs/index.js') },
+      ],
     },
     css: {
       preprocessorOptions: {
@@ -93,6 +129,11 @@ export default defineConfig(({ mode }) => {
         'react-dom',
           '@mui/material',
           '@mui/icons-material',
+          '@emotion/styled',
+          '@emotion/react',
+          'react-material-ui-carousel',
+        'react/jsx-dev-runtime',
+        'react/jsx-runtime',
         '@apollo/client',
         'react-router-dom',
       ],

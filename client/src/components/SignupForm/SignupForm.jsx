@@ -8,13 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-
-import {
-  CardActions,
-  CircularProgress,
-  Checkbox,
-  FormControlLabel,
-} from '@material-ui/core';
+import { CardActions, CircularProgress, Checkbox, FormControlLabel } from '@mui/material'
 import { useMutation } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';

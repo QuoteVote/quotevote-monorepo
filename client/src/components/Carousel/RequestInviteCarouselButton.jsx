@@ -1,14 +1,18 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 import { useHistory } from 'react-router'
 import PropTypes from 'prop-types'
-import Hidden from '@material-ui/core/Hidden'
-import Grid from '@material-ui/core/Grid'
+import Grid from '@mui/material/Grid'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 function RequestInviteCarouselButton({ classes }) {
   const history = useHistory()
+  const theme = useTheme()
+  const showOnMobile = useMediaQuery(theme.breakpoints.down('md'))
+
   return (
-    <Hidden mdUp>
+    showOnMobile && (
       <Grid item xs={12}>
         <Button
           variant="contained"
@@ -19,7 +23,7 @@ function RequestInviteCarouselButton({ classes }) {
           Request Invite
         </Button>
       </Grid>
-    </Hidden>
+    )
   )
 }
 

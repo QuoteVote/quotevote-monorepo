@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   Card, CardContent, Grid, List, ListItem,
-} from '@material-ui/core'
+} from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'

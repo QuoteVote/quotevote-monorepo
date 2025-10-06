@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SubHeader test - > renders correctly 1`] = `
+<div
+  class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row makeStyles-header-1 css-wjsns7-MuiGrid-root"
+  justify="center"
+>
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+  >
+    <p
+      class="MuiTypography-root MuiTypography-body1 makeStyles-headerName-2 css-1edfpdg-MuiTypography-root"
+    />
+  </div>
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+  />
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+  />
+</div>
+`;
