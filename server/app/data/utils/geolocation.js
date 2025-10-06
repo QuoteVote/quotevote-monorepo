@@ -78,6 +78,11 @@ const DEFAULT_RADIUS_KM = CONFIG.DEFAULT_RADIUS_KM;
 const MAX_RADIUS_KM = CONFIG.MAX_RADIUS_KM;
 
 // Geocoding cache (in-memory, could be Redis in production)
+// NOTE: In-memory Map can grow unbounded with high traffic and long TTLs.
+// For production, consider:
+// - Using Redis with automatic expiration
+// - Implementing cache size limits (LRU eviction)
+// - Adding request deduplication to prevent concurrent API calls for same location
 const geocodeCache = new Map();
 
 // Parse and validate GEOCODING_CACHE_TTL_HOURS
@@ -212,9 +217,17 @@ function toRadians(degrees) {
 /**
  * Reverse geocode coordinates to coarse location label
  * Uses caching to minimize API calls
+ * 
+ * Privacy: Returns coarse labels (city/state/country only, no street address)
+ * with "near" prefix. Coordinates are rounded to ~1km for cache keys.
+ * 
+ * NOTE: Concurrent requests with same cache key may result in duplicate API calls
+ * before first result is cached. This is a minor optimization opportunity for
+ * high-traffic production deployments (could implement request deduplication).
+ * 
  * @param {number} lat - Latitude
  * @param {number} lng - Longitude
- * @returns {Promise<string>} - Place label (e.g., "Oakland, CA")
+ * @returns {Promise<string>} - Place label (e.g., "near Oakland, CA")
  */
 export async function reverseGeocode(lat, lng) {
   // Create cache key from rounded coordinates
