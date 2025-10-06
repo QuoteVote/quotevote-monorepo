@@ -4,6 +4,7 @@ import * as groupQuery from './queries/group';
 import * as messageQuery from './queries/message';
 import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
+import * as quoteQuery from './queries/qoute';
 
 export const resolver_query = function () {
   return {
@@ -28,5 +29,9 @@ export const resolver_query = function () {
     messageRoom: messageQuery.getUserChatRoom(),
     notifications: notificationQuery.getNotifications(),
     messageReactions: messageQuery.getUserMessageReactions(),
+    
+    // Quotes
+    localQuotes: quoteQuery.localQuotes,
+    latestQuotes: quoteQuery.latestQuotes,
   };
 };

@@ -10,5 +10,8 @@ type Quote {
   endWordIndex: Int
   deleted: Boolean
   user: User
+  isLocal: Boolean
+  placeLabel: String
+  distanceFromUser: Float
 }
 `;
