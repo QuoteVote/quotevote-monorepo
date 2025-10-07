@@ -4,9 +4,9 @@
 const path = require('path')
 let pkg
 try {
-  // Resolve from the repository root node_modules (three levels up from src/shims)
-  // client/src/shims -> ../../.. -> <repo root>/node_modules
-  pkg = require(path.resolve(__dirname, '..', '..', '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.cjs.js'))
+  // Try to resolve the hoisted @emotion/styled development CJS build using require.resolve
+  // This avoids hardcoded path traversal and is robust to directory structure changes.
+  pkg = require(require.resolve('@emotion/styled/dist/emotion-styled.development.cjs.js', { paths: [path.resolve(__dirname, '..', '..', '..', 'node_modules')] }))
 } catch (e) {
   // Fallback to requiring the installed package (client-local) if hoisted one isn't available
   // This keeps the shim robust in different install layouts.
