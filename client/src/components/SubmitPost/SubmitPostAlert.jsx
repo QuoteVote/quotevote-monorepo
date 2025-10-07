@@ -6,7 +6,7 @@ import {
 import AssignmentIcon from '@mui/icons-material/Assignment'
 import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
-import copy from 'clipboard-copy'
+import * as copy from 'clipboard-copy'
 import PropTypes from 'prop-types'
 import GridItem from '../../mui-pro/Grid/GridItem'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
