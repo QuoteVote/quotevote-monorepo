@@ -40,9 +40,9 @@ export default defineConfig({
       { find: '@', replacement: resolve(__dirname, 'src') },
       // Point react and react-dom to the hoisted root so all packages use the same instances
       { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },
-    { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
-  // Route @emotion/* imports through our local shims which attempt to
-  // require the hoisted root CJS builds first and fall back to the local
+      { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
+      // Route @emotion/* imports through our local shims which attempt to
+      // require the hoisted root CJS builds first and fall back to the local
   // package. This adds determinism to module resolution under Vitest.
   // Point emotion directly to the hoisted CJS dev build if available.
   // Route emotion imports through local shims to make resolution deterministic
