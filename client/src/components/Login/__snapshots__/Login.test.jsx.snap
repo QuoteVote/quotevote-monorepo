@@ -152,24 +152,20 @@ exports[`Login test - > renders correctly 1`] = `
                       />
                     </svg>
                   </span>
-                  <span
-                    class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root"
+                  <p
+                    class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
                   >
-                    <p
-                      class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
+                    I agree to the
+                     
+                    <a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
+                      href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_terms_of_service.md"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
-                      I agree to the
-                       
-                      <a
-                        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
-                        href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_terms_of_service.md"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        Terms of Service
-                      </a>
-                    </p>
-                  </span>
+                      Terms of Service
+                    </a>
+                  </p>
                 </label>
                 <label
                   class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-19opgx6-MuiFormControlLabel-root"
@@ -196,24 +192,20 @@ exports[`Login test - > renders correctly 1`] = `
                       />
                     </svg>
                   </span>
-                  <span
-                    class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root"
+                  <p
+                    class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
                   >
-                    <p
-                      class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
+                    I agree to the
+                     
+                    <a
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
+                      href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_code_of_conduct.md"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
-                      I agree to the
-                       
-                      <a
-                        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
-                        href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_code_of_conduct.md"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        Code of Conduct
-                      </a>
-                    </p>
-                  </span>
+                      Code of Conduct
+                    </a>
+                  </p>
                 </label>
                 <button
                   class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorSecondary MuiButton-fullWidth MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorSecondary MuiButton-fullWidth makeStyles-loginButton-5 css-1y80zq3-MuiButtonBase-root-MuiButton-root"

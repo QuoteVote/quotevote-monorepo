@@ -14,8 +14,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    // Run the emotion aliasing shim first so later setup uses the remapped modules
-    setupFiles: ['./src/test-setup-emotion-alias.cjs', './src/test-setup-mocks.js', './src/setupTests.js'],
+  // Test setup files. Removed the emotion alias shim (deleted) to keep the
+  // client test setup minimal — if you want the shim back, restore
+  // `src/test-setup-emotion-alias.cjs` and re-add it here.
+  // Use resolved absolute paths so Vitest can run from the monorepo root
+  // and still locate client-local setup files.
+  setupFiles: [resolve(__dirname, 'src', 'test-setup-mocks.js'), resolve(__dirname, 'src', 'setupTests.js')],
   // Run tests single-threaded to avoid too-many-open-files (EMFILE) on Windows
   threads: false,
     // Ensure Vite's web transform pipeline (including plugin-react) runs during test import-analysis
@@ -76,9 +80,9 @@ export default defineConfig({
   // exist in the client package folder.
   { find: 'redux-mock-store', replacement: resolve(__dirname, '..', 'node_modules', 'redux-mock-store', 'dist', 'index-cjs.js') },
       { find: 'assets', replacement: resolve(__dirname, 'src/assets') },
-  // Use a local shim for react-material-ui-carousel during tests to avoid
-  // Vite/Rollup parsing issues with the upstream package source.
-  { find: 'react-material-ui-carousel', replacement: resolve(__dirname, 'src', 'shims', 'react-material-ui-carousel.js') },
+  // Note: local shim for react-material-ui-carousel was removed. If you hit
+  // issues with that package in tests, restore
+  // `client/src/shims/react-material-ui-carousel.js` and add an alias here.
       // Match Vite aliases used in development build so tests resolve the same imports
       { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
   { find: 'components', replacement: resolve(__dirname, 'src/components') },
