@@ -14,9 +14,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-  // Test setup files. Removed the emotion alias shim (deleted) to keep the
-  // client test setup minimal — if you want the shim back, restore
-  // `src/test-setup-emotion-alias.cjs` and re-add it here.
+  // Test setup files. The emotion alias shim has been removed to keep the
+  // client test setup minimal. If additional setup is needed, add the relevant
+  // setup file here.
   // Use resolved absolute paths so Vitest can run from the monorepo root
   // and still locate client-local setup files.
   setupFiles: [resolve(__dirname, 'src', 'test-setup-mocks.js'), resolve(__dirname, 'src', 'setupTests.js')],
