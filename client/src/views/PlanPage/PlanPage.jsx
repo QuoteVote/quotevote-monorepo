@@ -79,7 +79,7 @@ export default function Plans() {
           <Typography className={classes.select}>Select To Learn More</Typography>
           {!isSmUp && (
             buttonList
-          )}
+            )}
           {isSmUp && (
             <Grid container direction="row" justify="space-evenly" className={classes.plans}>
               <Grid item>
