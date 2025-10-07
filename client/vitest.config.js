@@ -41,18 +41,10 @@ export default defineConfig({
       // Point react and react-dom to the hoisted root so all packages use the same instances
       { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },
       { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
-      // Route @emotion/* imports through our local shims which attempt to
-      // require the hoisted root CJS builds first and fall back to the local
-  // package. This adds determinism to module resolution under Vitest.
-  // Point emotion directly to the hoisted CJS dev build if available.
-  // Route emotion imports through local shims to make resolution deterministic
-  // Force all @emotion imports to resolve to the client-local package so
-  // tests share a single Emotion runtime instance. This avoids mismatches
-  // when @mui packages resolve to the repo root while Emotion lives in
-  // the client package.
-  // Prefer the hoisted root Emotion packages to match where @mui is resolved
-  // in this monorepo layout. Use the repo root node_modules copies so a
-  // single Emotion runtime is used by both MUI and local code during tests.
+      // Route all @emotion/* imports to the hoisted root node_modules CJS builds.
+      // This ensures tests use a single Emotion runtime instance, matching how @mui
+      // packages are resolved in the monorepo. This avoids context mismatches and
+      // adds determinism to module resolution under Vitest.
   { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'styled.cjs.js') },
   { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.cjs.js') },
   // Keep the original shims available under separate names in case a
