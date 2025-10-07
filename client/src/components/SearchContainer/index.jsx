@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
 import { makeStyles } from '@mui/styles'
-// MUI v5: `alpha` replaces the deprecated `fade` function from MUI v4.
+// MUI v7: `alpha` replaces the deprecated `fade` function from MUI v4.
 import { alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
