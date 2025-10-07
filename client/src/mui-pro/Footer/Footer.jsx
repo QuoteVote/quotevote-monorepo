@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 
-import { makeStyles, useTheme } from '@mui/styles'
+import { makeStyles } from '@mui/styles'
+import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
