@@ -2,13 +2,13 @@
 
 exports[`PostActionCard test - > renders correctly 1`] = `
 <div
-  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-selectedRoot-2 css-6fm6rz-MuiPaper-root-MuiCard-root"
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-selectedRoot-2 css-1j74uew-MuiPaper-root-MuiCard-root"
 >
   <div
     class="makeStyles-userContainer-5"
   >
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
@@ -392,7 +392,7 @@ exports[`PostActionCard test - > renders correctly 1`] = `
       </svg>
     </button>
     <p
-      class="MuiTypography-root MuiTypography-body1 makeStyles-userInfo-6 css-1iq16n4-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 makeStyles-userInfo-6 css-synvdz-MuiTypography-root"
     >
       <span
         class="makeStyles-userName-7"
@@ -416,17 +416,17 @@ exports[`PostActionCard test - > renders correctly 1`] = `
     <p />
   </div>
   <div
-    class="MuiCardActions-root css-1wwmo7x-MuiCardActions-root"
+    class="MuiCardActions-root css-bbbzor-MuiCardActions-root"
   >
     <svg
       aria-hidden="true"
-      class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-19vn4a9-MuiSvgIcon-root"
+      class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge css-uks7c6-MuiSvgIcon-root"
       color="black"
       focusable="false"
       viewBox="-10 -10 50 50"
     />
     <p
-      class="MuiTypography-root MuiTypography-body1 css-1iq16n4-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 css-synvdz-MuiTypography-root"
     />
     <div
       class="makeStyles-expand-4"
@@ -438,7 +438,7 @@ exports[`PostActionCard test - > renders correctly 1`] = `
           class="makeStyles-emoji-40"
         />
         <button
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"
           type="button"
         >
@@ -449,7 +449,7 @@ exports[`PostActionCard test - > renders correctly 1`] = `
       </div>
     </div>
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
@@ -458,7 +458,7 @@ exports[`PostActionCard test - > renders correctly 1`] = `
       />
     </button>
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-deleteIcon-9 css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-deleteIcon-9 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >

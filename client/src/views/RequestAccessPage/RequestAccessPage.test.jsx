@@ -1,13 +1,3 @@
-import React from 'react'
-import { render } from '@testing-library/react'
-import RequestAccessPage from './RequestAccessPage'
-
-describe('RequestAccessPage', () => {
-  it('renders correctly', () => {
-    const { container } = render(<RequestAccessPage />)
-    expect(container.firstChild).toMatchSnapshot()
-  })
-})
 /* eslint-disable no-undef */
 /* eslint-disable react/jsx-no-undef */
 import React from 'react'

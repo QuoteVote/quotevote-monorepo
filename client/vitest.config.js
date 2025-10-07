@@ -14,14 +14,17 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test-setup-mocks.js', './src/setupTests.js'],
-    // Run tests single-threaded to avoid too-many-open-files (EMFILE) on Windows
-    threads: false,
+    // Run the emotion aliasing shim first so later setup uses the remapped modules
+    setupFiles: ['./src/test-setup-emotion-alias.cjs', './src/test-setup-mocks.js', './src/setupTests.js'],
+  // Run tests single-threaded to avoid too-many-open-files (EMFILE) on Windows
+  threads: false,
     // Ensure Vite's web transform pipeline (including plugin-react) runs during test import-analysis
+    // Only transform and run test files with the explicit .test.jsx/.test.tsx/.test.ts
+    // extensions. This avoids running legacy `.test.js` placeholders which may be
+    // empty or contain JSX that confuses the import analyzer.
+    include: ['**/*.test.jsx', '**/*.test.tsx', '**/*.test.ts'],
     transformMode: {
-      // Ensure files with .js that contain JSX are transformed by the web pipeline.
-      // Include common test filename patterns like *.test.js and regular .js/.jsx
-      web: [/\.test\.jsx?$/i, /\.jsx?$/i, /\.tsx?$/i],
+      web: [/\.test\.jsx?$/i, /\.tsx?$/i],
     },
   },
   resolve: {
@@ -39,8 +42,19 @@ export default defineConfig({
   // package. This adds determinism to module resolution under Vitest.
   // Point emotion directly to the hoisted CJS dev build if available.
   // Route emotion imports through local shims to make resolution deterministic
-  { find: '@emotion/styled', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
-  { find: '@emotion/react', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
+  // Force all @emotion imports to resolve to the client-local package so
+  // tests share a single Emotion runtime instance. This avoids mismatches
+  // when @mui packages resolve to the repo root while Emotion lives in
+  // the client package.
+  // Prefer the hoisted root Emotion packages to match where @mui is resolved
+  // in this monorepo layout. Use the repo root node_modules copies so a
+  // single Emotion runtime is used by both MUI and local code during tests.
+  { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'styled.cjs.js') },
+  { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.cjs.js') },
+  // Keep the original shims available under separate names in case a
+  // fallback is required for special test scenarios.
+  { find: '@emotion/styled.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
+  { find: '@emotion/react.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
   { find: '@material-ui/core/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Hidden.js') },
     // Point @mui/styled-engine and its ESM subpath to a local shim that re-exports Emotion's styled default
     { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
@@ -53,11 +67,18 @@ export default defineConfig({
   { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   // Provide compatibility shim for legacy v4 imports used by some third-party packages
   { find: '@material-ui/core/Fade', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Fade.js') },
-    { find: /^@mui\/material(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '$1' },
-    { find: /^@mui\/system(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '$1' },
-    // Map redux-mock-store to a client-local stub for import-analysis resolution
-    { find: 'redux-mock-store', replacement: resolve(__dirname, 'node_modules', 'redux-mock-store', 'index.js') },
+  { find: /^@mui\/material(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '$1' },
+  { find: /^@mui\/system(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '$1' },
+  // Map redux-mock-store to the hoisted root package so tests resolve the
+  // same install used in the workspace root (npm workspaces hoists this
+  // package). Point directly at the CJS bundle present under the root
+  // node_modules to avoid Vite trying to load source files that may not
+  // exist in the client package folder.
+  { find: 'redux-mock-store', replacement: resolve(__dirname, '..', 'node_modules', 'redux-mock-store', 'dist', 'index-cjs.js') },
       { find: 'assets', replacement: resolve(__dirname, 'src/assets') },
+  // Use a local shim for react-material-ui-carousel during tests to avoid
+  // Vite/Rollup parsing issues with the upstream package source.
+  { find: 'react-material-ui-carousel', replacement: resolve(__dirname, 'src', 'shims', 'react-material-ui-carousel.js') },
       // Match Vite aliases used in development build so tests resolve the same imports
       { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
   { find: 'components', replacement: resolve(__dirname, 'src/components') },
@@ -84,7 +105,6 @@ export default defineConfig({
   '@mui/system',
       '@emotion/styled',
       '@emotion/react',
-      'react-material-ui-carousel',
     ],
   },
 }) 

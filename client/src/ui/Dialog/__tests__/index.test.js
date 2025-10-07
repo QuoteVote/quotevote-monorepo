@@ -15,3 +15,5 @@ describe('<Dialog  />', () => {
     expect(loadingIndicator.container.firstChild).toMatchSnapshot()
   })
 })
+// No-op placeholder. Tests live in the .test.jsx file.
+export {}

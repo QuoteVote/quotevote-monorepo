@@ -14,7 +14,7 @@ exports[`Plans test - > renders correctly 1`] = `
       justify="center"
     >
       <p
-        class="MuiTypography-root MuiTypography-body1 makeStyles-select-36 css-1edfpdg-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body1 makeStyles-select-36 css-rizt0-MuiTypography-root"
       >
         Select To Learn More
       </p>
@@ -23,21 +23,21 @@ exports[`Plans test - > renders correctly 1`] = `
         justify="space-evenly"
       >
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-133tjmd-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-dx1o0x-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
           Personal
         </button>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-133tjmd-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-dx1o0x-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
           Business
         </button>
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-133tjmd-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-dx1o0x-MuiButtonBase-root-MuiButton-root"
           tabindex="0"
           type="button"
         >
@@ -60,7 +60,7 @@ exports[`Plans test - > renders correctly 1`] = `
               src="/assets/PersonalPlanAvatar.png"
             />
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-133tjmd-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-dx1o0x-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -80,7 +80,7 @@ exports[`Plans test - > renders correctly 1`] = `
               src="/assets/BusinessPlanAvatar.png"
             />
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-133tjmd-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-dx1o0x-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >
@@ -100,7 +100,7 @@ exports[`Plans test - > renders correctly 1`] = `
               src="/assets/InvestorPlanAvatar.png"
             />
             <button
-              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-133tjmd-MuiButtonBase-root-MuiButton-root"
+              class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-planButton-39 css-dx1o0x-MuiButtonBase-root-MuiButton-root"
               tabindex="0"
               type="button"
             >

@@ -1,14 +1,34 @@
 import React from 'react'
-// Provide jest-dom matchers for assertions like `toBeInTheDocument`
+// Register @testing-library/jest-dom matchers with Vitest's expect when
+// available. Use the explicit matchers export and extend Vitest's expect so
+// `toBeInTheDocument` and other helpers work in tests.
 try {
-  // eslint-disable-next-line global-require, import/no-extraneous-dependencies
-  require('@testing-library/jest-dom/extend-expect')
+  // eslint-disable-next-line import/no-extraneous-dependencies
+  // Use the matchers entry which exports matcher functions compatible with
+  // non-Jest runtimes. Then extend Vitest's expect with them.
+  // Note: `expect` is provided by Vitest; importing it here is safe in ESM.
+  // eslint-disable-next-line global-require
+  const { expect: vitestExpect } = require('vitest')
+  // eslint-disable-next-line global-require
+  const jestDomMatchers = require('@testing-library/jest-dom/matchers')
+  if (vitestExpect && jestDomMatchers) {
+    vitestExpect.extend(jestDomMatchers)
+  }
 } catch (e) {
-  // ignore if not installed or not available in this environment
+  // ignore if not installed or in environments where require isn't available
 }
+// Ensure window.scrollTo exists early so any modules that call it during
+// import or in mount effects won't throw in jsdom.
+if (typeof window !== 'undefined' && typeof window.scrollTo !== 'function') {
+  // eslint-disable-next-line no-empty-function
+  window.scrollTo = function () {}
+}
+// (jest-dom already registered above)
 import {
   configure, mount, render, shallow,
 } from 'enzyme'
+import createCache from '@emotion/cache'
+import { CacheProvider } from '@emotion/react'
 import { createTheme, ThemeProvider as MaterialThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
 import Adapter from 'enzyme-adapter-react-16'
@@ -40,6 +60,12 @@ const _shallow = shallow
 const _render = render
 const _mount = mount
 const themeInstance = createTheme(muiThemeObject)
+// Create a shared Emotion cache for tests so class name generation is
+// deterministic and all components share a single runtime instance.
+// The `key` should be stable across environments; `prepend: true` ensures
+// Emotion styles are inserted before other styles which matches production
+// ordering and reduces differences between test runs.
+const emotionCache = createCache({ key: 'css', prepend: true })
 
 // Use the legacy ThemeProvider from @mui/styles so makeStyles and other
 // @mui/styles hooks read the theme correctly during tests.
@@ -47,15 +73,15 @@ const themeInstance = createTheme(muiThemeObject)
 // context (used by @mui/material/@mui/system) and the legacy @mui/styles
 // context are available to components under test.
 global.shallow = (node, options) => _shallow(
-  React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node)),
+  React.createElement(CacheProvider, { value: emotionCache }, React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node))),
   options,
 )
 global.render = (node, options) => _render(
-  React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node)),
+  React.createElement(CacheProvider, { value: emotionCache }, React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node))),
   options,
 )
 global.mount = (node, options) => _mount(
-  React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node)),
+  React.createElement(CacheProvider, { value: emotionCache }, React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node))),
   options,
 )
 // Also patch the enzyme module exports so tests that import { mount, shallow, render }
@@ -129,9 +155,9 @@ configure({ adapter: new Adapter(), disableLifecycleMethods: true })
 try {
   const _tlRender = TestingLibrary.render
   const AllProviders = ({ children }) => React.createElement(
-    MaterialThemeProvider,
-    { theme: themeInstance },
-    React.createElement(StylesThemeProvider, { theme: themeInstance }, React.createElement(Provider, { store }, React.createElement(BrowserRouter, null, children))),
+    CacheProvider,
+    { value: emotionCache },
+    React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, React.createElement(Provider, { store }, React.createElement(BrowserRouter, null, children)))),
   )
 
   TestingLibrary.render = (ui, options) => _tlRender(ui, { wrapper: AllProviders, ...options })
@@ -152,9 +178,9 @@ if (typeof vi !== 'undefined' && typeof vi.mock === 'function') {
     vi.mock('@testing-library/react', async () => {
       const actual = await vi.importActual('@testing-library/react')
       const AllProviders = ({ children }) => React.createElement(
-        MaterialThemeProvider,
-        { theme: themeInstance },
-        React.createElement(StylesThemeProvider, { theme: themeInstance }, React.createElement(Provider, { store }, React.createElement(BrowserRouter, null, children))),
+        CacheProvider,
+        { value: emotionCache },
+        React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, React.createElement(Provider, { store }, React.createElement(BrowserRouter, null, children)))),
       )
 
       return {
@@ -194,10 +220,34 @@ try {
 // Mock fetch for tests
 global.fetch = vi.fn()
 
-// Stub window.scrollTo for jsdom which doesn't implement it by default
-// Some components call window.scrollTo during effects; provide a noop to avoid
-// "Not implemented: window.scrollTo" errors in tests.
-if (typeof window !== 'undefined' && typeof window.scrollTo !== 'function') {
+// Temporarily suppress repetitive MUI Grid migration warnings in test output.
+// These are noisy and come from components not yet migrated to Grid v2. We keep
+// this filter narrow so it only suppresses messages that mention Grid props
+// removal. Plan: remove this filter once components are migrated.
+if (typeof console !== 'undefined' && console.error && typeof console.error === 'function') {
+  const origConsoleError = console.error.bind(console)
+  console.error = (...args) => {
+    try {
+      const message = args && args[0] ? String(args[0]) : ''
+      if (message.includes('MUI Grid: The `item` prop has been removed') ||
+          message.includes('MUI Grid: The `xs` prop has been removed') ||
+          message.includes('MUI Grid: The `md` prop has been removed') ||
+          message.includes('MUI Grid: The `sm` prop has been removed')) {
+        // swallow this specific migration warning
+        return
+      }
+    } catch (e) {
+      // If anything goes wrong in the filter, fall back to the original.
+    }
+    origConsoleError(...args)
+  }
+}
+
+// Stub window.scrollTo for jsdom which doesn't implement it by default.
+// JSDOM exposes a function that throws "Not implemented"; overwrite it with
+// a safe noop so components that call scrollTo during mount/effects don't
+// cause test failures.
+if (typeof window !== 'undefined') {
   // eslint-disable-next-line no-empty-function
   window.scrollTo = function () {}
 }
@@ -232,4 +282,30 @@ try {
   // eslint-disable-next-line global-require
   const React = require('react')
   global.Hidden = function HiddenStub({ children }) { return React.createElement(React.Fragment, null, children) }
+}
+
+// Some third-party UI libraries ship untranspiled code or use syntax that
+// Vite's SSR transform chokes on during tests. `react-material-ui-carousel`
+// has caused parse/AST errors in the test environment. To avoid pulling the
+// real implementation into the test runtime we provide a lightweight mock
+// that renders children. Individual tests that need carousel behavior can
+// still mock the module with a richer implementation.
+if (typeof vi !== 'undefined' && typeof vi.mock === 'function') {
+  try {
+    vi.mock('react-material-ui-carousel', () => {
+      // Return a simple functional component that renders children and
+      // supports common props used in our components (index, onChange).
+      const React = require('react')
+      function CarouselStub({ children }) {
+        return React.createElement('div', null, children)
+      }
+
+      return {
+        __esModule: true,
+        default: CarouselStub,
+      }
+    })
+  } catch (err) {
+    // ignore if mocking fails (non-vitest environment)
+  }
 }

@@ -1,5 +1,25 @@
 // This file runs before `setupTests.js` and establishes deterministic mocks
 // that must be present before other modules bind imported functions.
+// Provide a minimal localStorage mock early so modules that initialize
+// (for example redux-persist / localforage) don't throw when run under
+// the test environment where localStorage may not be present.
+if (typeof global.localStorage === 'undefined' || global.localStorage === null) {
+  const _storage = {}
+  global.localStorage = {
+    getItem: (key) => (Object.prototype.hasOwnProperty.call(_storage, key) ? _storage[key] : null),
+    setItem: (key, value) => { _storage[key] = String(value) },
+    removeItem: (key) => { delete _storage[key] },
+    clear: () => { Object.keys(_storage).forEach(k => delete _storage[k]) },
+  }
+  // Ensure window.localStorage exists in jsdom environments
+  if (typeof window !== 'undefined') {
+    window.localStorage = global.localStorage
+  } else {
+    global.window = global.window || {}
+    global.window.localStorage = global.localStorage
+  }
+}
+
 import React from 'react'
 import { createTheme, ThemeProvider as MaterialThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
@@ -66,6 +86,22 @@ if (typeof vi !== 'undefined' && typeof vi.mock === 'function') {
       })
     } catch (e) {
       // ignore
+    }
+    // Provide a partial mock for Apollo hooks that preserves the module's
+    // other exports (like ApolloProvider) but replaces useMutation with a
+    // stable test-friendly mock. Tests that need to assert mutation calls
+    // can override this mock locally.
+    try {
+      vi.mock('@apollo/react-hooks', async (importOriginal) => {
+        const actual = await importOriginal()
+        // Return a tuple [mutateFunction, mutationResult] so components that
+        // destructure the second element (e.g. { loading }) don't crash.
+        const mockMutate = vi.fn()
+        const defaultResult = { loading: false, error: null, data: undefined }
+        return { ...actual, useMutation: () => [mockMutate, defaultResult] }
+      })
+    } catch (e) {
+      // ignore if mocking fails in non-vitest environments
     }
   } catch (e) {
     // ignore

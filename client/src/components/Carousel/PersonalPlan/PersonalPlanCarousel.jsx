@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Typography } from '@mui/material'
 import PropTypes from 'prop-types'
-import Carousel from 'react-material-ui-carousel'
+import Carousel from '../../../shims/react-material-ui-carousel'
 import withWidth from 'utils/withWidth'
 import Grid from '@mui/material/Grid'
 import { isMobile } from 'react-device-detect'

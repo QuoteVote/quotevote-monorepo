@@ -39,7 +39,7 @@ const PersonalForm = (props) => {
           </span>
         </Typography>
       </Grid>
-      <Grid item xs={12} hidden={requestInviteSuccessful}>
+    <Grid item xs={12} hidden={requestInviteSuccessful}>
         <Typography align="center" className={classes.subHeader}>
           Pay what you like, or pay nothing at all
         </Typography>

@@ -2,7 +2,7 @@
 
 exports[`Post test - > renders correctly 1`] = `
 <div
-  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-postCard-11 makeStyles-postCard-40 css-6fm6rz-MuiPaper-root-MuiCard-root"
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-postCard-11 makeStyles-postCard-40 css-1j74uew-MuiPaper-root-MuiCard-root"
 >
   <div
     class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
@@ -11,7 +11,7 @@ exports[`Post test - > renders correctly 1`] = `
       class="MuiCardHeader-avatar css-1r9wl67-MuiCardHeader-avatar"
     >
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1jkt3ui-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"
       >
@@ -399,7 +399,7 @@ exports[`Post test - > renders correctly 1`] = `
       class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
     >
       <span
-        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-title css-1nmqws6-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-title css-7ctihp-MuiTypography-root"
       >
         <div>
           <span
@@ -408,7 +408,7 @@ exports[`Post test - > renders correctly 1`] = `
             Title of a post
           </span>
           <button
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1jkt3ui-MuiButtonBase-root-MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
             id="copyBtn"
             tabindex="0"
             type="button"
@@ -418,7 +418,7 @@ exports[`Post test - > renders correctly 1`] = `
             />
           </button>
           <button
-            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1jkt3ui-MuiButtonBase-root-MuiIconButton-root"
+            class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
             tabindex="0"
             type="button"
           >
@@ -430,7 +430,7 @@ exports[`Post test - > renders correctly 1`] = `
         </div>
       </span>
       <span
-        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-ihhumc-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
       >
         <div>
           <span
@@ -494,14 +494,14 @@ exports[`Post test - > renders correctly 1`] = `
     </div>
   </div>
   <label
-    class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-1yyanpp-MuiFormControlLabel-root"
+    class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-19opgx6-MuiFormControlLabel-root"
     style="margin-left: 20px;"
   >
     <span
-      class="MuiSwitch-root MuiSwitch-sizeMedium css-ntl6ud-MuiSwitch-root"
+      class="MuiSwitch-root MuiSwitch-sizeMedium css-rehya9-MuiSwitch-root"
     >
       <span
-        class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorSecondary css-1n7bo30-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
+        class="MuiButtonBase-root MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-root MuiSwitch-switchBase MuiSwitch-colorSecondary css-3c4k2r-MuiButtonBase-root-MuiSwitchBase-root-MuiSwitch-switchBase"
       >
         <input
           class="PrivateSwitchBase-input MuiSwitch-input css-12xagqm-MuiSwitchBase-root"
@@ -517,20 +517,20 @@ exports[`Post test - > renders correctly 1`] = `
       />
     </span>
     <span
-      class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-1edfpdg-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-rizt0-MuiTypography-root"
     >
       Enable Voting
     </span>
   </label>
   <div
-    class="MuiCardActions-root css-1wwmo7x-MuiCardActions-root"
+    class="MuiCardActions-root css-bbbzor-MuiCardActions-root"
     style="display: flex; justify-content: space-between; align-items: center; margin-left: 20px;"
   >
     <div
       style="display: flex; gap: 8px;"
     >
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"
       >
@@ -539,7 +539,7 @@ exports[`Post test - > renders correctly 1`] = `
         />
       </button>
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
         post="[object Object]"
         tabindex="0"
         type="button"
@@ -550,7 +550,7 @@ exports[`Post test - > renders correctly 1`] = `
         />
       </button>
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1jkt3ui-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"
       >

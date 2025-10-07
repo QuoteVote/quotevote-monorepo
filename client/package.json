@@ -178,8 +178,10 @@
     "react-is": "^16.13.1",
     "react-test-renderer": "^16.13.1",
     "sinon": "^9.0.2",
-    "waait": "^1.0.5"
+    "waait": "^1.0.5",
+    "redux-mock-store": "^1.5.4"
   },
+
   "browserslist": {
     "production": [
       ">0.2%",

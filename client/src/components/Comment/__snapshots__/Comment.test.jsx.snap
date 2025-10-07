@@ -2,7 +2,7 @@
 
 exports[`Comment test - > renders correctly 1`] = `
 <div
-  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-4 css-6fm6rz-MuiPaper-root-MuiCard-root"
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-4 css-1j74uew-MuiPaper-root-MuiCard-root"
 >
   <div
     class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
@@ -11,7 +11,7 @@ exports[`Comment test - > renders correctly 1`] = `
       class="MuiCardHeader-avatar css-1r9wl67-MuiCardHeader-avatar"
     >
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1jkt3ui-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"
       >
@@ -399,7 +399,7 @@ exports[`Comment test - > renders correctly 1`] = `
       class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
     >
       <span
-        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-ihhumc-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
       >
         @jdoe
       </span>
@@ -424,10 +424,10 @@ exports[`Comment test - > renders correctly 1`] = `
     </p>
   </div>
   <div
-    class="MuiCardActions-root css-1wwmo7x-MuiCardActions-root"
+    class="MuiCardActions-root css-bbbzor-MuiCardActions-root"
   >
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-expand-2 css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-expand-2 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
@@ -436,7 +436,7 @@ exports[`Comment test - > renders correctly 1`] = `
       />
     </button>
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
@@ -445,7 +445,7 @@ exports[`Comment test - > renders correctly 1`] = `
       />
     </button>
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-deleteIcon-6 css-1rjloaz-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-deleteIcon-6 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >

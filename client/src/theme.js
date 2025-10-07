@@ -1,5 +1,11 @@
 import { lightBlue, teal } from '@mui/material/colors'
 
+// Provide safe fallbacks in case the color scales are undefined during
+// early test-time resolution. Some tests import theme before modules are
+// fully hoisted which can lead to lightBlue being undefined.
+const safeLightBlue = (lightBlue && lightBlue[500]) || '#03a9f4'
+const safeTealA400 = (teal && teal.A400) || '#00bcd4'
+
 const theme = {
   palette: {
     primary: {
@@ -44,13 +50,13 @@ const theme = {
       fontColor: '#000000',
     },
     trending: {
-      color: lightBlue[500],
+      color: safeLightBlue,
       fontColor: '#000000',
     },
   },
   subHeader: {
     activeIcon: {
-      color: teal.A400,
+      color: safeTealA400,
     },
     default: {
       color: 'black',

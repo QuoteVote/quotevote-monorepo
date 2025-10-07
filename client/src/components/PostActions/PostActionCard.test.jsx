@@ -5,14 +5,15 @@ vi.mock('store/user', () => ({
 }))
 
 import React from 'react'
-import { render } from '@testing-library/react'
+// Rely on centralized Apollo mock in src/test-setup-mocks.js
+import { render, act } from '@testing-library/react'
 
 // Component being tested
 import PostActionCard from './PostActionCard'
 import withTestWrapper from '../../hoc/withTestWrapper'
 
 const postAction = {
-  _id: 1234,
+  _id: '1234',
   user: {
     name: 'John',
     avatar: 'J',
@@ -29,10 +30,14 @@ function PostActionCardWithProps() {
 const PostActionCardWrapper = withTestWrapper(PostActionCardWithProps)
 
 describe('PostActionCard test -', () => {
-  it('renders correctly', () => {
-    const { container } = render(
-      <PostActionCardWrapper />
-    )
+  it('renders correctly', async () => {
+    let container
+    await act(async () => {
+      const res = render(
+        <PostActionCardWrapper />
+      )
+      container = res.container
+    })
     expect(container.firstChild).toMatchSnapshot()
   })
 })

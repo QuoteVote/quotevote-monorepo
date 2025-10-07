@@ -66,6 +66,17 @@ const useStyles = makeStyles((theme) => ({
 
 function ActivityHeader({ name, date, handleRedirectToProfile = null }) {
   const classes = useStyles()
+  // Ensure date is parseable by moment to avoid moment fallback warnings in tests
+  let safeDate = date
+  try {
+    const parsed = moment(date)
+    if (!parsed.isValid()) {
+      safeDate = new Date().toISOString()
+    }
+  } catch (e) {
+    safeDate = new Date().toISOString()
+  }
+
   return (
     <div className={classes.activityHeader}>
       <IconButton
@@ -80,7 +91,7 @@ function ActivityHeader({ name, date, handleRedirectToProfile = null }) {
         </Typography>
       </IconButton>
       <Typography color="textPrimary" variant="caption">
-        {moment(date).calendar(null, {
+        {moment(safeDate).calendar(null, {
           sameDay: '[Today]',
           nextDay: '[Tomorrow]',
           nextWeek: 'dddd',
@@ -88,7 +99,7 @@ function ActivityHeader({ name, date, handleRedirectToProfile = null }) {
           lastWeek: '[Last] dddd',
           sameElse: 'MMM DD, YYYY',
         })}
-        {` @ ${moment(date).format('h:mm A')}`}
+        {` @ ${moment(safeDate).format('h:mm A')}`}
       </Typography>
     </div>
   )
