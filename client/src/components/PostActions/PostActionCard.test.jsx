@@ -13,7 +13,7 @@ import PostActionCard from './PostActionCard'
 import withTestWrapper from '../../hoc/withTestWrapper'
 
 const postAction = {
-  _id: '1234',
+  _id: 1234,
   user: {
     name: 'John',
     avatar: 'J',
