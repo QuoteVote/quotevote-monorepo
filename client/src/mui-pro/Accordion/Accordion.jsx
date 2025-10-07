@@ -48,7 +48,7 @@ export default function Accordion(props) {
             <img alt=" " src="/assets/Chat.svg" />
             <img alt=" " src="/assets/Chat.svg" />
           </AccordionSummary>
-          <AccordionDetails className={classes.expansionPanelDetails}>
+          <AccordionDetails className={classes.accordionDetails}>
             {prop.content}
           </AccordionDetails>
         </Accordion>
