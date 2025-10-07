@@ -90,3 +90,7 @@ export const Dashboard = Stub
 export const PhotoCamera = Stub
 export const PersonAdd = Stub
 export const PersonAddDisabled = Stub
+export const FirstPage = Stub
+export const LastPage = Stub
+export const ChevronLeft = Stub
+export const ChevronRight = Stub

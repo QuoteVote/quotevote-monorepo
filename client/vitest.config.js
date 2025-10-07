@@ -35,8 +35,10 @@ export default defineConfig({
     // Use an ordered alias array so the more-specific jsx runtime paths are matched
     // before the generic `react` alias which would otherwise catch `react/*` imports.
     alias: [
-      { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime', 'index.js') },
-      { find: 'react/jsx-runtime', replacement: resolve(__dirname, 'node_modules', 'react', 'jsx-runtime', 'index.js') },
+      // Point jsx runtime to the hoisted root node_modules so CI builds
+      // that install workspace dependencies at the repo root can find them.
+  { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-dev-runtime.js') },
+  { find: 'react/jsx-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-runtime.js') },
       { find: '@', replacement: resolve(__dirname, 'src') },
       // Point react and react-dom to the hoisted root so all packages use the same instances
       { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },

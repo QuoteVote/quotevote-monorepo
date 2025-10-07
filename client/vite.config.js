@@ -31,8 +31,10 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: [
-        { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime', 'index.js') },
-        { find: 'react/jsx-runtime', replacement: resolve(__dirname, 'node_modules', 'react', 'jsx-runtime', 'index.js') },
+  // Point jsx runtime to the hoisted root node_modules so builds on CI
+  // (Netlify) which install workspace deps at the repo root can resolve them.
+  { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-dev-runtime.js') },
+  { find: 'react/jsx-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-runtime.js') },
         { find: '@', replacement: resolve(__dirname, 'src') },
         // Add aliases for common directories
         { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
