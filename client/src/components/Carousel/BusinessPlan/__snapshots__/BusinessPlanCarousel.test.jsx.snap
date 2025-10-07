@@ -1,9 +1,0 @@
-// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
-
-exports[`BusinessPlanCarousel test - > renders correctly 1`] = `
-<div
-  data-testid="business-carousel-mock"
->
-  BusinessPlanCarouselMock
-</div>
-`;
