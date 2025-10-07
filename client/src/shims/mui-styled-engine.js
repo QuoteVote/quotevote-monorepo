@@ -1,7 +1,9 @@
 // Shim to ensure @mui/styled-engine resolves to a callable Emotion styled and helpers
 // Use package imports so resolution follows the project's hoisted node_modules.
 import emStyled from '@emotion/styled'
-import { serializeStyles as emSerializeStyles } from '@emotion/serialize'
+// Import the hoisted ESM build explicitly so Rollup can statically resolve named exports
+// even when node_modules are hoisted to the repository root (Netlify/CI layout).
+import { serializeStyles as emSerializeStyles } from '../../../node_modules/@emotion/serialize/dist/serialize.esm.js'
 
 // Default export is Emotion's styled (callable)
 export default emStyled
