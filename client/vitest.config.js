@@ -14,11 +14,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-  // Test setup files. Removed the emotion alias shim (deleted) to keep the
-  // client test setup minimal — if you want the shim back, restore
-  // `src/test-setup-emotion-alias.cjs` and re-add it here.
+  // Test setup files. The emotion alias shim has been removed to keep the
+  // client test setup minimal. If additional setup is needed, add the relevant
+  // setup file here.
   // Use resolved absolute paths so Vitest can run from the monorepo root
   // and still locate client-local setup files.
+  // IMPORTANT: test-setup-mocks.js must run before setupTests.js.
+  // This ensures that all required mocks are established before the main test environment is set up.
+  // Changing the order may break tests that depend on these mocks.
   setupFiles: [resolve(__dirname, 'src', 'test-setup-mocks.js'), resolve(__dirname, 'src', 'setupTests.js')],
   // Run tests single-threaded to avoid too-many-open-files (EMFILE) on Windows
   threads: false,
@@ -42,19 +45,11 @@ export default defineConfig({
       { find: '@', replacement: resolve(__dirname, 'src') },
       // Point react and react-dom to the hoisted root so all packages use the same instances
       { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },
-    { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
-  // Route @emotion/* imports through our local shims which attempt to
-  // require the hoisted root CJS builds first and fall back to the local
-  // package. This adds determinism to module resolution under Vitest.
-  // Point emotion directly to the hoisted CJS dev build if available.
-  // Route emotion imports through local shims to make resolution deterministic
-  // Force all @emotion imports to resolve to the client-local package so
-  // tests share a single Emotion runtime instance. This avoids mismatches
-  // when @mui packages resolve to the repo root while Emotion lives in
-  // the client package.
-  // Prefer the hoisted root Emotion packages to match where @mui is resolved
-  // in this monorepo layout. Use the repo root node_modules copies so a
-  // single Emotion runtime is used by both MUI and local code during tests.
+      { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
+      // Route all @emotion/* imports to the hoisted root node_modules CJS builds.
+      // This ensures tests use a single Emotion runtime instance, matching how @mui
+      // packages are resolved in the monorepo. This avoids context mismatches and
+      // adds determinism to module resolution under Vitest.
   { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'styled.cjs.js') },
   { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.cjs.js') },
   // Keep the original shims available under separate names in case a
@@ -82,9 +77,6 @@ export default defineConfig({
   // exist in the client package folder.
   { find: 'redux-mock-store', replacement: resolve(__dirname, '..', 'node_modules', 'redux-mock-store', 'dist', 'index-cjs.js') },
       { find: 'assets', replacement: resolve(__dirname, 'src/assets') },
-  // Note: local shim for react-material-ui-carousel was removed. If you hit
-  // issues with that package in tests, restore
-  // `client/src/shims/react-material-ui-carousel.js` and add an alias here.
       // Match Vite aliases used in development build so tests resolve the same imports
       { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
   { find: 'components', replacement: resolve(__dirname, 'src/components') },

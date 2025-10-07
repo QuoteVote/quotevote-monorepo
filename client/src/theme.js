@@ -1,10 +1,14 @@
 import { lightBlue, teal } from '@mui/material/colors'
 
+// Named constants for fallback color values (official MUI values)
+const LIGHT_BLUE_500_HEX = '#03a9f4'
+const TEAL_A400_HEX = '#00bcd4'
+
 // Provide safe fallbacks in case the color scales are undefined during
 // early test-time resolution. Some tests import theme before modules are
 // fully hoisted which can lead to lightBlue being undefined.
-const safeLightBlue = (lightBlue && lightBlue[500]) || '#03a9f4'
-const safeTealA400 = (teal && teal.A400) || '#00bcd4'
+const safeLightBlue = (lightBlue && lightBlue[500]) || LIGHT_BLUE_500_HEX
+const safeTealA400 = (teal && teal.A400) || TEAL_A400_HEX
 
 const theme = {
   palette: {

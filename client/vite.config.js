@@ -50,11 +50,8 @@ export default defineConfig(({ mode }) => {
         // Point react and react-dom to the monorepo root copies so imports from node_modules/@mui/* resolve
         { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },
         { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
-  // Route all @emotion/* imports through local shims which resolve to the
-  // hoisted root CJS dev builds when available. This prevents accidental
-  // resolution of client-local copies during Vitest runs.
-  // Route emotion imports through local shims which prefer the hoisted root; using
-  // local shims makes it easier to control resolution in both dev and tests.
+  // Route all @emotion/* imports through local shims, which resolve to the hoisted root CJS dev builds when available.
+  // This prevents accidental resolution of client-local copies during Vitest runs and makes it easier to control resolution in both development and tests.
   { find: '@emotion/styled', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
   { find: '@emotion/react', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
   // Point @mui/styled-engine and its ESM subpath to a local shim that re-exports Emotion's styled default

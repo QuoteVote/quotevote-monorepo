@@ -9,7 +9,6 @@ import { useMutation } from '@apollo/react-hooks'
 import { useHistory } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
 import Emoji from 'a11y-react-emoji'
-// ...existing code...
 import { parseCommentDate } from '../../utils/momentUtils'
 import { ADD_MESSAGE_REACTION, UPDATE_MESSAGE_REACTION } from '../../graphql/mutations'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
