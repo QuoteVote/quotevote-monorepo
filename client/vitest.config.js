@@ -19,6 +19,9 @@ export default defineConfig({
   // setup file here.
   // Use resolved absolute paths so Vitest can run from the monorepo root
   // and still locate client-local setup files.
+  // IMPORTANT: test-setup-mocks.js must run before setupTests.js.
+  // This ensures that all required mocks are established before the main test environment is set up.
+  // Changing the order may break tests that depend on these mocks.
   setupFiles: [resolve(__dirname, 'src', 'test-setup-mocks.js'), resolve(__dirname, 'src', 'setupTests.js')],
   // Run tests single-threaded to avoid too-many-open-files (EMFILE) on Windows
   threads: false,
