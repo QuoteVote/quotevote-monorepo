@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { Paper, Typography, List, ListItem } from '@material-ui/core';
+import { Paper, Typography, List, ListItem, Box } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { GET_LATEST_QUOTES } from '../../graphql/query';
+import LocationBadge from '../LocationBadge';
 
 export default function LatestQuotes({ limit = 5 }) {
   const [quotes, setQuotes] = useState([]);
@@ -33,6 +34,16 @@ export default function LatestQuotes({ limit = 5 }) {
             <Typography variant="body2">
               <strong>{q.user?.username}</strong>: {q.quote}
             </Typography>
+            {q.isLocal && q.placeLabel && (
+              <Box mt={0.5}>
+                <LocationBadge 
+                  placeLabel={q.placeLabel} 
+                  distance={q.distanceFromUser}
+                  variant="default"
+                  size="small"
+                />
+              </Box>
+            )}
           </ListItem>
         ))}
       </List>

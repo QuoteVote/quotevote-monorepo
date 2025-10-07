@@ -13,7 +13,10 @@ import {
     Tooltip,
     SvgIcon,
     Grid,
+    FormControlLabel,
+    Checkbox,
 } from '@material-ui/core'
+import LocationOnIcon from '@material-ui/icons/LocationOn'
 import { isEmpty, findIndex } from 'lodash'
 import { useSelector } from 'react-redux'
 import DislikeIcon from '../../assets/svg/Dislike.jsx'
@@ -65,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 const VotingPopup = ({
   votedBy, onVote, onAddComment, onAddQuote, selectedText, hasVoted, userVoteType,
+  isLocalQuote, onLocalToggle,
 }) => {
   const classes = useStyles()
   const { user } = useSelector((state) => state)
@@ -251,10 +255,7 @@ const VotingPopup = ({
             <IconButton
               onClick={() => {
                 const newQuote = expand.type !== 'quote'
-                setExpand({ open: false, type: newQuote ? 'quote' : '' })
-                if (newQuote) {
-                  handleAddQuote()
-                }
+                setExpand({ open: newQuote, type: newQuote ? 'quote' : '' })
               }}
             >
               <SvgIcon
@@ -269,7 +270,35 @@ const VotingPopup = ({
       </Paper>
       <Zoom in={expand.open}>
         <Paper id="popButtons" elevation={4} className={checkWindowWidth ? classes.paperExpaned : classes.paperExpanedSmall}>
-          {isComment ? (
+          {expand.type === 'quote' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isLocalQuote}
+                    onChange={(e) => onLocalToggle && onLocalToggle(e.target.checked)}
+                    icon={<LocationOnIcon />}
+                    checkedIcon={<LocationOnIcon />}
+                    color="primary"
+                  />
+                }
+                label={
+                  <span style={{ fontSize: '0.875rem' }}>
+                    Post as Local Quote
+                  </span>
+                }
+              />
+              <Button
+                variant="contained"
+                className={classes.button}
+                size="small"
+                onClick={handleAddQuote}
+                fullWidth
+              >
+                Create Quote
+              </Button>
+            </div>
+          ) : isComment ? (
             <Input
               placeholder="Type comment here"
               className={classes.input}
