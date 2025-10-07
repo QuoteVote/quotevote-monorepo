@@ -211,7 +211,9 @@ try {
   // This will help confirm whether @mui/styles and @emotion are resolved to the
   // hoisted root node_modules or to a client-local copy.
   // eslint-disable-next-line no-console
-  console.warn('[setupTests] resolved modules:', resolved)
+  if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV !== 'production') {
+    console.warn('[setupTests] resolved modules:', resolved)
+  }
 } catch (err) {
   // ignore — some test runners may run this file under environments without
   // Node-style resolution or where require.resolve is proxied.
