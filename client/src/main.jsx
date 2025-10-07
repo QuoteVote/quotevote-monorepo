@@ -24,6 +24,7 @@ import {
 import AuthLayout from 'layouts/Auth'
 import client from 'config/apollo'
 import React from 'react'
+import { HelmetProvider } from 'react-helmet-async';
 import ReactDOM from 'react-dom'
 import Scoreboard from 'layouts/Scoreboard'
 import TokenExpired from 'layouts/TokenExpired'
@@ -58,20 +59,22 @@ ReactDOM.render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
-            <Router history={hist}>
-              <Switch>
-                <Route path="/auth" component={AuthLayout} />
-                <Route path="/unauth" component={TokenExpired} />
-                <Route path="/logout" component={LogoutPage} />
-                <Route path="/error" component={ErrorPage} />
-                <Route path="/" component={Scoreboard} />
-                <Redirect from="*" to="/search" />
-              </Switch>
-            </Router>
+            <HelmetProvider>
+              <Router history={hist}>
+                <Switch>
+                  <Route path="/auth" component={AuthLayout} />
+                  <Route path="/unauth" component={TokenExpired} />
+                  <Route path="/logout" component={LogoutPage} />
+                  <Route path="/error" component={ErrorPage} />
+                  <Route path="/" component={Scoreboard} />
+                  <Redirect from="*" to="/search" />
+                </Switch>
+              </Router>
+            </HelmetProvider>
           </ThemeProvider>
         </PersistGate>
       </Provider>
     </ApolloProvider>
   </ErrorBoundary>,
   document.getElementById('root'),
-) 
+)

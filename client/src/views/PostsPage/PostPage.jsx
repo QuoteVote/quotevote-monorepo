@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
 import { Grid, useMediaQuery } from '@mui/material';
 import { makeStyles } from '@mui/styles';
@@ -135,6 +136,12 @@ function PostPage({ postId }) {
 
   const { post } = (!loadingPost && postData) || {}
 
+  // Open Graph/Twitter meta values
+  const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
+  const ogDescription = post?.text ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
+  const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg';
+  const ogUrl = post ? `https://quote.vote/post/${post._id}` : 'https://quote.vote/';
+
   // To reset the scroll when the selected post changes
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -249,8 +256,70 @@ function PostPage({ postId }) {
   if (isMobile) {
     // Mobile layout - vertical stacking
     return (
-      <div className={classes.mobileContainer}>
-        <div className={classes.mobilePostSection} id="post">
+      <>
+        <Helmet>
+          <title>{ogTitle}</title>
+          <meta property="og:title" content={ogTitle} />
+          <meta property="og:description" content={ogDescription} />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:url" content={ogUrl} />
+          <meta property="og:type" content="article" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={ogTitle} />
+          <meta name="twitter:description" content={ogDescription} />
+          <meta name="twitter:image" content={ogImage} />
+        </Helmet>
+        <div className={classes.mobileContainer}>
+          <div className={classes.mobilePostSection} id="post">
+            {loadingPost ? (
+              <PostSkeleton />
+            ) : (
+              <Post
+                post={post}
+                loading={loadingPost}
+                user={user}
+                postHeight={postHeight}
+                postActions={postActions}
+                refetchPost={refetchPost}
+              />
+            )}
+          </div>
+          <div className={classes.mobileInteractionSection}>
+            <div className={classes.mobileMessagesContainer}>
+              <PostActionList
+                loading={loadingPost}
+                postActions={postActions}
+                postUrl={url}
+                refetchPost={refetchPost}
+              />
+            </div>
+            <div className={classes.mobileChatInputContainer}>
+              <PostChatSend messageRoomId={messageRoomId} title={title} />
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  // Desktop layout - side by side panels
+  return (
+    <>
+      <Helmet>
+        <title>{ogTitle}</title>
+        <meta property="og:title" content={ogTitle} />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={ogUrl} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={ogTitle} />
+        <meta name="twitter:description" content={ogDescription} />
+        <meta name="twitter:image" content={ogImage} />
+      </Helmet>
+      <div className={classes.desktopContainer}>
+        {/* Left Panel - Post Content */}
+        <div className={classes.desktopPostSection} id="post">
           {loadingPost ? (
             <PostSkeleton />
           ) : (
@@ -264,8 +333,9 @@ function PostPage({ postId }) {
             />
           )}
         </div>
-        <div className={classes.mobileInteractionSection}>
-          <div className={classes.mobileMessagesContainer}>
+        {/* Right Panel - Actions, Chat Messages, and Chat Input */}
+        <div className={classes.desktopInteractionSection}>
+          <div className={classes.desktopMessagesContainer}>
             <PostActionList
               loading={loadingPost}
               postActions={postActions}
@@ -273,48 +343,12 @@ function PostPage({ postId }) {
               refetchPost={refetchPost}
             />
           </div>
-          <div className={classes.mobileChatInputContainer}>
+          <div className={classes.desktopChatInputContainer}>
             <PostChatSend messageRoomId={messageRoomId} title={title} />
           </div>
         </div>
       </div>
-    )
-  }
-
-  // Desktop layout - side by side panels
-  return (
-    <div className={classes.desktopContainer}>
-      {/* Left Panel - Post Content */}
-      <div className={classes.desktopPostSection} id="post">
-        {loadingPost ? (
-          <PostSkeleton />
-        ) : (
-          <Post
-            post={post}
-            loading={loadingPost}
-            user={user}
-            postHeight={postHeight}
-            postActions={postActions}
-            refetchPost={refetchPost}
-          />
-        )}
-      </div>
-      
-      {/* Right Panel - Actions, Chat Messages, and Chat Input */}
-      <div className={classes.desktopInteractionSection}>
-        <div className={classes.desktopMessagesContainer}>
-          <PostActionList
-            loading={loadingPost}
-            postActions={postActions}
-            postUrl={url}
-            refetchPost={refetchPost}
-          />
-        </div>
-        <div className={classes.desktopChatInputContainer}>
-          <PostChatSend messageRoomId={messageRoomId} title={title} />
-        </div>
-      </div>
-    </div>
+    </>
   )
 }
 

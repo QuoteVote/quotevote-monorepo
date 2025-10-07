@@ -32,7 +32,7 @@ export const sendPasswordResetEmail = (pubsub) => {
           from: `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`,
           templateId: SENGRID_TEMPLATE_IDS.PASSWORD_RESET,
           dynamicTemplateData: {
-            change_password_url: `${clientUrl}auth/password-reset?token=${token}&username=${username}`,
+            change_password_url: `${clientUrl}/auth/password-reset?token=${token}&username=${username}`,
           },
         };
 

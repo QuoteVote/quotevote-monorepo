@@ -22,6 +22,11 @@ if (process.env.NODE_ENV === 'dev') {
   dotenvConfig.config({ path: './.env' });
 }
 
+if (process.env.CLIENT_URL.endsWith('/')) {
+  logger.info('CLIENT_URL ends with /, removing it');
+  process.env.CLIENT_URL = process.env.CLIENT_URL.slice(0, -1);
+}
+
 const GRAPHQL_PORT = process.env.PORT || 3000;
 
 logger.info('Database', process.env.DATABASE_URL);
