@@ -72,9 +72,6 @@ export default defineConfig({
   // exist in the client package folder.
   { find: 'redux-mock-store', replacement: resolve(__dirname, '..', 'node_modules', 'redux-mock-store', 'dist', 'index-cjs.js') },
       { find: 'assets', replacement: resolve(__dirname, 'src/assets') },
-  // Note: local shim for react-material-ui-carousel was removed. If you hit
-  // issues with that package in tests, restore
-  // `client/src/shims/react-material-ui-carousel.js` and add an alias here.
       // Match Vite aliases used in development build so tests resolve the same imports
       { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
   { find: 'components', replacement: resolve(__dirname, 'src/components') },
