@@ -7,6 +7,7 @@ import Highlighter from 'react-highlight-words'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import SelectionPopover from './SelectionPopover'
+import AutoLinkText from '../common/AutoLinkText'
 
 const useStyles = makeStyles({
   root: {
@@ -94,9 +95,7 @@ const VotingBoard = ({
 
     return content.split(/\n/g).map((line, contentIndex) => (
       <Fragment key={`frag-${contentIndex}`}>
-        {line.split(/\s+/g).map((word, index) => (
-          <span key={index + word}>{`${word} `}</span>
-        ))}
+        <AutoLinkText text={line} />
         <br />
       </Fragment>
     ));
