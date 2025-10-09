@@ -2,7 +2,8 @@ import React from 'react'
 import { PersistGate } from 'redux-persist/integration/react'
 import { ApolloProvider } from '@apollo/react-hooks'
 import { Provider } from 'react-redux'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
 import { Router } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import store, { persistor } from '../store/store'
@@ -16,9 +17,11 @@ const withTestWrapper = (Component) => (props) => (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <Router history={hist}>
-            <Component {...props} />
-          </Router>
+          <StylesThemeProvider theme={theme}>
+            <Router history={hist}>
+              <Component {...props} />
+            </Router>
+          </StylesThemeProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>

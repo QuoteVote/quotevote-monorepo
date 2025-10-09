@@ -1,18 +1,19 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import Grid from '@material-ui/core/Grid'
-import Dialog from '@material-ui/core/Dialog'
+import Grid from '@mui/material/Grid'
+import Dialog from '@mui/material/Dialog'
 import { NavLink, useHistory } from 'react-router-dom'
-import { Tooltip, Typography } from '@material-ui/core'
-import AppBar from '@material-ui/core/AppBar'
-import withWidth from '@material-ui/core/withWidth'
+import { Tooltip, Typography } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import withWidth from 'utils/withWidth'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 import { SET_SELECTED_PAGE } from 'store/ui'
 import { useApolloClient } from '@apollo/react-hooks'
-import Button from '@material-ui/core/Button'
-import Hidden from '@material-ui/core/Hidden'
-import Avatar from '@material-ui/core/Avatar'
+import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
 import AvatarPreview from '../Avatar'
 import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
@@ -45,6 +46,9 @@ function MainNavBar(props) {
   }
 
   const isMobile = useMobileDetection()
+  const theme = useTheme()
+  const showOnLgUp = useMediaQuery(theme.breakpoints.up('lg'))
+  const showOnLgDown = !showOnLgUp
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -189,7 +193,7 @@ function MainNavBar(props) {
               >
                 <Grid item>
                   <NavLink to="/Profile">
-                    <Hidden mdDown>
+                    {showOnLgUp && (
                       <Button
                         aria-label="Profile"
                         color="inherit"
@@ -206,12 +210,12 @@ function MainNavBar(props) {
                           {name}
                         </Typography>
                       </Button>
-                    </Hidden>
-                    <Hidden lgUp>
+                    )}
+                    {showOnLgDown && (
                       <Avatar height="35" width="35">
                         <AvatarPreview {...avatar} />
                       </Avatar>
-                    </Hidden>
+                    )}
                   </NavLink>
                 </Grid>
                 <Grid item>

@@ -1,8 +1,8 @@
 import React from 'react'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
+import { makeStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
 
 import { useHistory } from 'react-router-dom'
 

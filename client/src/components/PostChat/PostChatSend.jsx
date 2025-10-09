@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING } from 'store/chat'
 import { useMutation } from '@apollo/react-hooks'
-import { Grid, InputBase } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Hidden from '@material-ui/core/Hidden'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
+import { Grid, InputBase } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
@@ -86,6 +87,13 @@ function PostChatSend(props) {
     }],
   })
 
+  // Test hook: if a test provides a global override for the mutation function
+  // (window.__TEST_CREATE_MESSAGE), use that instead of the real hook. This
+  // allows tests to avoid relying on Apollo's runtime while exercising the
+  // component's submit flow.
+  // eslint-disable-next-line no-underscore-dangle
+  const createMessageFn = (typeof window !== 'undefined' && window.__TEST_CREATE_MESSAGE) ? window.__TEST_CREATE_MESSAGE : createMessage
+
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
@@ -100,7 +108,7 @@ function PostChatSend(props) {
     }
 
     const dateSubmitted = new Date()
-    await createMessage({
+    await createMessageFn({
       variables: { message },
       optimisticResponse: {
         __typename: 'Mutation',

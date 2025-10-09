@@ -1,6 +1,6 @@
-import { withStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
-import { common } from '@material-ui/core/colors'
+import { withStyles } from '@mui/styles'
+import Button from '@mui/material/Button'
+import { common } from '@mui/material/colors'
 
 const SelectPlansButton = withStyles(() => ({
   root: {

@@ -43,7 +43,9 @@
     "jest": "^30.0.3",
     "mocha": "^11.7.1",
     "nodemon": "^3.1.10",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0"
   },
   "engines": {
     "node": ">=18",

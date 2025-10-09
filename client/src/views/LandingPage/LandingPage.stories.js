@@ -9,6 +9,6 @@ export default {
 export const Base = () => <LandingPage />
 Base.story = {
   parameters: {
-    jest: ['LandingPage.test.js'],
+    jest: ['LandingPage.test.jsx'],
   },
 }

@@ -2,10 +2,10 @@ import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-    Grid, Paper, Typography, Avatar, IconButton,
-} from '@material-ui/core'
-import { Delete } from '@material-ui/icons'
-import { makeStyles } from '@material-ui/core/styles'
+  Grid, Paper, Typography, Avatar, IconButton,
+} from '@mui/material'
+import { Delete } from '@mui/icons-material'
+import { makeStyles } from '@mui/styles'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import AvatarDisplay from '../Avatar'
 import PostChatReactions from './PostChatReactions'

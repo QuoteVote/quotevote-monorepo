@@ -1,14 +1,14 @@
 import React from 'react'
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+// @mui styles
+import { makeStyles } from '@mui/styles'
 
-// @material-ui/icons
-import Dashboard from '@material-ui/icons/Dashboard'
-import Schedule from '@material-ui/icons/Schedule'
-import Info from '@material-ui/icons/Info'
-import LocationOn from '@material-ui/icons/LocationOn'
-import Gavel from '@material-ui/icons/Gavel'
-import HelpOutline from '@material-ui/icons/HelpOutline'
+// @mui icons
+import Dashboard from '@mui/icons-material/Dashboard'
+import Schedule from '@mui/icons-material/Schedule'
+import Info from '@mui/icons-material/Info'
+import LocationOn from '@mui/icons-material/LocationOn'
+import Gavel from '@mui/icons-material/Gavel'
+import HelpOutline from '@mui/icons-material/HelpOutline'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

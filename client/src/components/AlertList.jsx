@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Skeleton from '@material-ui/lab/Skeleton'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
+import Skeleton from '@mui/material/Skeleton'
+import GridList from '@mui/material/GridList'
+import GridListTile from '@mui/material/GridListTile'
 import { getGridListCols, useWidth } from 'utils/display'
 import Alert from './Alert'
 

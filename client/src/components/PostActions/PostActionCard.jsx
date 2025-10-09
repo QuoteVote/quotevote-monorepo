@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import {
   Card, CardActions, CardContent, IconButton, Typography,
-} from '@material-ui/core'
-import { InsertLink, Delete } from '@material-ui/icons'
-import { makeStyles } from '@material-ui/core/styles'
+} from '@mui/material'
+import { InsertLink, Delete } from '@mui/icons-material'
+import { makeStyles } from '@mui/styles'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -20,7 +20,7 @@ import CommentReactions from '../Comment/CommentReactions'
 import PostChatMessage from '../PostChat/PostChatMessage'
 import LikeIcon from '../../assets/svg/Like.jsx'
 import DislikeIcon from '../../assets/svg/Dislike.jsx'
-import { SvgIcon } from '@material-ui/core'
+import { SvgIcon } from '@mui/material'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
 
 const useStyles = makeStyles((theme) => ({
