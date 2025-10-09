@@ -12,7 +12,8 @@ const pagesStyle = (theme) => ({
     '-o-background-size': 'cover',
     backgroundPosition: 'center center',
     padding: '0',
-    width: '100vw',
+    width: '100%',
+    overflowX: 'hidden',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
@@ -87,6 +88,7 @@ const pagesStyle = (theme) => ({
       minHeight: 'unset',
       width: '100%',
       padding: '0 8px',
+      boxSizing: 'border-box',
     },
     // Special styling for login page to override default margins
     '& .login-page': {

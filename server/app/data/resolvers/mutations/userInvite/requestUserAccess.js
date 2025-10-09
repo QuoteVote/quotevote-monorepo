@@ -11,19 +11,20 @@ export const requestUserAccess = (pubsub) => {
     const existingUser = await UserModel.findOne({ email });
     console.log('Existing user', existingUser);
     let user;
-    if (!existingUser) {
+    if (existingUser) {
+      if (existingUser.status !== 1) {
+        throw new UserInputError('Email already exists', {
+          invalidArgs: Object.keys(args),
+        });
+      }
+      user = existingUser;
+    } else {
       const userArgs = {
         username: email,
         email,
         status: 1, // prospect
       };
       user = await new UserModel(userArgs).save();
-    }
-
-    if (existingUser.status !== 1) {
-      throw new UserInputError('Email already exists', {
-        invalidArgs: Object.keys(args),
-      });
     }
     const mailOptions = {
       to: email,
