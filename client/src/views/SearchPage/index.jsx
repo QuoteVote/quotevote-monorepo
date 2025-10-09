@@ -484,6 +484,17 @@ export default function SearchPage() {
     setFocusedInput(null)
   }
 
+  // Helper function to determine if we should show the landing page for guest users
+  const shouldShowGuestLandingPage = () => {
+    if (!isGuestMode) return false
+    
+    const { page } = extractUrlParams({ search: window.location.search })
+    const hasPageParam = window.location.search.includes('page=')
+    
+    // Show landing page only when no search, no filters, no interactions, and no page params
+    return !searchKey.trim() && !hasActiveFilters() && !hasEverInteractedWithFilters && !hasPageParam
+  }
+
   // Helper function to check if any filters are active
   const hasActiveFilters = () => {
     return (
@@ -951,13 +962,8 @@ export default function SearchPage() {
           )}
 
           {/* Show database results when authenticated, searching, any filter is active, user has ever interacted with filters, */}
-          {/* OR when the URL contains a page parameter. This ensures back-navigation with ?page works. */}
-          {(() => {
-            const { page } = extractUrlParams({ search: window.location.search })
-            const hasPageParam = window.location.search.includes('page=')
-            const shouldShowDbResults = !isGuestMode || searchKey.trim() || hasActiveFilters() || hasEverInteractedWithFilters || hasPageParam
-            return shouldShowDbResults
-          })() && (
+          {/* OR when the URL contains a page parameter. For guest users, show same pagination as authenticated users. */}
+          {!shouldShowGuestLandingPage() && (
             <>
               {/* Total Count Display */}
               {totalCount > 0 && (
@@ -989,11 +995,11 @@ export default function SearchPage() {
             </>
           )}
 
-          {/* Show landing page content only when no filters are active and user has never interacted with filters */}
-          {isGuestMode && !hasActiveFilters() && !hasEverInteractedWithFilters && <SearchGuestSections />}
+          {/* Show landing page content only when we're not showing search results (i.e., guest mode default landing page) */}
+          {shouldShowGuestLandingPage() && <SearchGuestSections />}
 
-          {/* Guest Footer Section - only show when no filters are active and user has never interacted with filters */}
-          {isGuestMode && !hasActiveFilters() && !hasEverInteractedWithFilters && <GuestFooter />}
+          {/* Guest Footer Section - only show when showing landing page content */}
+          {shouldShowGuestLandingPage() && <GuestFooter />}
         </Grid>
       </div>
     </ErrorBoundary>
