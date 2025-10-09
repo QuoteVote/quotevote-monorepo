@@ -6,33 +6,39 @@ This section explains how Quote Vote is designed and built.
 
 ### [Backend Architecture](./backend-architecture.md)
 
-Details about the Node.js/GraphQL backend:
+Comprehensive technical overview of the Node.js/GraphQL backend:
 
-- Server structure
-- GraphQL schema and resolvers
+- Server structure and organization
+- GraphQL schema and resolver implementation
 - Database models (MongoDB/Mongoose)
-- Authentication & authorization
-- Real-time subscriptions
+- Authentication and authorization
+- Real-time subscriptions via WebSocket
+- Component interaction patterns
+
+**Note:** This is a detailed technical document. If you're new to Quote Vote, consider starting with the [Getting Started Guide](../getting-started/) first.
 
 ### [Frontend Architecture](./frontend-architecture.md)
 
-Details about the React frontend:
+Comprehensive technical overview of the React frontend:
 
-- Component structure
-- Apollo Client setup
-- State management (Redux Toolkit)
-- Routing and layouts
-- Real-time updates
+- Component structure and organization
+- Apollo Client setup and configuration
+- State management patterns (Redux Toolkit + Apollo Client Cache)
+- Routing and layout system
+- Real-time updates implementation
+- Build and deployment pipeline
 
-### [Database Schema](./database-schema.md) _(Coming Soon)_
+### [Database Schema](./database-schema.md)
 
 MongoDB collections and data models:
 
-- User model
-- Post model
-- Vote model
-- Comment model
-- Notification model
+- User model and relationships
+- Post model and voting structure
+- Comment and notification models
+- Indexing strategy
+- Data relationships and queries
+
+**Note:** This document describes the database structure in detail. Future updates will include ER diagrams and query examples.
 
 ## 🎯 Quick Overview
 
