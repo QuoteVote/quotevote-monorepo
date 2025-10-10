@@ -106,7 +106,8 @@ export default function Pages(props) {
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100vh',
-        width: '100vw',
+        width: '100%',
+        overflowX: 'hidden',
       }}
     >
       {/* Header */}
