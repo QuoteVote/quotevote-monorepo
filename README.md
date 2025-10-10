@@ -109,7 +109,7 @@ monorepo/
    NODE_ENV=development
    PORT=4000
    MONGODB_URI=mongodb://localhost:27017/quote-vote
-   JWT_SECRET=your-jwt-secret
+   SECRET=your-jwt-secret
    STRIPE_SECRET_KEY=your-stripe-secret
    EMAIL_SERVICE=your-email-service
    EMAIL_USER=your-email-user
