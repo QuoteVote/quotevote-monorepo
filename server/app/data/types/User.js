@@ -17,4 +17,5 @@ type User {
   upvotes: Int
   downvotes: Int
   contributorBadge: Boolean
+  reputation: UserReputation
 }`;

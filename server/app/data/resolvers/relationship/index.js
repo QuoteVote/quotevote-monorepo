@@ -6,3 +6,4 @@ export * from './message_relationship';
 export * from './vote_relationship';
 export * from './quote_relationship';
 export * from './notification_relationship';
+export * from './user_relationship';

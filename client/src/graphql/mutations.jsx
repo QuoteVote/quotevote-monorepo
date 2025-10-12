@@ -300,3 +300,30 @@ export const TOGGLE_VOTING = gql`
     }
   }
 `
+
+export const SEND_USER_INVITE = gql`
+  mutation sendUserInvite($email: String!) {
+    sendUserInvite(email: $email) {
+      code
+      message
+    }
+  }
+`
+
+export const REPORT_USER = gql`
+  mutation reportUser($reportUserInput: ReportUserInput!) {
+    reportUser(reportUserInput: $reportUserInput) {
+      code
+      message
+    }
+  }
+`
+
+export const RECALCULATE_REPUTATION = gql`
+  mutation recalculateReputation($userId: String!) {
+    recalculateReputation(userId: $userId) {
+      code
+      message
+    }
+  }
+`
