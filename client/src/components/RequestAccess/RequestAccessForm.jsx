@@ -14,11 +14,38 @@ import { Typography } from '@material-ui/core'
 import Button from '../../mui-pro/CustomButtons/Button'
 import PersonalForm from 'components/RequestAccess/PersonalForm/PersonalForm'
 
-const useStyles = makeStyles(styles)
+const useStyles = makeStyles((theme) => ({
+  ...styles,
+  emailInputWrapper: {
+    background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+    borderRadius: '12px',
+    padding: '20px',
+    margin: '12px 0',
+    border: '2px solid #e0e0e0',
+    transition: 'all 0.3s ease',
+    position: 'relative',
+    '&:focus-within': {
+      border: '2px solid #52b274',
+      boxShadow: '0 0 0 4px rgba(82, 178, 116, 0.1)',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+    },
+  },
+  missionLink: {
+    color: '#52b274',
+    textDecoration: 'none',
+    fontSize: 'clamp(0.875rem, 2vw, 0.95rem)',
+    fontWeight: 500,
+    transition: 'color 0.3s ease',
+    '&:hover': {
+      color: '#4a9f63',
+      textDecoration: 'underline',
+    },
+  },
+}))
 
 /**
  * Form component for requesting platform access via email invitation
- */
+```
 export default function RequestAccessForm({ onSuccess }) {
   const classes = useStyles()
   const [userDetails, setUserDetails] = useState('')
@@ -124,30 +151,7 @@ export default function RequestAccessForm({ onSuccess }) {
           voting, and quoting require an invite.
         </Typography>
 
-        <div
-          style={{
-            background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-            borderRadius: '12px',
-            padding: '20px',
-            margin: '12px 0',
-            border: '2px solid #e0e0e0',
-            transition: 'all 0.3s ease',
-            position: 'relative',
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.border = '2px solid #52b274'
-            e.currentTarget.style.boxShadow =
-              '0 0 0 4px rgba(82, 178, 116, 0.1)'
-            e.currentTarget.style.background =
-              'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.border = '2px solid #e0e0e0'
-            e.currentTarget.style.boxShadow = 'none'
-            e.currentTarget.style.background =
-              'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'
-          }}
-        >
+        <div className={classes.emailInputWrapper}>
           <Input
             disableUnderline
             placeholder="Enter Your Email Address"
@@ -186,21 +190,7 @@ export default function RequestAccessForm({ onSuccess }) {
         >
           <a
             href="/auth/request-access#mission"
-            style={{
-              color: '#52b274',
-              textDecoration: 'none',
-              fontSize: 'clamp(0.875rem, 2vw, 0.95rem)',
-              fontWeight: 500,
-              transition: 'color 0.3s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.color = '#4a9f63'
-              e.target.style.textDecoration = 'underline'
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.color = '#52b274'
-              e.target.style.textDecoration = 'none'
-            }}
+            className={classes.missionLink}
           >
             Learn more about our mission here
           </a>
