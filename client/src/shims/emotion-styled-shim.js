@@ -1,6 +1,6 @@
-// Re-export the hoisted ESM build so Rollup can statically analyze exports.
-// This file intentionally points at the hoisted ESM bundle under the repo root
-// node_modules. Netlify and workspace installs hoist packages to the repo root
-// which makes this path valid in CI.
-export * from '../../../node_modules/@emotion/styled/dist/emotion-styled.development.esm.js'
-export { default } from '../../../node_modules/@emotion/styled/dist/emotion-styled.development.esm.js'
+// Re-export the package specifier so Vite's resolver rewrites imports to the
+// hoisted ESM build via aliases defined in vite/vitest configs. Avoid using
+// a relative deep-path here (like '../../../node_modules/.../dist/...') because
+// Vite may accidentally append subpaths to this file's path and cause ENOENT.
+export * from '@emotion/styled'
+export { default } from '@emotion/styled'

@@ -104,7 +104,7 @@
     "build": "ROLLUP_SKIP_NATIVE=true vite build && gulp licenses",
     "build:ci": "ROLLUP_SKIP_NATIVE=true NODE_ENV=production vite build && gulp licenses",
     "preview": "vite preview",
-    "test": "vitest -u -w 1 --env=jsdom --silent",
+  "test": "vitest -u -w --silent",
     "test:coverage": "vitest --updateSnapshot --watchAll=false --silent --coverage",
     "test:generate-output": "vitest --updateSnapshot --watchAll=false --json --outputFile=.storybook/.jest-test-results.json --coverage",
     "eject": "react-scripts eject",

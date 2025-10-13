@@ -17,6 +17,28 @@ try {
 } catch (e) {
   // ignore if not installed or in environments where require isn't available
 }
+// Vitest: mock cheerio internal utils to avoid Node package-exports errors
+// when code imports 'cheerio/lib/utils'. The project's Vite alias should
+// handle this in most cases, but mocking here ensures the test runtime never
+// attempts to resolve the non-exported package subpath at Node-level.
+try {
+  // vi is provided by Vitest. Use a safe conditional so this file still runs
+  // under other runners or Node environments.
+  // eslint-disable-next-line no-undef
+  if (typeof vi !== 'undefined' && typeof vi.mock === 'function') {
+    // Use require to keep this file compatible with CommonJS interop.
+    // The shim exports an ESM re-export to cheerio's ESM utils bundle.
+    // Return the module namespace expected by callers.
+    // eslint-disable-next-line global-require
+    const shim = require('./shims/cheerio-lib-utils.js')
+    vi.mock('cheerio/lib/utils', () => ({
+      __esModule: true,
+      ...shim,
+    }))
+  }
+} catch (err) {
+  // ignore — mocking is optional and should not break non-vitest runs
+}
 // Ensure window.scrollTo exists early so any modules that call it during
 // import or in mount effects won't throw in jsdom.
 if (typeof window !== 'undefined' && typeof window.scrollTo !== 'function') {

@@ -31,12 +31,13 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: [
-  // Point jsx runtime to the hoisted root node_modules so builds on CI
-  // (Netlify) which install workspace deps at the repo root can resolve them.
-  { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-dev-runtime.js') },
-  { find: 'react/jsx-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-runtime.js') },
-        { find: '@', replacement: resolve(__dirname, 'src') },
-        // Add aliases for common directories
+  // Prefer resolving package subpath imports via local shims so Vite can
+  // statically analyze and rewrite them during transform. Using shims avoids
+  // Node's ESM loader needing to resolve bare package subpaths at runtime.
+  { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, 'src', 'shims', 'react-jsx-dev-runtime.js') },
+  { find: 'react/jsx-runtime', replacement: resolve(__dirname, 'src', 'shims', 'react-jsx-runtime.js') },
+  { find: '@', replacement: resolve(__dirname, 'src') },
+  // Add aliases for common directories
         { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
         { find: 'components', replacement: resolve(__dirname, 'src/components') },
         { find: 'config', replacement: resolve(__dirname, 'src/config') },
@@ -47,27 +48,44 @@ export default defineConfig(({ mode }) => {
         { find: 'mui-pro', replacement: resolve(__dirname, 'src/mui-pro') },
         { find: 'hoc', replacement: resolve(__dirname, 'src/hoc') },
         { find: 'themes', replacement: resolve(__dirname, 'src/themes') },
-        // Point react and react-dom to the monorepo root copies so imports from node_modules/@mui/* resolve
-        { find: 'react', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'index.js') },
-        { find: 'react-dom', replacement: resolve(__dirname, '..', 'node_modules', 'react-dom', 'index.js') },
+  // Note: avoid broad 'react' / 'react-dom' aliases here to allow package
+  // subpath imports (like 'react/jsx-runtime') to resolve to their explicit
+  // .js targets. Specific aliases for 'react/jsx-runtime' are used above.
   // Route all @emotion/* imports through local shims, which resolve to the hoisted root CJS dev builds when available.
   // This prevents accidental resolution of client-local copies during Vitest runs and makes it easier to control resolution in both development and tests.
-  { find: '@emotion/styled', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
+  // Prefer resolving the exact hoisted ESM build for @emotion/styled so
+  // deep-subpath imports (e.g. '@emotion/styled/dist/emotion-styled.development.esm.js')
+  // will resolve to the correct file instead of being appended to a local shim
+  // path. This avoids Vite trying to load '<shim>.js/dist/...' which causes ENOENT.
+  { find: '@emotion/styled/dist/emotion-styled.development.esm.js', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.esm.js') },
+  { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.esm.js') },
   { find: '@emotion/react', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
   // Point @mui/styled-engine and its ESM subpath to a local shim that re-exports Emotion's styled default
-  { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
+  // Let subpath imports under '@mui/styled-engine/esm/*' resolve to the
+  // hoisted package esm directory so Rollup/Vite can statically analyze
+  // named exports. Default imports from '@mui/styled-engine' will point at
+  // our local shim which ensures a single Emotion runtime.
+  { find: '@mui/styled-engine/esm/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styled-engine', 'esm') + '/' },
+  { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styled-engine', 'esm', 'index.js') },
   { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
-  // Ensure subpath imports like '@mui/styles/makeStyles' resolve to the hoisted package directory
-  // Keep subpath suffix ($1) so imports like '@mui/styles/makeStyles' -> <root>/node_modules/@mui/styles/makeStyles
-  { find: /^@mui\/styles(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '$1' },
+  // Ensure Rollup can statically resolve named exports from Emotion's serialize
+  // package when node_modules are hoisted to the repo root (CI). This points
+  // the package specifier to the explicit ESM build used during bundling.
+  { find: '@emotion/serialize', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js') },
+  // Prefer string-prefix aliases so subpath imports (e.g. '@mui/styles/makeStyles')
+  // resolve to the package directory. Put the trailing-slash alias first so
+  // imports like '@mui/styles/withStyles' map to the styles folder, not to
+  // the index.js file (which would cause index.js/withStyles to be requested).
+  { find: '@mui/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
+  { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   // Map icons to a lightweight shim during dev and tests to avoid opening many files
-  // Map any import of @mui/icons-material or subpaths to a lightweight root shim
-  { find: /^@mui\/icons-material(\/.*)?$/, replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-root.js') },
-  // Also ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
-  // Map @mui material subpaths (e.g. @mui/material/styles) to the ESM build so Vite can
-  // statically resolve imports during transform/import-analysis.
-  { find: /^@mui\/material(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '$1' },
-  { find: /^@mui\/system(\/.*)?$/, replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '$1' },
+  { find: '@mui/icons-material', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
+  { find: '@mui/icons-material/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
+  // Ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
+  { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
+  { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
+  { find: '@mui/system', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') },
+  { find: '@mui/system/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '/' },
   // ensure '@mui/styles' direct import resolves too
   { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   // shim legacy Hidden import
@@ -75,8 +93,12 @@ export default defineConfig(({ mode }) => {
         // Compatibility aliases for packages that import internal cheerio paths
         // which are blocked by package exports in newer cheerio versions.
         // Redirect requests like 'cheerio/lib/utils' -> cheerio/dist/commonjs/utils.js
-        { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'node_modules/cheerio/dist/commonjs/utils.js') },
-        { find: 'cheerio/lib', replacement: resolve(__dirname, 'node_modules/cheerio/dist/commonjs/index.js') },
+  // Compatibility shim that re-exports the commonjs build. This file exists
+  // in the hoisted repo-root node_modules and points at the packaged CJS bundle.
+  { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'node_modules', 'cheerio', 'lib', 'utils.js') },
+  { find: 'cheerio/lib', replacement: resolve(__dirname, '..', 'node_modules', 'cheerio', 'lib', 'index.js') },
+  // Ensure direct 'cheerio' imports resolve to the packaged ESM bundle.
+  { find: 'cheerio', replacement: resolve(__dirname, '..', 'node_modules', 'cheerio', 'dist', 'esm', 'index.js') },
       ],
     },
     css: {
@@ -133,6 +155,8 @@ export default defineConfig(({ mode }) => {
           'react-material-ui-carousel',
         'react/jsx-dev-runtime',
         'react/jsx-runtime',
+        'cheerio',
+        'cheerio/lib/utils',
         '@apollo/client',
         'react-router-dom',
       ],
