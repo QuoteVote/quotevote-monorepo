@@ -120,8 +120,3 @@ RequestInviteDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 }
-
-RequestInviteDialog.defaultProps = {
-  open: false,
-  onClose: () => {},
-}

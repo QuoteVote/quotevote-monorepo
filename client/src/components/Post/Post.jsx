@@ -26,7 +26,6 @@ import VotingBoard from '../VotingComponents/VotingBoard'
 import VotingPopup from '../VotingComponents/VotingPopup'
 import { SET_SNACKBAR } from '../../store/ui'
 import useGuestGuard from 'utils/useGuestGuard'
-import RequestInviteDialog from '../RequestInviteDialog'
 import {
   ADD_COMMENT,
   ADD_QUOTE,
@@ -116,7 +115,6 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     endIndex: 0,
   })
   const [open, setOpen] = useState(false)
-  const [openInvite, setOpenInvite] = useState(false)
 
   const isFollowing = includes(_followingId, userId)
 
@@ -860,10 +858,6 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           />
         )}
       </Card>
-      <RequestInviteDialog
-        open={openInvite}
-        onClose={() => setOpenInvite(false)}
-      />
     </>
   )
 }
