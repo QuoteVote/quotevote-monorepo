@@ -3,40 +3,40 @@ import UserInviteModel from '../../models/UserInviteModel';
 import UserModel from '../../models/UserModel';
 import sendGridEmail, { SENGRID_TEMPLATE_IDS } from '../../../utils/send-grid-mail';
 
-export const sendUserInvite = (pubsub) => {
+export default (pubsub) => {
   return async (_, args, context) => {
     const { email } = args;
     const { user } = context;
-    
+
     if (!user) {
       throw new UserInputError('Authentication required');
     }
-    
+
     try {
       // Check if user already exists
       const existingUser = await UserModel.findOne({ email });
       if (existingUser) {
         throw new UserInputError('User with this email already exists');
       }
-      
+
       // Check if invite already exists
-      const existingInvite = await UserInviteModel.findOne({ 
-        email, 
-        _inviterId: user._id 
+      const existingInvite = await UserInviteModel.findOne({
+        email,
+        _inviterId: user._id,
       });
       if (existingInvite) {
         throw new UserInputError('Invite already sent to this email');
       }
-      
+
       // Create new invite
       const invite = new UserInviteModel({
         email,
         _inviterId: user._id,
         status: 'pending',
       });
-      
+
       await invite.save();
-      
+
       // Send invitation email
       const clientUrl = process.env.CLIENT_URL;
       const mailOptions = {
@@ -49,9 +49,9 @@ export const sendUserInvite = (pubsub) => {
           invite_url: `${clientUrl}/auth/signup?invite=${invite._id}`,
         },
       };
-      
+
       await sendGridEmail(mailOptions);
-      
+
       return {
         code: 'SUCCESS',
         message: 'Invitation sent successfully',

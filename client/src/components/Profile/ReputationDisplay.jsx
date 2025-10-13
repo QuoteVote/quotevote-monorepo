@@ -9,16 +9,16 @@ import {
   Grid,
   Tooltip,
   IconButton,
-} from '@mui/material';
+} from '@material-ui/core';
 import {
   TrendingUp,
   People,
   Security,
-  Activity,
+  Timeline,
   Refresh,
   Info,
-} from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
+} from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   reputationCard: {
@@ -172,7 +172,7 @@ const ReputationDisplay = ({ reputation, onRefresh, loading = false }) => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <Box className={classes.metricCard}>
-                <Activity color="primary" />
+                <Timeline color="primary" />
                 <Typography className={classes.metricValue}>
                   {reputation.activityScore}
                 </Typography>
