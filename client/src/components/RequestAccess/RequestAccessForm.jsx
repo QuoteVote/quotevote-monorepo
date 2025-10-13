@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Form component for requesting platform access via email invitation
-```
+ */
 export default function RequestAccessForm({ onSuccess }) {
   const classes = useStyles()
   const [userDetails, setUserDetails] = useState('')
