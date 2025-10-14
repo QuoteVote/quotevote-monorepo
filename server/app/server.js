@@ -31,10 +31,17 @@ const GRAPHQL_PORT = process.env.PORT || 3000;
 
 logger.info('Database', process.env.DATABASE_URL);
 
-mongoose.connect(process.env.DATABASE_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.DATABASE_URL);
+    logger.info('MongoDB Connected...');
+  } catch (err) {
+    console.error('MongoDB connection error:', err.stack);
+    process.exit(1);
+  }
+};
+
+connectDB();
 
 const app = express();
 

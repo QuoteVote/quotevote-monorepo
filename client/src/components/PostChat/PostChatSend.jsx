@@ -29,13 +29,32 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     borderRadius: 6,
-    background: '#ffffff',
-    height: 45,
+    background: '#f5f7fa',
+    border: '1px solid #e1e8ed',
+    minHeight: 45,
+    maxHeight: 75, 
     paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 8,
+    paddingBottom: 8,
     width: '80%',
     [theme.breakpoints.up('md')]: {
       width: '85%',
     },
+    '&:focus-within': {
+      background: '#ffffff',
+      border: '1px solid #1976d2',
+      boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)',
+    },
+    '& .MuiInputBase-input': {
+      resize: 'none',
+      '&::placeholder': {
+        opacity: 0.7,
+      },
+    },
+  },
+  inputEmpty: {
+    minHeight: 65,
   },
   send: {
     float: 'right',
@@ -149,16 +168,16 @@ function PostChatSend(props) {
       <Grid item sm={10} xs={12}>
         <Paper elevation={0}>
           <InputBase
-            ref={commentInputRef}
+            multiline
+            maxRows={4}
+            inputRef={commentInputRef}
             placeholder="type a message..."
-            className={classes.input}
+            className={`${classes.input} ${!text.trim() ? classes.inputEmpty : ''}`}
             value={text}
-            onChange={(event) => {
-              const { value } = event.target
-              setText(value)
-            }}
-            onKeyPress={(event) => {
-              if (event.key === 'Enter') {
+            onChange={(event) => setText(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault()
                 handleSubmit()
               }
             }}

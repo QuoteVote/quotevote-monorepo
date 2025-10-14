@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from '@material-ui/core/styles'
+import { useDispatch, useSelector } from 'react-redux'
 import { tokenValidator } from 'store/user'
-import { useDispatch } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
@@ -25,6 +25,7 @@ export default function RequestAccessPage() {
   const dispatch = useDispatch()
   const history = useHistory()
   const location = useLocation()
+  const loggedIn = useSelector((state) => !!state.user.data._id)
 
   const [userDetails, setUserDetails] = useState('')
   const [errorMessage, setErrorMessage] = useState()
@@ -75,9 +76,9 @@ export default function RequestAccessPage() {
 
   const isMobileDevice = useMobileDetection()
 
-  // TODO: Abstract validation into custom hook
+  // On mount, validate token to clear any stale auth, but do not redirect
   useEffect(() => {
-    if (tokenValidator(dispatch)) history.push('/search')
+    tokenValidator(dispatch)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -665,3 +665,15 @@ export const GET_FEATURED_POSTS = gql`
     }
   }
 `
+
+export const SEARCH_USERNAMES = gql`
+  query searchUsernames($query: String!) {
+    searchUser(queryName: $query) {
+      _id
+      name
+      username
+      avatar
+      contributorBadge
+    }
+  }
+`
