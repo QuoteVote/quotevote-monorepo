@@ -59,11 +59,11 @@ export default defineConfig({
   // Support older material-ui v4 imports that reference '@material-ui/icons'
   { find: '@material-ui/icons', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
   { find: '@material-ui/icons/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
-  // Map legacy @material-ui/core imports to the hoisted @mui/material ESM
-  // so older files importing from v4 can be resolved during CI builds.
-  { find: '@material-ui/core', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
-  { find: '@material-ui/core/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
-      { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
+  // Map legacy material-ui core imports to a local shim that re-exports
+  // common symbols from @mui/material. This avoids package-subpath resolution
+  // issues in CI where node_modules are hoisted.
+  { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
+  { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
       { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
       { find: '@mui/system', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') },
       { find: '@mui/system/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '/' },

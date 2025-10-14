@@ -87,8 +87,8 @@ export default defineConfig(({ mode }) => {
   // Map legacy v4 imports to the hoisted @mui/material ESM build so Rollup
   // can statically resolve named exports during CI builds where node_modules
   // are hoisted to the repo root.
-  { find: '@material-ui/core', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
-  { find: '@material-ui/core/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
+  { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
+  { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
   // Ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
   { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
   { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
