@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path, { resolve } from 'path'
+import { existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -38,6 +39,14 @@ export default defineConfig({
   // imports don't get appended to a local shim file path.
   { find: '@emotion/styled/dist/emotion-styled.development.esm.js', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.esm.js') },
   { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'styled.cjs.js') },
+  // Ensure @emotion/serialize resolves to the correct ESM build. Prefer the
+  // client/node_modules layout (Netlify installs per-project) and fall back
+  // to the repo-root hoisted node_modules if needed.
+  { find: '@emotion/serialize', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js'))
+      ? resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
+      : resolve(__dirname, '..', 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
+  ) },
       { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.cjs.js') },
       { find: '@emotion/styled.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
       { find: '@emotion/react.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
@@ -48,6 +57,7 @@ export default defineConfig({
   { find: '@material-ui/core/Grid', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Grid', 'index.js') },
   { find: '@material-ui/core/Box', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Box', 'index.js') },
   { find: '@material-ui/core/Typography', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Typography', 'index.js') },
+  { find: '@material-ui/core/Slide', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Slide', 'index.js') },
   { find: '@material-ui/core/Divider', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Divider', 'index.js') },
       { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
       { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },

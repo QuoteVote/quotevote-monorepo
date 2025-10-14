@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
+import { existsSync } from 'fs'
 import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
@@ -71,7 +72,14 @@ export default defineConfig(({ mode }) => {
   // Ensure Rollup can statically resolve named exports from Emotion's serialize
   // package when node_modules are hoisted to the repo root (CI). This points
   // the package specifier to the explicit ESM build used during bundling.
-  { find: '@emotion/serialize', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js') },
+  // Prefer the client-local node_modules path (Netlify installs node_modules in the project),
+  // but fall back to the repo root hoisted layout if present. This avoids hard ENOENTs
+  // when CI's node_modules layout differs from local dev.
+  { find: '@emotion/serialize', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js'))
+      ? resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
+      : resolve(__dirname, '..', 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
+  ) },
   // Prefer string-prefix aliases so subpath imports (e.g. '@mui/styles/makeStyles')
   // resolve to the package directory. Put the trailing-slash alias first so
   // imports like '@mui/styles/withStyles' map to the styles folder, not to
@@ -88,6 +96,16 @@ export default defineConfig(({ mode }) => {
   // they don't accidentally resolve against the generic shim file.
   { find: '@material-ui/core/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   { find: '@material-ui/core/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
+  // Map specific v4 subpath imports that point at individual files to local shims
+  { find: '@material-ui/core/Fade', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Fade.js') },
+  // Map common v4 subpath imports to their v5 @mui/material ESM counterparts
+  { find: '@material-ui/core/IconButton', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'IconButton', 'index.js') },
+  { find: '@material-ui/core/Button', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Button', 'index.js') },
+  { find: '@material-ui/core/Grid', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Grid', 'index.js') },
+  { find: '@material-ui/core/Box', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Box', 'index.js') },
+  { find: '@material-ui/core/Typography', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Typography', 'index.js') },
+  { find: '@material-ui/core/Slide', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Slide', 'index.js') },
+  { find: '@material-ui/core/Divider', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Divider', 'index.js') },
   // Map legacy v4 imports to a local shim that re-exports @mui/material
   // common symbols so Rollup can statically resolve named exports.
   { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
