@@ -42,6 +42,13 @@ export default defineConfig({
       { find: '@emotion/styled.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
       { find: '@emotion/react.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
       { find: '@material-ui/core/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Hidden.js') },
+  // Map common v4 subpath imports to their v5 @mui/material ESM counterparts for Vitest
+  { find: '@material-ui/core/IconButton', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'IconButton', 'index.js') },
+  { find: '@material-ui/core/Button', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Button', 'index.js') },
+  { find: '@material-ui/core/Grid', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Grid', 'index.js') },
+  { find: '@material-ui/core/Box', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Box', 'index.js') },
+  { find: '@material-ui/core/Typography', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Typography', 'index.js') },
+  { find: '@material-ui/core/Divider', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Divider', 'index.js') },
       { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
       { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
       { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },

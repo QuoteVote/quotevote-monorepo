@@ -98,6 +98,15 @@ export default defineConfig(({ mode }) => {
   { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   // shim legacy Hidden import
   { find: '@material-ui/core/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Hidden.js') },
+  // Map common v4 subpath imports to their v5 @mui/material ESM counterparts.
+  // This helps Rollup statically resolve named exports for imports like
+  // '@material-ui/core/IconButton' during CI when node_modules are hoisted.
+  { find: '@material-ui/core/IconButton', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'IconButton', 'index.js') },
+  { find: '@material-ui/core/Button', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Button', 'index.js') },
+  { find: '@material-ui/core/Grid', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Grid', 'index.js') },
+  { find: '@material-ui/core/Box', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Box', 'index.js') },
+  { find: '@material-ui/core/Typography', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Typography', 'index.js') },
+  { find: '@material-ui/core/Divider', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Divider', 'index.js') },
         // Compatibility aliases for packages that import internal cheerio paths
         // which are blocked by package exports in newer cheerio versions.
         // Redirect requests like 'cheerio/lib/utils' -> cheerio/dist/commonjs/utils.js
