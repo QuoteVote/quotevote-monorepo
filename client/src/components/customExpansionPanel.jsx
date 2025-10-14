@@ -109,7 +109,7 @@ export default function CustomAccordion({ collapses, active: activeProp }) {
                 </GridContainer>
               </div>
             </AccordionSummary>
-            <AccordionDetails className={classes.expansionPanelDetails}>
+            <AccordionDetails className={classes.accordionDetails}>
               {limit(text || '', 300)}
             </AccordionDetails>
           </Accordion>
