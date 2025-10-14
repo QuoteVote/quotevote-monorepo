@@ -60,6 +60,11 @@ export default defineConfig(({ mode }) => {
   // path. This avoids Vite trying to load '<shim>.js/dist/...' which causes ENOENT.
   { find: '@emotion/styled/dist/emotion-styled.development.esm.js', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.esm.js') },
   { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.esm.js') },
+  // Map deep-imports of emotion serialize that some packages request during
+  // bundling in CI to our local ESM shim to avoid ENOENT when the package's
+  // specific file isn't present in node_modules layout used by Netlify.
+  { find: '@emotion/serialize/dist/serialize.esm.js', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.js') },
+  { find: '@emotion/serialize/dist/serialize.cjs.js', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
   { find: '@emotion/react', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
   // Point @mui/styled-engine and its ESM subpath to a local shim that re-exports Emotion's styled default
   // Let subpath imports under '@mui/styled-engine/esm/*' resolve to the
@@ -75,11 +80,10 @@ export default defineConfig(({ mode }) => {
   // Prefer the client-local node_modules path (Netlify installs node_modules in the project),
   // but fall back to the repo root hoisted layout if present. This avoids hard ENOENTs
   // when CI's node_modules layout differs from local dev.
-  { find: '@emotion/serialize', replacement: (
-    existsSync(resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js'))
-      ? resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
-      : resolve(__dirname, '..', 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
-  ) },
+  // Prefer a deterministic local shim so CI environments without the exact
+  // ESM build still resolve. The shim will attempt to require the
+  // environment's CJS build or fall back to a tiny inlined implementation.
+  { find: '@emotion/serialize', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
   // Prefer string-prefix aliases so subpath imports (e.g. '@mui/styles/makeStyles')
   // resolve to the package directory. Put the trailing-slash alias first so
   // imports like '@mui/styles/withStyles' map to the styles folder, not to
@@ -111,10 +115,27 @@ export default defineConfig(({ mode }) => {
   { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
   { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
   // Ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
-  { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
-  { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
-  { find: '@mui/system', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') },
-  { find: '@mui/system/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '/' },
+  // Prefer client-local node_modules for @mui packages when available (Netlify/CI installs per-project)
+  { find: '@mui/material/', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@mui', 'material', 'esm'))
+      ? resolve(__dirname, 'node_modules', '@mui', 'material', 'esm') + '/'
+      : resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/'
+  ) },
+  { find: '@mui/material', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@mui', 'material', 'esm', 'index.js'))
+      ? resolve(__dirname, 'node_modules', '@mui', 'material', 'esm', 'index.js')
+      : resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'index.js')
+  ) },
+  { find: '@mui/system/', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@mui', 'system', 'esm'))
+      ? resolve(__dirname, 'node_modules', '@mui', 'system', 'esm') + '/'
+      : resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '/'
+  ) },
+  { find: '@mui/system', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@mui', 'system', 'esm', 'index.js'))
+      ? resolve(__dirname, 'node_modules', '@mui', 'system', 'esm', 'index.js')
+      : resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm', 'index.js')
+  ) },
   // ensure '@mui/styles' direct import resolves too
   { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   // shim legacy Hidden import

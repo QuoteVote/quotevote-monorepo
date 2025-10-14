@@ -39,14 +39,11 @@ export default defineConfig({
   // imports don't get appended to a local shim file path.
   { find: '@emotion/styled/dist/emotion-styled.development.esm.js', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'emotion-styled.development.esm.js') },
   { find: '@emotion/styled', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'styled', 'dist', 'styled.cjs.js') },
-  // Ensure @emotion/serialize resolves to the correct ESM build. Prefer the
-  // client/node_modules layout (Netlify installs per-project) and fall back
-  // to the repo-root hoisted node_modules if needed.
-  { find: '@emotion/serialize', replacement: (
-    existsSync(resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js'))
-      ? resolve(__dirname, 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
-      : resolve(__dirname, '..', 'node_modules', '@emotion', 'serialize', 'dist', 'serialize.esm.js')
-  ) },
+  { find: '@emotion/serialize/dist/serialize.esm.js', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.js') },
+  { find: '@emotion/serialize/dist/serialize.cjs.js', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
+  // Use a deterministic local shim for @emotion/serialize so CI and tests
+  // don't fail when the package's ESM build is not present in the install.
+  { find: '@emotion/serialize', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
       { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.cjs.js') },
       { find: '@emotion/styled.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
       { find: '@emotion/react.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
@@ -62,6 +59,27 @@ export default defineConfig({
       { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
       { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
       { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
+      // Prefer client-local @mui materials when available for consistent resolution
+      { find: '@mui/material/', replacement: (
+        existsSync(resolve(__dirname, 'node_modules', '@mui', 'material', 'esm'))
+          ? resolve(__dirname, 'node_modules', '@mui', 'material', 'esm') + '/'
+          : resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/'
+      ) },
+      { find: '@mui/material', replacement: (
+        existsSync(resolve(__dirname, 'node_modules', '@mui', 'material', 'esm', 'index.js'))
+          ? resolve(__dirname, 'node_modules', '@mui', 'material', 'esm', 'index.js')
+          : resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'index.js')
+      ) },
+      { find: '@mui/system/', replacement: (
+        existsSync(resolve(__dirname, 'node_modules', '@mui', 'system', 'esm'))
+          ? resolve(__dirname, 'node_modules', '@mui', 'system', 'esm') + '/'
+          : resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '/'
+      ) },
+      { find: '@mui/system', replacement: (
+        existsSync(resolve(__dirname, 'node_modules', '@mui', 'system', 'esm', 'index.js'))
+          ? resolve(__dirname, 'node_modules', '@mui', 'system', 'esm', 'index.js')
+          : resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm', 'index.js')
+      ) },
       { find: '@material-ui/core/Fade', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Fade.js') },
       { find: '@mui/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
   { find: '@mui/icons-material', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
