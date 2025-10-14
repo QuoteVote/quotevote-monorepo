@@ -89,6 +89,8 @@ export default defineConfig(({ mode }) => {
   // are hoisted to the repo root.
   { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
   { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
+  { find: '@material-ui/core/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
+  { find: '@material-ui/core/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
   // Ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
   { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
   { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },

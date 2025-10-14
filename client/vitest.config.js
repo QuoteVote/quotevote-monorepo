@@ -64,6 +64,8 @@ export default defineConfig({
   // issues in CI where node_modules are hoisted.
   { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
   { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
+  { find: '@material-ui/core/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
+  { find: '@material-ui/core/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
       { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
       { find: '@mui/system', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') },
       { find: '@mui/system/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') + '/' },
