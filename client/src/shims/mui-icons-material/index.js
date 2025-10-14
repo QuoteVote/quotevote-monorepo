@@ -16,6 +16,7 @@ import Check from './Check'
 import PermIdentity from './PermIdentity'
 import KeyboardArrowLeft from './KeyboardArrowLeft'
 import KeyboardArrowRight from './KeyboardArrowRight'
+import KeyboardArrowUp from './KeyboardArrowUp'
 import PriorityHigh from './PriorityHigh'
 import Warning from './Warning'
 import Favorite from './Favorite'
@@ -86,6 +87,8 @@ import Contacts from './Contacts'
 import FiberManualRecord from './FiberManualRecord'
 import RecordVoiceOver from './RecordVoiceOver'
 import ContentCopy from './ContentCopy'
+import NavigateBefore from './NavigateBefore'
+import NavigateNext from './NavigateNext'
 
 export {
 	Close,
@@ -106,6 +109,7 @@ export {
 	PermIdentity,
 	KeyboardArrowLeft,
 	KeyboardArrowRight,
+	KeyboardArrowUp,
 	PriorityHigh,
 	Warning,
 	Favorite,
@@ -176,6 +180,8 @@ export {
 	FiberManualRecord,
 	RecordVoiceOver,
 	ContentCopy,
+	NavigateBefore,
+	NavigateNext,
 }
 
 export default Close

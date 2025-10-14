@@ -52,6 +52,10 @@ export default defineConfig({
   // Support older material-ui v4 imports that reference '@material-ui/icons'
   { find: '@material-ui/icons', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
   { find: '@material-ui/icons/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
+  // Map legacy @material-ui/core imports to the hoisted @mui/material ESM
+  // so older files importing from v4 can be resolved during CI builds.
+  { find: '@material-ui/core', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
+  { find: '@material-ui/core/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
       { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
       { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
       { find: '@mui/system', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm') },
@@ -79,6 +83,7 @@ export default defineConfig({
       'react/jsx-runtime',
       'react/jsx-dev-runtime',
       '@mui/material',
+      '@material-ui/core',
       '@mui/system',
       '@emotion/styled',
       '@emotion/react',
