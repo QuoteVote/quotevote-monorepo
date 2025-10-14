@@ -81,6 +81,9 @@ export default defineConfig(({ mode }) => {
   // Map icons to a lightweight shim during dev and tests to avoid opening many files
   { find: '@mui/icons-material', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
   { find: '@mui/icons-material/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
+  // Support older material-ui v4 imports that reference '@material-ui/icons'
+  { find: '@material-ui/icons', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
+  { find: '@material-ui/icons/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
   // Ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
   { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
   { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
@@ -150,6 +153,7 @@ export default defineConfig(({ mode }) => {
         'react-dom',
           '@mui/material',
           '@mui/icons-material',
+          '@material-ui/icons',
           '@emotion/styled',
           '@emotion/react',
           'react-material-ui-carousel',
