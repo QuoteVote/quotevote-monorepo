@@ -84,13 +84,14 @@ export default defineConfig(({ mode }) => {
   // Support older material-ui v4 imports that reference '@material-ui/icons'
   { find: '@material-ui/icons', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
   { find: '@material-ui/icons/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
-  // Map legacy v4 imports to the hoisted @mui/material ESM build so Rollup
-  // can statically resolve named exports during CI builds where node_modules
-  // are hoisted to the repo root.
-  { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
-  { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
+  // Map specific legacy v4 subpath imports to pkg equivalents first so
+  // they don't accidentally resolve against the generic shim file.
   { find: '@material-ui/core/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
   { find: '@material-ui/core/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
+  // Map legacy v4 imports to a local shim that re-exports @mui/material
+  // common symbols so Rollup can statically resolve named exports.
+  { find: '@material-ui/core', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') },
+  { find: '@material-ui/core/', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-index.js') + '/' },
   // Ensure core @mui packages resolve to the monorepo root to avoid multiple instances.
   { find: '@mui/material', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') },
   { find: '@mui/material/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm') + '/' },
