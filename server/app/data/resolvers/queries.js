@@ -15,6 +15,7 @@ export const resolver_query = function () {
     userInviteRequests: userQuery.getUserInvites(),
     users: userQuery.getUsers(),
     user: userQuery.findUserById(),
+    searchUser: userQuery.searchUser(),
     getUserFollowInfo: userQuery.getUserFollowInfo(),
     verifyUserPasswordResetToken: userQuery.verifyUserPasswordResetToken(),
     checkDuplicateEmail: userQuery.findUserByEmail(),

@@ -34,6 +34,9 @@ type Query {
   " This will query the user "
   user(user_id: String, username: String, creatorId: String): User
 
+  " This will search for users by username or name "
+  searchUser(queryName: String!): [User]
+
   " This will query the user follow info "
   getUserFollowInfo(username: String, filter: String): JSON
 

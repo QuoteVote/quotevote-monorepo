@@ -1,12 +1,35 @@
 import UserModel from '../../models/UserModel';
 
-export const searchUser = async (queryName, context) => {
-  const users = await UserModel.find({
-    name: {
-      $regex: new RegExp(queryName, 'i'),
-    },
-    _id: { $ne: context.user._id },
-  });
+export const searchUser = () => {
+  return async (_, args, context) => {
+    try {
+      const queryName = args.queryName;
 
-  return users;
+      if (!queryName || queryName.trim() === '') {
+        return [];
+      }
+
+      const users = await UserModel.find({
+        $or: [
+          {
+            username: {
+              $regex: new RegExp(queryName, 'i'),
+            },
+          },
+          {
+            name: {
+              $regex: new RegExp(queryName, 'i'),
+            },
+          }
+        ],
+        // Remove the exclusion of current user so you can search for yourself
+        // _id: { $ne: context.user._id },
+      });
+
+      return users;
+    } catch (error) {
+      console.error('Error in searchUser:', error);
+      return [];
+    }
+  };
 };
