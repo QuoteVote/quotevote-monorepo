@@ -3,18 +3,19 @@ import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
-import Avatar from '@mui/material/Avatar'
-import Badge from '@mui/material/Badge'
-import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction'
-import ListItemText from '@mui/material/ListItemText'
-import Typography from '@mui/material/Typography'
-import { withStyles } from '@mui/styles'
-import { makeStyles } from '@mui/styles'
+import {
+  Avatar,
+  Badge,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography
+} from '@mui/material'
+import { withStyles, makeStyles } from '@mui/styles'
 import CloseIcon from '@mui/icons-material/Close'
 import moment from 'moment'
 import stringLimit from 'string-limit'
