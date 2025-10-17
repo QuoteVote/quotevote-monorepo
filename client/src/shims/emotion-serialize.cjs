@@ -23,10 +23,8 @@ const candidates = [
 
 let mod = null
 for (const p of candidates) {
-  if (fs.existsSync(p)) {
-    mod = tryRequire(p)
-    if (mod) break
-  }
+  mod = tryRequire(p)
+  if (mod) break
 }
 
 // Last-ditch: try to require the package name directly so Node's resolver

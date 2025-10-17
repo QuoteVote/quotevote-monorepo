@@ -109,11 +109,9 @@ describe('PostChatSend', () => {
       </Provider>
     )
 
-    const input = screen.getByPlaceholderText('type a message...')
-    // find the actual button element (IconButton) rather than the img inside it
-    // find the img and click its parent button to ensure the IconButton's onClick fires
-    const sendImg = screen.getByAltText('send')
-    const sendButton = sendImg.closest('button')
+  const input = screen.getByPlaceholderText('type a message...')
+  // Use a role-based query to locate the send IconButton reliably
+  const sendButton = screen.getByRole('button', { name: /send/i })
 
     fireEvent.change(input, { target: { value: 'Test message' } })
     fireEvent.click(sendButton)
@@ -160,8 +158,8 @@ describe('PostChatSend', () => {
       </Provider>
     )
 
-    const input = screen.getByPlaceholderText('type a message...')
-    const sendButton = screen.getByAltText('send')
+  const input = screen.getByPlaceholderText('type a message...')
+  const sendButton = screen.getByRole('button', { name: /send/i })
 
     // Try to submit empty message
     fireEvent.click(sendButton)

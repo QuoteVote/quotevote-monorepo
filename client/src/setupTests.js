@@ -94,16 +94,32 @@ const emotionCache = createCache({ key: 'css', prepend: true })
 // Nest Material ThemeProvider and Styles ThemeProvider so both the new theming
 // context (used by @mui/material/@mui/system) and the legacy @mui/styles
 // context are available to components under test.
+function TestProviders({ children }) {
+  return React.createElement(
+    CacheProvider,
+    { value: emotionCache },
+    React.createElement(
+      MaterialThemeProvider,
+      { theme: themeInstance },
+      React.createElement(
+        StylesThemeProvider,
+        { theme: themeInstance },
+        children,
+      ),
+    ),
+  )
+}
+
 global.shallow = (node, options) => _shallow(
-  React.createElement(CacheProvider, { value: emotionCache }, React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node))),
+  React.createElement(TestProviders, null, node),
   options,
 )
 global.render = (node, options) => _render(
-  React.createElement(CacheProvider, { value: emotionCache }, React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node))),
+  React.createElement(TestProviders, null, node),
   options,
 )
 global.mount = (node, options) => _mount(
-  React.createElement(CacheProvider, { value: emotionCache }, React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, node))),
+  React.createElement(TestProviders, null, node),
   options,
 )
 // Also patch the enzyme module exports so tests that import { mount, shallow, render }
