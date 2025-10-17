@@ -83,7 +83,8 @@ export default defineConfig(({ mode }) => {
   // Prefer a deterministic local shim so CI environments without the exact
   // ESM build still resolve. The shim will attempt to require the
   // environment's CJS build or fall back to a tiny inlined implementation.
-  { find: '@emotion/serialize', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
+  // Use ESM shim for browser/production builds to avoid Node built-ins
+  { find: '@emotion/serialize', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.js') },
   // Prefer string-prefix aliases so subpath imports (e.g. '@mui/styles/makeStyles')
   // resolve to the package directory. Put the trailing-slash alias first so
   // imports like '@mui/styles/withStyles' map to the styles folder, not to
