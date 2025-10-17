@@ -46,14 +46,12 @@ if (typeof window !== 'undefined' && typeof window.scrollTo !== 'function') {
   window.scrollTo = function () {}
 }
 // (jest-dom already registered above)
-import {
-  configure, mount, render, shallow,
-} from 'enzyme'
+// Avoid static import of enzyme so we can mock/alias cheerio before it's loaded.
+// We'll lazily require enzyme below after mocks/aliases are in place.
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { createTheme, ThemeProvider as MaterialThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
-import Adapter from 'enzyme-adapter-react-16'
 import sinon from 'sinon'
 import { MockedProvider } from '@apollo/react-testing'
 import { act, create } from 'react-test-renderer'
@@ -78,9 +76,9 @@ cache.writeData({
 // Make these available globally for tests
 global.React = React
 // Wrap enzyme helpers so components under test have a ThemeProvider by default.
-const _shallow = shallow
-const _render = render
-const _mount = mount
+let _shallow
+let _render
+let _mount
 const themeInstance = createTheme(muiThemeObject)
 // Create a shared Emotion cache for tests so class name generation is
 // deterministic and all components share a single runtime instance.
@@ -110,18 +108,48 @@ function TestProviders({ children }) {
   )
 }
 
-global.shallow = (node, options) => _shallow(
-  React.createElement(TestProviders, null, node),
-  options,
-)
-global.render = (node, options) => _render(
-  React.createElement(TestProviders, null, node),
-  options,
-)
-global.mount = (node, options) => _mount(
-  React.createElement(TestProviders, null, node),
-  options,
-)
+// Define global enzyme wrappers only if enzyme is available in this environment.
+try {
+  // eslint-disable-next-line global-require
+  const enzymeModule = require('enzyme')
+  // eslint-disable-next-line global-require
+  const Adapter = require('enzyme-adapter-react-16')
+  const { configure } = enzymeModule
+  // Configure Enzyme
+  configure({ adapter: new Adapter(), disableLifecycleMethods: true })
+  _shallow = enzymeModule.shallow
+  _render = enzymeModule.render
+  _mount = enzymeModule.mount
+  global.shallow = (node, options) => _shallow(
+    React.createElement(TestProviders, null, node),
+    options,
+  )
+  global.render = (node, options) => _render(
+    React.createElement(TestProviders, null, node),
+    options,
+  )
+  global.mount = (node, options) => _mount(
+    React.createElement(TestProviders, null, node),
+    options,
+  )
+  // Also patch the enzyme module exports so tests that import { mount, shallow, render }
+  // from 'enzyme' receive the wrapped versions we just created above.
+  const _origMount = enzymeModule.mount
+  const _origShallow = enzymeModule.shallow
+  const _origRender = enzymeModule.render
+
+  enzymeModule.mount = (...args) => (global.__WRAPPED_ENZYME && global.__WRAPPED_ENZYME.mount ? global.__WRAPPED_ENZYME.mount(...args) : _origMount(...args))
+  enzymeModule.shallow = (...args) => (global.__WRAPPED_ENZYME && global.__WRAPPED_ENZYME.shallow ? global.__WRAPPED_ENZYME.shallow(...args) : _origShallow(...args))
+  enzymeModule.render = (...args) => (global.__WRAPPED_ENZYME && global.__WRAPPED_ENZYME.render ? global.__WRAPPED_ENZYME.render(...args) : _origRender(...args))
+
+  global.__WRAPPED_ENZYME = {
+    shallow: global.shallow,
+    render: global.render,
+    mount: global.mount,
+  }
+} catch (e) {
+  // Enzyme may not be used in all tests; ignore if unavailable.
+}
 // Also patch the enzyme module exports so tests that import { mount, shallow, render }
 // from 'enzyme' receive the wrapped versions we just created above. Vitest runs
 // this setup file before test modules are evaluated, so imported references will
@@ -135,34 +163,6 @@ global.__WRAPPED_ENZYME = {
   mount: global.mount,
 }
 
-// If Vitest's `vi` is available, mock the 'enzyme' module so importing tests
-// that do `import { mount, shallow, render } from 'enzyme'` will receive
-// references that delegate to the wrapped helpers above. This keeps imports
-// stable while allowing our wrapped helpers to provide ThemeProviders.
-// Instead of mocking the entire 'enzyme' module (which can remove exports
-// like `configure`), patch only the functions we want so other exports stay
-// intact. We can safely mutate the imported module's properties to delegate
-// to our wrapped helpers created above.
-try {
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  // Import the module namespace so we can override properties on it.
-  // Using a namespace import gives us an object with writable properties
-  // in CommonJS interop scenarios (which enzyme uses).
-  // Note: this is synchronous and must run after global.__WRAPPED_ENZYME is set.
-  // eslint-disable-next-line global-require
-  const enzymeModule = require('enzyme')
-  const _origMount = enzymeModule.mount
-  const _origShallow = enzymeModule.shallow
-  const _origRender = enzymeModule.render
-
-  enzymeModule.mount = (...args) => (global.__WRAPPED_ENZYME.mount ? global.__WRAPPED_ENZYME.mount(...args) : _origMount(...args))
-  enzymeModule.shallow = (...args) => (global.__WRAPPED_ENZYME.shallow ? global.__WRAPPED_ENZYME.shallow(...args) : _origShallow(...args))
-  enzymeModule.render = (...args) => (global.__WRAPPED_ENZYME.render ? global.__WRAPPED_ENZYME.render(...args) : _origRender(...args))
-} catch (e) {
-  // If require isn't available in some environments, ignore and rely on the
-  // global wrappers above (tests that import enzyme will still receive the
-  // original functions; the most important thing is that `configure` exists).
-}
 global.sinon = sinon
 global.MockedProvider = MockedProvider
 global.ApolloProvider = ApolloProvider
@@ -183,8 +183,7 @@ global.MutationObserver = window.MutationObserver
 // map `jest` to `vi` so existing tests keep working under Vitest.
 global.jest = typeof vi !== 'undefined' ? vi : global.jest
 
-// Configure Enzyme
-configure({ adapter: new Adapter(), disableLifecycleMethods: true })
+// Enzyme is configured lazily above.
 
 // Patch @testing-library/react's render so tests using RTL automatically get
 // the same provider tree we give to Enzyme tests. This ensures components

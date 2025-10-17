@@ -154,7 +154,7 @@ export default defineConfig(({ mode }) => {
         // Redirect requests like 'cheerio/lib/utils' -> cheerio/dist/commonjs/utils.js
   // Compatibility shim that re-exports the commonjs build. This file exists
   // in the hoisted repo-root node_modules and points at the packaged CJS bundle.
-  { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'node_modules', 'cheerio', 'lib', 'utils.js') },
+  { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'src', 'shims', 'cheerio-lib-utils.js') },
   { find: 'cheerio/lib', replacement: resolve(__dirname, '..', 'node_modules', 'cheerio', 'lib', 'index.js') },
   // Ensure direct 'cheerio' imports resolve to the packaged ESM bundle.
   { find: 'cheerio', replacement: resolve(__dirname, '..', 'node_modules', 'cheerio', 'dist', 'esm', 'index.js') },

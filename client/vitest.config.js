@@ -56,8 +56,9 @@ export default defineConfig({
   { find: '@material-ui/core/Typography', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Typography', 'index.js') },
   { find: '@material-ui/core/Slide', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Slide', 'index.js') },
   { find: '@material-ui/core/Divider', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Divider', 'index.js') },
-      { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
-      { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
+  { find: '@mui/styled-engine/esm/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styled-engine', 'esm') + '/' },
+  { find: '@mui/styled-engine/esm', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styled-engine', 'esm', 'index.js') },
+  { find: '@mui/styled-engine', replacement: resolve(__dirname, 'src', 'shims', 'mui-styled-engine.js') },
       { find: '@mui/styles', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles', 'index.js') },
       // Prefer client-local @mui materials when available for consistent resolution
       { find: '@mui/material/', replacement: (
@@ -108,7 +109,7 @@ export default defineConfig({
       { find: 'mui-pro', replacement: resolve(__dirname, 'src/mui-pro') },
       { find: 'hoc', replacement: resolve(__dirname, 'src/hoc') },
       { find: 'themes', replacement: resolve(__dirname, 'src/themes') },
-  { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'node_modules', 'cheerio', 'lib', 'utils.js') },
+  { find: 'cheerio/lib/utils', replacement: resolve(__dirname, 'src', 'shims', 'cheerio-lib-utils.js') },
   { find: 'cheerio/lib', replacement: resolve(__dirname, '..', 'node_modules', 'cheerio', 'lib', 'index.js') },
   { find: 'cheerio', replacement: resolve(__dirname, '..', 'node_modules', 'cheerio', 'dist', 'esm', 'index.js') },
     ],

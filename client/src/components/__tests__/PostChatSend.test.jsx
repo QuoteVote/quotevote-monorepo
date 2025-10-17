@@ -66,7 +66,7 @@ describe('PostChatSend', () => {
     // Import the component once for all tests to avoid repeated transform
     // overhead and potential intermittent hangs during per-test imports.
     PostChatSend = (await vi.importActual('../PostChat/PostChatSend')).default
-  })
+  }, 30000)
 
   beforeEach(() => {
     store = createMockStore()
@@ -138,7 +138,7 @@ describe('PostChatSend', () => {
     const input = screen.getByPlaceholderText('type a message...')
     
     fireEvent.change(input, { target: { value: 'Test message' } })
-    fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 })
+  fireEvent.keyDown(input, { key: 'Enter', code: 'Enter', keyCode: 13, charCode: 13, shiftKey: false })
 
     await waitFor(() => {
       expect(createMessageMock).toHaveBeenCalled()
