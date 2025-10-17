@@ -8,5 +8,5 @@
 // Vite alias for '@emotion/react' (which points to this file).
 // Using the explicit dist ESM file ensures Rollup can statically
 // analyze named exports like CacheProvider.
-export * from '../../../node_modules/@emotion/react/dist/emotion-react.development.esm.js'
-export { default } from '../../../node_modules/@emotion/react/dist/emotion-react.development.esm.js'
+export * from '@emotion/react';
+export { default } from '@emotion/react';
