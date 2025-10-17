@@ -103,6 +103,8 @@ export default defineConfig(({ mode }) => {
   { find: '@material-ui/core/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
   // Map specific v4 subpath imports that point at individual files to local shims
   { find: '@material-ui/core/Fade', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Fade.js') },
+  // Hidden is not exported as an ESM path in v7; route to local shim
+  { find: '@mui/material/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'mui-material-Hidden.js') },
   // Map common v4 subpath imports to their v5 @mui/material ESM counterparts
   { find: '@material-ui/core/IconButton', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'IconButton', 'index.js') },
   { find: '@material-ui/core/Button', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'material', 'esm', 'Button', 'index.js') },

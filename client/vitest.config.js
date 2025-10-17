@@ -82,6 +82,7 @@ export default defineConfig({
           : resolve(__dirname, '..', 'node_modules', '@mui', 'system', 'esm', 'index.js')
       ) },
       { find: '@material-ui/core/Fade', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Fade.js') },
+      { find: '@mui/material/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'mui-material-Hidden.js') },
       { find: '@mui/styles/', replacement: resolve(__dirname, '..', 'node_modules', '@mui', 'styles') + '/' },
   { find: '@mui/icons-material', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') },
   { find: '@mui/icons-material/', replacement: resolve(__dirname, 'src', 'shims', 'mui-icons-material') + '/' },
