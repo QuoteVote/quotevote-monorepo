@@ -270,7 +270,6 @@ function PostCard(props) {
   const history = useHistory()
   const user = useSelector((state) => state.user.data)
   const classes = useStyles(props)
-  const { width } = props
   
   // State for show more/less functionality
   const [isExpanded, setIsExpanded] = useState(false)
@@ -499,9 +498,9 @@ PostCard.propTypes = {
   creator: PropTypes.any,
   activityType: PropTypes.string,
   avatar: PropTypes.object,
-  width: PropTypes.any,
+  // width prop removed; use useMediaQuery hook instead of withWidth HOC
   limitText: PropTypes.bool,
   groupId: PropTypes.string,
 }
 
-export default withWidth()(PostCard)
+export default PostCard
