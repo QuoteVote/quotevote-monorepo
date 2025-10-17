@@ -10,7 +10,7 @@ import Hidden from '@mui/material/Hidden'
 import MenuIcon from '@mui/icons-material/Menu'
 import CloseIcon from '@mui/icons-material/Close'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import withWidth from 'utils/withWidth'
+// withWidth was used in legacy code; new layout adapts via Hidden/useMediaQuery.
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { makeStyles } from '@mui/styles'
@@ -24,7 +24,6 @@ import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
 import SubmitPost from '../SubmitPost/SubmitPost'
 import ChatMenu from '../Chat/ChatMenu'
-// Duplicate import cleanup
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
