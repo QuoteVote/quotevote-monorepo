@@ -1,13 +1,14 @@
-// Compatibility shim for the legacy '@material-ui/core/Hidden' import.
-// Re-export the @mui/material Hidden component to satisfy packages that still
-// import the v4 path.
+// Compatibility ESM shim for the legacy '@material-ui/core/Hidden' import.
+// Prefer the real MUI Hidden if present, otherwise provide a simple stub.
+import React from 'react'
+let HiddenExport
 try {
-  // eslint-disable-next-line global-require
-  const Hidden = require('@mui/material/Hidden')
-  module.exports = Hidden && Hidden.default ? Hidden.default : Hidden
+  // This path may be aliased to a local shim by Vite config in production.
+  // If the package exposes Hidden, re-export it.
+  // eslint-disable-next-line import/no-unresolved
+  HiddenExport = (await import('@mui/material/Hidden')).default
 } catch (e) {
-  // If @mui/material isn't available, export a minimal stub component to avoid
-  // runtime crashes in tests. The stub renders its children.
-  const React = require('react')
-  module.exports = function HiddenStub({ children }) { return React.createElement(React.Fragment, null, children) }
+  HiddenExport = function HiddenStub({ children }) { return React.createElement(React.Fragment, null, children) }
 }
+
+export default HiddenExport
