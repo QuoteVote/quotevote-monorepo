@@ -1,2 +1,2 @@
 import React from 'react'
-export default function Image(props){ return React.createElement('span',{ 'data-testid':'mui-icon-Image', ...props }, null) }
+export default function Image(props){ return React.createElement('span',{ 'data-testid': props['data-testid'] || 'mui-icon-Image', ...props }, null) }
