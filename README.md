@@ -5,6 +5,7 @@ A text-first civic engagement platform for creating posts, voting on specific te
 ## 🚀 Features
 
 ### Core Functionality
+
 - **Text-First Posts**: Create and share detailed text-based content
 - **Targeted Voting**: Vote on specific text passages within posts
 - **Quote System**: Highlight and discuss specific quotes from content
@@ -14,6 +15,7 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **Search & Discovery**: Advanced search functionality with filters
 
 ### User Experience
+
 - **Responsive Design**: Works seamlessly across desktop and mobile devices
 - **Material-UI Components**: Modern, accessible interface components
 - **Real-time Updates**: Live notifications and activity updates
@@ -23,6 +25,7 @@ A text-first civic engagement platform for creating posts, voting on specific te
 ## 🛠 Tech Stack
 
 ### Frontend (`client/`)
+
 - **React 17** - UI framework
 - **GraphQL** - Data querying with Apollo Client
 - **Material-UI** - Component library
@@ -33,6 +36,7 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **Storybook** - Component documentation
 
 ### Backend (`server/`)
+
 - **Node.js** - Runtime environment
 - **Express** - Web framework
 - **Apollo Server** - GraphQL server
@@ -71,6 +75,7 @@ monorepo/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js >= 18
 - npm >= 8
 - MongoDB (local or cloud instance)
@@ -78,12 +83,14 @@ monorepo/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd monorepo
    ```
 
 2. **Install all dependencies (Monorepo Setup)**
+
    ```bash
    # Install dependencies for both client and server
    npm run install:all
@@ -92,37 +99,41 @@ monorepo/
    ```
 
    **Alternative: Install individual workspaces**
+
    ```bash
    # Install only client dependencies
    npm run install:client
-   
+
    # Install only server dependencies
    npm run install:server
    ```
 
 3. **Environment Setup**
-   
+
    Create `.env` files in both `client/` and `server/` directories:
-   
+
    **Server Environment Variables:**
+
    ```env
    NODE_ENV=development
    PORT=4000
-   MONGODB_URI=mongodb://localhost:27017/quote-vote
+   DATABASE_URL=mongodb://localhost:27017/quote-vote
    JWT_SECRET=your-jwt-secret
    STRIPE_SECRET_KEY=your-stripe-secret
    EMAIL_SERVICE=your-email-service
    EMAIL_USER=your-email-user
    EMAIL_PASS=your-email-password
    ```
-   
+
    **Client Environment Variables:**
+
    ```env
    REACT_APP_API_URL=http://localhost:4000/graphql
    REACT_APP_WS_URL=ws://localhost:4000/graphql
    ```
 
 4. **Start Development Database**
+
    ```bash
    npm run dev-db-start --workspace=server
    ```
@@ -130,15 +141,17 @@ monorepo/
 5. **Run the Application**
 
    **Option 1: Run both client and server simultaneously**
+
    ```bash
    npm run dev
    ```
 
    **Option 2: Run individual services**
+
    ```bash
    # Terminal 1 - Backend
    npm run dev:server
-   
+
    # Terminal 2 - Frontend
    npm run dev:client
    ```
@@ -150,11 +163,13 @@ monorepo/
 ## 🧪 Testing
 
 ### Run all tests
+
 ```bash
 npm run test
 ```
 
 ### Individual workspace testing
+
 ```bash
 # Frontend tests
 npm run test:client
@@ -164,6 +179,7 @@ npm run test:server
 ```
 
 ### Frontend specific testing
+
 ```bash
 npm run cypress:open --workspace=client  # E2E tests
 ```
@@ -171,6 +187,7 @@ npm run cypress:open --workspace=client  # E2E tests
 ## 🏗️ Development Commands
 
 ### Available Scripts
+
 ```bash
 # Installation
 npm run install:all        # Install all dependencies
@@ -210,6 +227,7 @@ npm run lint:server       # Lint server only
 ## 🚀 Deployment
 
 ### Build for Production
+
 ```bash
 # Build both applications
 npm run build
@@ -220,12 +238,14 @@ npm run build:server
 ```
 
 ### Frontend Deployment
+
 ```bash
 npm run build:client
 # Deploy the client/dist/ folder to your hosting service
 ```
 
 ### Backend Deployment
+
 ```bash
 npm run build:server
 npm run start:server  # Uses PM2 for production
@@ -236,16 +256,19 @@ npm run start:server  # Uses PM2 for production
 ### Common Issues
 
 1. **Peer dependency conflicts**
+
    ```bash
    # Use legacy peer deps flag
    npm install --legacy-peer-deps
    ```
 
 2. **Port conflicts**
+
    - Frontend: Change port in `client/vite.config.js`
    - Backend: Change `PORT` in server `.env` file
 
 3. **Database connection issues**
+
    ```bash
    # Start development database
    npm run dev-db-start --workspace=server
@@ -267,6 +290,7 @@ npm run start:server  # Uses PM2 for production
 5. Open a Pull Request
 
 ### Development Guidelines
+
 - Follow the existing code style and conventions
 - Write tests for new features
 - Update documentation as needed
@@ -302,10 +326,11 @@ This project is licensed under the LGPL-3.0 license - see the [LICENSE](LICENSE)
 - **Jay Evans** - Mobile Developer
 - **Abed Gheith** - Product
 - **Jon Kolman** - Frontend Developer
-  
+
 ## 🐛 Issues
 
 If you encounter any issues, please:
+
 1. Check the existing issues in the repository
 2. Create a new issue with detailed information
 3. Include steps to reproduce the problem

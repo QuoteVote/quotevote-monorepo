@@ -11,9 +11,15 @@ const GuestFooter = ({ isRequestAccess = false }) => {
       style={{
         width: '100%',
         margin: 0,
-        marginTop: 40,
+        marginTop: 60,
+        marginBottom: 20,
         minHeight: 48,
-        padding: '0 16px',
+        padding: isMobile ? '20px 16px' : '24px 16px',
+        borderTop: `1px solid ${theme.palette.divider}`,
+        backgroundColor: isRequestAccess ? theme.palette.background.default : 'transparent',
+        flexDirection: isMobile ? 'column' : 'row',
+        gap: isMobile ? 20 : 0,
+        textAlign: isMobile ? 'center' : 'left'
       }}
       className="guest-footer"
     >
@@ -42,6 +48,7 @@ const GuestFooter = ({ isRequestAccess = false }) => {
           flexWrap: 'wrap',
         }}
       >
+        {/* Request Invite Button*/}
         <a
           href="/auth/request-access"
           style={{
@@ -92,7 +99,14 @@ const GuestFooter = ({ isRequestAccess = false }) => {
           onMouseEnter={(e) => (e.target.style.backgroundColor = '#f0f0f0')}
           onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
         >
-          GitHub
+          <GitHub 
+            style={{ 
+              fontSize: '16px',
+              color: BRAND_COLORS.navy,
+              transition: 'all 0.2s ease'
+            }} 
+          />
+          <span>GitHub</span>
         </a>
       </Grid>
     </Grid>
