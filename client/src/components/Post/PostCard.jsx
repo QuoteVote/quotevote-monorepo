@@ -498,7 +498,6 @@ PostCard.propTypes = {
   creator: PropTypes.any,
   activityType: PropTypes.string,
   avatar: PropTypes.object,
-  // width prop removed; use useMediaQuery hook instead of withWidth HOC
   limitText: PropTypes.bool,
   groupId: PropTypes.string,
 }
