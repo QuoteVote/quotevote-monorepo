@@ -1,14 +1,19 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import Grid from '@mui/material/Grid'
 import Dialog from '@mui/material/Dialog'
 import { NavLink, useHistory } from 'react-router-dom'
-import { Tooltip, Typography } from '@mui/material'
+import { Tooltip, Typography, Box, IconButton, Divider, Drawer, List, ListItem } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Hidden from '@mui/material/Hidden'
+import MenuIcon from '@mui/icons-material/Menu'
+import CloseIcon from '@mui/icons-material/Close'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import withWidth from 'utils/withWidth'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { makeStyles } from '@mui/styles'
 
 import { SET_SELECTED_PAGE } from 'store/ui'
 import { useApolloClient } from '@apollo/react-hooks'
@@ -19,7 +24,7 @@ import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
 import SubmitPost from '../SubmitPost/SubmitPost'
 import ChatMenu from '../Chat/ChatMenu'
-import { SET_SELECTED_PAGE } from 'store/ui'
+// Duplicate import cleanup
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
@@ -212,6 +217,9 @@ function MainNavBar(props) {
   const history = useHistory()
   const isMobile = useMobileDetection()
 
+  const toggleDrawer = () => setDrawerOpen((v) => !v)
+  const closeDrawer = () => setDrawerOpen(false)
+
   const handleMenu = (newSelectedMenu) => {
     client.stop()
     dispatch(SET_SELECTED_PAGE(newSelectedMenu))
@@ -225,7 +233,6 @@ function MainNavBar(props) {
     dispatch(SET_SELECTED_PAGE(0))
   }
 
-  const isMobile = useMobileDetection()
   const theme = useTheme()
   const showOnLgUp = useMediaQuery(theme.breakpoints.up('lg'))
   const showOnLgDown = !showOnLgUp
@@ -468,45 +475,31 @@ function MainNavBar(props) {
                 startIcon={<GitHubIcon />}
                 onClick={closeDrawer}
               >
-                <Grid item>
-                  <NavLink to="/Profile">
-                    {showOnLgUp && (
-                      <Button
-                        aria-label="Profile"
-                        color="inherit"
-                        onClick={handleProfileClick}
-                        className={classes.avatarRoundedButton}
-                      >
-                        <Avatar>
-                          <AvatarPreview height="50" width="50" {...avatar} />
-                        </Avatar>
-                        <Typography
-                          variant="h6"
-                          className={classes.profileBlockName}
-                        >
-                          {name}
-                        </Typography>
-                      </Button>
-                    )}
-                    {showOnLgDown && (
-                      <Avatar height="35" width="35">
-                        <AvatarPreview {...avatar} />
-                      </Avatar>
-                    )}
-                  </NavLink>
-                </Grid>
-                <Grid item>
-                  <ChatMenu fontSize={fontSize} />
-                </Grid>
-                <Grid item>
-                  <NotificationMenu fontSize={fontSize} />
-                </Grid>
-                <Grid item>
-                  <SettingsMenu fontSize={fontSize} />
-                </Grid>
-              </Grid>
-            </Grid>
-          </>
+              </Button>
+            </ListItem>
+
+            <Divider className={classes.divider} />
+
+            <ListItem disableGutters>
+              <Box className={classes.loggedInActions} sx={{ width: '100%', justifyContent: 'space-between' }}>
+                <NavLink to="/Profile" style={{ textDecoration: 'none' }}>
+                  <Button className={classes.profileButton} onClick={() => { handleProfileClick(); closeDrawer() }}>
+                    <Avatar>
+                      <AvatarPreview height="35" width="35" {...avatar} />
+                    </Avatar>
+                    <Typography variant="body1" className={classes.profileName}>
+                      {name}
+                    </Typography>
+                  </Button>
+                </NavLink>
+                <Box>
+                  <ChatMenu fontSize="large" />
+                  <NotificationMenu fontSize="large" />
+                  <SettingsMenu fontSize="large" />
+                </Box>
+              </Box>
+            </ListItem>
+          </List>
         )}
       </Drawer>
 
