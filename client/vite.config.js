@@ -65,7 +65,12 @@ export default defineConfig(({ mode }) => {
   // specific file isn't present in node_modules layout used by Netlify.
   { find: '@emotion/serialize/dist/serialize.esm.js', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.js') },
   { find: '@emotion/serialize/dist/serialize.cjs.js', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
-  { find: '@emotion/react', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
+  // Point directly to Emotion's ESM build to ensure required exports like withEmotionCache are available
+  { find: '@emotion/react', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.esm.js'))
+      ? resolve(__dirname, 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.esm.js')
+      : resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.esm.js')
+  ) },
   // Point @mui/styled-engine and its ESM subpath to a local shim that re-exports Emotion's styled default
   // Let subpath imports under '@mui/styled-engine/esm/*' resolve to the
   // hoisted package esm directory so Rollup/Vite can statically analyze

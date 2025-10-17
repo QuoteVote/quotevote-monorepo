@@ -44,7 +44,7 @@ export default defineConfig({
   // Use a deterministic local shim for @emotion/serialize so CI and tests
   // don't fail when the package's ESM build is not present in the install.
   { find: '@emotion/serialize', replacement: resolve(__dirname, 'src', 'shims', 'emotion-serialize.cjs') },
-      { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.cjs.js') },
+  { find: '@emotion/react', replacement: resolve(__dirname, '..', 'node_modules', '@emotion', 'react', 'dist', 'emotion-react.esm.js') },
       { find: '@emotion/styled.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-styled-shim.js') },
       { find: '@emotion/react.local-shim', replacement: resolve(__dirname, 'src', 'shims', 'emotion-react-shim.js') },
       { find: '@material-ui/core/Hidden', replacement: resolve(__dirname, 'src', 'shims', 'material-ui-core-Hidden.js') },
