@@ -1,20 +1,18 @@
-
 import {
-    container,
-    defaultFont,
-    primaryColor,
-    defaultBoxShadow,
-    infoColor,
-    successColor,
-    warningColor,
-    dangerColor,
-    boxShadow,
-    drawerWidth,
-    transition,
-    whiteColor,
-    grayColor,
-    blackColor,
-    hexToRgb,
+  defaultFont,
+  primaryColor,
+  defaultBoxShadow,
+  infoColor,
+  successColor,
+  warningColor,
+  dangerColor,
+  boxShadow,
+  drawerWidth,
+  transition,
+  whiteColor,
+  grayColor,
+  blackColor,
+  hexToRgb,
 } from 'assets/jss/material-dashboard-pro-react';
 
 const pagesHeaderStyle = (theme) => ({
@@ -53,10 +51,25 @@ const pagesHeaderStyle = (theme) => ({
     },
   },
   container: {
-    ...container,
     minHeight: '50px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: '16px !important',
+    paddingRight: '16px !important',
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: '16px !important',
+      paddingRight: '16px !important',
+    },
+    [theme.breakpoints.up('lg')]: {
+      paddingLeft: '16px !important',
+      paddingRight: '16px !important',
+    },
   },
   flex: {
+    display: 'flex',
+    alignItems: 'center',
+    flexShrink: 0,
     [theme.breakpoints.down('sm')]: {
       flex: 1,
     },
@@ -106,25 +119,33 @@ const pagesHeaderStyle = (theme) => ({
     ...defaultFont,
     fontSize: '14px',
     margin: 0,
-    marginRight: '-15px',
     paddingLeft: '0',
     listStyle: 'none',
     color: whiteColor,
     paddingTop: '0',
     paddingBottom: '0',
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    whiteSpace: 'nowrap',
+    justifyContent: 'flex-end',
+    flex: 1,
   },
   listItem: {
-    float: 'left',
-    position: 'relative',
-    display: 'block',
-    width: 'auto',
-    marginLeft: 5,
+    display: 'flex',
+    alignItems: 'center',
+    margin: 0,
     padding: '0',
+    flexShrink: 0,
+    float: 'none',
+    position: 'relative',
+    width: 'auto',
+    marginLeft: '8px', 
     [theme.breakpoints.down('sm')]: {
       zIndex: '999',
-      width: '100%',
-      paddingRight: '15px',
-      marginLeft: 0,
+      width: 'auto', 
+      paddingRight: '0',
+      marginLeft: '8px',
     },
   },
   listItemTextRequestInvite: {
@@ -139,12 +160,135 @@ const pagesHeaderStyle = (theme) => ({
       fontSize: 10,
     },
   },
+
+  goBackButton: {
+    color: '#fff',
+    background: '#52b274',
+    border: 'none',
+    margin: '0',
+    fontWeight: '500',
+    fontSize: '13px',
+    borderRadius: '5px',
+    lineHeight: '20px',
+    display: 'block',
+    padding: '10px 15px',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease-in-out',
+    fontFamily: 'inherit',
+    minWidth: '100px',
+    height: '38px',
+    flexShrink: 0,
+    boxShadow: `
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 1px 2px rgba(255, 255, 255, 0.1) inset,
+      0 -1px 1px rgba(0, 0, 0, 0.1) inset
+    `,
+    '&:hover': {
+      boxShadow: `
+        0 4px 8px rgba(0, 0, 0, 0.25),
+        0 2px 4px rgba(255, 255, 255, 0.15) inset,
+        0 -2px 2px rgba(0, 0, 0, 0.15) inset,
+        0 0 0 1px rgba(255, 255, 255, 0.1)
+      `,
+      transform: 'translateY(-1px)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: `
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        0 1px 1px rgba(255, 255, 255, 0.05) inset
+      `,
+    },
+  },
+
+  loginButton: {
+    color: '#000',
+    background: '#f1f1f1',
+    border: '1.7px solid #52b274',
+    margin: '0',
+    fontWeight: '500',
+    fontSize: '13px',
+    borderRadius: '5px',
+    lineHeight: '10px',
+    display: 'block',
+    padding: '10px 15px',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease-in-out',
+    fontFamily: 'inherit',
+    minWidth: '90px',
+    height: '38px',
+    flexShrink: 0,
+    boxShadow: `
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 1px 2px rgba(255, 255, 255, 0.8) inset,
+      0 -1px 1px rgba(0, 0, 0, 0.05) inset
+    `,
+    '&:hover': {
+      boxShadow: `
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        0 2px 4px rgba(255, 255, 255, 0.9) inset,
+        0 -2px 2px rgba(0, 0, 0, 0.08) inset,
+        0 0 0 1px rgba(82, 178, 116, 0.3)
+      `,
+      transform: 'translateY(-1px)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: `
+        0 1px 2px rgba(0, 0, 0, 0.1),
+        0 1px 1px rgba(255, 255, 255, 0.6) inset
+      `,
+    },
+  },
+
+  getAccessButton: {
+    color: '#fff',
+    background: '#52b274',
+    border: 'none',
+    margin: '0',
+    fontWeight: '500',
+    fontSize: '13px',
+    borderRadius: '5px',
+    lineHeight: '20px',
+    display: 'block',
+    padding: '10px 15px',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease-in-out',
+    fontFamily: 'inherit',
+    minWidth: '110px',
+    height: '38px',
+    flexShrink: 0,
+    boxShadow: `
+      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 1px 2px rgba(255, 255, 255, 0.1) inset,
+      0 -1px 1px rgba(0, 0, 0, 0.1) inset
+    `,
+    '&:hover': {
+      boxShadow: `
+        0 4px 8px rgba(0, 0, 0, 0.25),
+        0 2px 4px rgba(255, 255, 255, 0.15) inset,
+        0 -2px 2px rgba(0, 0, 0, 0.15) inset,
+        0 0 0 1px rgba(255, 255, 255, 0.1)
+      `,
+      transform: 'translateY(-1px)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: `
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        0 1px 1px rgba(255, 255, 255, 0.05) inset
+      `,
+    },
+  },
+
   navLink: {
     color: whiteColor,
     margin: '0 5px',
     fontWeight: '500',
     fontSize: '12px',
-    // textTransform: 'uppercase',
     borderRadius: '3px',
     width: 80,
     lineHeight: '20px',
