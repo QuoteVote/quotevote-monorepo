@@ -97,6 +97,15 @@ export const Mutation = `type Mutation {
   # Mutation for deleting a post
     deletePost(postId: String!): DeletedPost
 
+  # Mutation for sending user invite
+    sendUserInvite(email: String!): JSON
+
+  # Mutation for reporting a user
+    reportUser(reportUserInput: ReportUserInput!): JSON
+
+  # Mutation for recalculating user reputation
+    recalculateReputation(userId: String!): JSON
+
   # Mutation for toggling voting on a post
     toggleVoting(postId: String!): Post
 

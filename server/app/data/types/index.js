@@ -13,6 +13,7 @@ export * from './Quote';
 export * from './Reaction';
 export * from './User';
 export * from './UserInvite';
+export * from './UserReputation';
 export * from './Vote';
 export * from './DeletedPost';
 export * from './DeletedQuote';

@@ -70,5 +70,10 @@ export const resolver_mutations = function () {
 
     //  Notifications
     removeNotification: notificationMutations.removeNotification(),
+
+    // Reputation system mutations
+    sendUserInvite: userMutations.sendUserInvite(),
+    reportUser: userMutations.reportUser(),
+    recalculateReputation: userMutations.recalculateReputation(),
   };
 };
