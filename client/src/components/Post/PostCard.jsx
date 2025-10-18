@@ -23,6 +23,7 @@ import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
 import { useState, useMemo } from 'react'
 import useGuestGuard from '../../utils/useGuestGuard'
+import AutoLinkText from '../common/AutoLinkText'
 
 const GET_GROUP = gql`
   query getGroup($groupId: String!) {
@@ -428,7 +429,7 @@ return {
                   shouldShowButton && !isExpanded && classes.postContentTruncated
                 )}
               >
-                {postText}
+                <AutoLinkText text={postText} truncate />
               </Typography>
               {shouldShowButton && (
                 <Button
