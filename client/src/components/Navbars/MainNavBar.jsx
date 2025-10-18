@@ -1,32 +1,29 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import Button from '@material-ui/core/Button'
-import IconButton from '@material-ui/core/IconButton'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import Hidden from '@material-ui/core/Hidden'
-import Box from '@material-ui/core/Box'
-import MenuIcon from '@material-ui/icons/Menu'
-import CloseIcon from '@material-ui/icons/Close'
-import GitHubIcon from '@material-ui/icons/GitHub'
-import Dialog from '@material-ui/core/Dialog'
-import Avatar from '@material-ui/core/Avatar'
+import Dialog from '@mui/material/Dialog'
 import { NavLink, useHistory } from 'react-router-dom'
-import { useApolloClient } from '@apollo/react-hooks'
+import { Tooltip, Typography, Box, IconButton, Divider, Drawer, List, ListItem } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Hidden from '@mui/material/Hidden'
+import MenuIcon from '@mui/icons-material/Menu'
+import CloseIcon from '@mui/icons-material/Close'
+import GitHubIcon from '@mui/icons-material/GitHub'
+// withWidth was used in legacy code; new layout adapts via Hidden/useMediaQuery.
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { makeStyles } from '@mui/styles'
 
+import { SET_SELECTED_PAGE } from 'store/ui'
+import { useApolloClient } from '@apollo/react-hooks'
+import Button from '@mui/material/Button'
+import Avatar from '@mui/material/Avatar'
 import AvatarPreview from '../Avatar'
 import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
 import SubmitPost from '../SubmitPost/SubmitPost'
 import ChatMenu from '../Chat/ChatMenu'
-import { SET_SELECTED_PAGE } from 'store/ui'
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
@@ -219,6 +216,9 @@ function MainNavBar(props) {
   const history = useHistory()
   const isMobile = useMobileDetection()
 
+  const toggleDrawer = () => setDrawerOpen((v) => !v)
+  const closeDrawer = () => setDrawerOpen(false)
+
   const handleMenu = (newSelectedMenu) => {
     client.stop()
     dispatch(SET_SELECTED_PAGE(newSelectedMenu))
@@ -232,8 +232,9 @@ function MainNavBar(props) {
     dispatch(SET_SELECTED_PAGE(0))
   }
 
-  const toggleDrawer = () => setDrawerOpen((prev) => !prev)
-  const closeDrawer = () => setDrawerOpen(false)
+  const theme = useTheme()
+  const showOnLgUp = useMediaQuery(theme.breakpoints.up('lg'))
+  const showOnLgDown = !showOnLgUp
 
   return (
     <>
@@ -473,8 +474,29 @@ function MainNavBar(props) {
                 startIcon={<GitHubIcon />}
                 onClick={closeDrawer}
               >
-                GitHub Repository
               </Button>
+            </ListItem>
+
+            <Divider className={classes.divider} />
+
+            <ListItem disableGutters>
+              <Box className={classes.loggedInActions} sx={{ width: '100%', justifyContent: 'space-between' }}>
+                <NavLink to="/Profile" style={{ textDecoration: 'none' }}>
+                  <Button className={classes.profileButton} onClick={() => { handleProfileClick(); closeDrawer() }}>
+                    <Avatar>
+                      <AvatarPreview height="35" width="35" {...avatar} />
+                    </Avatar>
+                    <Typography variant="body1" className={classes.profileName}>
+                      {name}
+                    </Typography>
+                  </Button>
+                </NavLink>
+                <Box>
+                  <ChatMenu fontSize="large" />
+                  <NotificationMenu fontSize="large" />
+                  <SettingsMenu fontSize="large" />
+                </Box>
+              </Box>
             </ListItem>
           </List>
         )}

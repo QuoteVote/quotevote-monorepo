@@ -10,10 +10,12 @@
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@bugsnag/js": "^7.6.0",
     "@bugsnag/plugin-react": "^7.6.0",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
     "@livechat/ui-kit": "^0.3.0-6",
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@mui/icons-material": "^7.0.0",
+    "@mui/material": "^7.0.0",
+    "@mui/styles": "^5.0.0",
     "@reduxjs/toolkit": "^1.4.0",
     "@vitejs/plugin-react": "^4.2.1",
     "a11y-react-emoji": "^1.1.2",
@@ -102,7 +104,7 @@
     "build": "ROLLUP_SKIP_NATIVE=true vite build && gulp licenses",
     "build:ci": "ROLLUP_SKIP_NATIVE=true NODE_ENV=production vite build && gulp licenses",
     "preview": "vite preview",
-    "test": "vitest -u -w 1 --env=jsdom --silent",
+  "test": "vitest -u -w --silent",
     "test:coverage": "vitest --updateSnapshot --watchAll=false --silent --coverage",
     "test:generate-output": "vitest --updateSnapshot --watchAll=false --json --outputFile=.storybook/.jest-test-results.json --coverage",
     "eject": "react-scripts eject",
@@ -177,8 +179,10 @@
     "react-is": "^16.13.1",
     "react-test-renderer": "^16.13.1",
     "sinon": "^9.0.2",
-    "waait": "^1.0.5"
+    "waait": "^1.0.5",
+    "redux-mock-store": "^1.5.4"
   },
+
   "browserslist": {
     "production": [
       ">0.2%",

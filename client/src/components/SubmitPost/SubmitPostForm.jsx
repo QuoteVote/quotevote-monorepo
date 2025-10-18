@@ -1,9 +1,7 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
-import Autocomplete, {
-  createFilterOptions,
-} from '@material-ui/lab/Autocomplete'
-import { makeStyles } from '@material-ui/core/styles'
+import TextField from '@mui/material/TextField'
+import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
+import { makeStyles } from '@mui/styles'
 import {
   CardActions,
   CircularProgress,
@@ -15,7 +13,7 @@ import {
   Card,
   CardHeader,
   Box,
-} from '@material-ui/core'
+} from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useMutation } from '@apollo/react-hooks'

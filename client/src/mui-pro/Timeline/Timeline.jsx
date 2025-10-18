@@ -3,7 +3,7 @@ import cx from 'classnames'
 import PropTypes from 'prop-types'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 // core components
 import Badge from 'mui-pro/Badge/Badge'

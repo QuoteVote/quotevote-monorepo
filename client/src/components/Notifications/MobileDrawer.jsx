@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles'
-import { Drawer, AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import { makeStyles } from '@mui/styles'
+import { Drawer, AppBar, Toolbar, Typography, IconButton } from '@mui/material'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme) => ({

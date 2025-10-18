@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING } from 'store/chat'
 import { useMutation } from '@apollo/react-hooks'
-import { Grid, InputBase } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Hidden from '@material-ui/core/Hidden'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
+import { Grid, InputBase } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
@@ -86,6 +87,11 @@ function PostChatSend(props) {
     }],
   })
 
+  // Prefer injected dependency for tests; fall back to global (legacy) then hook.
+  const createMessageFn = props.createMessageFn
+    || (typeof window !== 'undefined' && window.__TEST_CREATE_MESSAGE)
+    || createMessage
+
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
@@ -100,7 +106,7 @@ function PostChatSend(props) {
     }
 
     const dateSubmitted = new Date()
-    await createMessage({
+    await createMessageFn({
       variables: { message },
       optimisticResponse: {
         __typename: 'Mutation',
@@ -191,6 +197,8 @@ function PostChatSend(props) {
 PostChatSend.propTypes = {
   messageRoomId: PropTypes.string,
   title: PropTypes.string,
+  // Optional test seam to inject a custom createMessage implementation
+  createMessageFn: PropTypes.func,
 }
 
 export default PostChatSend

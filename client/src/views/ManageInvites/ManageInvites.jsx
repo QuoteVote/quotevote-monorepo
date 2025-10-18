@@ -2,16 +2,16 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unreachable */
 // The `break` in the switch are reachable. If not, please resolve
-import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
+import { makeStyles } from '@mui/styles'
+import Paper from '@mui/material/Paper'
 import GridContainer from 'mui-pro/Grid/GridContainer'
 import GridItem from 'mui-pro/Grid/GridItem'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 import Button from 'mui-pro/CustomButtons/Button'
 import Badge from 'mui-pro/Badge/Badge'
 

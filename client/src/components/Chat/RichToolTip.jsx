@@ -1,13 +1,14 @@
 import {
-  Box, ClickAwayListener, Fade, makeStyles, Paper, Popper,
-} from '@material-ui/core'
+  Box, ClickAwayListener, Fade, Paper, Popper,
+} from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import React from 'react'
 import PropTypes from 'prop-types'
 
 const useStyles = (props) => makeStyles((theme) => {
   const color = props.tipColor || theme.palette.background.paper // Feel free to customise this like they do in Tooltip
 
-  return {
+  return { 
     popoverRoot: {
       backgroundColor: color,
       maxWidth: 1000,

@@ -1,18 +1,18 @@
 import React from 'react'
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import FormLabel from '@material-ui/core/FormLabel'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import InputAdornment from '@material-ui/core/InputAdornment'
-import Radio from '@material-ui/core/Radio'
-import Checkbox from '@material-ui/core/Checkbox'
+// @mui (compat/styles + core components)
+import { makeStyles } from '@mui/styles'
+import FormLabel from '@mui/material/FormLabel'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import InputAdornment from '@mui/material/InputAdornment'
+import Radio from '@mui/material/Radio'
+import Checkbox from '@mui/material/Checkbox'
 
-// @material-ui/icons
-import MailOutline from '@material-ui/icons/MailOutline'
-import Check from '@material-ui/icons/Check'
-import Clear from '@material-ui/icons/Clear'
-import Contacts from '@material-ui/icons/Contacts'
-import FiberManualRecord from '@material-ui/icons/FiberManualRecord'
+// @mui/icons-material
+import MailOutline from '@mui/icons-material/MailOutline'
+import Check from '@mui/icons-material/Check'
+import Clear from '@mui/icons-material/Clear'
+import Contacts from '@mui/icons-material/Contacts'
+import FiberManualRecord from '@mui/icons-material/FiberManualRecord'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

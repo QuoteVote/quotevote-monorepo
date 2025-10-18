@@ -2,12 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 // @material-ui/icons
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import { makeStyles } from '@mui/styles'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import styles from 'assets/jss/material-dashboard-pro-react/components/accordionStyle'
 
 const useStyles = makeStyles(styles)
@@ -22,7 +22,7 @@ export default function Accordion(props) {
   return (
     <div className={classes.root}>
       {collapses.map((prop, key) => (
-        <ExpansionPanel
+        <Accordion
           expanded={active === key}
           onChange={handleChange(key)}
           key={key}
@@ -31,7 +31,7 @@ export default function Accordion(props) {
             expanded: classes.expansionPanelExpanded,
           }}
         >
-          <ExpansionPanelSummary
+          <AccordionSummary
             expandIcon={(
               <div>
                 <ExpandMore />
@@ -47,11 +47,11 @@ export default function Accordion(props) {
             <h4 className={classes.title}>{prop.title}</h4>
             <img alt=" " src="/assets/Chat.svg" />
             <img alt=" " src="/assets/Chat.svg" />
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.expansionPanelDetails}>
+          </AccordionSummary>
+          <AccordionDetails className={classes.accordionDetails}>
             {prop.content}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+          </AccordionDetails>
+        </Accordion>
       ))}
     </div>
   )

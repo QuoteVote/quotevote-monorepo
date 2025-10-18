@@ -1,10 +1,14 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react'
-import {
-  Card, CardActions, CardContent, CardHeader, IconButton,
-} from '@material-ui/core'
-import { InsertEmoticon, InsertLink, Delete } from '@material-ui/icons'
-import { makeStyles } from '@material-ui/core/styles'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import IconButton from '@mui/material/IconButton'
+import InsertEmoticon from '@mui/icons-material/InsertEmoticon'
+import InsertLink from '@mui/icons-material/InsertLink'
+import Delete from '@mui/icons-material/Delete'
+import { makeStyles } from '@mui/styles'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
@@ -55,7 +59,7 @@ function Comment({ comment, postUrl, selected }) {
   const history = useHistory()
   const parsedDate = parseCommentDate(created)
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.data)
+  const currentUser = useSelector((state) => state.user.data)
   const [open, setOpen] = useState(false)
   const hideAlert = () => {
     setOpen(false)
@@ -140,7 +144,7 @@ function Comment({ comment, postUrl, selected }) {
         <IconButton onClick={handleCopy}>
           <InsertLink />
         </IconButton>
-        {(user._id === comment.userId || user.admin) && (
+        {(currentUser && (currentUser._id === comment.userId || currentUser.admin)) && (
           <IconButton onClick={handleDelete} className={classes.deleteIcon}>
             <Delete />
           </IconButton>

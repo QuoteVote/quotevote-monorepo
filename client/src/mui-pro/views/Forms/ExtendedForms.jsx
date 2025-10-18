@@ -6,19 +6,19 @@ import TagsInput from 'react-tagsinput'
 // plugin that creates slider
 import Slider from 'nouislider'
 
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import FormControl from '@material-ui/core/FormControl'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import InputLabel from '@material-ui/core/InputLabel'
-import Switch from '@material-ui/core/Switch'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
+// @mui styles + components
+import { makeStyles } from '@mui/styles'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import InputLabel from '@mui/material/InputLabel'
+import Switch from '@mui/material/Switch'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
-// @material-ui/icons
-import Today from '@material-ui/icons/Today'
-import LibraryBooks from '@material-ui/icons/LibraryBooks'
-import AvTimer from '@material-ui/icons/AvTimer'
+// @mui icons
+import Today from '@mui/icons-material/Today'
+import LibraryBooks from '@mui/icons-material/LibraryBooks'
+import AvTimer from '@mui/icons-material/AvTimer'
 
 // core mui-pro components
 import GridContainer from 'mui-pro/Grid/GridContainer'

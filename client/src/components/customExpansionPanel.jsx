@@ -1,15 +1,14 @@
 // TODO: Fix links to have href
 import React from 'react'
 import PropTypes from 'prop-types'
-// @material-ui/core components
-
-import { makeStyles } from '@material-ui/core/styles'
-import { Link, Tooltip } from '@material-ui/core'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-// @material-ui/icons
-import ExpandMore from '@material-ui/icons/ExpandMore'
+// MUI components
+import { makeStyles } from '@mui/styles'
+import { Link, Tooltip, Divider } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+// MUI icons
+import ExpandMore from '@mui/icons-material/ExpandMore'
 import styles from 'assets/jss/material-dashboard-pro-react/components/accordionStyle'
 import GridContainer from 'mui-pro/Grid/GridContainer'
 // import GridItem from 'mui-pro/Grid/GridItem'
@@ -38,7 +37,7 @@ export default function CustomAccordion({ collapses, active: activeProp }) {
         } = prop
         // const postURL = `/post/${title}/${_id}`
         return (
-          <ExpansionPanel
+          <Accordion
             expanded={active === key}
             onChange={handleChange(key)}
             key={key}
@@ -47,7 +46,7 @@ export default function CustomAccordion({ collapses, active: activeProp }) {
               expanded: classes.expansionPanelExpanded,
             }}
           >
-            <ExpansionPanelSummary
+            <AccordionSummary
               expandIcon={(
                 <div>
                   {' '}
@@ -109,11 +108,11 @@ export default function CustomAccordion({ collapses, active: activeProp }) {
                   </div>
                 </GridContainer>
               </div>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.expansionPanelDetails}>
+            </AccordionSummary>
+            <AccordionDetails className={classes.accordionDetails}>
               {limit(text || '', 300)}
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </AccordionDetails>
+          </Accordion>
         )
       })}
     </div>

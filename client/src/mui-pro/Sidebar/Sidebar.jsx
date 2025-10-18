@@ -2,30 +2,31 @@ import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink, withRouter } from 'react-router-dom'
 import cx from 'classnames'
-import withStyles from '@material-ui/core/styles/withStyles'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Grid from '@material-ui/core/Grid'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Menu'
+import withStyles from '@mui/styles/withStyles'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Grid from '@mui/material/Grid'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
+import MenuIcon from '@mui/icons-material/Menu'
 import sidebarStyle from 'assets/jss/material-dashboard-pro-react/components/sidebarStyle'
 import { SET_SELECTED_PAGE } from '../../store/ui'
 import NotificationMenu from '../../components/Notifications/NotificationMenu'
 import SettingsMenu from '../../components/Settings/SettingsMenu'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 import ChatMenu from '../../components/Chat/ChatMenu'
-import AddIcon from '@material-ui/icons/Add'
-import Tooltip from '@material-ui/core/Tooltip'
-import Dialog from '@material-ui/core/Dialog'
+import AddIcon from '@mui/icons-material/Add'
+import Tooltip from '@mui/material/Tooltip'
+import Dialog from '@mui/material/Dialog'
 import SubmitPost from '../../components/SubmitPost/SubmitPost'
-import Avatar from '@material-ui/core/Avatar'
+import Avatar from '@mui/material/Avatar'
 import AvatarPreview from '../../components/Avatar'
-import Typography from '@material-ui/core/Typography'
+import Typography from '@mui/material/Typography'
 import { useSelector } from 'react-redux'
-import Hidden from '@material-ui/core/Hidden'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import { useMobileDetection } from '../../utils/display'
 
 // We've created this component so we can have a ref to the wrapper of the links that appears in our sidebar.
@@ -66,6 +67,9 @@ const MenuSidebar = (props) => {
   const name = useSelector((state) => state.user.data.name)
   const loggedIn = useSelector((state) => !!state.user.data._id)
   const isMobile = useMobileDetection()
+  const theme = useTheme()
+  const showSmDown = useMediaQuery(theme.breakpoints.down('sm'))
+  const showSmUp = !showSmDown
 
   // State management
   const [openAvatar, setOpenAvatar] = useState(false)
@@ -462,7 +466,7 @@ const MenuSidebar = (props) => {
                       </Button>
                     </Tooltip>
                   </Grid>
-                  <Hidden smDown>
+                  {showSmUp && (
                     <Grid item>
                       <a
                         href="https://github.com/QuoteVote/quotevote-monorepo"
@@ -484,7 +488,7 @@ const MenuSidebar = (props) => {
                         />
                       </a>
                     </Grid>
-                  </Hidden>
+                  )}
                   <Grid item>
                     <ChatMenu />
                   </Grid>

@@ -1,13 +1,13 @@
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
-import Icon from '@material-ui/core/Icon'
+// @mui core components
+import { makeStyles } from '@mui/styles'
+import Icon from '@mui/material/Icon'
 // @material-ui/icons
 // import Weekend from "@material-ui/icons/Weekend";
-import Home from '@material-ui/icons/Home'
-import BugReport from '@material-ui/icons/BugReport'
-import Code from '@material-ui/icons/Code'
-import Cloud from '@material-ui/icons/Cloud'
-import FormatQuote from '@material-ui/icons/FormatQuote'
+import Home from '@mui/icons-material/Home'
+import BugReport from '@mui/icons-material/BugReport'
+import Code from '@mui/icons-material/Code'
+import Cloud from '@mui/icons-material/Cloud'
+import FormatQuote from '@mui/icons-material/FormatQuote'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

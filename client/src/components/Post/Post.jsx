@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Card, CardActions, CardContent, CardHeader, IconButton, FormControlLabel, Tooltip } from '@material-ui/core';
-import Switch from '@material-ui/core/Switch';
-import { makeStyles } from '@material-ui/core/styles';
-import BlockIcon from '@material-ui/icons/Block';
-import LinkIcon from '@material-ui/icons/Link';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Card, CardActions, CardContent, CardHeader, IconButton, FormControlLabel, Tooltip } from '@mui/material';
+import Switch from '@mui/material/Switch';
+import { makeStyles } from '@mui/styles';
+import BlockIcon from '@mui/icons-material/Block';
+import LinkIcon from '@mui/icons-material/Link';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/react-hooks';

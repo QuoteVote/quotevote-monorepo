@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import {
   Grid,
   Typography,
@@ -6,7 +6,7 @@ import {
   Paper,
   IconButton,
   Button,
-} from '@material-ui/core'
+} from '@mui/material'
 import { useQuery } from '@apollo/react-hooks'
 import { useSelector } from 'react-redux'
 import { useState, useEffect, useMemo, useRef } from 'react'
@@ -26,7 +26,7 @@ import ErrorBoundary from '../../components/ErrorBoundary'
 import Carousel from '../../components/Carousel/Carousel'
 import PostCard from '../../components/Post/PostCard'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import Tooltip from '@material-ui/core/Tooltip'
+import Tooltip from '@mui/material/Tooltip'
 import SearchGuestSections from '../../components/SearchContainer/SearchGuestSections'
 import UsernameResults from '../../components/SearchContainer/UsernameResults'
 import GuestFooter from '../../components/GuestFooter'
@@ -68,11 +68,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: theme.spacing(4),
-  },
-  logoImage: {
-    width: '100%',
-    maxWidth: 500,
-    height: 'auto',
   },
   searchBar: {
     display: 'flex',
@@ -156,7 +151,6 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.primary.dark,
       border: `1px solid ${theme.palette.primary.dark}`,
-      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
     },
   },
   datePickerContainer: {

@@ -1,12 +1,12 @@
 import React from 'react'
 import {
   Card, CardContent, Grid, List, ListItem,
-} from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+} from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Skeleton } from '@material-ui/lab'
+import Skeleton from '@mui/material/Skeleton'
 import { useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import PostActionCard from './PostActionCard'

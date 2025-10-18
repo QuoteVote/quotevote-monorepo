@@ -710,3 +710,26 @@ See the deployed version on the netlify preview build. Wait for code review, fee
 
 ### Use Our Wiki
 Please use and contribute to the wiki: [Quote Vote-React Wiki](https://github.com/QuoteVote/quotevote-react/wiki)
+
+## CI / Vite alias & shim notes
+
+In CI (Netlify, GitHub Actions) our monorepo sometimes has a hoisted `node_modules` layout which can cause Vite/Rollup to fail resolving package deep-imports (for example: `@emotion/serialize/dist/serialize.esm.js`) even though the package is present somewhere in the repo. To make production builds deterministic across developer machines and CI we add a few targeted Vite aliases and tiny shim files under `client/src/shims/`:
+
+- We alias problematic deep import specifiers (exact paths) to local shims so the bundler always finds a stable ESM or CJS implementation.
+- We prefer client-local package directories when possible (trailing-slash aliases) to avoid accidental resolution to hoisted package index files that don't expose the same subpaths.
+
+If you see a CI build failure mentioning a missing deep import (ENOENT for a file path in `node_modules`):
+
+1. Paste the first ~40 lines of the CI error log into the PR discussion or open an issue.
+2. The smallest safe fix is usually to add one alias entry mapping the exact failing specifier to a shim or client-local path. Avoid broad alias changes.
+3. After adding an alias/shim, run the client production build locally with:
+
+```powershell
+cd client
+$env:ROLLUP_SKIP_NATIVE='true'
+npx vite build
+```
+
+4. Commit and push the change to trigger the CI build again.
+
+If you're unsure, ping a reviewer or paste the CI log and I can add the minimal alias/shim and push the fix.
