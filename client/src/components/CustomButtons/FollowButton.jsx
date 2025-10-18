@@ -41,12 +41,14 @@ function FollowButton({
   const dispatch = useDispatch()
   const ensureAuth = useGuestGuard()
   const [followMutation] = useMutation(FOLLOW_MUTATION, {
-    refetchQueries: [{
-      query: GET_USER,
-      variables: {
-        username,
+    refetchQueries: [
+      {
+        query: GET_USER,
+        variables: {
+          username,
+        },
       },
-    }],
+    ],
   })
 
   const user = useSelector((state) => state.user)
@@ -67,22 +69,18 @@ function FollowButton({
   // TODO handle data object
   if (isFollowing) {
     const action = 'un-follow'
-    return (
-      showIcon ? (
-        <IconButton
-          onClick={() => handleClick(action)}
-        >
-          <PersonAddDisabled />
-        </IconButton>
-      ) : (
-        <Button
-          variant="contained"
-          className={classNames(classes.followButton, otherProps.className)}
-          onClick={() => handleClick(action)}
-        >
-          Un-Follow
-        </Button>
-      )
+    return showIcon ? (
+      <IconButton onClick={() => handleClick(action)}>
+        <PersonAddDisabled />
+      </IconButton>
+    ) : (
+      <Button
+        variant="contained"
+        className={classNames(classes.followButton, otherProps.className)}
+        onClick={() => handleClick(action)}
+      >
+        Un-Follow
+      </Button>
     )
   }
 
