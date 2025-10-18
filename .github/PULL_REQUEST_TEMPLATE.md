@@ -1,37 +1,27 @@
 # Description
 
-<!-- Describe to the user what this PR does for the codebase -->
+<!--
+Thank you for your contribution! Please provide a clear and concise description of what this PR does.
+-->
 
-<!-- Describe to the developer what this PR does for the codebase -->
+## Type of Change
 
-## Type of Story:
+<!-- Check all that apply -->
+- [ ] Bug fix (non-breaking change which fixes an issue)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Chore (refactoring, documentation, or other non-functional changes)
 
-<!-- Choose one of the following by removing the comments -->
-<!-- - Chore -->
-<!-- - Feature -->
-<!-- - Bug -->
+## Related Issue
 
-<!-- Insert the links of Story and the Design of the task / design you have between the parenthesis -->
-<!-- Here are the links to our teams projects to find which task / design -->
-<!-- https://www.pivotaltracker.com/n/projects/1579587 -->
-<!-- v1 Desktop: https://app.zeplin.io/project/59bd197553787598a1892964/dashboard?seid=5f4baef0fc57ce83b5fdcd26 -->
-<!-- v1 Mobile: https://app.zeplin.io/project/59bd197553787598a1892964/dashboard?seid=5f4baf8df379028159bc8a83 -->
+<!-- If this PR addresses an open issue, please link to it here. Ex: Closes #123 -->
 
-- [Pivotal Tracker]()
-- [Design]()
 
 ## Checklist:
 
-<!-- Please check the boxes once you have completed them. You can check them after you make the pull request using Github. For anything that starts with ` -->
-
-<!-- - [ ] Project was validated by `husky` pre-push  -->
-- [ ] Proper branch name. See guidelines [here](CONTRIBUTING.md)
-- [ ] Add tests or `test.todo` that proves code is effective or that the feature works. See how [here](https://app.tettra.co/teams/voxpop/pages/creating-test)
-- [ ] Made corresponding changes to the documentation. See how [here](https://app.tettra.co/teams/voxpop/pages/creating-documentation)
-- [ ] Include in Storybook
-- [ ] Perform a self-review of own code
-- [ ] Comments on code, especially in hard-to-understand areas
-
-<!-- If chore or bug, comment the checkboxes that do not apply.  -->
-
-<!-- Note this template is subjected to change depending on the teams needs. -->
+- [ ] I have read the [**Contributing Guidelines**](/CONTRIBUTING.md).
+- [ ] My code follows the [**Code Style**](/docs/contributing/code-style.md) of this project.
+- [ ] I have added tests that prove my fix is effective or that my feature works. See [**Testing Guidelines**](/docs/contributing/testing.md).
+- [ ] I have performed a self-review of my own code.
+- [ ] I have commented my code, particularly in hard-to-understand areas.
+- [ ] I have made corresponding changes to the documentation.
