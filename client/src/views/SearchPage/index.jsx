@@ -69,6 +69,19 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     marginBottom: theme.spacing(4),
   },
+    logoImage: {
+      maxWidth: 120,
+      width: '100%',
+      height: 'auto',
+      margin: '0 auto',
+      display: 'block',
+      [theme.breakpoints.down('sm')]: {
+        maxWidth: 80,
+      },
+      [theme.breakpoints.down('xs')]: {
+        maxWidth: 60,
+      },
+    },
   searchBar: {
     display: 'flex',
     alignItems: 'center',
