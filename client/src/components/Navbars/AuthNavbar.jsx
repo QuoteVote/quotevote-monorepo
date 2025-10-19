@@ -33,6 +33,7 @@ const BRAND_COLORS = {
   overlay: 'rgba(14, 17, 22, 0.06)'
 }
 
+import theme from '../../themes/MainTheme'
 const useStyles = makeStyles((theme) => ({
   ...styles,
   // Enhanced styles with brand colors

@@ -1,21 +1,12 @@
 import { makeStyles } from '@mui/styles'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import { Button } from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import GridContainer from '../../mui-pro/Grid/GridContainer'
 import GridItem from '../../mui-pro/Grid/GridItem'
 import { SET_SELECTED_PAGE } from '../../store/ui'
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#52b274',
-    },
-    secondary: {
-      main: '#E91E63',
-    },
-  },
-})
+import theme from '../../themes/MainTheme'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '90%',
@@ -77,7 +68,7 @@ function ActivityEmptyList() {
         />
       </GridItem>
       <GridItem xs={12}>
-  <ThemeProvider theme={customTheme}>
+  <ThemeProvider theme={theme}>
           <Button variant="contained" color="secondary" className={classes.buttons}>
             FIND FRIENDS
           </Button>

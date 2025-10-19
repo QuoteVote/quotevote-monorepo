@@ -1,5 +1,5 @@
 import React from 'react'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
 import { useTheme } from '@mui/material'
 import MobileStepper from '@mui/material/MobileStepper'
@@ -10,16 +10,7 @@ import SwipeableViews from 'react-swipeable-views'
 import { autoPlay } from 'react-swipeable-views-utils'
 import PropTypes from 'prop-types'
 
-const customTheme = createTheme({
-  palette: {
-    primary: {
-      main: '#52b274',
-    },
-  },
-  typography: {
-    useNextVariants: true,
-  },
-})
+import theme from '../../themes/MainTheme'
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews)
 
 const useStyles = makeStyles((theme) => ({
@@ -151,7 +142,7 @@ function SwipeableTextMobileStepper({
 
       {/* Dots Indicator */}
       <div className={classes.stepperContainer}>
-  <ThemeProvider theme={customTheme}>
+  <ThemeProvider theme={theme}>
           <MobileStepper
             steps={maxSteps}
             position="static"

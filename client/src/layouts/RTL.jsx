@@ -11,7 +11,8 @@ import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 // @material-ui/core components
-import { makeStyles } from '@mui/styles'
+import { makeStyles, ThemeProvider } from '@mui/material/styles'
+import theme from '../themes/MainTheme'
 
 // core components
 import AdminNavbar from 'mui-pro/Navbars/AdminNavbar'
@@ -132,7 +133,8 @@ export default function RTL(props) {
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
       setMobileOpen(false)
-    }
+        <ThemeProvider theme={theme}>
+          <div className={classes.wrapper}>
   }
   return (
     <div className={classes.wrapper}>
@@ -179,7 +181,7 @@ export default function RTL(props) {
           sidebarMinimize={sidebarMinimize.bind(this)}
           miniActive={miniActive}
           rtlActive
-        />
+        </ThemeProvider>
       </div>
     </div>
   )

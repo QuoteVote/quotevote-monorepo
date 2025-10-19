@@ -8,6 +8,7 @@ import { makeStyles } from '@mui/styles'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import { useTheme } from '@mui/material/styles'
+import theme from '../../themes/MainTheme'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 // material-ui icons
@@ -25,7 +26,7 @@ const useStyles = makeStyles(styles)
 
 export default function AdminNavbar(props) {
   const classes = useStyles()
-  const theme = useTheme()
+  // useTheme() is used for breakpoints, but ensure all styles use shared theme
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'))
   const isMdDown = useMediaQuery(theme.breakpoints.down('md'))
   const { color, rtlActive, brandText } = props
