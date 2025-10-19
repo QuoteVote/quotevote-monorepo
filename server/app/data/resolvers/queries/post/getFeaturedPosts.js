@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import PostModel from '../../models/PostModel';
-import UserModel from '../../models/UserModel';
+import mongoose from 'mongoose'
+import PostModel from '../../models/PostModel'
+import UserModel from '../../models/UserModel'
 
 export const getFeaturedPosts = () => {
   return async (_, args, context) => {
@@ -17,49 +17,56 @@ export const getFeaturedPosts = () => {
       deleted,
       interactions,
       sortOrder,
-    } = args;
+    } = args
 
-    // Build search arguments - always include featured slot requirement and exclude deleted posts
-    const searchArgs = { 
+    const searchArgs = {
       featuredSlot: { $ne: null },
-      deleted: { $ne: true } // Exclude deleted posts
-    };
+      deleted: { $ne: true },
+    }
 
-    // Handle text search - can be combined with other filters
     if (searchKey && searchKey.trim()) {
       searchArgs.$or = [
         { title: { $regex: searchKey.trim(), $options: 'i' } },
         { text: { $regex: searchKey.trim(), $options: 'i' } },
-      ];
+      ]
     }
 
-    // Handle date range filter
-    if (startDateRange && endDateRange) {
-      searchArgs.pointTimestamp = {
-        $gte: new Date(startDateRange),
-        $lte: new Date(endDateRange),
-      };
-    } else if (startDateRange) {
-      searchArgs.pointTimestamp = {
-        $gte: new Date(startDateRange),
-      };
-    } else if (endDateRange) {
-      searchArgs.pointTimestamp = {
-        $lte: new Date(endDateRange),
-      };
+    // Robust date-only parsing aligned with topPosts
+    const isValidDate = (d) => d instanceof Date && !Number.isNaN(d.getTime())
+    const parseDateOnlyStart = (s) => {
+      if (!s || typeof s !== 'string') return null
+      const d = new Date(`${s}T00:00:00`)
+      return isValidDate(d) ? d : null
+    }
+    const parseDateOnlyEnd = (s) => {
+      if (!s || typeof s !== 'string') return null
+      const d = new Date(`${s}T23:59:59.999`)
+      return isValidDate(d) ? d : null
+    }
+    let startDt = parseDateOnlyStart(startDateRange)
+    let endDt = parseDateOnlyEnd(endDateRange)
+    if (startDt && endDt && startDt.getTime() > endDt.getTime()) {
+      const tmp = startDt
+      startDt = endDt
+      endDt = tmp
+    }
+    if (startDt && endDt) {
+      searchArgs.pointTimestamp = { $gte: startDt, $lte: endDt }
+    } else if (startDt) {
+      searchArgs.pointTimestamp = { $gte: startDt }
+    } else if (endDt) {
+      searchArgs.pointTimestamp = { $lte: endDt }
     }
 
-    // Handle groupId filter
     if (groupId) {
-      searchArgs.groupId = groupId;
+      searchArgs.groupId = groupId
     }
 
-    // Handle userId filter
     if (userId) {
       const userIdToFilter = mongoose.Types.ObjectId.isValid(userId)
         ? mongoose.Types.ObjectId(userId)
-        : userId;
-      searchArgs.userId = userIdToFilter;
+        : userId
+      searchArgs.userId = userIdToFilter
     } else if (friendsOnly) {
       if (!context.user || !context.user._id) {
         return {
@@ -69,14 +76,18 @@ export const getFeaturedPosts = () => {
             limit,
             offset,
           },
-        };
+        }
       }
 
-      const currentUser = await UserModel.findById(context.user._id);
-      if (currentUser && currentUser._followingId && currentUser._followingId.length > 0) {
+      const currentUser = await UserModel.findById(context.user._id)
+      if (
+        currentUser &&
+        currentUser._followingId &&
+        currentUser._followingId.length > 0
+      ) {
         searchArgs.userId = {
           $in: currentUser._followingId,
-        };
+        }
       } else {
         return {
           entities: [],
@@ -85,25 +96,28 @@ export const getFeaturedPosts = () => {
             limit,
             offset,
           },
-        };
+        }
       }
     }
 
-    // Handle approved filter
     if (approved !== undefined && approved !== null) {
-      searchArgs.approved = approved;
+      let approvedValue = approved
+      if (typeof approved === 'boolean') {
+        approvedValue = approved ? 1 : 0
+      }
+      searchArgs.approved = approvedValue
     }
 
     // Handle deleted filter
     if (deleted !== undefined && deleted !== null) {
-      searchArgs.deleted = deleted;
+      searchArgs.deleted = deleted
     }
 
     // Determine sort direction based on sortOrder parameter
-    const sortDirection = sortOrder === 'asc' ? 1 : -1;
+    const sortDirection = sortOrder === 'asc' ? 1 : -1
 
-    let featuredPosts;
-    let totalPosts;
+    let featuredPosts
+    let totalPosts
 
     if (interactions) {
       // Use aggregation for interactions sorting with proper lookups
@@ -143,80 +157,69 @@ export const getFeaturedPosts = () => {
             created: sortDirection,
           },
         },
-        {
-          $skip: offset,
-        },
-        {
-          $limit: limit,
-        },
-      ];
+        { $skip: offset },
+        { $limit: limit },
+      ]
 
-      // Get total count for pagination
-      const countPipeline = [
-        { $match: searchArgs },
-        {
-          $count: 'total',
-        },
-      ];
+      const countPipeline = [{ $match: searchArgs }, { $count: 'total' }]
 
       const [postsResult, countResult] = await Promise.all([
         PostModel.aggregate(aggregationPipeline),
         PostModel.aggregate(countPipeline),
-      ]);
+      ])
 
-      featuredPosts = postsResult;
-      totalPosts = countResult.length > 0 ? countResult[0].total : 0;
+      featuredPosts = postsResult
+      totalPosts = countResult.length > 0 ? countResult[0].total : 0
     } else {
-      // Simple query with proper indexing
-      totalPosts = await PostModel.find(searchArgs).count();
+      totalPosts = await PostModel.countDocuments(searchArgs)
 
       const sortCriteria = {
         featuredSlot: 1,
         created: sortOrder === 'asc' ? 'asc' : 'desc',
-      };
+      }
 
       featuredPosts = await PostModel.find(searchArgs)
         .sort(sortCriteria)
         .skip(offset)
-        .limit(limit);
+        .limit(limit)
     }
 
     // Optimize creator population using aggregation instead of N+1 queries
     if (featuredPosts.length > 0) {
-      const userIds = featuredPosts.map((post) => post.userId || post.userId);
-      const uniqueUserIds = [...new Set(userIds)];
+      const userIds = featuredPosts.map((post) => post.userId || post.userId)
+      const uniqueUserIds = [...new Set(userIds)]
 
       // Fetch all creators in one query
       const creators = await UserModel.find({
         _id: { $in: uniqueUserIds },
-      }).select('_id name username avatar');
+      }).select('_id name username avatar')
 
       // Create a map for fast lookup
-      const creatorMap = new Map();
+      const creatorMap = new Map()
       creators.forEach((creator) => {
-        creatorMap.set(creator._id.toString(), creator);
-      });
+        creatorMap.set(creator._id.toString(), creator)
+      })
 
       // Populate creator information efficiently
       const postsWithCreator = featuredPosts.map((post) => {
-        const postObj = post.toObject ? post.toObject() : post;
-        const creator = creatorMap.get((post.userId || post.userId).toString());
+        const postObj = post.toObject ? post.toObject() : post
+        const creator = creatorMap.get((post.userId || post.userId).toString())
 
         return {
           ...postObj,
           creator: creator
             ? {
-              _id: creator._id,
-              name: creator.name,
-              username: creator.username,
-              avatar: creator.avatar,
-            }
+                _id: creator._id,
+                name: creator.name,
+                username: creator.username,
+                avatar: creator.avatar,
+              }
             : null,
           votedBy: Array.isArray(postObj.votedBy)
             ? postObj.votedBy.map((v) => (v.userId ? v.userId.toString() : v))
             : [],
-        };
-      });
+        }
+      })
 
       return {
         entities: postsWithCreator,
@@ -225,7 +228,7 @@ export const getFeaturedPosts = () => {
           limit,
           offset,
         },
-      };
+      }
     }
 
     return {
@@ -235,6 +238,8 @@ export const getFeaturedPosts = () => {
         limit,
         offset,
       },
-    };
-  };
-};
+    }
+  }
+}
+
+export default getFeaturedPosts

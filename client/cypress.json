@@ -2,7 +2,7 @@
   "env": {
     "test_username": "hhsb",
     "test_password": "hhsb",
-    "root_url": "http://localhost:3000"
+    "root_url": "http://localhost:8080"
   },
   "ignoreTestFiles": "**/examples/*.spec.js"
 }

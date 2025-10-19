@@ -9,7 +9,10 @@ import PostCard from './PostCard'
 import PostSkeleton from './PostSkeleton'
 import PaginatedList from '../common/PaginatedList'
 import { GET_TOP_POSTS } from '../../graphql/query'
-import { createGraphQLVariables, extractPaginationData } from '../../utils/pagination'
+import {
+  createGraphQLVariables,
+  extractPaginationData,
+} from '../../utils/pagination'
 import { usePaginationWithFilters } from '../../hooks/usePagination'
 
 const useStyles = makeStyles((theme) => ({
@@ -19,52 +22,49 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     boxSizing: 'border-box',
   },
-  postCard: {
-    marginBottom: theme.spacing(-3.125), // -25px to match original spacing
-    width: '100%',
-    maxWidth: '100%',
-    overflowX: 'hidden',
-    boxSizing: 'border-box',
-  },
 }))
 
-function PaginatedPostsList({
-  // Pagination props
-  defaultPageSize = 20,
-  pageParam = 'page',
-  pageSizeParam = 'page_size',
-  
-  // Filter props
-  searchKey = '',
-  startDateRange,
-  endDateRange,
-  friendsOnly = false,
-  interactions = false,
-  userId,
-  sortOrder,
-  groupId,
-  approved,
-  
-  // Component props
-  cols = 1,
-  showPageInfo = true,
-  showFirstLast = true,
-  maxVisiblePages = 5,
-  
-  // Callbacks
-  onPageChange,
-  onPageSizeChange,
-  onRefresh,
-  onTotalCountChange,
-  
-  // Styling
-  className,
-  contentClassName,
-  paginationClassName,
-  
-  // Other props
-  ...otherProps
-}) {
+function PaginatedPostsList(props) {
+  const {
+    // Pagination props
+    defaultPageSize = 20,
+    pageParam = 'page',
+    pageSizeParam = 'page_size',
+
+    // Filter props
+    searchKey = '',
+    startDateRange,
+    endDateRange,
+    friendsOnly = false,
+    interactions = false,
+    userId,
+    sortOrder,
+    groupId,
+    approved,
+
+    // Component props
+    cols = 1,
+    showPageInfo = true,
+    showFirstLast = true,
+    maxVisiblePages = 5,
+
+    // Callbacks
+    onPageChange,
+    onPageSizeChange,
+    onRefresh,
+    onTotalCountChange,
+
+    // Styling
+    className,
+    contentClassName,
+    paginationClassName,
+
+    // Other props
+    ...otherProps
+  } = props
+
+  // Ensure approved is always boolean
+  const approvedBool = typeof approved === 'boolean' ? approved : !!approved
   const classes = useStyles()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.data)
@@ -79,7 +79,16 @@ function PaginatedPostsList({
       onPageChange,
       onPageSizeChange,
     },
-    [searchKey, startDateRange, endDateRange, friendsOnly, interactions, userId, sortOrder, groupId, approved]
+    [
+      startDateRange,
+      endDateRange,
+      friendsOnly,
+      interactions,
+      userId,
+      sortOrder,
+      groupId,
+      approvedBool,
+    ],
   )
 
   // Create GraphQL variables
@@ -94,7 +103,7 @@ function PaginatedPostsList({
     userId,
     sortOrder,
     groupId,
-    approved,
+    approved: approvedBool,
   })
 
   // Fetch data
@@ -129,7 +138,10 @@ function PaginatedPostsList({
   }
 
   // Extract and process data
-  const { entities, pagination: paginationData } = extractPaginationData(data, 'posts')
+  const { entities, pagination: paginationData } = extractPaginationData(
+    data,
+    'posts',
+  )
 
   // Notify parent of total count changes
   useEffect(() => {
@@ -138,7 +150,6 @@ function PaginatedPostsList({
     }
   }, [paginationData.total_count, onTotalCountChange])
 
-  
   // Filter out hidden posts and add rank
   const processedPosts = entities
     .map((post, index) => ({ ...post, rank: index + 1 }))
@@ -146,12 +157,13 @@ function PaginatedPostsList({
 
   // Render individual post
   const renderPost = (post) => (
-    <Grid item key={post._id} className={classes.postCard} style={{ width: '100%', maxWidth: '100%' }}>
-      <PostCard
-        {...post}
-        onHidePost={handleHidePost}
-        user={user}
-      />
+    <Grid
+      item
+      key={post._id}
+      className={classes.postCard}
+      style={{ width: '100%', maxWidth: '100%' }}
+    >
+      <PostCard {...post} onHidePost={handleHidePost} user={user} />
     </Grid>
   )
 
@@ -161,7 +173,9 @@ function PaginatedPostsList({
       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📝</div>
       <h3 style={{ color: '#666', marginBottom: '0.5rem' }}>No posts found</h3>
       <p style={{ color: '#999' }}>
-        {searchKey ? `No posts match your search for "${searchKey}"` : 'No posts available at the moment'}
+        {searchKey
+          ? `No posts match your search for "${searchKey}"`
+          : 'No posts available at the moment'}
       </p>
     </Box>
   )
@@ -170,7 +184,9 @@ function PaginatedPostsList({
   const renderError = (error, onRetry) => (
     <Box style={{ textAlign: 'center', padding: '2rem' }}>
       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</div>
-      <h3 style={{ color: '#d32f2f', marginBottom: '0.5rem' }}>Something went wrong</h3>
+      <h3 style={{ color: '#d32f2f', marginBottom: '0.5rem' }}>
+        Something went wrong
+      </h3>
       <p style={{ color: '#666', marginBottom: '1rem' }}>
         {error.message || 'An error occurred while loading posts'}
       </p>
@@ -201,7 +217,11 @@ function PaginatedPostsList({
       alignItems="stretch"
       spacing={2}
     >
-      <Grid item className={classes.postCard} style={{ width: '100%', maxWidth: '100%' }}>
+      <Grid
+        item
+        className={classes.postCard}
+        style={{ width: '100%', maxWidth: '100%' }}
+      >
         <PostSkeleton />
       </Grid>
     </Grid>
@@ -229,13 +249,7 @@ function PaginatedPostsList({
       paginationClassName={paginationClassName}
       {...otherProps}
     >
-      <Grid
-        container
-        direction="column"
-        justify="center"
-        alignItems="stretch"
-        spacing={0}
-      >
+      <Grid container direction="column" justify="center" spacing={0}>
         {processedPosts.map(renderPost)}
       </Grid>
     </PaginatedList>
@@ -247,7 +261,7 @@ PaginatedPostsList.propTypes = {
   defaultPageSize: PropTypes.number,
   pageParam: PropTypes.string,
   pageSizeParam: PropTypes.string,
-  
+
   // Filter props
   searchKey: PropTypes.string,
   startDateRange: PropTypes.string,
@@ -257,20 +271,20 @@ PaginatedPostsList.propTypes = {
   userId: PropTypes.string,
   sortOrder: PropTypes.string,
   groupId: PropTypes.string,
-  approved: PropTypes.number,
-  
+  approved: PropTypes.bool,
+
   // Component props
   cols: PropTypes.number,
   showPageInfo: PropTypes.bool,
   showFirstLast: PropTypes.bool,
   maxVisiblePages: PropTypes.number,
-  
+
   // Callbacks
   onPageChange: PropTypes.func,
   onPageSizeChange: PropTypes.func,
   onRefresh: PropTypes.func,
   onTotalCountChange: PropTypes.func,
-  
+
   // Styling
   className: PropTypes.string,
   contentClassName: PropTypes.string,

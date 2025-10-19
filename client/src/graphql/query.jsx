@@ -222,6 +222,8 @@ export const GET_TOP_POSTS = gql`
     $friendsOnly: Boolean
     $interactions: Boolean
     $userId: String
+    $groupId: String
+    $approved: Boolean
     $sortOrder: String
   ) {
     posts(
@@ -233,6 +235,8 @@ export const GET_TOP_POSTS = gql`
       friendsOnly: $friendsOnly
       interactions: $interactions
       userId: $userId
+      groupId: $groupId
+      approved: $approved
       sortOrder: $sortOrder
     ) {
       entities {
@@ -294,6 +298,8 @@ export const GET_PAGINATED_POSTS = gql`
     $friendsOnly: Boolean
     $interactions: Boolean
     $userId: String
+    $groupId: String
+    $approved: Boolean
     $sortOrder: String
   ) {
     posts(
@@ -305,6 +311,8 @@ export const GET_PAGINATED_POSTS = gql`
       friendsOnly: $friendsOnly
       interactions: $interactions
       userId: $userId
+      groupId: $groupId
+      approved: $approved
       sortOrder: $sortOrder
     ) {
       entities {
@@ -491,13 +499,13 @@ export const GET_USER_ACTIVITY = gql`
           }
           bookmarkedBy
           created
-                  creator {
-          _id
-          name
-          username
-          avatar
-          contributorBadge
-        }
+          creator {
+            _id
+            name
+            username
+            avatar
+            contributorBadge
+          }
         }
         voteId
         vote {
@@ -591,7 +599,7 @@ export const GET_LATEST_QUOTES = gql`
     }
   }
 `
-export const GET_FEATURED_POSTS = gql` 
+export const GET_FEATURED_POSTS = gql`
   query featuredPosts(
     $limit: Int
     $offset: Int
