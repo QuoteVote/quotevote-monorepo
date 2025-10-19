@@ -52,6 +52,7 @@ hist.listen(() => {
   window.scrollTo(0, 0)
 })
 
+// Create theme from customTheme config - keeps all activity card colors and custom theme properties
 const theme = createTheme(customTheme)
 
 ReactDOM.render(

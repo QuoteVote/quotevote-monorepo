@@ -12,8 +12,8 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css'
 // import sidebar2 from '/assets/sidebar-2.jpg'
 
 // @material-ui/core components
-import { makeStyles, ThemeProvider } from '@mui/material/styles'
-import theme from '../themes/MainTheme'
+import { makeStyles } from '@mui/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 // core components
 import AdminNavbar from 'mui-pro/Navbars/AdminNavbar'

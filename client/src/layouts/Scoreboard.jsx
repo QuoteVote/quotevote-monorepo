@@ -8,9 +8,8 @@ import PrivateRoute from '../components/PrivateRoute'
 // creates a beautiful scrollbar
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import { ThemeProvider, useTheme } from '@mui/material/styles'
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider, makeStyles } from '@mui/styles'
-import theme from '../themes/MainTheme'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import CssBaseline from '@mui/material/CssBaseline'
 
@@ -23,6 +22,26 @@ import Snackbar from 'mui-pro/Snackbar/Snackbar'
 import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
+
+// Create theme matching main app theme
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#52b274',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#E91E63',
+      contrastText: '#fff',
+    },
+    background: {
+      default: '#EEF4F9',
+    },
+  },
+  typography: {
+    useNextVariants: true,
+  },
+})
 
 const useStyles = makeStyles(styles)
 
