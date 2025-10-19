@@ -580,12 +580,17 @@ export default function SearchPage() {
   // Helper function to determine if we should show the landing page for guest users
   const shouldShowGuestLandingPage = () => {
     if (!isGuestMode) return false
-    
+
     const { page } = extractUrlParams({ search: window.location.search })
     const hasPageParam = Boolean(page)
-    
+
     // Show landing page only when no search, no filters, no interactions, and no page params
-    return !searchKey.trim() && !hasActiveFilters() && !hasEverInteractedWithFilters && !hasPageParam
+    return (
+      !searchKey.trim() &&
+      !hasActiveFilters() &&
+      !hasEverInteractedWithFilters &&
+      !hasPageParam
+    )
   }
 
   // Helper function to check if any filters are active
@@ -667,18 +672,24 @@ export default function SearchPage() {
   )
 
   const handleQuickDateSelect = (period) => {
-    const endDate = new Date()
+    // Use day-aligned windows for consistent results with date-only GraphQL filters
+    // Past Day: today
+    // Past Week: last 7 days including today
+    // Past Month: last 30 days including today
+    const today = new Date()
+    // Normalize to local day boundary via formatting downstream (yyyy-MM-dd)
+    const endDate = today
     let startDate
 
     switch (period) {
       case 'day':
-        startDate = subDays(endDate, 1)
+        startDate = today
         break
       case 'week':
-        startDate = subDays(endDate, 7)
+        startDate = subDays(today, 6)
         break
       case 'month':
-        startDate = subDays(endDate, 30)
+        startDate = subDays(today, 29)
         break
       default:
         return

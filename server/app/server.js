@@ -1,5 +1,4 @@
 import dotenvConfig from 'dotenv';
-dotenvConfig.config();
 
 import express from 'express';
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
@@ -18,15 +17,13 @@ import {
 } from './data/utils/authentication';
 
 import { schema } from './data/schema';
-import requireAuth from '~/utils/requireAuth';
+import requireAuth from '~/utils/requireAuth'
 
-if (process.env.NODE_ENV === 'dev') {
-  dotenvConfig.config({ path: './.env' });
-}
+dotenvConfig.config()
 
-if (process.env.CLIENT_URL.endsWith('/')) {
-  logger.info('CLIENT_URL ends with /, removing it');
-  process.env.CLIENT_URL = process.env.CLIENT_URL.slice(0, -1);
+if (process.env.CLIENT_URL && process.env.CLIENT_URL.endsWith('/')) {
+  logger.info('CLIENT_URL ends with /, removing it')
+  process.env.CLIENT_URL = process.env.CLIENT_URL.slice(0, -1)
 }
 
 const GRAPHQL_PORT = process.env.PORT || 3000;
@@ -47,52 +44,55 @@ const connectDB = async () => {
       writeConcern: {
         w: 'majority',
         j: true,
-        wtimeout: 10000
-      }
-    });
-    logger.info('MongoDB Connected...');
+        wtimeout: 10000,
+      },
+    })
+    logger.info('MongoDB Connected...')
   } catch (err) {
     console.error('MongoDB connection error:', err.stack);
     process.exit(1);
   }
-};
+}
 
 connectDB();
 
 const app = express();
 
 // ✅ GLOBAL CORS middleware
-app.use(cors({
-  origin(origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    const allowedOrigins = [
-      'http://localhost:8080',
-      'https://www.quote.vote',
-      'https://quote.vote',
+      const allowedOrigins = [
+        'http://localhost:8080',
+        'https://www.quote.vote',
+        'https://quote.vote',
     ];
 
-    // Check if origin matches allowed origins or patterns
-    if (allowedOrigins.includes(origin)
-        || /\.netlify\.app$/.test(origin)
-        || /\.quote\.vote$/.test(origin)) {
-      return callback(null, true);
-    }
+      // Check if origin matches allowed origins or patterns
+      if (
+        allowedOrigins.includes(origin) ||
+        /\.netlify\.app$/.test(origin) ||
+        /\.quote\.vote$/.test(origin)
+      ) {
+        return callback(null, true)
+      }
 
     return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'Cache-Control',
-    'Pragma',
-    'Origin',
-    'X-Requested-With',
-  ],
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Cache-Control',
+      'Pragma',
+      'Origin',
+      'X-Requested-With',
+    ],
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
 }));
 
 app.use(bodyParser.json({ limit: '17mb' }));
@@ -124,9 +124,12 @@ const server = new ApolloServer({
     let authToken = '';
     let isSubscription = false;
     if (connection) {
-      authToken = connection.context.authorization || connection.context.token || connection.context.authToken;
-      isSubscription = true;
-      console.log('[SUBSCRIPTION CONNECTION]');
+      authToken =
+        connection.context.authorization ||
+        connection.context.token ||
+        connection.context.authToken
+      isSubscription = true
+      console.log('[SUBSCRIPTION CONNECTION]')
     } else {
       authToken = req.headers.authorization || req.headers.token;
     }

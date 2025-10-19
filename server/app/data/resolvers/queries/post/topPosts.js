@@ -25,20 +25,15 @@ export const topPosts = () => {
         sortOrder,
       } = args
 
-      // Validate required parameters
-      if (limit === undefined || limit === null) {
-        console.error('topPosts - limit is required but not provided')
-        throw new Error('limit parameter is required')
-      }
-
-      if (offset === undefined || offset === null) {
-        console.error('topPosts - offset is required but not provided')
-        throw new Error('offset parameter is required')
-      }
+      // Normalize pagination with safe defaults and clamping
+      const rawLimit = Number.isFinite(Number(limit)) ? Number(limit) : 20
+      const rawOffset = Number.isFinite(Number(offset)) ? Number(offset) : 0
+      const safeLimit = Math.max(1, Math.min(100, Math.trunc(rawLimit)))
+      const safeOffset = Math.max(0, Math.trunc(rawOffset))
 
       console.log('topPosts - Validated parameters:', {
-        limit,
-        offset,
+        limit: safeLimit,
+        offset: safeOffset,
         searchKey,
         friendsOnly,
         interactions,
@@ -58,30 +53,41 @@ export const topPosts = () => {
         ]
       }
 
-      // Handle date range filter - can be combined with search and friendsOnly
-      if (startDateRange && endDateRange) {
-        const inclusiveEndDate = new Date(endDateRange)
-        inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1)
-        searchArgs.pointTimestamp = {
-          $gte: new Date(startDateRange),
-          $lte: new Date(inclusiveEndDate),
-        }
-      } else if (startDateRange) {
-        searchArgs.pointTimestamp = {
-          $gte: new Date(startDateRange),
-        }
-      } else if (endDateRange) {
-        const inclusiveEndDate = new Date(endDateRange)
-        inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1)
+      // Helpers for robust date-only parsing (treat yyyy-MM-dd as local day)
+      const isValidDate = (d) => d instanceof Date && !Number.isNaN(d.getTime())
+      const parseDateOnlyStart = (s) => {
+        if (!s || typeof s !== 'string') return null
+        const d = new Date(`${s}T00:00:00`)
+        return isValidDate(d) ? d : null
+      }
+      const parseDateOnlyEnd = (s) => {
+        if (!s || typeof s !== 'string') return null
+        const d = new Date(`${s}T23:59:59.999`)
+        return isValidDate(d) ? d : null
+      }
 
-        searchArgs.pointTimestamp = {
-          $lt: inclusiveEndDate, // Use $lt (less than)
-        }
+      // Handle date range filter - can be combined with search and friendsOnly
+      let startDt = parseDateOnlyStart(startDateRange)
+      let endDt = parseDateOnlyEnd(endDateRange)
+      // If start > end, swap to avoid empty ranges
+      if (startDt && endDt && startDt.getTime() > endDt.getTime()) {
+        const tmp = startDt
+        startDt = endDt
+        endDt = tmp
+      }
+      if (startDt && endDt) {
+        searchArgs.pointTimestamp = { $gte: startDt, $lte: endDt }
+      } else if (startDt) {
+        searchArgs.pointTimestamp = { $gte: startDt }
+      } else if (endDt) {
+        searchArgs.pointTimestamp = { $lte: endDt }
       }
 
       // Handle groupId filter - can be combined with other filters
       if (groupId) {
-        searchArgs.groupId = groupId
+        searchArgs.groupId = mongoose.Types.ObjectId.isValid(groupId)
+          ? mongoose.Types.ObjectId(groupId)
+          : groupId
       }
 
       // Handle userId filter - if userId is provided, only return posts for that user
@@ -108,8 +114,8 @@ export const topPosts = () => {
             entities: [],
             pagination: {
               total_count: 0,
-              limit,
-              offset,
+              limit: safeLimit,
+              offset: safeOffset,
             },
           }
         }
@@ -132,16 +138,21 @@ export const topPosts = () => {
             entities: [],
             pagination: {
               total_count: 0,
-              limit,
-              offset,
+              limit: safeLimit,
+              offset: safeOffset,
             },
           }
         }
       }
 
       // Handle approved filter - can be combined with other filters
-      if (approved !== undefined) {
-        searchArgs.approved = approved
+      if (approved !== undefined && approved !== null) {
+        // DB schema stores approved as Number; coerce boolean to numeric
+        if (typeof approved === 'boolean') {
+          searchArgs.approved = approved ? 1 : 0
+        } else {
+          searchArgs.approved = approved
+        }
       }
 
       // Determine sort direction based on sortOrder parameter
@@ -189,12 +200,8 @@ export const topPosts = () => {
               created: sortDirection,
             },
           },
-          {
-            $skip: offset,
-          },
-          {
-            $limit: limit,
-          },
+          { $skip: safeOffset },
+          { $limit: safeLimit },
         ]
 
         // Get total count for pagination
@@ -214,7 +221,7 @@ export const topPosts = () => {
         totalPosts = countResult.length > 0 ? countResult[0].total : 0
       } else {
         // Original logic for when interactions is false
-        totalPosts = await PostModel.find(searchArgs).count()
+        totalPosts = await PostModel.countDocuments(searchArgs)
 
         // Build sort criteria with configurable direction
         const sortCriteria = {
@@ -225,8 +232,8 @@ export const topPosts = () => {
           searchKey,
           searchKeyTrimmed: searchKey ? searchKey.trim() : null,
           searchArgs,
-          offset,
-          limit,
+          offset: safeOffset,
+          limit: safeLimit,
           totalPosts,
           sortCriteria,
           sortOrder,
@@ -244,8 +251,8 @@ export const topPosts = () => {
 
         trendingPosts = await PostModel.find(searchArgs)
           .sort(sortCriteria)
-          .skip(offset)
-          .limit(limit)
+          .skip(safeOffset)
+          .limit(safeLimit)
 
         console.log('topPosts - Posts found:', trendingPosts.length)
         console.log(
@@ -254,12 +261,33 @@ export const topPosts = () => {
         )
       }
 
-      // Populate creator information
-      const postsWithCreator = await Promise.all(
-        trendingPosts.map(async (post) => {
-          const creator = await UserModel.findById(post.userId)
-          // Handle both mongoose documents and aggregation results
+      // Populate creator information efficiently (batch fetch to avoid N+1)
+      let postsWithCreator = []
+      if (trendingPosts && trendingPosts.length > 0) {
+        const userIds = trendingPosts
+          .map((post) => post.userId)
+          .filter((id) => !!id)
+          .map((id) => (id.toString ? id.toString() : String(id)))
+
+        const uniqueUserIds = [...new Set(userIds)]
+
+        const creators = await UserModel.find({
+          _id: { $in: uniqueUserIds },
+        }).select('_id name username avatar')
+
+        const creatorMap = new Map()
+        creators.forEach((c) => {
+          creatorMap.set(c._id.toString(), c)
+        })
+
+        postsWithCreator = trendingPosts.map((post) => {
           const postObj = post.toObject ? post.toObject() : post
+          const creator = creatorMap.get(
+            post.userId && post.userId.toString
+              ? post.userId.toString()
+              : String(post.userId),
+          )
+
           return {
             ...postObj,
             creator: creator
@@ -274,15 +302,15 @@ export const topPosts = () => {
               ? postObj.votedBy.map((v) => (v.userId ? v.userId.toString() : v))
               : [],
           }
-        }),
-      )
+        })
+      }
 
       return {
         entities: postsWithCreator,
         pagination: {
           total_count: totalPosts,
-          limit,
-          offset,
+          limit: safeLimit,
+          offset: safeOffset,
         },
       }
     } catch (error) {

@@ -19,13 +19,11 @@ export const getFeaturedPosts = () => {
       sortOrder,
     } = args
 
-    // Build search arguments - always include featured slot requirement and exclude deleted posts
     const searchArgs = {
       featuredSlot: { $ne: null },
-      deleted: { $ne: true }, // Exclude deleted posts
+      deleted: { $ne: true },
     }
 
-    // Handle text search - can be combined with other filters
     if (searchKey && searchKey.trim()) {
       searchArgs.$or = [
         { title: { $regex: searchKey.trim(), $options: 'i' } },
@@ -33,33 +31,37 @@ export const getFeaturedPosts = () => {
       ]
     }
 
-    // Handle date range filter
-    if (startDateRange && endDateRange) {
-      const inclusiveEndDate = new Date(endDateRange)
-      inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1)
-      searchArgs.pointTimestamp = {
-        $gte: new Date(startDateRange),
-        $lte: new Date(inclusiveEndDate),
-      }
-    } else if (startDateRange) {
-      searchArgs.pointTimestamp = {
-        $gte: new Date(startDateRange),
-      }
-    } else if (endDateRange) {
-      const inclusiveEndDate = new Date(endDateRange)
-      inclusiveEndDate.setDate(inclusiveEndDate.getDate() + 1)
-
-      searchArgs.pointTimestamp = {
-        $lt: inclusiveEndDate, // Use $lt (less than)
-      }
+    // Robust date-only parsing aligned with topPosts
+    const isValidDate = (d) => d instanceof Date && !Number.isNaN(d.getTime())
+    const parseDateOnlyStart = (s) => {
+      if (!s || typeof s !== 'string') return null
+      const d = new Date(`${s}T00:00:00`)
+      return isValidDate(d) ? d : null
+    }
+    const parseDateOnlyEnd = (s) => {
+      if (!s || typeof s !== 'string') return null
+      const d = new Date(`${s}T23:59:59.999`)
+      return isValidDate(d) ? d : null
+    }
+    let startDt = parseDateOnlyStart(startDateRange)
+    let endDt = parseDateOnlyEnd(endDateRange)
+    if (startDt && endDt && startDt.getTime() > endDt.getTime()) {
+      const tmp = startDt
+      startDt = endDt
+      endDt = tmp
+    }
+    if (startDt && endDt) {
+      searchArgs.pointTimestamp = { $gte: startDt, $lte: endDt }
+    } else if (startDt) {
+      searchArgs.pointTimestamp = { $gte: startDt }
+    } else if (endDt) {
+      searchArgs.pointTimestamp = { $lte: endDt }
     }
 
-    // Handle groupId filter
     if (groupId) {
       searchArgs.groupId = groupId
     }
 
-    // Handle userId filter
     if (userId) {
       const userIdToFilter = mongoose.Types.ObjectId.isValid(userId)
         ? mongoose.Types.ObjectId(userId)
@@ -98,9 +100,12 @@ export const getFeaturedPosts = () => {
       }
     }
 
-    // Handle approved filter
     if (approved !== undefined && approved !== null) {
-      searchArgs.approved = approved
+      let approvedValue = approved
+      if (typeof approved === 'boolean') {
+        approvedValue = approved ? 1 : 0
+      }
+      searchArgs.approved = approvedValue
     }
 
     // Handle deleted filter
@@ -152,21 +157,11 @@ export const getFeaturedPosts = () => {
             created: sortDirection,
           },
         },
-        {
-          $skip: offset,
-        },
-        {
-          $limit: limit,
-        },
+        { $skip: offset },
+        { $limit: limit },
       ]
 
-      // Get total count for pagination
-      const countPipeline = [
-        { $match: searchArgs },
-        {
-          $count: 'total',
-        },
-      ]
+      const countPipeline = [{ $match: searchArgs }, { $count: 'total' }]
 
       const [postsResult, countResult] = await Promise.all([
         PostModel.aggregate(aggregationPipeline),
@@ -176,8 +171,7 @@ export const getFeaturedPosts = () => {
       featuredPosts = postsResult
       totalPosts = countResult.length > 0 ? countResult[0].total : 0
     } else {
-      // Simple query with proper indexing
-      totalPosts = await PostModel.find(searchArgs).count()
+      totalPosts = await PostModel.countDocuments(searchArgs)
 
       const sortCriteria = {
         featuredSlot: 1,
@@ -247,3 +241,5 @@ export const getFeaturedPosts = () => {
     }
   }
 }
+
+export default getFeaturedPosts
