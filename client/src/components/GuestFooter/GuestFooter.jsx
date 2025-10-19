@@ -1,7 +1,10 @@
 import { Grid, Typography, useTheme } from '@mui/material'
+import GitHubIcon from '@mui/icons-material/GitHub'
+import { useMobileDetection } from '@/utils/display'
 
 const GuestFooter = ({ isRequestAccess = false }) => {
   const theme = useTheme()
+  const isMobile = useMobileDetection()
 
   return (
     <Grid
@@ -99,14 +102,14 @@ const GuestFooter = ({ isRequestAccess = false }) => {
           onMouseEnter={(e) => (e.target.style.backgroundColor = '#f0f0f0')}
           onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
         >
-          <GitHub 
+          <GitHubIcon 
             style={{ 
-              fontSize: '16px',
-              color: BRAND_COLORS.navy,
-              transition: 'all 0.2s ease'
+              fontSize: '20px',
+              marginRight: '8px',
+              verticalAlign: 'middle'
             }} 
           />
-          <span>GitHub</span>
+          <span style={{ verticalAlign: 'middle' }}>GitHub</span>
         </a>
       </Grid>
     </Grid>
