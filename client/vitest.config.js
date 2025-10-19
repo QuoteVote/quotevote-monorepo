@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export default defineConfig({
-  plugins: [react({ jsxRuntime: 'classic', include: '**/*.{js,jsx,ts,tsx}' })],
+  plugins: [react({ jsxRuntime: 'automatic', include: '**/*.{js,jsx,ts,tsx}' })],
   test: {
     globals: true,
     environment: 'jsdom',
@@ -32,8 +32,16 @@ export default defineConfig({
   },
   resolve: {
     alias: [
-  { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-dev-runtime.js') },
-  { find: 'react/jsx-runtime', replacement: resolve(__dirname, '..', 'node_modules', 'react', 'jsx-runtime.js') },
+  { find: 'react/jsx-dev-runtime', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime.js'))
+      ? resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime.js')
+      : resolve(__dirname, '..', 'node_modules', 'react', 'jsx-dev-runtime.js')
+  ) },
+  { find: 'react/jsx-runtime', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', 'react', 'jsx-runtime.js'))
+      ? resolve(__dirname, 'node_modules', 'react', 'jsx-runtime.js')
+      : resolve(__dirname, '..', 'node_modules', 'react', 'jsx-runtime.js')
+  ) },
       { find: '@', replacement: resolve(__dirname, 'src') },
   // Resolve the hoisted ESM build for @emotion/styled so deep-subpath
   // imports don't get appended to a local shim file path.

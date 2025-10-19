@@ -13,14 +13,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react({
-        // Use classic runtime so transformed JSX doesn't import react/jsx-runtime
-        // which simplifies resolution in this hoisted monorepo environment.
-        jsxRuntime: 'classic',
-        babel: {
-          plugins: [
-            ['@babel/plugin-transform-react-jsx', { runtime: 'classic' }],
-          ],
-        },
+        // Use automatic runtime so files don't need `import React` in scope
+        jsxRuntime: 'automatic',
       }),
       svgr({
         svgrOptions: {
@@ -35,8 +29,16 @@ export default defineConfig(({ mode }) => {
   // Prefer resolving package subpath imports via local shims so Vite can
   // statically analyze and rewrite them during transform. Using shims avoids
   // Node's ESM loader needing to resolve bare package subpaths at runtime.
-  { find: 'react/jsx-dev-runtime', replacement: resolve(__dirname, 'src', 'shims', 'react-jsx-dev-runtime.js') },
-  { find: 'react/jsx-runtime', replacement: resolve(__dirname, 'src', 'shims', 'react-jsx-runtime.js') },
+  { find: 'react/jsx-dev-runtime', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime.js'))
+      ? resolve(__dirname, 'node_modules', 'react', 'jsx-dev-runtime.js')
+      : resolve(__dirname, '..', 'node_modules', 'react', 'jsx-dev-runtime.js')
+  ) },
+  { find: 'react/jsx-runtime', replacement: (
+    existsSync(resolve(__dirname, 'node_modules', 'react', 'jsx-runtime.js'))
+      ? resolve(__dirname, 'node_modules', 'react', 'jsx-runtime.js')
+      : resolve(__dirname, '..', 'node_modules', 'react', 'jsx-runtime.js')
+  ) },
   { find: '@', replacement: resolve(__dirname, 'src') },
   // Add aliases for common directories
         { find: 'layouts', replacement: resolve(__dirname, 'src/layouts') },
@@ -210,7 +212,7 @@ export default defineConfig(({ mode }) => {
     },
     optimizeDeps: {
       esbuildOptions: {
-        jsx: 'classic',
+        jsx: 'automatic',
       },
       include: [
         'react',
