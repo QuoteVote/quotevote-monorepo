@@ -149,3 +149,24 @@ Your safety and a positive community experience are important on Quote.Vote. You
 📸 *Screenshot idea:* Show the report menu and block button on a post.  
 _Alt-text:_ “Reporting a post and blocking a user in Quote.Vote.”
 
+
+## Settings ##
+
+Customize Quote.Vote to match your preferences. You can change themes, notifications, and accessibility options to make the platform comfortable for you.
+
+**How to access settings:**  
+1. Click your **profile icon** at the top-right corner.  
+2. Select **Settings** from the dropdown menu.  
+
+**What you can do in Settings:**  
+- **Themes:** Switch between Light and Dark modes.  
+- **Notifications:** Choose which notifications you want to receive (e.g., votes, comments, mentions).  
+- **Accessibility:** Adjust contrast, font size, and enable screen reader support.  
+
+**Tips:**  
+- Dark mode helps reduce eye strain at night.  
+- Turn off notifications if you want focused reading time.  
+- Accessibility settings make the platform usable for everyone.  
+
+📸 *Screenshot idea:* Show the settings page with theme toggle and accessibility options.  
+_Alt-text:_ “Settings page showing theme switch, notifications, and accessibility options.”
