@@ -704,7 +704,7 @@ export default function SearchPage() {
           className={classes.container}
           spacing={1}
         >
-          <Grid item>
+          <Grid item style={{ marginBottom: '1.5rem' }}>
             <div className={classes.logoContainer}>
               <img
                 src="/assets/search-quote-vote.png"
@@ -714,10 +714,9 @@ export default function SearchPage() {
             </div>
           </Grid>
 
-          <Grid item>
+          <Grid item style={{ marginBottom: '2rem' }}>
             <Typography
               className={classes.tagline}
-              style={{ marginBottom: '1rem' }}
             >
               No algorithms. No ads. Just conversations.
             </Typography>
@@ -1138,12 +1137,19 @@ export default function SearchPage() {
               <>
                 {featuredData?.featuredPosts ? (
                   featuredPosts.length > 0 ? (
-                    <Grid item style={{ width: '100%', maxWidth: '800px' }}>
+                    <Grid item style={{ width: '100%', maxWidth: '800px', marginTop: '2rem' }}>
                       <Typography
-                        variant="h6"
-                        style={{ marginBottom: '1rem', textAlign: 'center' }}
+                        variant="h5"
+                        style={{ 
+                          marginBottom: '2rem', 
+                          textAlign: 'center',
+                          fontWeight: 700,
+                          fontSize: '1.5rem',
+                          color: '#111',
+                          letterSpacing: '0.5px'
+                        }}
                       >
-                        Featured Posts
+                        FEATURED POSTS
                       </Typography>
                       <Carousel navButtonsAlwaysVisible autoplay={false}>
                         {createCarouselItems}

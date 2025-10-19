@@ -60,35 +60,40 @@ export default function SearchGuestSections() {
       <section
         style={{
           width: '100%',
+          padding: '4rem 2rem',
         }}
       >
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
+        <Grid container spacing={4} alignItems="center" justifyContent="center">
           <Grid item xs={12}>
             <Typography
-              variant="h4"
+              variant="h3"
               style={{
-                fontWeight: 700,
-                marginTop: '2rem',
+                fontWeight: 800,
+                fontSize: '2.5rem',
+                marginBottom: '2rem',
+                textAlign: 'center',
+                lineHeight: 1.2,
               }}
             >
-              <span style={{ color: '#2ecc71' }}>See what people </span>{' '}
+              <span style={{ color: '#52b274' }}>See what people </span>
               <span style={{ color: '#111' }}>are talking about</span>
             </Typography>
           </Grid>
           <Grid
             item
+            xs={12}
             style={{
-              maxWidth: 400,
+              maxWidth: 700,
+              textAlign: 'center',
             }}
           >
             <Typography
-              variant="caption"
+              variant="body1"
               style={{
-                color: '#222',
-                fontSize: 16,
-                margin: '0 0 24px 18px',
-                padding: 0,
-                lineHeight: 1.7,
+                color: '#444',
+                fontSize: '1.125rem',
+                lineHeight: 1.8,
+                marginBottom: '2rem',
               }}
             >
               For a project as small as your household, or around the world,
@@ -101,9 +106,10 @@ export default function SearchGuestSections() {
         <Grid
           container
           direction={{ xs: 'column', lg: 'row' }}
-          spacing={2}
+          spacing={4}
           alignContent="center"
           justifyContent="center"
+          style={{ marginTop: '2rem' }}
         >
           <Grid item xs={12} md={6}>
             <img
@@ -112,6 +118,9 @@ export default function SearchGuestSections() {
               style={{
                 width: '100%',
                 height: 'auto',
+                maxWidth: 500,
+                margin: '0 auto',
+                display: 'block',
               }}
             />
           </Grid>
@@ -122,6 +131,9 @@ export default function SearchGuestSections() {
               style={{
                 width: '100%',
                 height: 'auto',
+                maxWidth: 500,
+                margin: '0 auto',
+                display: 'block',
               }}
             />
           </Grid>
@@ -132,19 +144,22 @@ export default function SearchGuestSections() {
       <section
         style={{
           width: '100%',
-          marginTop: '3rem',
+          marginTop: '4rem',
+          padding: '2rem',
         }}
       >
         <Grid container spacing={4} alignItems="center" justifyContent="center">
           <Grid item xs={12}>
             <Typography
-              variant="h4"
+              variant="h3"
               style={{
-                fontWeight: 700,
-                marginTop: '2rem',
+                fontWeight: 800,
+                fontSize: '2.5rem',
+                textAlign: 'center',
+                lineHeight: 1.2,
               }}
             >
-              <span style={{ color: '#2ecc71' }}>At any time</span>{' '}
+              <span style={{ color: '#52b274' }}>At any time</span>{' '}
               <span style={{ color: '#111' }}>put your Quote to Vote</span>
             </Typography>
           </Grid>
@@ -156,6 +171,9 @@ export default function SearchGuestSections() {
               style={{
                 width: '100%',
                 height: 'auto',
+                maxWidth: 900,
+                margin: '2rem auto',
+                display: 'block',
               }}
             />
           </Grid>
@@ -166,19 +184,22 @@ export default function SearchGuestSections() {
       <section
         style={{
           width: '100%',
-          marginTop: '3rem',
+          marginTop: '4rem',
+          padding: '2rem',
         }}
       >
         <Grid container spacing={4} alignItems="center" justifyContent="center">
           <Grid item xs={12}>
             <Typography
-              variant="h4"
+              variant="h3"
               style={{
-                fontWeight: 700,
-                marginTop: '2rem',
+                fontWeight: 800,
+                fontSize: '2.5rem',
+                textAlign: 'center',
+                lineHeight: 1.2,
               }}
             >
-              <span style={{ color: '#2ecc71' }}>Track </span>{' '}
+              <span style={{ color: '#52b274' }}>Track </span>
               <span style={{ color: '#111' }}>Conversations</span>
             </Typography>
           </Grid>
@@ -189,6 +210,9 @@ export default function SearchGuestSections() {
               style={{
                 width: '100%',
                 height: 'auto',
+                maxWidth: 900,
+                margin: '2rem auto',
+                display: 'block',
               }}
             />
           </Grid>
@@ -199,17 +223,20 @@ export default function SearchGuestSections() {
       <section
         style={{
           width: '100%',
-          marginTop: '3rem',
+          marginTop: '4rem',
           display: 'flex',
           justifyContent: 'center',
+          padding: '2rem',
         }}
       >
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 32,
+            gap: 48,
             marginTop: 32,
+            flexWrap: 'wrap',
+            justifyContent: 'center',
           }}
         >
           <Button
@@ -217,13 +244,14 @@ export default function SearchGuestSections() {
             style={{
               background: '#52b274',
               color: '#fff',
-              fontWeight: 600,
-              fontSize: 16,
-              borderRadius: 8,
+              fontWeight: 700,
+              fontSize: 18,
+              borderRadius: 12,
               textTransform: 'none',
-              boxShadow: '0 2px 8px rgba(46,204,113,0.08)',
+              boxShadow: '0 4px 16px rgba(82,178,116,0.24)',
+              padding: '16px 48px',
+              transition: 'all 0.2s ease',
             }}
-            size="small"
             onClick={() => {
               window.location.href = '/auth/request-access'
             }}
@@ -234,16 +262,16 @@ export default function SearchGuestSections() {
             href="/auth/request-access#mission"
             style={{
               color: '#52b274',
-              fontWeight: 500,
+              fontWeight: 600,
               fontSize: 18,
               textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
-              marginLeft: 16,
+              transition: 'all 0.2s ease',
             }}
           >
             Read our mission
-            <span style={{ fontSize: 28, marginLeft: 6 }}>»</span>
+            <span style={{ fontSize: 32, marginLeft: 8, fontWeight: 300 }}>»</span>
           </a>
         </div>
       </section>
@@ -252,9 +280,10 @@ export default function SearchGuestSections() {
       <section
         style={{
           width: '100%',
-          marginTop: '3rem',
+          marginTop: '4rem',
           display: 'flex',
           justifyContent: 'center',
+          padding: '2rem',
         }}
       >
         <Grid
@@ -267,31 +296,34 @@ export default function SearchGuestSections() {
             <Typography
               variant="h4"
               style={{
-                fontWeight: 700,
-                marginTop: '1.5rem',
-                marginBottom: '1rem',
+                fontWeight: 800,
+                fontSize: '2rem',
+                marginBottom: '1.5rem',
+                lineHeight: 1.2,
               }}
             >
-              <span style={{ color: '#2ecc71' }}>Discover</span>{' '}
+              <span style={{ color: '#52b274' }}>Discover</span>{' '}
               <span style={{ color: '#111' }}>without bias</span>
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               style={{
                 color: '#222',
-                fontSize: 16,
-                fontWeight: 700,
-                marginBottom: '.5rem',
+                fontSize: '1.125rem',
+                fontWeight: 600,
+                marginBottom: '1rem',
+                lineHeight: 1.6,
               }}
             >
               All conversations are searchable without ads, discovered through
               exploration, not algorithms.
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               style={{
-                color: '#222',
-                fontSize: 16,
+                color: '#444',
+                fontSize: '1rem',
+                lineHeight: 1.7,
               }}
             >
               Filter by keyword, only show from those you follow, sort by most
@@ -304,35 +336,38 @@ export default function SearchGuestSections() {
             <Typography
               variant="h4"
               style={{
-                fontWeight: 700,
-                marginTop: '1.5rem',
-                marginBottom: '1rem',
+                fontWeight: 800,
+                fontSize: '2rem',
+                marginBottom: '1.5rem',
+                lineHeight: 1.2,
               }}
             >
-              <span style={{ color: '#2ecc71' }}>Share </span>{' '}
+              <span style={{ color: '#52b274' }}>Share </span>
               <span style={{ color: '#111' }}>your ideas or plans</span>
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               style={{
                 color: '#222',
-                fontSize: 16,
-                fontWeight: 700,
-                marginBottom: '.5rem',
+                fontSize: '1.125rem',
+                fontWeight: 600,
+                marginBottom: '1rem',
+                lineHeight: 1.6,
               }}
             >
-              Post to your social circle and beyond.{' '}
+              Post to your social circle and beyond.
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               style={{
-                color: '#222',
-                fontSize: 16,
+                color: '#444',
+                fontSize: '1rem',
+                lineHeight: 1.7,
               }}
             >
               Engage in meaningful, respectful discussions, that solve your
               problem, challenge your perspectives, or create a bit of whimsical
-              fun..
+              fun.
             </Typography>
           </Grid>
         </Grid>
