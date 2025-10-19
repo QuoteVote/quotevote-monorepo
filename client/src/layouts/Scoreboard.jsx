@@ -8,12 +8,10 @@ import PrivateRoute from '../components/PrivateRoute'
 // creates a beautiful scrollbar
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import { makeStyles, ThemeProvider } from '@mui/material/styles'
-import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
-import themeConfig from '../theme'
+import { ThemeProvider, useTheme } from '@mui/material/styles'
+import { ThemeProvider as StylesThemeProvider, makeStyles } from '@mui/styles'
 import theme from '../themes/MainTheme'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { makeStyles } from '@mui/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
 import appRoutes from '../routes'
