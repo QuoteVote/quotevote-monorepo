@@ -92,5 +92,27 @@ Threads are where the discussion happens — you can comment on posts, reply to 
 
 _Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
 
+**Rooms & Buddy List**  
+
+On Quote.Vote, you can join **discussion rooms** tied to specific posts or chat privately with friends (your buddies).  
+
+**How to use rooms:**  
+1. Open a post you want to discuss.  
+2. Click **“Join Room”** — now you’re in a live chat for that post.  
+3. Type messages and reply to other users.  
+
+**Buddy list:**  
+- Add someone as a **buddy** by clicking their profile → **Add Buddy**.  
+- Only mutual buddies can chat privately.  
+- Presence indicators show who’s online.  
+
+**Tips:**  
+- Rooms are post-specific, so discussions stay focused.  
+- Keep private chats respectful and friendly.  
+
+📸 *Screenshot idea:* Show the rooms list and buddy list with online/offline indicators.  
+_Alt-text:_ “List of rooms for posts and buddies with online status indicators.”
+
+
 
 
