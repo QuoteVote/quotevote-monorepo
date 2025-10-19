@@ -38,21 +38,21 @@ Votes are public by default anyone can see how each passage is rated. This encou
 _Alt-text:_ “Vote buttons appear beside each text passage to allow targeted feedback.”
 
 
-Quoting & Highlighting
+** Quoting & Highlighting **
 
 On Quote.Vote, you can pull out powerful lines or thoughts from any post by highlighting text and turning it into a quote.
 
 How to create a quote:
 
-Select any text you find meaningful or worth discussing.
+- **Select any text you find meaningful or worth discussing.
 
-A small popup menu will appear - click “Quote”.
+- **A small popup menu will appear - click “Quote”.
 
-Add an optional attribution or citation URL (e.g., the source of the text).
+- **Add an optional attribution or citation URL (e.g., the source of the text).
 
-If you used an AI tool to assist your post, check the “AI-generated” indicator box for transparency.
+- **If you used an AI tool to assist your post, check the “AI-generated” indicator box for transparency.
 
-Hit Post Quote — your quote will appear in its own discussion thread (a quote room).
+- **Hit Post Quote — your quote will appear in its own discussion thread (a quote room).
 
 Tips:
 
