@@ -170,3 +170,33 @@ Customize Quote.Vote to match your preferences. You can change themes, notificat
 
 📸 *Screenshot idea:* Show the settings page with theme toggle and accessibility options.  
 _Alt-text:_ “Settings page showing theme switch, notifications, and accessibility options.”
+
+## FAQ / Troubleshooting ##
+
+Sometimes things don’t go as expected. Here are quick tips to help new users troubleshoot common issues.
+
+**Common Questions:**  
+
+1. **Password Reset**  
+   - Click **Forgot Password** on the login page.  
+   - Follow the email instructions to reset your password.
+
+2. **Inviting Friends**  
+   - Go to a post or quote you want to share.  
+   - Click **Share** and copy the link or send it via email.
+
+3. **Email Delivery Issues**  
+   - Check your spam folder.  
+   - Make sure your email is verified in Settings.
+
+4. **Mobile Quirks**  
+   - If buttons don’t respond, refresh your browser or restart the app.  
+   - For small screens, scroll horizontally to see full content or reactions.
+
+**Tips:**  
+- Most issues can be solved by refreshing the page or checking Settings.  
+- Reach out to support only if the problem persists.  
+
+📸 *Screenshot idea:* Show login page with “Forgot Password” link and share menu.  
+_Alt-text:_ “Login page showing password reset link and sharing options.”
+
