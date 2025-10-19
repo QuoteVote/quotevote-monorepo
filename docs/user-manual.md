@@ -92,7 +92,7 @@ Threads are where the discussion happens — you can comment on posts, reply to 
 
 _Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
 
-**Rooms & Buddy List**  
+##Rooms & Buddy List## 
 
 On Quote.Vote, you can join **discussion rooms** tied to specific posts or chat privately with friends (your buddies).  
 
@@ -113,6 +113,23 @@ On Quote.Vote, you can join **discussion rooms** tied to specific posts or chat 
 📸 *Screenshot idea:* Show the rooms list and buddy list with online/offline indicators.  
 _Alt-text:_ “List of rooms for posts and buddies with online status indicators.”
 
+##Search & Discovery##
+
+Finding posts, topics, or people on Quote.Vote is easy. You can search by keywords, hashtags, or users and quickly join conversations that interest you.
+
+**How to search:**  
+1. Click the **Search** bar at the top of the page.  
+2. Type a keyword, hashtag, or username.  
+3. Press **Enter** — results will show posts, quotes, and users matching your search.  
+4. Click any result to open the post or user profile.  
+
+**Tips:**  
+- Hashtags help you follow topics you care about.  
+- Search results are paginated — scroll down to see more.  
+- You can copy the URL of any post or quote to **share it with others**.  
+
+📸 *Screenshot idea:* Show the search bar with a keyword typed in and results below.  
+_Alt-text:_ “Search bar with example results for posts, quotes, and users.”
 
 
 
