@@ -132,4 +132,20 @@ Finding posts, topics, or people on Quote.Vote is easy. You can search by keywor
 _Alt-text:_ “Search bar with example results for posts, quotes, and users.”
 
 
+## Safety & Moderation ##
+
+Your safety and a positive community experience are important on Quote.Vote. You can report posts, block users, and see moderation notes to stay informed.
+
+**How to stay safe:**  
+1. To **report a post or comment**, click the three-dot menu (⋮) next to it and select **Report**.  
+2. To **block a user**, go to their profile and click **Block** — you won’t see their posts or comments anymore.  
+3. Moderators may leave **transparent notes** on actions taken. You can view these to understand why content was removed or flagged.  
+
+**Tips:**  
+- Use the reporting feature responsibly — only flag content that violates community guidelines.  
+- Remember: moderation is **public and transparent** to keep the community accountable.  
+- Respect everyone, even if you disagree — keep discussions constructive.  
+
+📸 *Screenshot idea:* Show the report menu and block button on a post.  
+_Alt-text:_ “Reporting a post and blocking a user in Quote.Vote.”
 
