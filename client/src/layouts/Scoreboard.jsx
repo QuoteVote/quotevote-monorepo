@@ -10,6 +10,7 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 import { createTheme, useTheme } from '@mui/material/styles'
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
+import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { makeStyles } from '@mui/styles'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -116,6 +117,7 @@ function Scoreboard(props) {
 
   return (
     <MuiThemeProvider theme={theme}>
+      <StylesThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
         {(() => {
@@ -174,6 +176,7 @@ function Scoreboard(props) {
           }
         </main>
       </div>
+      </StylesThemeProvider>
     </MuiThemeProvider>
   )
 }

@@ -32,6 +32,7 @@ import store, { persistor } from 'store/store'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
 import customTheme from './theme'
 import 'assets/scss/material-dashboard-pro-react.scss'
 import LogoutPage from './components/LogoutPage'
@@ -59,18 +60,20 @@ ReactDOM.render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
-            <HelmetProvider>
-              <Router history={hist}>
-                <Switch>
-                  <Route path="/auth" component={AuthLayout} />
-                  <Route path="/unauth" component={TokenExpired} />
-                  <Route path="/logout" component={LogoutPage} />
-                  <Route path="/error" component={ErrorPage} />
-                  <Route path="/" component={Scoreboard} />
-                  <Redirect from="*" to="/search" />
-                </Switch>
-              </Router>
-            </HelmetProvider>
+            <StylesThemeProvider theme={theme}>
+              <HelmetProvider>
+                <Router history={hist}>
+                  <Switch>
+                    <Route path="/auth" component={AuthLayout} />
+                    <Route path="/unauth" component={TokenExpired} />
+                    <Route path="/logout" component={LogoutPage} />
+                    <Route path="/error" component={ErrorPage} />
+                    <Route path="/" component={Scoreboard} />
+                    <Redirect from="*" to="/search" />
+                  </Switch>
+                </Router>
+              </HelmetProvider>
+            </StylesThemeProvider>
           </ThemeProvider>
         </PersistGate>
       </Provider>
