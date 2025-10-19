@@ -92,7 +92,7 @@ Threads are where the discussion happens — you can comment on posts, reply to 
 
 _Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
 
-##Rooms & Buddy List## 
+## Rooms & Buddy List ## 
 
 On Quote.Vote, you can join **discussion rooms** tied to specific posts or chat privately with friends (your buddies).  
 
@@ -113,7 +113,7 @@ On Quote.Vote, you can join **discussion rooms** tied to specific posts or chat 
 📸 *Screenshot idea:* Show the rooms list and buddy list with online/offline indicators.  
 _Alt-text:_ “List of rooms for posts and buddies with online status indicators.”
 
-##Search & Discovery##
+## Search & Discovery ##
 
 Finding posts, topics, or people on Quote.Vote is easy. You can search by keywords, hashtags, or users and quickly join conversations that interest you.
 
