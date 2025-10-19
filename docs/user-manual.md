@@ -1,6 +1,6 @@
 # Welcome to Quote.Vote
 
-Quote.Vote is a text-first civic engagement platform designed for thoughtful public dialogue. It’s a space where people can post, vote, and discuss written content — focusing on ideas instead of algorithms or ads.
+Quote.Vote is a text-first civic engagement platform designed for thoughtful public dialogue. It’s a space where people can post, vote, and discuss written content focusing on ideas instead of algorithms or ads.
 
 ### Core Principles
 
@@ -29,9 +29,9 @@ Voting lets you express agreement or disagreement with specific parts of a post 
 - **Upvote (👍)** → You agree, support, or find the text valuable.  
 - **Downvote (👎)** → You disagree, or think it’s inaccurate or unhelpful.  
 
-### Transparency
+## Transparency ##
 
-Votes are public by default — anyone can see how each passage is rated. This encourages honesty, reflection, and accountability in public dialogue.
+Votes are public by default anyone can see how each passage is rated. This encourages honesty, reflection, and accountability in public dialogue.
 
 📸 *Screenshot idea:* Highlight a paragraph showing the upvote and downvote icons next to a sentence.
 
@@ -46,7 +46,7 @@ How to create a quote:
 
 Select any text you find meaningful or worth discussing.
 
-A small popup menu will appear — click “Quote”.
+A small popup menu will appear - click “Quote”.
 
 Add an optional attribution or citation URL (e.g., the source of the text).
 
@@ -56,7 +56,7 @@ Hit Post Quote — your quote will appear in its own discussion thread (a quote 
 
 Tips:
 
-Quoting is public by default — others can join your quote’s thread and respond.
+Quoting is public by default others can join your quote’s thread and respond.
 
 Keep quotes short and focused (one key idea per quote).
 
