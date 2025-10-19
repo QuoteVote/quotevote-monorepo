@@ -15,6 +15,11 @@ export default defineConfig(({ mode }) => {
       react({
         // Use automatic runtime so files don't need `import React` in scope
         jsxRuntime: 'automatic',
+        // Transform JSX in .js too (legacy codebase)
+        include: [
+          /\.([cm]?jsx?|tsx?)$/,
+          '**/*.{js,jsx,ts,tsx}',
+        ],
       }),
       svgr({
         svgrOptions: {
