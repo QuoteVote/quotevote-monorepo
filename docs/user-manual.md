@@ -44,23 +44,23 @@ On Quote.Vote, you can pull out powerful lines or thoughts from any post by high
 
 How to create a quote:
 
-- **Select any text you find meaningful or worth discussing.
+- Select any text you find meaningful or worth discussing.
 
-- **A small popup menu will appear - click “Quote”.
+- A small popup menu will appear - click “Quote”.
 
-- **Add an optional attribution or citation URL (e.g., the source of the text).
+- Add an optional attribution or citation URL (e.g., the source of the text).
 
-- **If you used an AI tool to assist your post, check the “AI-generated” indicator box for transparency.
+- If you used an AI tool to assist your post, check the “AI-generated” indicator box for transparency.
 
-- **Hit Post Quote — your quote will appear in its own discussion thread (a quote room).
+- Hit Post Quote — your quote will appear in its own discussion thread (a quote room).
 
 Tips:
 
-Quoting is public by default others can join your quote’s thread and respond.
+- Quoting is public by default others can join your quote’s thread and respond.
 
-Keep quotes short and focused (one key idea per quote).
+- Keep quotes short and focused (one key idea per quote).
 
-Avoid editing quotes to change meaning — only quote what’s actually written.
+- Avoid editing quotes to change meaning — only quote what’s actually written.
 
 Example:
 
