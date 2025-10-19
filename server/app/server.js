@@ -44,14 +44,11 @@ const connectDB = async () => {
     await mongoose.connect(process.env.DATABASE_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-<<<<<<< HEAD
-=======
       writeConcern: {
         w: 'majority',
         j: true,
         wtimeout: 10000
       }
->>>>>>> 84c77e44cc983839c5e7f3b41fdd75d0800a4a1c
     });
     logger.info('MongoDB Connected...');
   } catch (err) {
