@@ -70,4 +70,27 @@ Example:
 Screenshot placeholder:
 ![Selecting and quoting text on Quote.Vote](../assets/user-manual/quote-highlight.gif "Highlight text to create a quote")
 
+## Participating in Threads
+
+Threads are where the discussion happens — you can comment on posts, reply to quotes, and engage with other users.
+
+### How to Participate
+
+1. Scroll to the bottom of any post or quote.  
+2. Type your comment in the comment box.  
+3. To reference a quote, click the **quote icon** inside the comment box.  
+4. Press **Post** to share your comment with everyone.
+
+### Tips for Engaging
+
+- Be respectful and stay on topic.  
+- Reply thoughtfully instead of reacting impulsively.  
+- Rate limits: You can post once every 15 seconds to prevent spam.  
+- Remember: all comments are public by default.
+
+📸 *Screenshot idea:* Comment box with a sample reply and quote reference.
+
+_Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
+
+
 
