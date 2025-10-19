@@ -1,7 +1,7 @@
 import React from 'react'
-import { createTheme } from '@mui/material/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { makeStyles } from '@mui/styles'
-import { ThemeProvider, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import MobileStepper from '@mui/material/MobileStepper'
 import Button from '@mui/material/Button'
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
@@ -151,7 +151,7 @@ function SwipeableTextMobileStepper({
 
       {/* Dots Indicator */}
       <div className={classes.stepperContainer}>
-        <MuiThemeProvider theme={customTheme}>
+  <ThemeProvider theme={customTheme}>
           <MobileStepper
             steps={maxSteps}
             position="static"
@@ -164,7 +164,7 @@ function SwipeableTextMobileStepper({
             nextButton={null}
             backButton={null}
           />
-        </MuiThemeProvider>
+  </ThemeProvider>
       </div>
     </div>
   )

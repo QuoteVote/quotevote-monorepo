@@ -77,7 +77,7 @@ function ActivityEmptyList() {
         />
       </GridItem>
       <GridItem xs={12}>
-        <MuiThemeProvider theme={customTheme}>
+  <ThemeProvider theme={customTheme}>
           <Button variant="contained" color="secondary" className={classes.buttons}>
             FIND FRIENDS
           </Button>
@@ -89,7 +89,7 @@ function ActivityEmptyList() {
           >
             GO TO SEARCH
           </Button>
-        </MuiThemeProvider>
+  </ThemeProvider>
       </GridItem>
     </GridContainer>
   )
