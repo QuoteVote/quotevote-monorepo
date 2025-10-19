@@ -36,3 +36,38 @@ Votes are public by default — anyone can see how each passage is rated. This e
 📸 *Screenshot idea:* Highlight a paragraph showing the upvote and downvote icons next to a sentence.
 
 _Alt-text:_ “Vote buttons appear beside each text passage to allow targeted feedback.”
+
+
+Quoting & Highlighting
+
+On Quote.Vote, you can pull out powerful lines or thoughts from any post by highlighting text and turning it into a quote.
+
+How to create a quote:
+
+Select any text you find meaningful or worth discussing.
+
+A small popup menu will appear — click “Quote”.
+
+Add an optional attribution or citation URL (e.g., the source of the text).
+
+If you used an AI tool to assist your post, check the “AI-generated” indicator box for transparency.
+
+Hit Post Quote — your quote will appear in its own discussion thread (a quote room).
+
+Tips:
+
+Quoting is public by default — others can join your quote’s thread and respond.
+
+Keep quotes short and focused (one key idea per quote).
+
+Avoid editing quotes to change meaning — only quote what’s actually written.
+
+Example:
+
+“Reflection is more powerful than reaction.”
+— Highlighted from a user post, now open for discussion.
+
+Screenshot placeholder:
+![Selecting and quoting text on Quote.Vote](../assets/user-manual/quote-highlight.gif "Highlight text to create a quote")
+
+
