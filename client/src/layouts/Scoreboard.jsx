@@ -8,9 +8,11 @@ import PrivateRoute from '../components/PrivateRoute'
 // creates a beautiful scrollbar
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import { createTheme, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
+import themeConfig from '../theme'
+import { createTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { makeStyles } from '@mui/styles'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -25,24 +27,7 @@ import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#fff',
-      contrastText: '#52b274',
-    },
-    secondary: {
-      main: '#52b274',
-      contrastText: '#fff',
-    },
-    background: {
-      default: '#EEF4F9',
-    },
-  },
-  typography: {
-    useNextVariants: true,
-  },
-})
+const theme = createTheme(themeConfig)
 const useStyles = makeStyles(styles)
 
 function Scoreboard(props) {
