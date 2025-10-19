@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 3000,
+      port: 8080,
       open: true,
       fs: {
         // Allow serving files from one level up to the project root
@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     preview: {
-      port: 3000,
+      port: 8080,
       open: true,
     },
     build: {

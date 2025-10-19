@@ -1,10 +1,12 @@
+import dotenvConfig from 'dotenv';
+dotenvConfig.config();
+
 import express from 'express';
 import { ApolloServer, AuthenticationError } from 'apollo-server-express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { createServer } from 'http';
-import dotenvConfig from 'dotenv';
 import { logger } from './data/utils/logger';
 
 import {
@@ -33,7 +35,10 @@ logger.info('Database', process.env.DATABASE_URL);
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.DATABASE_URL);
+    await mongoose.connect(process.env.DATABASE_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     logger.info('MongoDB Connected...');
   } catch (err) {
     console.error('MongoDB connection error:', err.stack);
@@ -52,7 +57,7 @@ app.use(cors({
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
-      'http://localhost:3000',
+      'http://localhost:8080',
       'https://www.quote.vote',
       'https://quote.vote',
     ];

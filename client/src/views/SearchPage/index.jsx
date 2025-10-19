@@ -13,8 +13,9 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import SearchIcon from '@material-ui/icons/Search'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import format from 'date-fns/format'
+import { format, subDays } from 'date-fns'
 import { jwtDecode } from 'jwt-decode'
+import Tooltip from '@material-ui/core/Tooltip'
 import {
   GET_TOP_POSTS,
   GET_FEATURED_POSTS,
@@ -26,7 +27,6 @@ import ErrorBoundary from '../../components/ErrorBoundary'
 import Carousel from '../../components/Carousel/Carousel'
 import PostCard from '../../components/Post/PostCard'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import Tooltip from '@material-ui/core/Tooltip'
 import SearchGuestSections from '../../components/SearchContainer/SearchGuestSections'
 import UsernameResults from '../../components/SearchContainer/UsernameResults'
 import GuestFooter from '../../components/GuestFooter'
@@ -391,7 +391,7 @@ export default function SearchPage() {
     variables: {
       limit: 10,
       offset: 0,
-      searchKey: searchKey,
+      searchKey,
       startDateRange: dateRangeFilter.startDate
         ? format(dateRangeFilter.startDate, 'yyyy-MM-dd')
         : '',
@@ -476,7 +476,7 @@ export default function SearchPage() {
 
   // New handler for search input changes to detect @ symbol
   const handleSearchInputChange = (e) => {
-    const value = e.target.value
+    const { value } = e.target
     setSearchKey(value)
 
     // Check if user is typing @ for username search
@@ -578,21 +578,20 @@ export default function SearchPage() {
   }
 
   // Helper function to check if any filters are active
-  const hasActiveFilters = () => {
-    return (
-      activeFilters.friends ||
-      activeFilters.interactions ||
-      dateRangeFilter.startDate ||
-      dateRangeFilter.endDate ||
-      sortOrder === 'asc' // Consider 'asc' (oldest first) as an active filter since 'desc' is default
-    )
-  }
+  const hasActiveFilters = () =>
+    activeFilters.friends ||
+    activeFilters.interactions ||
+    dateRangeFilter.startDate ||
+    dateRangeFilter.endDate ||
+    sortOrder === 'asc' // Consider 'asc' (oldest first) as an active filter since 'desc' is default
 
-  const featuredPosts = useMemo(() => {
-    return (featuredData?.featuredPosts?.entities || []).map((post) =>
-      serializePost(post),
-    )
-  }, [featuredData?.featuredPosts?.entities])
+  const featuredPosts = useMemo(
+    () =>
+      (featuredData?.featuredPosts?.entities || []).map((post) =>
+        serializePost(post),
+      ),
+    [featuredData?.featuredPosts?.entities],
+  )
 
   // Create carousel items from posts for guest mode
   const createCarouselItems = useMemo(() => {
@@ -655,6 +654,27 @@ export default function SearchPage() {
     0, // We don't have total count here
     urlParams.pageSize,
   )
+
+  const handleQuickDateSelect = (period) => {
+    const endDate = new Date()
+    let startDate
+
+    switch (period) {
+      case 'day':
+        startDate = subDays(endDate, 1)
+        break
+      case 'week':
+        startDate = subDays(endDate, 7)
+        break
+      case 'month':
+        startDate = subDays(endDate, 30)
+        break
+      default:
+        return
+    }
+
+    handleDateChange([startDate, endDate])
+  }
 
   return (
     <ErrorBoundary>
@@ -785,7 +805,7 @@ export default function SearchPage() {
             </Tooltip>
             <Tooltip
               title={
-                sortOrder === null
+                sortOrder === 'desc'
                   ? 'Sort: Default order (click to sort by oldest first)'
                   : sortOrder === 'asc'
                   ? 'Sort: Oldest first (click to sort by newest first)'
@@ -851,6 +871,37 @@ export default function SearchPage() {
                 maxWidth: 600,
               }}
             >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: '10px',
+                  marginBottom: '20px',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => handleQuickDateSelect('day')}
+                >
+                  Past Day
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => handleQuickDateSelect('week')}
+                >
+                  Past Week
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => handleQuickDateSelect('month')}
+                >
+                  Past Month
+                </Button>
+              </div>
               <div
                 style={{ display: 'flex', justifyContent: 'center', gap: 16 }}
               >
@@ -1203,13 +1254,13 @@ export default function SearchPage() {
                   friendsOnly={user && user._id ? activeFilters.friends : false}
                   interactions={activeFilters.interactions}
                   userId={selectedUserId}
-                  sortOrder={sortOrder === 'asc' ? sortOrder : undefined}
+                  sortOrder={sortOrder}
                   defaultPageSize={20}
                   pageParam="page"
                   pageSizeParam="page_size"
                   cols={1}
-                  showPageInfo={true}
-                  showFirstLast={true}
+                  showPageInfo
+                  showFirstLast
                   maxVisiblePages={5}
                   onTotalCountChange={setTotalCount}
                 />
