@@ -1,41 +1,229 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
-import Grid from '@material-ui/core/Grid'
-import Dialog from '@material-ui/core/Dialog'
-import { NavLink, useHistory } from 'react-router-dom'
-import { Tooltip, Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import AppBar from '@material-ui/core/AppBar'
-import withWidth from '@material-ui/core/withWidth'
-
-import { SET_SELECTED_PAGE } from 'store/ui'
-import { useApolloClient } from '@apollo/react-hooks'
+import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
+import Drawer from '@material-ui/core/Drawer'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
 import Hidden from '@material-ui/core/Hidden'
+import Box from '@material-ui/core/Box'
+import MenuIcon from '@material-ui/icons/Menu'
+import CloseIcon from '@material-ui/icons/Close'
+import GitHubIcon from '@material-ui/icons/GitHub'
+import Dialog from '@material-ui/core/Dialog'
 import Avatar from '@material-ui/core/Avatar'
+import { NavLink, useHistory } from 'react-router-dom'
+import { useApolloClient } from '@apollo/react-hooks'
+
 import AvatarPreview from '../Avatar'
 import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
 import SubmitPost from '../SubmitPost/SubmitPost'
 import ChatMenu from '../Chat/ChatMenu'
-
+import { SET_SELECTED_PAGE } from 'store/ui'
 import { useMobileDetection } from '../../utils/display'
 
+const useStyles = makeStyles((theme) => ({
+  appBar: {
+    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+    borderBottom: '2px solid transparent',
+    borderImage: 'linear-gradient(90deg, #2AE6B2, #27C4E1, #178BE1) 1',
+  },
+  toolbar: {
+    minHeight: 64,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing(0, 3),
+    [theme.breakpoints.down('sm')]: {
+      minHeight: 56,
+      padding: theme.spacing(0, 2),
+    },
+  },
+  logo: {
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    '&:hover': {
+      opacity: 0.9,
+    },
+  },
+  logoImage: {
+    height: 28,
+    width: 28,
+  },
+  brandText: {
+    marginLeft: theme.spacing(1),
+    fontWeight: 800,
+    letterSpacing: '0.05em',
+    color: '#0A2342',
+    fontSize: '0.875rem',
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1rem',
+    },
+  },
+  primaryButton: {
+    background: 'linear-gradient(90deg, #2AE6B2, #27C4E1)',
+    color: '#ffffff',
+    fontWeight: 600,
+    textTransform: 'none',
+    padding: theme.spacing(1, 3),
+    transition: 'all 0.2s',
+    '&:hover': {
+      background: 'linear-gradient(90deg, #27C4E1, #178BE1)',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 4px 12px rgba(42, 230, 178, 0.3)',
+    },
+  },
+  outlinedButton: {
+    border: '2px solid #2AE6B2',
+    color: '#0A2342',
+    fontWeight: 600,
+    textTransform: 'none',
+    padding: theme.spacing(1, 3),
+    transition: 'all 0.2s',
+    '&:hover': {
+      background: 'rgba(14, 17, 22, 0.06)',
+      transform: 'translateY(-1px)',
+      border: '2px solid #2AE6B2',
+    },
+  },
+  textButton: {
+    color: '#20b087ff',
+    fontWeight: 500,
+    textTransform: 'none',
+    padding: theme.spacing(1, 2),
+    transition: 'all 0.2s',
+    '&:hover': {
+      background: 'rgba(14, 17, 22, 0.06)',
+      transform: 'translateY(-1px)',
+    },
+  },
+  iconButton: {
+    color: '#0A2342',
+    transition: 'all 0.2s',
+    '&:hover': {
+      color: '#2AE6B2',
+      transform: 'scale(1.1)',
+    },
+  },
+  drawer: {
+    width: 320,
+  },
+  drawerPaper: {
+    width: 320,
+    padding: theme.spacing(2.5),
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: theme.spacing(2),
+  },
+  drawerTitle: {
+    fontWeight: 700,
+    color: '#0A2342',
+  },
+  divider: {
+    height: 2,
+    background: 'linear-gradient(90deg, #2AE6B2, #27C4E1, #178BE1)',
+    margin: theme.spacing(2, 0),
+  },
+  drawerButton: {
+    width: '100%',
+    justifyContent: 'flex-start',
+    textTransform: 'none',
+    padding: theme.spacing(1.5, 2.5),
+    marginBottom: theme.spacing(1),
+    transition: 'all 0.2s',
+    '&:hover': {
+      transform: 'translateX(4px)',
+    },
+  },
+  drawerPrimaryButton: {
+    background: 'linear-gradient(90deg, #2AE6B2, #27C4E1)',
+    color: '#ffffff',
+    fontWeight: 600,
+    '&:hover': {
+      background: 'linear-gradient(90deg, #27C4E1, #178BE1)',
+      boxShadow: '0 4px 12px rgba(42, 230, 178, 0.3)',
+    },
+  },
+  drawerOutlinedButton: {
+    border: '2px solid #2AE6B2',
+    color: '#0A2342',
+    fontWeight: 600,
+    '&:hover': {
+      background: 'rgba(14, 17, 22, 0.06)',
+      border: '2px solid #2AE6B2',
+    },
+  },
+  drawerTextButton: {
+    color: '#0A2342',
+    fontWeight: 500,
+    '&:hover': {
+      background: 'rgba(14, 17, 22, 0.06)',
+    },
+  },
+  desktopActions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1.5),
+  },
+  profileButton: {
+    textTransform: 'none',
+    padding: theme.spacing(1),
+    borderRadius: theme.spacing(3),
+    '&:hover': {
+      background: 'rgba(14, 17, 22, 0.06)',
+    },
+  },
+  profileName: {
+    marginLeft: theme.spacing(1),
+    color: '#0A2342',
+    fontWeight: 600,
+  },
+  loggedInActions: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+  },
+  createQuoteButton: {
+    background: '#52b274',
+    color: '#ffffff',
+    fontWeight: 600,
+    textTransform: 'none',
+    minWidth: 150,
+    '&:hover': {
+      background: '#459963',
+    },
+  },
+}))
+
 function MainNavBar(props) {
-  const { classes, width } = props
-  const selectedPage = useSelector((state) => state.ui.selectedPage)
+  const classes = useStyles()
   const avatar = useSelector((state) => state.user.data.avatar)
   const name = useSelector((state) => state.user.data.name)
+  const loggedIn = useSelector((state) => !!state.user.data._id)
   const [open, setOpen] = React.useState(false)
-  const fontSize = width === 'md' ? 'medium' : 'large'
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
   const dispatch = useDispatch()
   const client = useApolloClient()
   const history = useHistory()
-  const loggedIn = useSelector((state) => !!state.user.data._id)
+  const isMobile = useMobileDetection()
+
   const handleMenu = (newSelectedMenu) => {
     client.stop()
     dispatch(SET_SELECTED_PAGE(newSelectedMenu))
   }
+
   const handleProfileClick = () => {
     dispatch(SET_SELECTED_PAGE(null))
   }
@@ -44,190 +232,255 @@ function MainNavBar(props) {
     dispatch(SET_SELECTED_PAGE(0))
   }
 
-  const isMobile = useMobileDetection()
+  const toggleDrawer = () => setDrawerOpen((prev) => !prev)
+  const closeDrawer = () => setDrawerOpen(false)
 
   return (
-    <AppBar position="fixed" className={classes.appBar}>
-      <Grid
-        container
-        alignItems="center"
-        wrap="nowrap"
-        justifyContent="space-between"
-      >
-        {/* Left: Logo */}
-        <Grid item>
-          <NavLink to="/search" onClick={handleQuoteVote}>
+    <>
+      <AppBar position="fixed" className={classes.appBar} elevation={0}>
+        <Toolbar className={classes.toolbar}>
+          {/* Logo */}
+          <NavLink to="/search" onClick={handleQuoteVote} className={classes.logo}>
             <img
-              alt="Quote"
               src="/icons/android-chrome-192x192.png"
-              style={{ height: '30px', marginLeft: 30, width: 'auto' }}
+              alt="Quote.Vote"
+              className={classes.logoImage}
+              crossOrigin="anonymous"
             />
+            {/* <Typography variant="h6" className={classes.brandText}>
+              QUOTE.VOTE
+            </Typography> */}
           </NavLink>
-        </Grid>
-        {/* Center: Guest Action Buttons */}
-        {!loggedIn && (
-          <Grid item xs>
-            <Grid
-              container
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-            >
-              <Grid item>
+
+          {/* Desktop Actions - Not Logged In */}
+          {!loggedIn && (
+            <Hidden smDown>
+              <Box className={classes.desktopActions}>
                 <Button
-                  variant="outlined"
-                  color="inherit"
                   href="mailto:admin@quote.vote"
                   target="_blank"
-                  className={classes.rightMenuButton}
-                  style={{ borderWidth: 2, borderStyle: 'solid' }}
+                  className={classes.textButton}
                 >
                   Donate
                 </Button>
-              </Grid>
-              <Grid item>
                 <Button
-                  variant="outlined"
-                  color="inherit"
                   href="mailto:admin@quote.vote"
-                  className={classes.rightMenuButton}
-                  style={{ borderWidth: 2, borderStyle: 'solid' }}
+                  target="_blank"
+                  className={classes.textButton}
                 >
                   Volunteer
                 </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  href="https://github.com/QuoteVote/quotevote-monorepo"
-                  target="_blank"
-                  className={classes.rightMenuButton}
-                  aria-label="GitHub"
-                >
-                  <i className="fab fa-github" style={{ fontSize: 38 }} />
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        {/* Right: Login and Create Quote */}
-        {!loggedIn ? (
-          <Grid item>
-            <Button
-              variant="contained"
-              color="secondary"
-              style={{ marginLeft: 8 }}
-              onClick={() => history.push('/auth/request-access')}
-              className={classes.rightMenuButton}
-            >
-              Request Invite
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => history.push('/auth/login')}
-              className={classes.rightMenuButton}
-            >
-              Login
-            </Button>
-          </Grid>
-        ) : (
-          <>
-            <Grid
-              item
-              style={{
-                display: 'flex',
-                direction: 'row',
-                justifyContent: 'space-around',
-                gap: 4,
-              }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  backgroundColor: '#52b274',
-                  color: 'white',
-                  minWidth: 150,
-                }}
-                onClick={() => {
-                  handleMenu(2)
-                  setOpen(true)
-                }}
-              >
-                Create Quote
-              </Button>
-
-              <Tooltip title="Contribute">
-                <a
+                <IconButton
                   href="https://github.com/QuoteVote/quotevote-monorepo"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub"
-                  style={{
-                    color: 'black',
-                    textDecoration: 'none',
-                    width: '100%',
-                    display: 'block',
-                    padding: '8px 12px',
-                    fontSize: '18px',
+                  className={classes.iconButton}
+                >
+                  <GitHubIcon />
+                </IconButton>
+
+                <Button
+                  className={classes.primaryButton}
+                  onClick={() => history.push('/auth/request-access')}
+                >
+                  Request Invite
+                </Button>
+                <Button
+                  className={classes.outlinedButton}
+                  onClick={() => history.push('/auth/login')}
+                >
+                  Login
+                </Button>
+
+              </Box>
+            </Hidden>
+          )}
+
+          {/* Desktop Actions - Logged In */}
+          {loggedIn && (
+            <Hidden smDown>
+              <Box className={classes.desktopActions}>
+                <Button
+                  className={classes.createQuoteButton}
+                  onClick={() => {
+                    handleMenu(2)
+                    setOpen(true)
                   }}
                 >
-                  <i
-                    className="fab fa-github"
-                    style={{ fontSize: 28, marginRight: '8px', color: 'black' }}
-                  />
-                </a>
-              </Tooltip>
-            </Grid>
+                  Create Quote
+                </Button>
+                <IconButton
+                  href="https://github.com/QuoteVote/quotevote-monorepo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                  className={classes.iconButton}
+                >
+                  <GitHubIcon />
+                </IconButton>
+                <NavLink to="/Profile" style={{ textDecoration: 'none' }}>
+                  <Button className={classes.profileButton} onClick={handleProfileClick}>
+                    <Avatar>
+                      <AvatarPreview height="40" width="40" {...avatar} />
+                    </Avatar>
+                    <Typography variant="body1" className={classes.profileName}>
+                      {name}
+                    </Typography>
+                  </Button>
+                </NavLink>
+                <Box className={classes.loggedInActions}>
+                  <ChatMenu fontSize="large" />
+                  <NotificationMenu fontSize="large" />
+                  <SettingsMenu fontSize="large" />
+                </Box>
+              </Box>
+            </Hidden>
+          )}
 
-            <Grid item>
-              <Grid
-                container
-                direction="row"
-                justify="space-around"
-                alignItems="center"
+          {/* Mobile Hamburger */}
+          <Hidden mdUp>
+            <IconButton
+              edge="end"
+              aria-label="Open menu"
+              onClick={toggleDrawer}
+            >
+              <MenuIcon style={{ color: '#0A2342' }} />
+            </IconButton>
+          </Hidden>
+        </Toolbar>
+      </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={closeDrawer}
+        classes={{ paper: classes.drawerPaper }}
+      >
+        <Box className={classes.drawerHeader}>
+          <Typography variant="h6" className={classes.drawerTitle}>
+            Menu
+          </Typography>
+          <IconButton onClick={closeDrawer} aria-label="Close menu">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <Divider className={classes.divider} />
+
+        {!loggedIn ? (
+          <List>
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerPrimaryButton}`}
+                onClick={() => {
+                  history.push('/auth/request-access')
+                  closeDrawer()
+                }}
               >
-                <Grid item>
-                  <NavLink to="/Profile">
-                    <Hidden mdDown>
-                      <Button
-                        aria-label="Profile"
-                        color="inherit"
-                        onClick={handleProfileClick}
-                        className={classes.avatarRoundedButton}
-                      >
-                        <Avatar>
-                          <AvatarPreview height="50" width="50" {...avatar} />
-                        </Avatar>
-                        <Typography
-                          variant="h6"
-                          className={classes.profileBlockName}
-                        >
-                          {name}
-                        </Typography>
-                      </Button>
-                    </Hidden>
-                    <Hidden lgUp>
-                      <Avatar height="35" width="35">
-                        <AvatarPreview {...avatar} />
-                      </Avatar>
-                    </Hidden>
-                  </NavLink>
-                </Grid>
-                <Grid item>
-                  <ChatMenu fontSize={fontSize} />
-                </Grid>
-                <Grid item>
-                  <NotificationMenu fontSize={fontSize} />
-                </Grid>
-                <Grid item>
-                  <SettingsMenu fontSize={fontSize} />
-                </Grid>
-              </Grid>
-            </Grid>
-          </>
+                Request Invite
+              </Button>
+            </ListItem>
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerOutlinedButton}`}
+                onClick={() => {
+                  history.push('/auth/login')
+                  closeDrawer()
+                }}
+              >
+                Login
+              </Button>
+            </ListItem>
+
+            <Divider className={classes.divider} />
+
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
+                href="mailto:admin@quote.vote"
+                target="_blank"
+                onClick={closeDrawer}
+              >
+                Donate
+              </Button>
+            </ListItem>
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
+                href="mailto:admin@quote.vote"
+                target="_blank"
+                onClick={closeDrawer}
+              >
+                Volunteer
+              </Button>
+            </ListItem>
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
+                href="https://github.com/QuoteVote/quotevote-monorepo"
+                target="_blank"
+                rel="noopener noreferrer"
+                startIcon={<GitHubIcon />}
+                onClick={closeDrawer}
+              >
+                GitHub Repository
+              </Button>
+            </ListItem>
+          </List>
+        ) : (
+          <List>
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerPrimaryButton}`}
+                onClick={() => {
+                  handleMenu(2)
+                  setOpen(true)
+                  closeDrawer()
+                }}
+              >
+                Create Quote
+              </Button>
+            </ListItem>
+
+            <Divider className={classes.divider} />
+
+            <ListItem disableGutters>
+              <NavLink to="/Profile" style={{ width: '100%', textDecoration: 'none' }}>
+                <Button
+                  className={`${classes.drawerButton} ${classes.drawerTextButton}`}
+                  onClick={() => {
+                    handleProfileClick()
+                    closeDrawer()
+                  }}
+                  startIcon={
+                    <Avatar>
+                      <AvatarPreview height="35" width="35" {...avatar} />
+                    </Avatar>
+                  }
+                >
+                  {name}
+                </Button>
+              </NavLink>
+            </ListItem>
+            <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
+                href="https://github.com/QuoteVote/quotevote-monorepo"
+                target="_blank"
+                rel="noopener noreferrer"
+                startIcon={<GitHubIcon />}
+                onClick={closeDrawer}
+              >
+                GitHub Repository
+              </Button>
+            </ListItem>
+          </List>
         )}
-      </Grid>
+      </Drawer>
+
+      {/* Create Quote Dialog */}
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
@@ -237,13 +490,12 @@ function MainNavBar(props) {
       >
         <SubmitPost setOpen={setOpen} />
       </Dialog>
-    </AppBar>
+    </>
   )
 }
 
 MainNavBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  width: PropTypes.string.isRequired,
+  classes: PropTypes.object,
 }
 
-export default withWidth()(MainNavBar)
+export default MainNavBar

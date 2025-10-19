@@ -33,11 +33,25 @@ const GRAPHQL_PORT = process.env.PORT || 3000;
 
 logger.info('Database', process.env.DATABASE_URL);
 
+// Set mongoose global options to prevent deprecation warnings
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
+
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+<<<<<<< HEAD
+=======
+      writeConcern: {
+        w: 'majority',
+        j: true,
+        wtimeout: 10000
+      }
+>>>>>>> 84c77e44cc983839c5e7f3b41fdd75d0800a4a1c
     });
     logger.info('MongoDB Connected...');
   } catch (err) {

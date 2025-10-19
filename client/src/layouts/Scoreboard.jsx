@@ -116,12 +116,12 @@ function Scoreboard(props) {
     <MuiThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
-        <Hidden only={['xs', 'sm']}>
-          <MainNavBar
-            classes={classes}
-            page={page}
-          />
-        </Hidden>
+        {/* FIXED: Show MainNavBar on ALL screen sizes */}
+        <MainNavBar
+          classes={classes}
+          page={page}
+        />
+        {/* REMOVED: Old Sidebar that was showing on mobile
         <Hidden only={['md', 'lg', 'xl']}>
           <Sidebar
             routes={appRoutes}
@@ -136,6 +136,7 @@ function Scoreboard(props) {
             dispatch={dispatch}
           />
         </Hidden>
+        */}
         <main className={classes.content}>
           {getRoute() ? (
             <Switch>
