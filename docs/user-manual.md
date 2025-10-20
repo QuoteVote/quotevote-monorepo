@@ -200,3 +200,7 @@ Sometimes things don’t go as expected. Here are quick tips to help new users t
 📸 *Screenshot idea:* Show login page with “Forgot Password” link and share menu.  
 _Alt-text:_ “Login page showing password reset link and sharing options.”
 
+![Vote buttons on a post](../assets/user-manual/vote-buttons.png "Vote on text example")
+![Comment box and thread](../assets/user-manual/comment-thread.png "Participating in threads")
+
+
