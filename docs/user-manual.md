@@ -36,8 +36,6 @@ Voting lets you express agreement or disagreement with specific parts of a post 
 
 Votes are public by default anyone can see how each passage is rated. This encourages honesty, reflection, and accountability in public dialogue.
 
-📸 ![Comment thread view](./assets/user-manual/comment-thread.png "Comment threads")
-
 
 _Alt-text:_ “Vote buttons appear beside each text passage to allow targeted feedback.”
 
@@ -72,7 +70,7 @@ Example:
 — Highlighted from a user post, now open for discussion.
 
 Screenshot placeholder:
-![Selecting and quoting text on Quote.Vote](../assets/user-manual/quote-highlight.gif "Highlight text to create a quote")
+ ![Selecting and quoting text on Quote.Vote](../assets/user-manual/quote-highlight.gif "Highlight text to create a quote")
 
 ## Participating in Threads
 
@@ -92,7 +90,7 @@ Threads are where the discussion happens — you can comment on posts, reply to 
 - Rate limits: You can post once every 15 seconds to prevent spam.  
 - Remember: all comments are public by default.
 
-📸 ![Quote highlighting example](./assets/user-manual/quote-highlight.gif "Highlighting text")
+📸  ![Quote highlighting example](./assets/user-manual/quote-highlight.gif "Highlighting text")
 
 
 _Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
