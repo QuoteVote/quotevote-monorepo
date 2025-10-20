@@ -24,6 +24,9 @@ Voting lets you express agreement or disagreement with specific parts of a post 
 4. Click **Upvote** to show agreement or appreciation, or **Downvote** to signal disagreement or concern.
 5. Your vote is recorded instantly, and you can change it anytime.
 
+   ![Vote buttons on a post](./assets/user-manual/vote-buttons.png "Vote on text example")
+
+
 ### What Your Vote Means
 
 - **Upvote (👍)** → You agree, support, or find the text valuable.  
@@ -33,7 +36,8 @@ Voting lets you express agreement or disagreement with specific parts of a post 
 
 Votes are public by default anyone can see how each passage is rated. This encourages honesty, reflection, and accountability in public dialogue.
 
-📸 *Screenshot idea:* Highlight a paragraph showing the upvote and downvote icons next to a sentence.
+📸 ![Comment thread view](./assets/user-manual/comment-thread.png "Comment threads")
+
 
 _Alt-text:_ “Vote buttons appear beside each text passage to allow targeted feedback.”
 
@@ -88,7 +92,8 @@ Threads are where the discussion happens — you can comment on posts, reply to 
 - Rate limits: You can post once every 15 seconds to prevent spam.  
 - Remember: all comments are public by default.
 
-📸 *Screenshot idea:* Comment box with a sample reply and quote reference.
+📸 ![Quote highlighting example](./assets/user-manual/quote-highlight.gif "Highlighting text")
+
 
 _Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
 
@@ -199,10 +204,5 @@ Sometimes things don’t go as expected. Here are quick tips to help new users t
 
 📸 *Screenshot idea:* Show login page with “Forgot Password” link and share menu.  
 _Alt-text:_ “Login page showing password reset link and sharing options.”
-
-![Vote buttons on a post](./assets/user-manual/vote-buttons.png "Vote on text example")
-
-
-![Comment thread view](./assets/user-manual/comment-thread.png "Comment threads")
 
 
