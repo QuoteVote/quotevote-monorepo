@@ -90,7 +90,8 @@ Threads are where the discussion happens — you can comment on posts, reply to 
 - Rate limits: You can post once every 15 seconds to prevent spam.  
 - Remember: all comments are public by default.
 
-📸  ![Quote highlighting example](./assets/user-manual/quote-highlight.gif "Highlighting text")
+![Comment thread view](./assets/user-manual/comment-thread.png "Comment threads")
+
 
 
 _Alt-text:_ “Commenting on a post with a quote reference in Quote.Vote.”
