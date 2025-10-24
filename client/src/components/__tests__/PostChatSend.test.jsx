@@ -6,9 +6,7 @@ import { configureStore } from '@reduxjs/toolkit'
 import PostChatSend from '../PostChat/PostChatSend'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import chatReducer from '../../store/chat'
-
-// Mock the useGuestGuard hook
-jest.mock('../../utils/useGuestGuard', () => () => () => true)
+import { AuthModalProvider } from '../../Context/AuthModalContext'
 
 // Create a mock store
 const createMockStore = () => {
@@ -74,9 +72,11 @@ describe('PostChatSend', () => {
   it('renders chat input and send button', () => {
     render(
       <Provider store={store}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <PostChatSend messageRoomId="test-room-id" title="Test Post" />
-        </MockedProvider>
+        <AuthModalProvider>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <PostChatSend messageRoomId="test-room-id" title="Test Post" />
+          </MockedProvider>
+        </AuthModalProvider>
       </Provider>
     )
 
@@ -87,9 +87,11 @@ describe('PostChatSend', () => {
   it('allows typing in the input field', () => {
     render(
       <Provider store={store}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <PostChatSend messageRoomId="test-room-id" title="Test Post" />
-        </MockedProvider>
+        <AuthModalProvider>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <PostChatSend messageRoomId="test-room-id" title="Test Post" />
+          </MockedProvider>
+        </AuthModalProvider>
       </Provider>
     )
 
@@ -102,9 +104,11 @@ describe('PostChatSend', () => {
   it('submits message when send button is clicked', async () => {
     render(
       <Provider store={store}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <PostChatSend messageRoomId="test-room-id" title="Test Post" />
-        </MockedProvider>
+        <AuthModalProvider>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <PostChatSend messageRoomId="test-room-id" title="Test Post" />
+          </MockedProvider>
+        </AuthModalProvider>
       </Provider>
     )
 
@@ -122,9 +126,11 @@ describe('PostChatSend', () => {
   it('submits message when Enter key is pressed', async () => {
     render(
       <Provider store={store}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <PostChatSend messageRoomId="test-room-id" title="Test Post" />
-        </MockedProvider>
+        <AuthModalProvider>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <PostChatSend messageRoomId="test-room-id" title="Test Post" />
+          </MockedProvider>
+        </AuthModalProvider>
       </Provider>
     )
 
@@ -141,9 +147,11 @@ describe('PostChatSend', () => {
   it('does not submit empty messages', () => {
     render(
       <Provider store={store}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <PostChatSend messageRoomId="test-room-id" title="Test Post" />
-        </MockedProvider>
+        <AuthModalProvider>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <PostChatSend messageRoomId="test-room-id" title="Test Post" />
+          </MockedProvider>
+        </AuthModalProvider>
       </Provider>
     )
 
@@ -160,9 +168,11 @@ describe('PostChatSend', () => {
   it('trims whitespace from messages', async () => {
     render(
       <Provider store={store}>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <PostChatSend messageRoomId="test-room-id" title="Test Post" />
-        </MockedProvider>
+        <AuthModalProvider>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <PostChatSend messageRoomId="test-room-id" title="Test Post" />
+          </MockedProvider>
+        </AuthModalProvider>
       </Provider>
     )
 

@@ -1,18 +1,18 @@
 import { useDispatch } from 'react-redux'
-import { useHistory, useLocation } from 'react-router-dom'
 import { tokenValidator } from 'store/user'
+import { useAuthModal } from '@/Context/AuthModalContext'
 
+/**
+ * Hook to guard guest interactions by showing invite modal instead of redirecting
+ * @returns {Function} Function that returns false if user is not authenticated
+ */
 export default function useGuestGuard() {
   const dispatch = useDispatch()
-  const history = useHistory()
-  const location = useLocation()
+  const { openAuthModal } = useAuthModal()
 
   return () => {
     if (!tokenValidator(dispatch)) {
-      // Redirect to invite request page with current URL as query parameter
-      const currentPath = location.pathname + location.search
-      const redirectUrl = `/auth/request-access?from=${encodeURIComponent(currentPath)}`
-      history.push(redirectUrl)
+      openAuthModal()
       return false
     }
     return true

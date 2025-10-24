@@ -1,86 +1,122 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import Dialog from '@material-ui/core/Dialog'
-import Grid from '@material-ui/core/Grid'
-import Input from '@material-ui/core/Input'
-import Button from '@material-ui/core/Button'
-import Typography from '@material-ui/core/Typography'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
-import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
-import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'
+import {
+  Dialog,
+  DialogContent,
+  IconButton,
+  makeStyles,
+} from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
+import RequestAccessForm from './RequestAccess/RequestAccessForm'
+
+const useStyles = makeStyles((theme) => ({
+  dialogWrapper: {
+    borderRadius: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      padding: theme.spacing(3),
+      minHeight: 'auto',
+    },
+    [theme.breakpoints.down('xs')]: {
+      margin: theme.spacing(2),
+      padding: theme.spacing(2),
+      borderRadius: theme.spacing(1.5),
+      maxHeight: '90vh',
+    },
+  },
+  dialogContent: {
+    padding: theme.spacing(2, 3),
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(1.5, 2),
+    },
+  },
+  emailInputWrapper: {
+    background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
+    borderRadius: theme.spacing(1.5),
+    padding: theme.spacing(2.5),
+    margin: theme.spacing(1.5, 0),
+    border: '2px solid #e0e0e0',
+    transition: 'all 0.3s ease',
+    '&:focus-within': {
+      border: '2px solid #52b274',
+      boxShadow: '0 0 0 4px rgba(82, 178, 116, 0.1)',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(2),
+      margin: theme.spacing(1, 0),
+    },
+  },
+  emailInput: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    outline: 'none',
+    width: '100%',
+    fontSize: 'clamp(1rem, 2.5vw, 1.125rem)',
+    color: '#2c3e50',
+    fontWeight: 500,
+    '&::placeholder': {
+      color: '#6c757d',
+      fontWeight: 400,
+    },
+    '&:focus': {
+      color: '#1a252f',
+    },
+  },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+    zIndex: 1,
+    [theme.breakpoints.down('xs')]: {
+      right: theme.spacing(0.5),
+      top: theme.spacing(0.5),
+      padding: theme.spacing(1),
+    },
+  },
+}))
 
 export default function RequestInviteDialog({ open, onClose }) {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-  const client = useApolloClient()
-  const [requestUserAccess] = useMutation(REQUEST_USER_ACCESS_MUTATION)
+  const classes = useStyles()
 
-  const handleSubmit = async () => {
-    const pattern = new RegExp(/^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i)
-    if (!pattern.test(email)) {
-      setError('This is not a valid email address')
-      return
-    }
-    const checkDuplicate = await client.query({
-      query: GET_CHECK_DUPLICATE_EMAIL,
-      variables: { email },
-      fetchPolicy: 'network-only',
-    })
-    if (checkDuplicate && checkDuplicate.data.checkDuplicateEmail.length) {
-      setError('This email already exists')
-      return
-    }
-    await requestUserAccess({ variables: { requestUserAccessInput: { email } } })
-    setSubmitted(true)
-  }
-
-  const handleClose = () => {
-    setEmail('')
-    setError('')
-    setSubmitted(false)
-    if (onClose) onClose()
+  const handleSuccess = () => {
+    // Auto-close modal after 3 seconds on successful submission
+    setTimeout(() => {
+      onClose()
+    }, 3000)
   }
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <Grid container direction="column" alignItems="center" style={{ padding: 24 }}>
-        {submitted ? (
-          <>
-            <Typography align="center">Thank you for joining us</Typography>
-            <Typography align="center" style={{ marginTop: 8 }}>
-              When an account becomes available, an invite will be sent to the email provided.
-            </Typography>
-            <Button variant="contained" color="primary" onClick={handleClose} style={{ marginTop: 16 }}>
-              Close
-            </Button>
-          </>
-        ) : (
-          <>
-            <Typography variant="h6" align="center">Request Invite</Typography>
-            <Input
-              autoFocus
-              placeholder="Enter Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ marginTop: 16 }}
-            />
-            {error && (
-              <Typography color="error" style={{ marginTop: 8 }}>
-                {error}
-              </Typography>
-            )}
-            <Button variant="contained" color="secondary" onClick={handleSubmit} style={{ marginTop: 16 }}>
-              Submit
-            </Button>
-          </>
-        )}
-      </Grid>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      scroll="body"
+      classes={{ paper: classes.dialogWrapper }}
+      PaperProps={{
+        style: {
+          backgroundColor: '#fff',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+        },
+      }}
+    >
+      <IconButton
+        aria-label="close"
+        className={classes.closeButton}
+        onClick={onClose}
+        size="small"
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+      <DialogContent className={classes.dialogContent}>
+        <RequestAccessForm onSuccess={handleSuccess} />
+      </DialogContent>
     </Dialog>
   )
 }
 
 RequestInviteDialog.propTypes = {
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
 }
