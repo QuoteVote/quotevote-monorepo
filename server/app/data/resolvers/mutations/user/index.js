@@ -5,3 +5,6 @@ export * from './updateUserAdminRight';
 export * from './sendPasswordResetEmail';
 export * from './updateUserPassword';
 export * from './updateUserAvatar';
+export * from './sendUserInvite';
+export * from './reportUser';
+export * from './recalculateReputation';
