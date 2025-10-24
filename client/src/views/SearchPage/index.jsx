@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import {
   Grid,
   Typography,
@@ -6,7 +6,7 @@ import {
   Paper,
   IconButton,
   Button,
-} from '@material-ui/core'
+} from '@mui/material'
 import { useQuery } from '@apollo/react-hooks'
 import { useSelector } from 'react-redux'
 import { useState, useEffect, useMemo, useRef } from 'react'
@@ -26,7 +26,7 @@ import ErrorBoundary from '../../components/ErrorBoundary'
 import Carousel from '../../components/Carousel/Carousel'
 import PostCard from '../../components/Post/PostCard'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import Tooltip from '@material-ui/core/Tooltip'
+import Tooltip from '@mui/material/Tooltip'
 import SearchGuestSections from '../../components/SearchContainer/SearchGuestSections'
 import UsernameResults from '../../components/SearchContainer/UsernameResults'
 import GuestFooter from '../../components/GuestFooter'
@@ -41,26 +41,32 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    paddingTop: '2rem',
-    height: '100%',
+    minHeight: '100vh',
+    width: '100%',
     display: 'flex',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
-    textAlign: 'center',
-    backgroundColor: '#f0f2f5',
-    paddingLeft: 10,
-    paddingRight: 10,
+    background: '#eaf2fa',
+    padding: 0,
   },
   container: {
-    marginLeft: '10%',
-    marginRight: '10%',
+    width: '100%',
+    maxWidth: 900,
+    margin: '0 auto',
+    background: '#fff',
+    borderRadius: 24,
+    boxShadow: '0 2px 24px rgba(17,17,17,0.06)',
+    padding: '3rem 0',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '2.5rem',
     [theme.breakpoints.down('sm')]: {
-      marginLeft: '5px',
-      marginRight: '5px',
-    },
-    [theme.breakpoints.down('xs')]: {
-      marginLeft: '2px',
-      marginRight: '2px',
+      maxWidth: '100%',
+      borderRadius: 0,
+      boxShadow: 'none',
+      padding: '2rem 0',
+      gap: '2rem',
     },
   },
   logoContainer: {
@@ -70,20 +76,31 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(4),
   },
   logoImage: {
+    maxWidth: 340,
     width: '100%',
-    maxWidth: 500,
     height: 'auto',
+    margin: '0 auto',
+    display: 'block',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: 220,
+    },
+    [theme.breakpoints.down('xs')]: {
+      maxWidth: 140,
+    },
   },
   searchBar: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.common.white,
-    padding: theme.spacing(1, 2),
-    marginBottom: theme.spacing(2),
-    border: '1px solid #ddd',
-    transition: 'border-color 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  maxWidth: 600,
+  margin: '0 auto 2.5rem auto',
+  borderRadius: 12,
+  backgroundColor: '#fff',
+  padding: '0 2rem',
+  border: '2px solid rgba(17,17,17,0.07)',
+  boxShadow: '0 2px 8px rgba(17,17,17,0.06)',
+  fontSize: '1.25rem',
+  transition: 'border-color 0.2s ease',
   },
   searchBarUsernameMode: {
     borderColor: theme.palette.primary.main,
@@ -92,60 +109,74 @@ const useStyles = makeStyles((theme) => ({
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
+    fontSize: '1.25rem',
+    fontWeight: 500,
+    color: '#222',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
   iconButton: {
     padding: 10,
     color: theme.palette.text.secondary,
   },
   tagline: {
-    color: theme.palette.text.secondary,
+    color: '#222',
+    fontSize: '2rem',
+    fontWeight: 600,
+    marginTop: '1.5rem',
+    marginBottom: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.25rem',
+      marginBottom: '1rem',
+    },
   },
   iconsContainer: {
-    marginTop: theme.spacing(2),
+    marginTop: '2.5rem',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    gap: theme.spacing(4),
-    minWidth: '280px',
+    gap: '2.5rem',
+    minWidth: '320px',
     [theme.breakpoints.down('sm')]: {
-      gap: theme.spacing(2.5),
-      minWidth: '240px',
+      gap: '1.5rem',
+      minWidth: '220px',
     },
     [theme.breakpoints.down('xs')]: {
-      gap: theme.spacing(2),
-      minWidth: '200px',
+      gap: '1rem',
+      minWidth: '160px',
     },
   },
   icon: {
     margin: 0,
-    color: theme.palette.text.secondary,
-    fontSize: '1.5rem',
+    color: '#222',
+    fontSize: '2.5rem',
     transition: 'all 0.2s ease-in-out',
     minWidth: 'auto',
-    padding: theme.spacing(2),
+    padding: '1.5rem',
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    borderRadius: '12px',
-    border: '1px solid rgba(0, 0, 0, 0.12)',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    borderRadius: '16px',
+    border: '2px solid rgba(17,17,17,0.07)',
+    boxShadow: '0 2px 8px rgba(17,17,17,0.06)',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.5rem',
-      padding: theme.spacing(1.5),
+      fontSize: '2rem',
+      padding: '1rem',
     },
     [theme.breakpoints.down('xs')]: {
       fontSize: '1.5rem',
-      padding: theme.spacing(1.25),
+      padding: '0.75rem',
     },
     '&:hover': {
-      transform: 'scale(1.02)',
+      transform: 'scale(1.05)',
       backgroundColor: 'rgba(0, 0, 0, 0.08)',
-      border: '1px solid rgba(0, 0, 0, 0.24)',
-      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+      border: '2px solid #52b274',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
     },
   },
   list: {
-    marginTop: theme.spacing(4),
-    width: '100%',
+  marginTop: '3rem',
+  width: '100%',
   },
   activeFilter: {
     backgroundColor: theme.palette.primary.main,
@@ -156,7 +187,6 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.primary.dark,
       border: `1px solid ${theme.palette.primary.dark}`,
-      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
     },
   },
   datePickerContainer: {
@@ -685,7 +715,7 @@ export default function SearchPage() {
           className={classes.container}
           spacing={1}
         >
-          <Grid item>
+          <Grid item style={{ marginBottom: '1.5rem' }}>
             <div className={classes.logoContainer}>
               <img
                 src="/assets/search-quote-vote.png"
@@ -695,10 +725,9 @@ export default function SearchPage() {
             </div>
           </Grid>
 
-          <Grid item>
+          <Grid item style={{ marginBottom: '2rem' }}>
             <Typography
               className={classes.tagline}
-              style={{ marginBottom: '1rem' }}
             >
               No algorithms. No ads. Just conversations.
             </Typography>
@@ -1119,12 +1148,19 @@ export default function SearchPage() {
               <>
                 {featuredData?.featuredPosts ? (
                   featuredPosts.length > 0 ? (
-                    <Grid item style={{ width: '100%', maxWidth: '800px' }}>
+                    <Grid item style={{ width: '100%', maxWidth: '800px', marginTop: '2rem' }}>
                       <Typography
-                        variant="h6"
-                        style={{ marginBottom: '1rem', textAlign: 'center' }}
+                        variant="h5"
+                        style={{ 
+                          marginBottom: '2rem', 
+                          textAlign: 'center',
+                          fontWeight: 700,
+                          fontSize: '1.5rem',
+                          color: '#111',
+                          letterSpacing: '0.5px'
+                        }}
                       >
-                        Featured Posts
+                        FEATURED POSTS
                       </Typography>
                       <Carousel navButtonsAlwaysVisible autoplay={false}>
                         {createCarouselItems}

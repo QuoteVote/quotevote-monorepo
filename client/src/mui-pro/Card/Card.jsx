@@ -3,8 +3,8 @@ import React from 'react'
 import classNames from 'classnames'
 // nod library to set properties for components
 import PropTypes from 'prop-types'
-// @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+// MUI styles
+import { makeStyles } from '@mui/styles'
 // @material-ui/icons
 
 // core components

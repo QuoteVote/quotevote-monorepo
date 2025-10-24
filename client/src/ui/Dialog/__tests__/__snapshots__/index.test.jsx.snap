@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`<Dialog  /> > should match snapshot 1`] = `
+<div
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-1 makeStyles-root-3 css-gerb50-MuiPaper-root-MuiCard-root"
+>
+  <div
+    class="MuiCardContent-root css-1lt5qva-MuiCardContent-root"
+  >
+    <h5
+      class="MuiTypography-root MuiTypography-h5 css-13caadq-MuiTypography-root"
+    >
+      Title
+    </h5>
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-16zayor-MuiTypography-root"
+    >
+      Body
+    </p>
+  </div>
+  <div
+    class="MuiCardActions-root MuiCardActions-spacing makeStyles-actions-2 css-xm0xqa-MuiCardActions-root"
+  >
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-kqxlpo-MuiButtonBase-root-MuiButton-root"
+      style="color: rgb(86, 179, 255);"
+      tabindex="0"
+      type="button"
+    >
+      Cancel
+    </button>
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorSecondary css-17564l8-MuiButtonBase-root-MuiButton-root"
+      tabindex="0"
+      type="button"
+    >
+      Discard
+    </button>
+  </div>
+</div>
+`;

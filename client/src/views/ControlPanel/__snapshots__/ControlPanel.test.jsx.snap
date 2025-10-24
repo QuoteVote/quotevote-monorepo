@@ -1,0 +1,26 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ControlPanel test - > renders correctly 1`] = `
+<div
+  class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-2 makeStyles-panelContainer-16 css-zjhuaj-MuiGrid-root"
+>
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+  >
+    <h2
+      class="MuiTypography-root MuiTypography-h2 css-1bkebpk-MuiTypography-root"
+    >
+      Unauthorized
+    </h2>
+  </div>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-j0o5il-MuiGrid-root"
+  >
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
+    >
+      You must be logged in as admin to view this page.
+    </p>
+  </div>
+</div>
+`;

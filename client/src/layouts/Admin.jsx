@@ -12,7 +12,8 @@ import 'perfect-scrollbar/css/perfect-scrollbar.css'
 // import sidebar2 from '/assets/sidebar-2.jpg'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles'
 
 // core components
 import AdminNavbar from 'mui-pro/Navbars/AdminNavbar'
@@ -26,6 +27,7 @@ import styles from 'assets/jss/material-dashboard-pro-react/layouts/adminStyle'
 let ps
 
 const useStyles = makeStyles(styles)
+const theme = createTheme()
 
 export default function Dashboard(props) {
   const { ...rest } = props
@@ -139,6 +141,7 @@ export default function Dashboard(props) {
   }
 
   return (
+    <ThemeProvider theme={theme}>
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
@@ -193,5 +196,6 @@ export default function Dashboard(props) {
         />
       </div>
     </div>
+    </ThemeProvider>
   )
 }

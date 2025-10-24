@@ -1,9 +1,9 @@
 import React from 'react'
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 // material-ui icons
-import Assignment from '@material-ui/icons/Assignment'
+import Assignment from '@mui/icons-material/Assignment'
 
 // core components
 import GridContainer from 'mui-pro/Grid/GridContainer'

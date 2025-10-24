@@ -1,0 +1,113 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LandingPage test - > renders correctly 1`] = `
+<div
+  class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column makeStyles-grid-50 makeStyles-container-2 css-1bkjq21-MuiGrid-root"
+  justify="center"
+>
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row makeStyles-grid-51 makeStyles-listContainer-8 css-17fpwt7-MuiGrid-root"
+  >
+    <li
+      class="MuiListItem-root MuiListItem-gutters MuiListItem-padding makeStyles-listItem-9 css-193q0wg-MuiListItem-root"
+    >
+      <img
+        alt="quoteVote"
+        class="makeStyles-voxPop-7"
+        src="/assets/QuoteVoteLogo.png"
+      />
+    </li>
+    <li
+      class="MuiListItem-root MuiListItem-gutters MuiListItem-padding makeStyles-listItem-9 css-193q0wg-MuiListItem-root"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButton-colorPrimary makeStyles-button-52 makeStyles-listItemTextLogin-11 css-253whi-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="submit"
+      >
+        Login
+      </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary makeStyles-button-52 makeStyles-listItemTextRequestInvite-10 css-1nwucin-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="submit"
+      >
+        Request Invite
+      </button>
+    </li>
+    <li
+      class="MuiListItem-root MuiListItem-gutters MuiListItem-padding makeStyles-listItem-9 css-193q0wg-MuiListItem-root"
+    >
+      <div
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-card-12 css-o5b05n-MuiPaper-root-MuiCard-root"
+      >
+        <h4
+          class="MuiTypography-root MuiTypography-h4 makeStyles-listItemHeaderText-13 css-10zsxzp-MuiTypography-root"
+        >
+          Welcome to Quote.Vote
+        </h4>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-listItemText-14 css-1edfpdg-MuiTypography-root"
+        >
+          Quote Vote is a non-for-profit project, and encourages users to donate their money or time, to be an active part of the change we'd all like to see in the world.
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-listItemText-14 css-1edfpdg-MuiTypography-root"
+        >
+          We understand the delicate balance between fostering freedom of expression and curbing harmful behavior.
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-listItemText-14 css-1edfpdg-MuiTypography-root"
+        >
+          Our moderation policies aim to maximize the benefits of free speech while minimizing the potential for harm.
+        </p>
+        <p
+          class="MuiTypography-root MuiTypography-body1 makeStyles-listItemText-14 css-1edfpdg-MuiTypography-root"
+        >
+          We believe that thoughtful, respectful discourse leads to stronger communities and richer dialogue.
+        </p>
+      </div>
+    </li>
+    <li
+      class="MuiListItem-root MuiListItem-gutters MuiListItem-padding makeStyles-listItem-9 css-193q0wg-MuiListItem-root"
+    >
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary makeStyles-button-52 makeStyles-listItemTextDonate-15 css-1nwucin-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="submit"
+      >
+        Donate
+      </button>
+    </li>
+    <li
+      class="MuiListItem-root MuiListItem-gutters MuiListItem-padding makeStyles-contact-16 css-193q0wg-MuiListItem-root"
+    >
+      Contact
+       
+      <a
+        class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways css-1dtg03f-MuiTypography-root-MuiLink-root"
+        href="mailto:admin@quote.vote"
+        rel="noreferrer"
+        target="_black"
+      >
+        admin@quote.vote
+      </a>
+    </li>
+    <li
+      class="MuiListItem-root MuiListItem-gutters MuiListItem-padding makeStyles-listItem-9 css-193q0wg-MuiListItem-root"
+    >
+      <p
+        class="MuiTypography-root MuiTypography-body1 makeStyles-listItemMakeWithLove-17 css-1edfpdg-MuiTypography-root"
+      >
+        Made with
+         
+        <span>
+          ♥
+        </span>
+         
+        on Earth
+      </p>
+    </li>
+  </div>
+</div>
+`;

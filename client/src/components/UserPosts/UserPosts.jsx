@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import { Button, Dialog } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Button, Dialog } from '@mui/material';
 import PaginatedPostsList from '../Post/PaginatedPostsList';
 import ErrorBoundary from '../ErrorBoundary';
 import { useHistory } from 'react-router-dom';

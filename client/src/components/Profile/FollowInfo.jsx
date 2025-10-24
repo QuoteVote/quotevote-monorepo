@@ -6,9 +6,9 @@ import { useParams, useHistory } from 'react-router'
 import { GET_FOLLOW_INFO } from '@/graphql/query'
 import UserFollowDisplay from 'components/Profile/UserFollowDisplay'
 
-import Grid from '@material-ui/core/Grid'
-import IconButton from '@material-ui/core/IconButton'
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace'
+import Grid from '@mui/material/Grid'
+import IconButton from '@mui/material/IconButton'
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
 
 // import NoFollowing from 'components/Profile/NoFollowing'
 import NoFollowers from 'components/Profile/NoFollowers'

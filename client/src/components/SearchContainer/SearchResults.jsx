@@ -2,8 +2,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Grid, CircularProgress } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
+import Grid from '@mui/material/Grid'
+import CircularProgress from '@mui/material/CircularProgress'
+import { makeStyles } from '@mui/styles'
 
 import Card from 'mui-pro/Card/Card'
 import CardHeader from 'mui-pro/Card/CardHeader'

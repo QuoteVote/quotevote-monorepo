@@ -1,9 +1,9 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import PropTypes from 'prop-types'
 
 import AppBar from 'components/Navbars/ProfileHeader'
 import LoadingSpinner from 'components/LoadingSpinner'
-import { Link, Typography } from '@material-ui/core'
+import { Link, Typography } from '@mui/material'
 import UserPosts from '../../components/UserPosts'
 
 const useStyles = makeStyles(({

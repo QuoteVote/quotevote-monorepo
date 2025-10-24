@@ -1,0 +1,121 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Request Access Page test - > renders correctly 1`] = `
+<div
+  class="makeStyles-container-2"
+>
+  <div
+    class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column MuiGrid-spacing-xs-2 css-h6dotr-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+      style="justify-content: center; margin-bottom: 2rem;"
+    >
+      <img
+        alt="logo"
+        src="/assets/quote-vote-white.svg"
+        style="width: 100%; height: auto;"
+      />
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+    >
+      <div
+        class="MuiInputBase-root MuiInput-root MuiInputBase-colorPrimary makeStyles-input-41 css-mcfk8m-MuiInputBase-root-MuiInput-root"
+      >
+        <input
+          class="MuiInputBase-input MuiInput-input css-1smhhcz-MuiInputBase-input-MuiInput-input"
+          placeholder="Enter Email"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary makeStyles-button-50 makeStyles-requestAccessBtn-42 css-1xjyx2h-MuiButtonBase-root-MuiButton-root"
+        tabindex="0"
+        type="button"
+      >
+        Request Invite
+      </button>
+      <p
+        class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
+      />
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+    >
+      <div
+        class="makeStyles-overlayContainer-43"
+        style="max-width: 100%; margin: 3rem auto 0px auto;"
+      >
+        <div
+          class="makeStyles-overlay-44"
+        />
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-6 makeStyles-overlayContent-45 css-65mziv-MuiGrid-root"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+          >
+            <div
+              class="MuiBox-root css-0"
+            >
+              <h5
+                class="MuiTypography-root MuiTypography-h5 MuiTypography-gutterBottom css-13y79c5-MuiTypography-root"
+                style="text-align: center;"
+              >
+                No Ads, No Algorithms
+              </h5>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
+                style="margin-bottom: 8px; text-align: left;"
+              >
+                There is no ranking, boosting, or personalization engine. You can't pay to be seen. Users seek to find quotes.
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
+                style="text-align: left;"
+              >
+                Discovery is deliberate. Feeds are chronological. An experience of hunting and discovery, not passive scrolling.
+              </p>
+            </div>
+          </div>
+          <div
+            class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+          >
+            <div
+              class="MuiBox-root css-0"
+            >
+              <h5
+                class="MuiTypography-root MuiTypography-h5 MuiTypography-gutterBottom css-13y79c5-MuiTypography-root"
+                style="text-align: center;"
+              >
+                Open Source, Non Profit
+              </h5>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
+                style="margin-bottom: 8px; text-align: left;"
+              >
+                The platform is non-profit, open source, and donation-supported. You can't pay to be seen.
+              </p>
+              <p
+                class="MuiTypography-root MuiTypography-body1 css-1ip8nm7-MuiTypography-root"
+              >
+                The only economic model is when users like what they experience, and give money via donations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary makeStyles-button-50 makeStyles-requestAccessBtn-42 css-1xjyx2h-MuiButtonBase-root-MuiButton-root"
+        style="display: block; margin: 2rem auto 0px auto;"
+        tabindex="0"
+        type="button"
+      >
+        Read Our Mission
+      </button>
+    </div>
+  </div>
+</div>
+`;

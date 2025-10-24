@@ -22,7 +22,14 @@ if (process.env.NODE_ENV === 'dev') {
   dotenvConfig.config({ path: './.env' });
 }
 
-if (process.env.CLIENT_URL.endsWith('/')) {
+// Ensure CLIENT_URL is defined and normalized. Some environments (CI, dev shells)
+// may not set CLIENT_URL — guard against that and provide a sensible default.
+if (typeof process.env.CLIENT_URL !== 'string' || process.env.CLIENT_URL.length === 0) {
+  // Default to local client during development if not provided
+  const defaultClientUrl = 'http://localhost:3000';
+  logger.warn(`CLIENT_URL not set; defaulting to ${defaultClientUrl}`);
+  process.env.CLIENT_URL = defaultClientUrl;
+} else if (process.env.CLIENT_URL.endsWith('/')) {
   logger.info('CLIENT_URL ends with /, removing it');
   process.env.CLIENT_URL = process.env.CLIENT_URL.slice(0, -1);
 }

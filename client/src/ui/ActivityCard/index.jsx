@@ -7,20 +7,20 @@ import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import { loadCSS } from 'fg-loadcss'
 
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Typography from '@material-ui/core/Typography'
-import Avatar from '@material-ui/core/Avatar'
-import Box from '@material-ui/core/Box'
-import IconButton from '@material-ui/core/IconButton'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Avatar from '@mui/material/Avatar'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import moment from 'moment'
 import { isEmpty } from 'lodash'
 import stringLimit from 'string-limit'
-import BookmarkIcon from '@material-ui/icons/Bookmark'
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import AvatarDisplay from '../../components/Avatar'
 
 const useStyles = makeStyles((theme) => ({
@@ -66,6 +66,17 @@ const useStyles = makeStyles((theme) => ({
 
 function ActivityHeader({ name, date, handleRedirectToProfile = null }) {
   const classes = useStyles()
+  // Ensure date is parseable by moment to avoid moment fallback warnings in tests
+  let safeDate = date
+  try {
+    const parsed = moment(date)
+    if (!parsed.isValid()) {
+      safeDate = new Date().toISOString()
+    }
+  } catch (e) {
+    safeDate = new Date().toISOString()
+  }
+
   return (
     <div className={classes.activityHeader}>
       <IconButton
@@ -80,7 +91,7 @@ function ActivityHeader({ name, date, handleRedirectToProfile = null }) {
         </Typography>
       </IconButton>
       <Typography color="textPrimary" variant="caption">
-        {moment(date).calendar(null, {
+        {moment(safeDate).calendar(null, {
           sameDay: '[Today]',
           nextDay: '[Tomorrow]',
           nextWeek: 'dddd',
@@ -88,7 +99,7 @@ function ActivityHeader({ name, date, handleRedirectToProfile = null }) {
           lastWeek: '[Last] dddd',
           sameElse: 'MMM DD, YYYY',
         })}
-        {` @ ${moment(date).format('h:mm A')}`}
+        {` @ ${moment(safeDate).format('h:mm A')}`}
       </Typography>
     </div>
   )

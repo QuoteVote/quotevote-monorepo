@@ -1,3 +1,12 @@
+// Provide a default mock for useMutation to avoid importing the real
+// Apollo hooks during test import analysis.
+if (typeof vi !== 'undefined' && typeof vi.mock === 'function') {
+  vi.mock('@apollo/react-hooks', async (importOriginal) => {
+    const actual = await importOriginal()
+    return { ...actual, useMutation: () => [vi.fn()] }
+  })
+}
+
 import React from 'react'
 import { render } from '@testing-library/react'
 

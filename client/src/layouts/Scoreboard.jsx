@@ -8,9 +8,10 @@ import PrivateRoute from '../components/PrivateRoute'
 // creates a beautiful scrollbar
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
-import Hidden from '@material-ui/core/Hidden'
-import { createTheme, makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles'
+import { ThemeProvider as StylesThemeProvider, makeStyles } from '@mui/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import CssBaseline from '@mui/material/CssBaseline'
 
 import appRoutes from '../routes'
 import styles from 'assets/jss/material-dashboard-pro-react/layouts/adminStyle'
@@ -22,14 +23,15 @@ import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
 
+// Create theme matching main app theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#fff',
-      contrastText: '#52b274',
+      main: '#52b274',
+      contrastText: '#fff',
     },
     secondary: {
-      main: '#52b274',
+      main: '#E91E63',
       contrastText: '#fff',
     },
     background: {
@@ -40,6 +42,7 @@ const theme = createTheme({
     useNextVariants: true,
   },
 })
+
 const useStyles = makeStyles(styles)
 
 function Scoreboard(props) {
@@ -113,30 +116,38 @@ function Scoreboard(props) {
   }
 
   return (
-    <MuiThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <StylesThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
-        {/* FIXED: Show MainNavBar on ALL screen sizes */}
-        <MainNavBar
-          classes={classes}
-          page={page}
-        />
-        {/* REMOVED: Old Sidebar that was showing on mobile
-        <Hidden only={['md', 'lg', 'xl']}>
-          <Sidebar
-            routes={appRoutes}
-            logo={logo}
-            handleDrawerToggle={handleDrawerToggle}
-            open={mobileOpen}
-            color={color}
-            bgColor={bgColor}
-            currentRoute={currentRoute()}
-            {...props}
-            miniActive
-            dispatch={dispatch}
-          />
-        </Hidden>
-        */}
+        {(() => {
+          const themeHook = useTheme()
+          const isUpMd = useMediaQuery(themeHook.breakpoints.up('md'))
+          return (
+            <>
+              {isUpMd && (
+                <MainNavBar
+                  classes={classes}
+                  page={page}
+                />
+              )}
+              {!isUpMd && (
+                <Sidebar
+                  routes={appRoutes}
+                  logo={logo}
+                  handleDrawerToggle={handleDrawerToggle}
+                  open={mobileOpen}
+                  color={color}
+                  bgColor={bgColor}
+                  currentRoute={currentRoute()}
+                  {...props}
+                  miniActive
+                  dispatch={dispatch}
+                />
+              )}
+            </>
+          )
+        })()}
         <main className={classes.content}>
           {getRoute() ? (
             <Switch>
@@ -165,7 +176,8 @@ function Scoreboard(props) {
           }
         </main>
       </div>
-    </MuiThemeProvider>
+      </StylesThemeProvider>
+    </ThemeProvider>
   )
 }
 

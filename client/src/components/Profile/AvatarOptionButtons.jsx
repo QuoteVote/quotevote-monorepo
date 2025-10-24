@@ -3,10 +3,11 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 
 // MUI
-import { MuiThemeProvider as ThemeProvider, makeStyles } from '@material-ui/core/styles'
-import {
-  Avatar, Grid, Button,
-} from '@material-ui/core'
+import { makeStyles } from '@mui/styles'
+import Avatar from '@mui/material/Avatar'
+import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
+import { ThemeProvider } from '@mui/material/styles'
 
 // Local
 import AvatarPreview from '../Avatar'

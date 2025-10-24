@@ -1,16 +1,16 @@
 /*eslint-disable*/
 import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Slide from "@material-ui/core/Slide";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
+// @mui styles + components
+import { makeStyles } from '@mui/styles'
+import Slide from '@mui/material/Slide'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
 
-// @material-ui/icons
-import AddAlert from "@material-ui/icons/AddAlert";
-import Close from "@material-ui/icons/Close";
+// @mui icons
+import AddAlert from '@mui/icons-material/AddAlert'
+import Close from '@mui/icons-material/Close'
 
 // core components
 import Heading from "mui-pro/Heading/Heading";

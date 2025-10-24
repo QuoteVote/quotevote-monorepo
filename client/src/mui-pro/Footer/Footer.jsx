@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
 import cx from 'classnames'
 
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
-import Link from '@material-ui/core/Link'
-import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@mui/styles'
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
 
 import styles from 'assets/jss/material-dashboard-pro-react/components/footerStyle'
-import { Grid } from '@material-ui/core'
+import { Grid } from '@mui/material'
 
 const useStyles = makeStyles(styles)
 

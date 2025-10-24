@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SubmitPost test - > renders correctly 1`] = `
+<div
+  class="makeStyles-card-1"
+>
+  <div
+    class="makeStyles-cardBody-18"
+  >
+    <div
+      class="MuiTypography-root MuiTypography-h2 css-1bkebpk-MuiTypography-root"
+    >
+      <span
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
+      />
+    </div>
+    <div
+      class="MuiTypography-root MuiTypography-h4 css-10zsxzp-MuiTypography-root"
+    >
+      <span
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
+      />
+    </div>
+    <div
+      class="MuiTypography-root MuiTypography-h4 css-10zsxzp-MuiTypography-root"
+    >
+      <span
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
+      />
+    </div>
+    <div
+      class="MuiTypography-root MuiTypography-caption css-1gju9dp-MuiTypography-root"
+    >
+      <span
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
+      />
+    </div>
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-d64g0g-MuiGrid-root"
+      justify="flex-end"
+    >
+      <span
+        class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse css-1lblo9c-MuiSkeleton-root"
+        style="width: 100px; height: 35px;"
+      />
+    </div>
+  </div>
+</div>
+`;

@@ -3,28 +3,24 @@ import cx from 'classnames'
 import PropTypes from 'prop-types'
 import { NavLink, useLocation } from 'react-router-dom'
 
-// @material-ui/core components
-import { 
-  makeStyles, 
-  AppBar, 
-  Toolbar, 
-  Hidden, 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemText,
-  ListItemIcon,
-  Divider,
-  Box,
-  Typography,
-  Button
-} from '@material-ui/core'
-import { 
-  Menu, 
-  PersonAdd, 
-  Fingerprint, 
-  LockOpen
-} from '@material-ui/icons'
+// MUI core components
+import { makeStyles } from '@mui/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import Hidden from '@mui/material/Hidden'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+
+// MUI icons
+import Menu from '@mui/icons-material/Menu'
+import PersonAdd from '@mui/icons-material/PersonAdd'
+import Fingerprint from '@mui/icons-material/Fingerprint'
+import LockOpen from '@mui/icons-material/LockOpen'
+
+// core components
+import Button from 'mui-pro/CustomButtons/Button'
 
 import styles from 'assets/jss/material-dashboard-pro-react/components/authNavbarStyle'
 
@@ -37,6 +33,7 @@ const BRAND_COLORS = {
   overlay: 'rgba(14, 17, 22, 0.06)'
 }
 
+import theme from '../../themes/MainTheme'
 const useStyles = makeStyles((theme) => ({
   ...styles,
   // Enhanced styles with brand colors

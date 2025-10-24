@@ -1,0 +1,58 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Notification test - > renders correctly 1`] = `
+<div
+  class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column makeStyles-root-1 makeStyles-root-5 css-ifmrbr-MuiGrid-root"
+  justify="flex-start"
+>
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+  >
+    <h5
+      class="MuiTypography-root MuiTypography-h5 css-ku7d13-MuiTypography-root"
+    >
+      Notifications
+    </h5>
+    <hr
+      class="MuiDivider-root MuiDivider-fullWidth css-18cfrml-MuiDivider-root"
+    />
+    <button
+      aria-label="Open Notifications"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall makeStyles-moreMenu-4 css-1e3xvvg-MuiButtonBase-root-MuiIconButton-root"
+      data-mui-internal-clone-element="true"
+      tabindex="0"
+      type="button"
+    >
+      <span
+        data-testid="mui-icon-launch"
+      />
+    </button>
+  </div>
+  <div
+    class="MuiGrid-root MuiGrid-direction-xs-row makeStyles-content-3 css-17fpwt7-MuiGrid-root"
+  >
+    <div
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-column makeStyles-rootNoNotification-9 makeStyles-rootNoNotification-15 css-1bkjq21-MuiGrid-root"
+      justify="center"
+    >
+      <div
+        class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+      >
+        <img
+          alt=""
+          src="/assets/ZeroNotificationsBG.png"
+        />
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+      >
+        <span
+          class="MuiTypography-root MuiTypography-body2 css-1nmqws6-MuiTypography-root"
+        >
+          Relax, you don't have any alerts right now.
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

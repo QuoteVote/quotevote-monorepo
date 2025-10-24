@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { tokenValidator } from 'store/user'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -11,9 +11,9 @@ import styles from 'assets/jss/material-dashboard-pro-react/views/landingPageSty
 import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
 import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'
 
-import Grid from '@material-ui/core/Grid'
-import Input from '@material-ui/core/Input'
-import { Typography, Box } from '@material-ui/core'
+import Grid from '@mui/material/Grid'
+import Input from '@mui/material/Input'
+import { Typography, Box } from '@mui/material'
 
 import Button from '../../mui-pro/CustomButtons/Button'
 import { useMobileDetection } from '@/utils/display'

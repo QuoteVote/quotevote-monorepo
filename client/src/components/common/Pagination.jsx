@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import {
   Box,
   Button,
@@ -9,13 +9,13 @@ import {
   useMediaQuery,
   useTheme,
   CircularProgress,
-} from '@material-ui/core'
+} from '@mui/material'
 import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 
 const useStyles = makeStyles((theme) => ({
   root: {

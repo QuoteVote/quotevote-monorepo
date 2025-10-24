@@ -4,11 +4,19 @@ import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
 import {
-  Avatar, Badge, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography,
-} from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
-import { makeStyles } from '@material-ui/core/styles'
-import CloseIcon from '@material-ui/icons/Close'
+  Avatar,
+  Badge,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography
+} from '@mui/material'
+import { withStyles, makeStyles } from '@mui/styles'
+import CloseIcon from '@mui/icons-material/Close'
 import moment from 'moment'
 import stringLimit from 'string-limit'
 import { DELETE_NOTIFICATION } from '../../graphql/mutations'

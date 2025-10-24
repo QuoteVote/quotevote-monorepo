@@ -4,7 +4,7 @@ import React, { useMemo } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 
 // core components
 import AuthNavbar from 'mui-pro/Navbars/AuthNavbar'

@@ -1,6 +1,6 @@
 import GridContainer from 'mui-pro/Grid/GridContainer'
-import Slider from '@material-ui/core/Slider'
-import Box from '@material-ui/core/Box'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 
 export default function CompleteSearch() {
   return (

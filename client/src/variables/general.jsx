@@ -1,12 +1,12 @@
 /* eslint-disable */
 import React from 'react'
 
-// @material-ui/icons
-import CardTravel from '@material-ui/icons/CardTravel'
-import Extension from '@material-ui/icons/Extension'
-import Fingerprint from '@material-ui/icons/Fingerprint'
-import FlightLand from '@material-ui/icons/FlightLand'
-import Build from '@material-ui/icons/Build'
+// @mui icons
+import CardTravel from '@mui/icons-material/CardTravel'
+import Extension from '@mui/icons-material/Extension'
+import Fingerprint from '@mui/icons-material/Fingerprint'
+import FlightLand from '@mui/icons-material/FlightLand'
+import Build from '@mui/icons-material/Build'
 
 // core components
 import CustomDropdown from 'mui-pro/CustomDropdown/CustomDropdown'

@@ -1,18 +1,14 @@
 /* eslint-disable no-console */
 import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Grid, Typography, IconButton, Popover,
-} from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
-import { InsertEmoticon } from '@material-ui/icons'
+import { Grid, Typography, IconButton, Popover } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { InsertEmoticon } from '@mui/icons-material'
 import { useSelector } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
 import { useHistory } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
 import Emoji from 'a11y-react-emoji'
-import _ from 'lodash'
-import 'emoji-mart/css/emoji-mart.css'
 import { parseCommentDate } from '../../utils/momentUtils'
 import { ADD_MESSAGE_REACTION, UPDATE_MESSAGE_REACTION } from '../../graphql/mutations'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
