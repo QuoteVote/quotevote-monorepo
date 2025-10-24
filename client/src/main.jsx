@@ -33,6 +33,8 @@ import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
+import createCache from '@emotion/cache'
+import { CacheProvider } from '@emotion/react'
 import customTheme from './theme'
 import 'assets/scss/material-dashboard-pro-react.scss'
 import LogoutPage from './components/LogoutPage'
@@ -54,14 +56,18 @@ hist.listen(() => {
 
 // Create theme from customTheme config - keeps all activity card colors and custom theme properties
 const theme = createTheme(customTheme)
+// Create a shared Emotion cache for the app to ensure MUI and Emotion use the same runtime
+const insertionPoint = typeof document !== 'undefined' ? document.querySelector('meta[name="emotion-insertion-point"]') : null
+const emotionCache = createCache({ key: 'css', prepend: true, insertionPoint: insertionPoint || undefined })
 
 ReactDOM.render(
   <ErrorBoundary>
     <ApolloProvider client={client}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <StylesThemeProvider theme={theme}>
+          <CacheProvider value={emotionCache}>
+            <ThemeProvider theme={theme}>
+              <StylesThemeProvider theme={theme}>
               <HelmetProvider>
                 <Router history={hist}>
                   <Switch>
@@ -76,6 +82,7 @@ ReactDOM.render(
               </HelmetProvider>
             </StylesThemeProvider>
           </ThemeProvider>
+        </CacheProvider>
         </PersistGate>
       </Provider>
     </ApolloProvider>
