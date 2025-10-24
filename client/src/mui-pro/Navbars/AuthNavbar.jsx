@@ -1,7 +1,7 @@
 import React from 'react'
 import cx from 'classnames'
 import PropTypes from 'prop-types'
-import { NavLink, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { SET_SELECTED_PLAN } from 'store/ui'
 
@@ -12,13 +12,9 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Hidden from '@material-ui/core/Hidden'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 
 // @material-ui/icons
-
-// core components
-import Button from 'mui-pro/CustomButtons/Button'
 
 import SelectPlansButton from '../../components/CustomButtons/SelectPlansButton'
 import styles from 'assets/jss/material-dashboard-pro-react/components/authNavbarStyle'
@@ -26,10 +22,6 @@ import styles from 'assets/jss/material-dashboard-pro-react/components/authNavba
 const useStyles = makeStyles(styles)
 
 export default function AuthNavbar(props) {
-  const [open, setOpen] = React.useState(false)
-  const handleDrawerToggle = () => {
-    setOpen(!open)
-  }
   const dispatch = useDispatch()
   const selectedPlan = useSelector((state) => state.ui.selectedPlan)
   // verifies if routeName is the one active (in browser input)
@@ -88,130 +80,89 @@ export default function AuthNavbar(props) {
   const list = (
     <List className={classes.list}>
       {activeRoute('/auth/request-access') && (
-        <ListItem className={classes.listItem}>
-          <NavLink to="/search">
-            <ListItemText disableTypography>
-              <Button variant="outlined" color="primary" onClick={() => history.push('/search')}>
-                Go Back
-              </Button>
-            </ListItemText>
-          </NavLink>
-        </ListItem>
+        <>
+          <ListItem className={classes.listItem}>
+            <button
+              type="button"
+              onClick={() => history.push('/search')}
+              className={classes.goBackButton}
+            >
+              Go Back
+            </button>
+          </ListItem>
+          <ListItem className={classes.listItem}>
+            <button
+              type="button"
+              onClick={() => history.push('/auth/login')}
+              className={classes.loginButton}
+            >
+              Login
+            </button>
+          </ListItem>
+        </>
       )}
       {activeRoute('/auth/learn-more') && (
-        <div className={classes.buttonDisplay}>
-          <ListItem className={classes.listItem}>
-            <NavLink
-              to="/auth/login"
-              className={cx(classes.navLink, {
-                [classes.navLinkActive]: activeRoute('/auth/login'),
-              })}
-            >
-              <ListItemText
-                primary="Login"
-                disableTypography
-                className={classes.listItemText}
-              />
-            </NavLink>
-          </ListItem>
-        </div>
-      )}
-      {activeRoute('/auth/request-access') && (
-        <div className={classes.buttonDisplay}>
-          <ListItem className={classes.listItem}>
-            <NavLink
-              to="/auth/login"
-              className={cx(classes.navLink, {
-                [classes.navLinkActive]: activeRoute('/auth/login'),
-              })}
-            >
-              <ListItemText
-                primary="Login"
-                disableTypography
-                className={classes.listItemText}
-              />
-            </NavLink>
-          </ListItem>
-        </div>
+        <ListItem className={classes.listItem}>
+          <button
+            type="button"
+            onClick={() => history.push('/auth/login')}
+            className={classes.loginButton}
+          >
+            Login
+          </button>
+        </ListItem>
       )}
       {activeRoute('/auth/login') && (
-        <React.Fragment>
-          <ListItem className={classes.listItem}>
-            <NavLink
-              to="/auth/request-access"
-              className={cx(classes.navLinkAccess, {
-                [classes.navLinkActiveAccess]: activeRoute('/auth/login'),
-              })}
-            >
-              <ListItemText
-                primary="Get Access"
-                disableTypography
-                className={classes.listItemTextAccess}
-              />
-            </NavLink>
-          </ListItem>
-        </React.Fragment>
+        <ListItem className={classes.listItem}>
+          <button
+            type="button"
+            onClick={() => history.push('/auth/request-access')}
+            className={classes.getAccessButton}
+          >
+            Get Access
+          </button>
+        </ListItem>
       )}
-
       {activeRoute('/search') && (
-        <React.Fragment>
-          <ListItem className={classes.listItem}>
-            <NavLink
-              to="/auth/login"
-              className={cx(classes.navLink, {
-                [classes.navLinkActive]: activeRoute('/auth/login'),
-              })}
-            >
-              <ListItemText
-                primary="Login"
-                disableTypography
-                className={classes.listItemText}
-              />
-            </NavLink>
-          </ListItem>
-        </React.Fragment>
+        <ListItem className={classes.listItem}>
+          <button
+            type="button"
+            onClick={() => history.push('/auth/login')}
+            className={classes.loginButton}
+          >
+            Login
+          </button>
+        </ListItem>
       )}
 
       {activeRoute('/auth/investor-thanks') && (
-        <React.Fragment>
+        <>
           <ListItem className={classes.listItem}>
-            <NavLink
-              to="search"
-              className={cx(classes.navLinkInvestNow, {
-                [classes.navLinkActiveAccess]: activeRoute(
-                  '/auth/investor-thanks',
-                ),
-              })}
+            <button
+              type="button"
+              onClick={() => history.push('/search')}
+              className={classes.getAccessButton}
             >
-              <ListItemText
-                primary="Invest Now"
-                disableTypography
-                className={classes.listItemTextAccess}
-              />
-            </NavLink>
+              Invest Now
+            </button>
           </ListItem>
-
           <ListItem className={classes.listItem}>
-            <NavLink
-              to="/auth/login"
-              className={cx(classes.navLink, {
-                [classes.navLinkActive]: activeRoute('/auth/investor-thanks'),
-              })}
+            <button
+              type="button"
+              onClick={() => history.push('/auth/login')}
+              className={classes.loginButton}
             >
-              <ListItemText
-                primary="Login"
-                disableTypography
-                className={classes.listItemText}
-              />
-            </NavLink>
+              Login
+            </button>
           </ListItem>
-        </React.Fragment>
+        </>
       )}
     </List>
   )
+
   return (
     <AppBar position="static" className={classes.appBar + appBarClasses}>
-      <Toolbar className={classes.display}>
+      <Toolbar className={classes.container}>
         <Hidden smDown>
           <div className={classes.flex}>
             <IconButton
