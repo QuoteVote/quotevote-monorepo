@@ -2,7 +2,7 @@
 
 exports[`Comment test - > renders correctly 1`] = `
 <div
-  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-4 css-1j74uew-MuiPaper-root-MuiCard-root"
+  class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-4 css-o5b05n-MuiPaper-root-MuiCard-root"
 >
   <div
     class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
@@ -11,7 +11,7 @@ exports[`Comment test - > renders correctly 1`] = `
       class="MuiCardHeader-avatar css-1r9wl67-MuiCardHeader-avatar"
     >
       <button
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1e3xvvg-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"
       >
@@ -399,7 +399,7 @@ exports[`Comment test - > renders correctly 1`] = `
       class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
     >
       <span
-        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-1a1whku-MuiTypography-root"
+        class="MuiTypography-root MuiTypography-body2 MuiCardHeader-subheader css-ihhumc-MuiTypography-root"
       >
         @jdoe
       </span>
@@ -424,33 +424,52 @@ exports[`Comment test - > renders correctly 1`] = `
     </p>
   </div>
   <div
-    class="MuiCardActions-root css-bbbzor-MuiCardActions-root"
+    class="MuiCardActions-root css-1wwmo7x-MuiCardActions-root"
   >
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-expand-2 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-expand-2 css-1vqnupe-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
-      <span
-        data-testid="mui-icon"
-      />
+      <svg
+        fill="currentColor"
+        height="24"
+        viewBox="0 0 24 24"
+        width="24"
+      >
+        <circle
+          cx="12"
+          cy="12"
+          r="10"
+        />
+        <path
+          d="M15.5 11c.828 0 1.5-.672 1.5-1.5S16.328 8 15.5 8 14 8.672 14 9.5 14.672 11 15.5 11zM8.5 11c.828 0 1.5-.672 1.5-1.5S9.328 8 8.5 8 7 8.672 7 9.5 7.672 11 8.5 11zM12 17c2.33 0 4.31-1.46 5-3.5H7c.69 2.04 2.67 3.5 5 3.5z"
+        />
+      </svg>
     </button>
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-1vqnupe-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
-      <span
-        data-testid="mui-icon"
-      />
+      <svg
+        fill="currentColor"
+        height="24"
+        viewBox="0 0 24 24"
+        width="24"
+      >
+        <path
+          d="M3.9 12a3.5 3.5 0 0 1 0-5 3.5 3.5 0 0 1 5 0l1.1 1.1-1.4 1.4L7.5 8.4a2 2 0 1 0-2.8 2.8l1.6 1.6-1.4 1.4L3.9 12zM20.1 12a3.5 3.5 0 0 1 0 5 3.5 3.5 0 0 1-5 0l-1.1-1.1 1.4-1.4 1.6 1.6a2 2 0 1 0 2.8-2.8l-1.6-1.6 1.4-1.4L20.1 12zM8.6 15.4l6.8-6.8 1.4 1.4-6.8 6.8-1.4-1.4z"
+        />
+      </svg>
     </button>
     <button
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-deleteIcon-6 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-deleteIcon-6 css-1vqnupe-MuiButtonBase-root-MuiIconButton-root"
       tabindex="0"
       type="button"
     >
       <span
-        data-testid="mui-icon"
+        data-testid="mui-icon-delete"
       />
     </button>
   </div>

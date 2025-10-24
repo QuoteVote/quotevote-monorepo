@@ -9,7 +9,7 @@ exports[`SubHeader test - > renders correctly 1`] = `
     class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
   >
     <p
-      class="MuiTypography-root MuiTypography-body1 makeStyles-headerName-2 css-rizt0-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body1 makeStyles-headerName-2 css-1edfpdg-MuiTypography-root"
     />
   </div>
   <div

@@ -8,31 +8,31 @@ exports[`SubmitPost test - > renders correctly 1`] = `
     class="makeStyles-cardBody-18"
   >
     <div
-      class="MuiTypography-root MuiTypography-h2 css-o2za6n-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-h2 css-1bkebpk-MuiTypography-root"
     >
       <span
-        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-kkcbhd-MuiSkeleton-root"
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
       />
     </div>
     <div
-      class="MuiTypography-root MuiTypography-h4 css-f84ov1-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-h4 css-10zsxzp-MuiTypography-root"
     >
       <span
-        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-kkcbhd-MuiSkeleton-root"
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
       />
     </div>
     <div
-      class="MuiTypography-root MuiTypography-h4 css-f84ov1-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-h4 css-10zsxzp-MuiTypography-root"
     >
       <span
-        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-kkcbhd-MuiSkeleton-root"
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
       />
     </div>
     <div
-      class="MuiTypography-root MuiTypography-caption css-mpaqru-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-caption css-1gju9dp-MuiTypography-root"
     >
       <span
-        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-kkcbhd-MuiSkeleton-root"
+        class="MuiSkeleton-root MuiSkeleton-text MuiSkeleton-pulse css-1k6ikml-MuiSkeleton-root"
       />
     </div>
     <div
@@ -40,7 +40,7 @@ exports[`SubmitPost test - > renders correctly 1`] = `
       justify="flex-end"
     >
       <span
-        class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse css-3sr0vz-MuiSkeleton-root"
+        class="MuiSkeleton-root MuiSkeleton-rect MuiSkeleton-pulse css-1lblo9c-MuiSkeleton-root"
         style="width: 100px; height: 35px;"
       />
     </div>

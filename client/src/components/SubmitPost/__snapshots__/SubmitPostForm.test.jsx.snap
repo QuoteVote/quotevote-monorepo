@@ -3,7 +3,7 @@
 exports[`SubmitPostForm test - > renders correctly 1`] = `
 <form>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-1 css-1j74uew-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root makeStyles-root-1 css-o5b05n-MuiPaper-root-MuiCard-root"
   >
     <div
       class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
@@ -13,7 +13,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
         class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
       >
         <p
-          class="MuiTypography-root MuiTypography-body2 makeStyles-title-3 css-7ctihp-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body2 makeStyles-title-3 css-1nmqws6-MuiTypography-root"
         >
           Create Quote
         </p>
@@ -22,7 +22,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
         class="MuiCardHeader-action css-116l9hl-MuiCardHeader-action"
       >
         <button
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-exit-4 css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium makeStyles-exit-4 css-1vqnupe-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"
           type="button"
         >
@@ -34,11 +34,11 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
       class="makeStyles-cardBody-11 MuiBox-root css-0"
     >
       <div
-        class="MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth makeStyles-input-6 css-1i4yu0n-MuiInputBase-root"
+        class="MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth makeStyles-input-6 css-glc157-MuiInputBase-root"
         required=""
       >
         <input
-          class="MuiInputBase-input css-yimnyd-MuiInputBase-input"
+          class="MuiInputBase-input css-1jrstcx-MuiInputBase-input"
           id="title"
           name="title"
           placeholder="Enter Title"
@@ -48,17 +48,17 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
         />
       </div>
       <hr
-        class="MuiDivider-root MuiDivider-fullWidth css-1jpc804-MuiDivider-root"
+        class="MuiDivider-root MuiDivider-fullWidth css-18cfrml-MuiDivider-root"
       />
       <div
         class="makeStyles-scrollableContent-12"
       >
         <div
-          class="MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-multiline makeStyles-input-6 css-1043kxe-MuiInputBase-root"
+          class="MuiInputBase-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-multiline makeStyles-input-6 css-vy5wau-MuiInputBase-root"
           required=""
         >
           <textarea
-            class="MuiInputBase-input MuiInputBase-inputMultiline css-n56w7x-MuiInputBase-input"
+            class="MuiInputBase-input MuiInputBase-inputMultiline css-1noj9jj-MuiInputBase-input"
             id="text"
             name="text"
             placeholder="Enter text or URL here"
@@ -67,7 +67,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
           />
           <textarea
             aria-hidden="true"
-            class="MuiInputBase-input MuiInputBase-inputMultiline css-n56w7x-MuiInputBase-input"
+            class="MuiInputBase-input MuiInputBase-inputMultiline css-1noj9jj-MuiInputBase-input"
             readonly=""
             style="visibility: hidden; position: absolute; overflow: hidden; height: 0px; top: 0px; left: 0px; transform: translateZ(0); padding-top: 0px; padding-bottom: 0px; width: 100%;"
             tabindex="-1"
@@ -76,7 +76,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
       </div>
     </div>
     <div
-      class="MuiCardActions-root MuiCardActions-spacing makeStyles-cardActions-13 css-1q4nm6f-MuiCardActions-root"
+      class="MuiCardActions-root MuiCardActions-spacing makeStyles-cardActions-13 css-xm0xqa-MuiCardActions-root"
     >
       <div
         class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-wjsns7-MuiGrid-root"
@@ -84,21 +84,21 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
         style="width: 100%;"
       >
         <p
-          class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
           style="margin-right: 10px; margin-bottom: 0px; font-weight: 500;"
         >
           Who can see your post
         </p>
         <div
-          class="MuiAutocomplete-root MuiAutocomplete-hasClearIcon makeStyles-groupInput-8 css-7yn9vh-MuiAutocomplete-root"
+          class="MuiAutocomplete-root MuiAutocomplete-hasClearIcon makeStyles-groupInput-8 css-1y8r37a-MuiAutocomplete-root"
           name="group"
           variant="outlined"
         >
           <div
-            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-cmpglg-MuiFormControl-root-MuiTextField-root"
+            class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-1vyjpuj-MuiFormControl-root-MuiTextField-root"
           >
             <label
-              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-vxtere-MuiFormLabel-root-MuiInputLabel-root"
+              class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-sizeSmall MuiInputLabel-outlined css-p48bbu-MuiFormLabel-root-MuiInputLabel-root"
               data-shrink="false"
               for="group-selector"
               id="group-selector-label"
@@ -106,7 +106,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
               Select or create a group
             </label>
             <div
-              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-15qps23-MuiInputBase-root-MuiOutlinedInput-root"
+              class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-sizeSmall MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-1f0nt97-MuiInputBase-root-MuiOutlinedInput-root"
             >
               <input
                 aria-autocomplete="list"
@@ -114,7 +114,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
                 aria-invalid="false"
                 autocapitalize="none"
                 autocomplete="off"
-                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-13meb6w-MuiInputBase-input-MuiOutlinedInput-input"
+                class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSizeSmall MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-1df20ln-MuiInputBase-input-MuiOutlinedInput-input"
                 id="group-selector"
                 name="group"
                 placeholder="Type to search or create new group"
@@ -128,14 +128,14 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
               >
                 <button
                   aria-label="Clear"
-                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator css-1x7n7v0-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
+                  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium MuiAutocomplete-clearIndicator css-1i3pc5c-MuiButtonBase-root-MuiIconButton-root-MuiAutocomplete-clearIndicator"
                   tabindex="-1"
                   title="Clear"
                   type="button"
                 >
                   <svg
                     aria-hidden="true"
-                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+                    class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-18w7uxr-MuiSvgIcon-root"
                     data-testid="CloseIcon"
                     focusable="false"
                     viewBox="0 0 24 24"
@@ -151,7 +151,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
                 class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
               >
                 <legend
-                  class="css-1n64csd-MuiNotchedOutlined-root"
+                  class="css-1cs9q92-MuiNotchedOutlined-root"
                 >
                   <span>
                     Select or create a group
@@ -168,7 +168,7 @@ exports[`SubmitPostForm test - > renders correctly 1`] = `
         style="margin-top: 20px;"
       >
         <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary makeStyles-button-16 undefined makeStyles-fullWidth-17 makeStyles-button-10 css-59cs2h-MuiButtonBase-root-MuiButton-root"
+          class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary makeStyles-button-16 undefined makeStyles-fullWidth-17 makeStyles-button-10 css-1nwucin-MuiButtonBase-root-MuiButton-root"
           id="submit-button"
           tabindex="0"
           type="submit"

@@ -24,7 +24,7 @@ exports[`Login test - > renders correctly 1`] = `
               class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 makeStyles-header-3 css-rizt0-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 makeStyles-header-3 css-1edfpdg-MuiTypography-root"
               >
                 Login
               </p>
@@ -36,13 +36,13 @@ exports[`Login test - > renders correctly 1`] = `
                 class="makeStyles-formContainer-11"
               >
                 <div
-                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root makeStyles-textfield-7 css-cmpglg-MuiFormControl-root-MuiTextField-root"
+                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root makeStyles-textfield-7 css-1vyjpuj-MuiFormControl-root-MuiTextField-root"
                 >
                   <div
-                    class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedStart css-1ks7mvh-MuiInputBase-root-MuiOutlinedInput-root"
+                    class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedStart css-1kvwk71-MuiInputBase-root-MuiOutlinedInput-root"
                   >
                     <div
-                      class="MuiInputAdornment-root MuiInputAdornment-positionStart MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1nowbqt-MuiInputAdornment-root"
+                      class="MuiInputAdornment-root MuiInputAdornment-positionStart MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-6ga8lj-MuiInputAdornment-root"
                     >
                       <span
                         aria-hidden="true"
@@ -52,12 +52,12 @@ exports[`Login test - > renders correctly 1`] = `
                       </span>
                       <span
                         class="makeStyles-icon-8"
-                        data-testid="mui-icon"
+                        data-testid="mui-icon-Face"
                       />
                     </div>
                     <input
                       aria-invalid="false"
-                      class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-2u11ia-MuiInputBase-input-MuiOutlinedInput-input"
+                      class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-19j5ahi-MuiInputBase-input-MuiOutlinedInput-input"
                       id="username"
                       name="username"
                       placeholder="Email/Username"
@@ -69,7 +69,7 @@ exports[`Login test - > renders correctly 1`] = `
                       class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
                     >
                       <legend
-                        class="css-1nf2c5d-MuiNotchedOutlined-root"
+                        class="css-sfzbcg-MuiNotchedOutlined-root"
                       >
                         <span
                           aria-hidden="true"
@@ -82,13 +82,13 @@ exports[`Login test - > renders correctly 1`] = `
                   </div>
                 </div>
                 <div
-                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root makeStyles-textfield-7 css-cmpglg-MuiFormControl-root-MuiTextField-root"
+                  class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root makeStyles-textfield-7 css-1vyjpuj-MuiFormControl-root-MuiTextField-root"
                 >
                   <div
-                    class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedStart css-1ks7mvh-MuiInputBase-root-MuiOutlinedInput-root"
+                    class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedStart css-1kvwk71-MuiInputBase-root-MuiOutlinedInput-root"
                   >
                     <div
-                      class="MuiInputAdornment-root MuiInputAdornment-positionStart MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-1nowbqt-MuiInputAdornment-root"
+                      class="MuiInputAdornment-root MuiInputAdornment-positionStart MuiInputAdornment-outlined MuiInputAdornment-sizeMedium css-6ga8lj-MuiInputAdornment-root"
                     >
                       <span
                         aria-hidden="true"
@@ -98,12 +98,12 @@ exports[`Login test - > renders correctly 1`] = `
                       </span>
                       <span
                         class="makeStyles-icon-8"
-                        data-testid="mui-icon"
+                        data-testid="mui-icon-lockoutlined"
                       />
                     </div>
                     <input
                       aria-invalid="false"
-                      class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-2u11ia-MuiInputBase-input-MuiOutlinedInput-input"
+                      class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputAdornedStart css-19j5ahi-MuiInputBase-input-MuiOutlinedInput-input"
                       id="password"
                       name="password"
                       placeholder="Password"
@@ -115,7 +115,7 @@ exports[`Login test - > renders correctly 1`] = `
                       class="MuiOutlinedInput-notchedOutline css-18p5xg2-MuiNotchedOutlined-root-MuiOutlinedInput-notchedOutline"
                     >
                       <legend
-                        class="css-1nf2c5d-MuiNotchedOutlined-root"
+                        class="css-sfzbcg-MuiNotchedOutlined-root"
                       >
                         <span
                           aria-hidden="true"
@@ -128,10 +128,10 @@ exports[`Login test - > renders correctly 1`] = `
                   </div>
                 </div>
                 <label
-                  class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-19opgx6-MuiFormControlLabel-root"
+                  class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-1yyanpp-MuiFormControlLabel-root"
                 >
                   <span
-                    class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium css-11uodz6-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
+                    class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium css-1ka0u49-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                     style="color: gray;"
                   >
                     <input
@@ -142,7 +142,7 @@ exports[`Login test - > renders correctly 1`] = `
                     />
                     <svg
                       aria-hidden="true"
-                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-20bmp1-MuiSvgIcon-root"
                       data-testid="CheckBoxOutlineBlankIcon"
                       focusable="false"
                       viewBox="0 0 24 24"
@@ -153,12 +153,12 @@ exports[`Login test - > renders correctly 1`] = `
                     </svg>
                   </span>
                   <p
-                    class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-body2 css-1nmqws6-MuiTypography-root"
                   >
                     I agree to the
                      
                     <a
-                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-1dtg03f-MuiTypography-root-MuiLink-root"
                       href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_terms_of_service.md"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -168,10 +168,10 @@ exports[`Login test - > renders correctly 1`] = `
                   </p>
                 </label>
                 <label
-                  class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-19opgx6-MuiFormControlLabel-root"
+                  class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd css-1yyanpp-MuiFormControlLabel-root"
                 >
                   <span
-                    class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium css-11uodz6-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
+                    class="MuiButtonBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium PrivateSwitchBase-root MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium MuiCheckbox-root MuiCheckbox-colorDefault MuiCheckbox-sizeMedium css-1ka0u49-MuiButtonBase-root-MuiSwitchBase-root-MuiCheckbox-root"
                     style="color: gray;"
                   >
                     <input
@@ -182,7 +182,7 @@ exports[`Login test - > renders correctly 1`] = `
                     />
                     <svg
                       aria-hidden="true"
-                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+                      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-20bmp1-MuiSvgIcon-root"
                       data-testid="CheckBoxOutlineBlankIcon"
                       focusable="false"
                       viewBox="0 0 24 24"
@@ -193,12 +193,12 @@ exports[`Login test - > renders correctly 1`] = `
                     </svg>
                   </span>
                   <p
-                    class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-body2 css-1nmqws6-MuiTypography-root"
                   >
                     I agree to the
                      
                     <a
-                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
+                      class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-1dtg03f-MuiTypography-root-MuiLink-root"
                       href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_code_of_conduct.md"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -208,12 +208,12 @@ exports[`Login test - > renders correctly 1`] = `
                   </p>
                 </label>
                 <button
-                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorSecondary MuiButton-fullWidth MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorSecondary MuiButton-fullWidth makeStyles-loginButton-5 css-1y80zq3-MuiButtonBase-root-MuiButton-root"
+                  class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorSecondary MuiButton-fullWidth MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-sizeLarge MuiButton-containedSizeLarge MuiButton-colorSecondary MuiButton-fullWidth makeStyles-loginButton-5 css-12j54ya-MuiButtonBase-root-MuiButton-root"
                   tabindex="0"
                   type="submit"
                 >
                   <p
-                    class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+                    class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
                   >
                     Log in
                   </p>
@@ -224,10 +224,10 @@ exports[`Login test - > renders correctly 1`] = `
               class="MuiGrid-root MuiGrid-direction-xs-row makeStyles-forgotPasswordContainer-10 css-17fpwt7-MuiGrid-root"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
               >
                 <a
-                  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
+                  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-1dtg03f-MuiTypography-root-MuiLink-root"
                   href="/auth/forgot"
                 >
                   Forgot password?
@@ -238,14 +238,14 @@ exports[`Login test - > renders correctly 1`] = `
               class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
             >
               <p
-                class="MuiTypography-root MuiTypography-body1 css-rizt0-MuiTypography-root"
+                class="MuiTypography-root MuiTypography-body1 css-1edfpdg-MuiTypography-root"
               >
                 No account?
                 <span
                   style="margin-right: 5px;"
                 />
                 <a
-                  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-q3dtp5-MuiTypography-root-MuiLink-root"
+                  class="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineAlways makeStyles-link-9 css-1dtg03f-MuiTypography-root-MuiLink-root"
                   href="/auth/request-access"
                 >
                   Request Access

@@ -17,7 +17,7 @@ exports[`NotificationLists test - > renders correctly 1`] = `
     class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
   >
     <span
-      class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-body2 css-1nmqws6-MuiTypography-root"
     >
       Relax, you don't have any alerts right now.
     </span>

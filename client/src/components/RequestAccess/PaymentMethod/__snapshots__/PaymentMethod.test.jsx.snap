@@ -3,7 +3,7 @@
 exports[`PaymentMethod test - > renders correctly 1`] = `
 <form>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-1j74uew-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-o5b05n-MuiPaper-root-MuiCard-root"
   >
     <div
       class="MuiCardHeader-root css-149tc0y-MuiCardHeader-root"
@@ -12,7 +12,7 @@ exports[`PaymentMethod test - > renders correctly 1`] = `
         class="MuiCardHeader-avatar css-1r9wl67-MuiCardHeader-avatar"
       >
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-stepNumber-4 css-rizt0-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 makeStyles-stepNumber-4 css-1edfpdg-MuiTypography-root"
         >
           2
         </p>
@@ -21,7 +21,7 @@ exports[`PaymentMethod test - > renders correctly 1`] = `
         class="MuiCardHeader-content css-1jkp9bu-MuiCardHeader-content"
       >
         <p
-          class="MuiTypography-root MuiTypography-body1 makeStyles-stepName-5 css-rizt0-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body1 makeStyles-stepName-5 css-1edfpdg-MuiTypography-root"
         >
           Would you like to support this app?
         </p>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@mui/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { tokenValidator } from 'store/user'
 import { useHistory, useLocation } from 'react-router-dom'

@@ -9,22 +9,22 @@ exports[`Notification test - > renders correctly 1`] = `
     class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
   >
     <h5
-      class="MuiTypography-root MuiTypography-h5 css-16xl4zq-MuiTypography-root"
+      class="MuiTypography-root MuiTypography-h5 css-ku7d13-MuiTypography-root"
     >
       Notifications
     </h5>
     <hr
-      class="MuiDivider-root MuiDivider-fullWidth css-1jpc804-MuiDivider-root"
+      class="MuiDivider-root MuiDivider-fullWidth css-18cfrml-MuiDivider-root"
     />
     <button
       aria-label="Open Notifications"
-      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall makeStyles-moreMenu-4 css-155wbr6-MuiButtonBase-root-MuiIconButton-root"
+      class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall makeStyles-moreMenu-4 css-1e3xvvg-MuiButtonBase-root-MuiIconButton-root"
       data-mui-internal-clone-element="true"
       tabindex="0"
       type="button"
     >
       <span
-        data-testid="mui-icon"
+        data-testid="mui-icon-launch"
       />
     </button>
   </div>
@@ -47,7 +47,7 @@ exports[`Notification test - > renders correctly 1`] = `
         class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
       >
         <span
-          class="MuiTypography-root MuiTypography-body2 css-7ctihp-MuiTypography-root"
+          class="MuiTypography-root MuiTypography-body2 css-1nmqws6-MuiTypography-root"
         >
           Relax, you don't have any alerts right now.
         </span>

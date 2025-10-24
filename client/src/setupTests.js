@@ -50,6 +50,7 @@ if (typeof window !== 'undefined' && typeof window.scrollTo !== 'function') {
 // We'll lazily require enzyme below after mocks/aliases are in place.
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
+import { HelmetProvider } from 'react-helmet-async'
 import { createTheme, ThemeProvider as MaterialThemeProvider } from '@mui/material/styles'
 import { ThemeProvider as StylesThemeProvider } from '@mui/styles'
 import sinon from 'sinon'
@@ -102,7 +103,11 @@ function TestProviders({ children }) {
       React.createElement(
         StylesThemeProvider,
         { theme: themeInstance },
-        children,
+        React.createElement(
+          HelmetProvider,
+          null,
+          children,
+        ),
       ),
     ),
   )
@@ -194,7 +199,7 @@ try {
   const AllProviders = ({ children }) => React.createElement(
     CacheProvider,
     { value: emotionCache },
-    React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, React.createElement(Provider, { store }, React.createElement(BrowserRouter, null, children)))),
+    React.createElement(MaterialThemeProvider, { theme: themeInstance }, React.createElement(StylesThemeProvider, { theme: themeInstance }, React.createElement(HelmetProvider, null, React.createElement(Provider, { store }, React.createElement(BrowserRouter, null, children))))),
   )
 
   TestingLibrary.render = (ui, options) => _tlRender(ui, { wrapper: AllProviders, ...options })
