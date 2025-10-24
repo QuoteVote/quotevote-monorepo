@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/react-hooks'
 import AvatarDisplay from '../Avatar'
 import { DELETE_MESSAGE } from '../../graphql/mutations'
 import { SET_SNACKBAR } from '../../store/ui'
+import AutoLinkText from '../common/AutoLinkText'
 
 const useStyles = makeStyles(() => ({
   bubble: {
@@ -122,7 +123,7 @@ function MessageItem({ message }) {
         <Paper
           className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}
         >
-          {message.text}
+          <AutoLinkText text={message.text} />
         </Paper>
         {(user._id === message.userId || user.admin) && (
           <IconButton 
