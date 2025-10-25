@@ -138,7 +138,20 @@ export const addCreatorToUser = async ({ username, password, requirePassword }, 
   }
 
   let updatedUser = user || {};
-  updatedUser = Object.keys(updatedUser).length > 0 ? updatedUser : user;
+
+  if (updatedUser && updatedUser._id) {
+    const presenceUpdate = {
+      presenceStatus: 'ONLINE',
+      lastActiveAt: new Date(),
+      awayMessage: '',
+    };
+
+    await UserModel.updateOne({ _id: updatedUser._id }, presenceUpdate);
+    updatedUser = await UserModel.findById(updatedUser._id) || updatedUser;
+  } else {
+    updatedUser = {};
+  }
+
   const token = jwt.sign({
     email: updatedUser.email,
     fullName: updatedUser.fullName,

@@ -48,6 +48,19 @@ const schema = mongoose.Schema({
     type: JSON,
     required: false,
   },
+  presenceStatus: {
+    type: String,
+    enum: ['ONLINE', 'AWAY', 'OFFLINE'],
+    default: 'OFFLINE',
+  },
+  awayMessage: {
+    type: String,
+    default: '',
+  },
+  lastActiveAt: {
+    type: Date,
+    default: Date.now,
+  },
   _followersId: {
     type: [mongoose.Schema.Types.ObjectId],
     required: false,

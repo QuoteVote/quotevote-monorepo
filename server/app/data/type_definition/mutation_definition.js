@@ -75,7 +75,10 @@ export const Mutation = `type Mutation {
 
   # Mutation for updating a users avatar
     updateUserAvatar(user_id: String!, avatarQualities: JSON): User
-    
+
+  # Mutation for updating the active presence status of the authenticated user
+    updatePresenceStatus(presence: PresenceStatusInput!): User
+
   # Mutation for removing user notification
     removeNotification(notificationId: String!): Notification
 

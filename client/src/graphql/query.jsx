@@ -151,6 +151,15 @@ export const GET_CHAT_ROOM = gql`
       created
       title
       avatar
+      buddy {
+        _id
+        name
+        username
+        avatar
+        presenceStatus
+        awayMessage
+        lastActiveAt
+      }
     }
   }
 `
@@ -164,6 +173,15 @@ export const GET_CHAT_ROOMS = gql`
       title
       avatar
       unreadMessages
+      buddy {
+        _id
+        name
+        username
+        avatar
+        presenceStatus
+        awayMessage
+        lastActiveAt
+      }
     }
   }
 `

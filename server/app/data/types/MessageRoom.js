@@ -9,5 +9,6 @@ type MessageRoom {
   unreadMessages: Int
   postId: String
   messages: [Message]
+  buddy: User
 }
 `;

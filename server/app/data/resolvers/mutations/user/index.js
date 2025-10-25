@@ -5,3 +5,4 @@ export * from './updateUserAdminRight';
 export * from './sendPasswordResetEmail';
 export * from './updateUserPassword';
 export * from './updateUserAvatar';
+export * from './updatePresenceStatus';

@@ -9,6 +9,7 @@ import MessageItem from './MessageItem'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 import LoadingSpinner from '../LoadingSpinner'
 import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription'
+import { playIncomingMessageTone } from '../../utils/sound'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -26,6 +27,7 @@ const useStyles = makeStyles(() => ({
 export default function MessageItemList() {
   const classes = useStyles()
   const selectedRoom = useSelector((state) => state.chat.selectedRoom)
+  const currentUserId = useSelector((state) => state.user.data?._id)
   const { _id: messageRoomId } = selectedRoom.room
   const {
     loading, error, data, refetch,
@@ -37,7 +39,11 @@ export default function MessageItemList() {
     NEW_MESSAGE_SUBSCRIPTION,
     {
       variables: { messageRoomId },
-      onSubscriptionData: async () => {
+      onSubscriptionData: async ({ subscriptionData }) => {
+        const incomingMessage = subscriptionData?.data?.message
+        if (incomingMessage && incomingMessage.userId !== currentUserId) {
+          playIncomingMessageTone()
+        }
         await refetch()
       },
     },

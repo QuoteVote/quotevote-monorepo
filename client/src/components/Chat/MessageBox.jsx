@@ -11,6 +11,13 @@ import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
 import { GET_CHAT_ROOMS } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
+import {
+  describePresence,
+  getPresenceColor,
+  getPresenceLabel,
+  normalizePresenceStatus,
+} from '../../utils/presence'
+import { prewarmAudioContext } from '../../utils/sound'
 
 function useWindowSize() {
   // Initialize state with undefined width/height so server and client renders match
@@ -65,6 +72,43 @@ const useStyles = makeStyles((theme) => ({
     alignContent: 'stretch',
     height: '90%',
   },
+  avatarWrapper: {
+    position: 'relative',
+    display: 'inline-flex',
+  },
+  avatarPresenceDot: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 12,
+    height: 12,
+    borderRadius: '50%',
+    border: '2px solid #FFFFFF',
+  },
+  titleBlock: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  presenceRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 6,
+  },
+  presenceDot: {
+    width: 10,
+    height: 10,
+    borderRadius: '50%',
+  },
+  presenceLabel: {
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+  },
+  presenceDescription: {
+    fontSize: '0.75rem',
+    color: '#616161',
+  },
 }))
 
 function Header() {
@@ -73,9 +117,18 @@ function Header() {
     dispatch(SELECTED_CHAT_ROOM(null))
   }
 
-  const { title, avatar, messageType } = useSelector(
+  const { title, avatar, messageType, buddy } = useSelector(
     (state) => state.chat.selectedRoom.room,
   )
+
+  const hasBuddy = messageType === 'USER' && buddy
+  const presenceStatus = hasBuddy ? normalizePresenceStatus(buddy.presenceStatus) : 'OFFLINE'
+  const presenceColor = hasBuddy ? getPresenceColor(presenceStatus) : 'transparent'
+  const presenceLabel = hasBuddy ? getPresenceLabel(presenceStatus) : ''
+  const presenceDescription = hasBuddy
+    ? describePresence(presenceStatus, buddy.awayMessage, buddy.lastActiveAt)
+    : ''
+  const classes = useStyles()
 
   return (
     <Grid
@@ -91,16 +144,44 @@ function Header() {
         </IconButton>
       </Grid>
       <Grid item>
-        <Avatar>
-          {messageType === 'USER' ? (
-            <AvatarDisplay height={40} width={40} {...avatar} />
-          ) : (
-            title[0]
+        <div className={classes.avatarWrapper}>
+          <Avatar>
+            {messageType === 'USER' ? (
+              <AvatarDisplay height={40} width={40} {...avatar} />
+            ) : (
+              title[0]
+            )}
+          </Avatar>
+          {hasBuddy && (
+            <span
+              className={classes.avatarPresenceDot}
+              style={{ backgroundColor: presenceColor }}
+            />
           )}
-        </Avatar>
+        </div>
       </Grid>
       <Grid item>
-        <Typography>{title}</Typography>
+        <div className={classes.titleBlock}>
+          <Typography>{title}</Typography>
+          {hasBuddy && (
+            <>
+              <div className={classes.presenceRow}>
+                <span
+                  className={classes.presenceDot}
+                  style={{ backgroundColor: presenceColor }}
+                />
+                <Typography className={classes.presenceLabel} component="span">
+                  {presenceLabel}
+                </Typography>
+              </div>
+              {presenceDescription && (
+                <Typography className={classes.presenceDescription} variant="caption">
+                  {presenceDescription}
+                </Typography>
+              )}
+            </>
+          )}
+        </div>
       </Grid>
     </Grid>
   )
@@ -151,6 +232,10 @@ function MessageBox() {
       refetchQueries: [{ query: GET_CHAT_ROOMS }],
     })
   }, [messageRoomId, updateMessageReadBy, ensureAuth])
+
+  useEffect(() => {
+    prewarmAudioContext()
+  }, [])
 
   return (
     <>

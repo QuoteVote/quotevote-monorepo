@@ -17,4 +17,7 @@ type User {
   upvotes: Int
   downvotes: Int
   contributorBadge: Boolean
+  presenceStatus: String
+  awayMessage: String
+  lastActiveAt: Date
 }`;

@@ -61,6 +61,7 @@ export const resolver_mutations = function () {
     sendPasswordResetEmail: userMutations.sendPasswordResetEmail(),
     updateUserPassword: userMutations.updateUserPassword(),
     updateUser: userMutations.updateUser(),
+    updatePresenceStatus: userMutations.updatePresenceStatus(),
 
     // User invite
     sendUserInviteApproval: userInviteMutations.sendUserInviteApproval(),

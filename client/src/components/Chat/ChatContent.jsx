@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import ChatSearchInput from './ChatSearchInput'
 import BuddyList from '../BuddyList'
 import MessageBox from './MessageBox'
+import PresenceControls from './PresenceControls'
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +32,7 @@ function ChatContent() {
   if (!selectedRoom || !selectedRoom.room) {
     return (
       <div className={classes.root}>
+        <PresenceControls />
         <ChatSearchInput setSearch={setSearch} />
         <BuddyList search={search} />
       </div>

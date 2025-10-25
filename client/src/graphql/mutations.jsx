@@ -194,6 +194,21 @@ export const UPDATE_USER_AVATAR = gql`
   }
 `
 
+export const UPDATE_PRESENCE_STATUS = gql`
+  mutation updatePresenceStatus($presence: PresenceStatusInput!) {
+    updatePresenceStatus(presence: $presence) {
+      _id
+      username
+      name
+      avatar
+      presenceStatus
+      awayMessage
+      lastActiveAt
+      contributorBadge
+    }
+  }
+`
+
 export const CREATE_POST_MESSAGE_ROOM = gql`
   mutation createPostMessageRoom($postId: String!) {
     createPostMessageRoom(postId: $postId) {

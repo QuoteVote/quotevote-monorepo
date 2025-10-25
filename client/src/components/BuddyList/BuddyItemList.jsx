@@ -9,9 +9,15 @@ import PropTypes from 'prop-types'
 import { Avatar, Typography, Tooltip } from '@material-ui/core'
 import classNames from 'classnames'
 import { useDispatch } from 'react-redux'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, Fragment } from 'react'
 import AvatarDisplay from '../Avatar'
 import { SELECTED_CHAT_ROOM } from '../../store/chat'
+import {
+  describePresence,
+  getPresenceColor,
+  getPresenceLabel,
+  normalizePresenceStatus,
+} from '../../utils/presence'
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -33,15 +39,6 @@ const useStyles = makeStyles(() => ({
   },
   divider: {
     backgroundColor: 'white',
-  },
-  count: {
-    margin: 5,
-    color: '#E91E63',
-    borderRadius: '50%',
-    backgroundColor: 'white',
-    width: 50,
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   friendType: {
     margin: 5,
@@ -82,28 +79,83 @@ const useStyles = makeStyles(() => ({
     flexShrink: 0, // Prevent badge from shrinking
     marginLeft: 8,
   },
+  avatarWrapper: {
+    position: 'relative',
+    display: 'inline-flex',
+  },
+  presenceDot: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 12,
+    height: 12,
+    borderRadius: '50%',
+    border: '2px solid #0f2a43',
+    backgroundColor: '#9E9E9E',
+  },
+  presencePill: {
+    flexShrink: 0,
+    marginLeft: 8,
+    padding: '2px 8px',
+    borderRadius: 12,
+    fontSize: '0.65rem',
+    fontWeight: 600,
+    color: '#FFFFFF',
+    display: 'inline-flex',
+    alignItems: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+  },
+  secondaryText: {
+    color: 'rgba(255, 255, 255, 0.75)',
+    marginTop: 4,
+    display: 'block',
+  },
+  unreadCount: {
+    margin: 5,
+    color: '#E91E63',
+    borderRadius: '50%',
+    backgroundColor: 'white',
+    minWidth: 40,
+    minHeight: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 }))
 const emptyData = [
   {
     Text: 'Car Shark',
     type: 'USER',
     avatar: {},
+    buddy: null,
+    unreadMessages: 0,
   }, {
     Text: 'Four Aces',
     type: 'Post',
     avatar: {},
+    buddy: null,
+    unreadMessages: 0,
   }, {
     Text: 'Peter Parker',
     type: 'USER',
     avatar: {},
+    buddy: null,
+    unreadMessages: 0,
   }, {
     Text: 'Lebron James',
     type: 'USER',
     avatar: {},
+    buddy: null,
+    unreadMessages: 0,
   }, {
     Text: 'Twitter',
     type: 'Post',
     avatar: {},
+    buddy: null,
+    unreadMessages: 0,
   },
 ]
 
@@ -166,35 +218,68 @@ function BuddyItemList({ buddyList }) {
         </Typography>
       )}
       <List className={buddyList.length ? classes.root : classNames(classes.root, classes.blur)}>
-        {itemList.map((item) => (
-          <>
-            <ListItem onClick={() => handleClickItem(item)}>
-              <ListItemAvatar>
-                <Avatar>
-                  {item.type === 'USER' && <AvatarDisplay height={40} width={40} {...item.avatar} />}
-                  {item.type !== 'USER' && item.Text[0]}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                className={classes.listItemText}
-                primary={(
-                  <div className={classes.primaryText}>
-                    <TruncatedText text={item.Text} className={classes.textContent} />
-                    <span className={`${item.type === 'USER' ? classes.friendType : classes.postType} ${classes.typeBadge}`}>
-                      {item.type === 'USER' ? 'FRIEND' : 'POST'}
-                    </span>
+        {itemList.map((item) => {
+          const hasBuddy = item.type === 'USER' && item.buddy
+          const status = hasBuddy ? normalizePresenceStatus(item.buddy.presenceStatus) : 'OFFLINE'
+          const presenceColor = hasBuddy ? getPresenceColor(status) : 'transparent'
+          const presenceLabel = hasBuddy ? getPresenceLabel(status) : ''
+          const presenceDescription = hasBuddy
+            ? describePresence(status, item.buddy.awayMessage, item.buddy.lastActiveAt)
+            : ''
+
+          return (
+            <Fragment key={item.room?._id || item.Text}>
+              <ListItem onClick={() => handleClickItem(item)}>
+                <ListItemAvatar>
+                  <div className={classes.avatarWrapper}>
+                    <Avatar>
+                      {item.type === 'USER' && <AvatarDisplay height={40} width={40} {...item.avatar} />}
+                      {item.type !== 'USER' && item.Text[0]}
+                    </Avatar>
+                    {hasBuddy && (
+                      <span
+                        className={classes.presenceDot}
+                        style={{ backgroundColor: presenceColor }}
+                      />
+                    )}
                   </div>
-                )}
-              />
-              <ListItemSecondaryAction>
-                <div className={classes.count}>
-                  {item.unreadMessages}
-                </div>
-              </ListItemSecondaryAction>
-            </ListItem>
-            <Divider className={classes.divider} />
-          </>
-        ))}
+                </ListItemAvatar>
+                <ListItemText
+                  className={classes.listItemText}
+                  primary={(
+                    <div className={classes.primaryText}>
+                      <TruncatedText text={item.Text} className={classes.textContent} />
+                      <span className={`${item.type === 'USER' ? classes.friendType : classes.postType} ${classes.typeBadge}`}>
+                        {item.type === 'USER' ? 'FRIEND' : 'POST'}
+                      </span>
+                      {hasBuddy && (
+                        <span
+                          className={classes.presencePill}
+                          style={{ backgroundColor: presenceColor }}
+                        >
+                          {presenceLabel}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  secondary={
+                    hasBuddy && presenceDescription ? (
+                      <Typography variant="caption" className={classes.secondaryText}>
+                        {presenceDescription}
+                      </Typography>
+                    ) : null
+                  }
+                />
+                <ListItemSecondaryAction>
+                  <div className={classes.unreadCount}>
+                    {item.unreadMessages || 0}
+                  </div>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Divider className={classes.divider} />
+            </Fragment>
+          )
+        })}
       </List>
     </>
   )
