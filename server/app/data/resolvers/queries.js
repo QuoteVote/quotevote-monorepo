@@ -4,6 +4,7 @@ import * as groupQuery from './queries/group';
 import * as messageQuery from './queries/message';
 import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
+import * as chatQuery from './queries/chat';
 
 export const resolver_query = function () {
   return {
@@ -29,5 +30,12 @@ export const resolver_query = function () {
     messageRoom: messageQuery.getUserChatRoom(),
     notifications: notificationQuery.getNotifications(),
     messageReactions: messageQuery.getUserMessageReactions(),
+
+    // Presence-aware chat
+    myBuddyList: chatQuery.getMyBuddyList(),
+    myConversations: chatQuery.getMyConversations(),
+    chatMessages: chatQuery.getChatMessages(),
+    chatReceipts: chatQuery.getChatReceipts(),
+    searchChatMessages: chatQuery.searchChatMessages(),
   };
 };

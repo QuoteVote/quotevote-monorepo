@@ -677,3 +677,57 @@ export const SEARCH_USERNAMES = gql`
     }
   }
 `
+
+export const MY_BUDDY_LIST = gql`
+  query myBuddyList {
+    myBuddyList {
+      userId
+      username
+      statusText
+      presence {
+        userId
+        state
+        statusText
+        updatedAt
+      }
+    }
+  }
+`
+
+export const MY_CONVERSATIONS = gql`
+  query myConversations {
+    myConversations {
+      _id
+      type
+      memberIds
+      postId
+      createdBy
+      createdAt
+      lastMsgAt
+    }
+  }
+`
+
+export const CHAT_MESSAGES = gql`
+  query chatMessages($conversationId: ObjectId!, $after: DateTime, $limit: Int) {
+    chatMessages(conversationId: $conversationId, after: $after, limit: $limit) {
+      _id
+      conversationId
+      senderId
+      body
+      createdAt
+    }
+  }
+`
+
+export const CHAT_RECEIPTS = gql`
+  query chatReceipts($conversationId: ObjectId!) {
+    chatReceipts(conversationId: $conversationId) {
+      _id
+      conversationId
+      userId
+      lastSeenMessageId
+      lastSeenAt
+    }
+  }
+`

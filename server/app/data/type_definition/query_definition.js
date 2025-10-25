@@ -45,9 +45,24 @@ type Query {
 
   " This will query the list user message rooms"
   messageRooms: [MessageRoom]
-  
+
   " This will query the user message room"
   messageRoom(otherUserId: String!): MessageRoom
+
+  " Presence-aware buddy list "
+  myBuddyList: [Buddy!]
+
+  " Presence-aware conversations "
+  myConversations: [ChatConversation!]
+
+  " Conversation messages with realtime metadata "
+  chatMessages(conversationId: ObjectId!, after: DateTime, limit: Int): [ChatMessage!]
+
+  " Read receipts for a conversation "
+  chatReceipts(conversationId: ObjectId!): [ChatReceipt!]
+
+  " Search chat messages by keyword "
+  searchChatMessages(q: String!, limit: Int): [ChatMessage!]
 
   " This will query duplicate email"
   checkDuplicateEmail(email: String!): JSON

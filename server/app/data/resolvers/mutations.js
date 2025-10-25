@@ -8,6 +8,7 @@ import * as userMutations from './mutations/user';
 import * as userInviteMutations from './mutations/userInvite';
 import * as quoteMutations from './mutations/quote';
 import * as notificationMutations from './mutations/notification';
+import * as chatMutations from './mutations/chat';
 
 // eslint-disable-next-line camelcase,import/prefer-default-export
 export const resolver_mutations = function () {
@@ -70,5 +71,18 @@ export const resolver_mutations = function () {
 
     //  Notifications
     removeNotification: notificationMutations.removeNotification(),
+
+    // Presence-aware chat
+    heartbeat: chatMutations.heartbeat(),
+    setStatus: chatMutations.setStatus(),
+    requestBuddy: chatMutations.requestBuddy(),
+    acceptBuddy: chatMutations.acceptBuddy(),
+    blockUser: chatMutations.blockUser(),
+    unblockUser: chatMutations.unblockUser(),
+    ensureDirect: chatMutations.ensureDirect(),
+    createChatRoom: chatMutations.createChatRoom(),
+    sendChatMessage: chatMutations.sendChatMessage(),
+    setTyping: chatMutations.setTyping(),
+    markChatRead: chatMutations.markChatRead(),
   };
 };

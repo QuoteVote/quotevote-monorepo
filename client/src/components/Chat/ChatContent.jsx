@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector } from 'react-redux'
 import ChatSearchInput from './ChatSearchInput'
-import BuddyList from '../BuddyList'
+import PresenceBuddyList from './PresenceBuddyList'
 import MessageBox from './MessageBox'
+import StatusEditor from './StatusEditor'
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,11 +29,12 @@ function ChatContent() {
   const [search, setSearch] = useState('')
   const isMobileDevice = useMobileDetection()
 
-  if (!selectedRoom || !selectedRoom.room) {
+  if (!selectedRoom || !selectedRoom.conversation) {
     return (
       <div className={classes.root}>
+        <StatusEditor />
         <ChatSearchInput setSearch={setSearch} />
-        <BuddyList search={search} />
+        <PresenceBuddyList search={search} />
       </div>
     )
   }
