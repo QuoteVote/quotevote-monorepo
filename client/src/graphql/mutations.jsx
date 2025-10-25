@@ -300,3 +300,81 @@ export const TOGGLE_VOTING = gql`
     }
   }
 `
+
+export const HEARTBEAT = gql`
+  mutation heartbeat($state: PresenceState, $statusText: String) {
+    heartbeat(state: $state, statusText: $statusText) {
+      userId
+      state
+      statusText
+      updatedAt
+    }
+  }
+`
+
+export const SET_STATUS = gql`
+  mutation setStatus($statusText: String) {
+    setStatus(statusText: $statusText) {
+      userId
+      state
+      statusText
+      updatedAt
+    }
+  }
+`
+
+export const ENSURE_DIRECT = gql`
+  mutation ensureDirect($withUserId: ObjectId!) {
+    ensureDirect(withUserId: $withUserId) {
+      _id
+      type
+      memberIds
+      postId
+      createdAt
+      lastMsgAt
+    }
+  }
+`
+
+export const CREATE_CHAT_ROOM_MUTATION = gql`
+  mutation createChatRoom($input: CreateChatRoomInput!) {
+    createChatRoom(input: $input) {
+      _id
+      type
+      memberIds
+      postId
+      createdAt
+      lastMsgAt
+    }
+  }
+`
+
+export const SEND_CHAT_MESSAGE = gql`
+  mutation sendChatMessage($conversationId: ObjectId!, $body: String!) {
+    sendChatMessage(conversationId: $conversationId, body: $body) {
+      _id
+      conversationId
+      senderId
+      body
+      createdAt
+    }
+  }
+`
+
+export const SET_TYPING = gql`
+  mutation setTyping($conversationId: ObjectId!, $isTyping: Boolean!) {
+    setTyping(conversationId: $conversationId, isTyping: $isTyping)
+  }
+`
+
+export const MARK_CHAT_READ = gql`
+  mutation markChatRead($conversationId: ObjectId!, $lastSeenMessageId: ObjectId!) {
+    markChatRead(conversationId: $conversationId, lastSeenMessageId: $lastSeenMessageId) {
+      _id
+      conversationId
+      userId
+      lastSeenMessageId
+      lastSeenAt
+    }
+  }
+`

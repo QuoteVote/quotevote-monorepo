@@ -45,9 +45,22 @@ export const Mutation = `type Mutation {
 
   # Mutation for creating a post chat room
    createPostMessageRoom(postId: String!): MessageRoom
-   
+
   # Mutation for adding a message
    updateMessageReadBy(messageRoomId: String!): [Message]
+
+  # Presence-aware chat mutations
+  heartbeat(state: PresenceState, statusText: String): Presence
+  setStatus(statusText: String): Presence
+  requestBuddy(userId: ObjectId!): Boolean
+  acceptBuddy(userId: ObjectId!): Boolean
+  blockUser(userId: ObjectId!): Boolean
+  unblockUser(userId: ObjectId!): Boolean
+  ensureDirect(withUserId: ObjectId!): ChatConversation
+  createChatRoom(input: CreateChatRoomInput!): ChatConversation
+  sendChatMessage(conversationId: ObjectId!, body: String!): ChatMessage
+  setTyping(conversationId: ObjectId!, isTyping: Boolean!): Boolean
+  markChatRead(conversationId: ObjectId!, lastSeenMessageId: ObjectId!): ChatReceipt
 
   # Mutation for adding a message
    addStripeCustomer(stripeCustomer: StripeCustomerInput!): JSON

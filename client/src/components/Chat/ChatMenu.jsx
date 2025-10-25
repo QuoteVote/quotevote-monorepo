@@ -53,8 +53,9 @@ function ChatMenu({ fontSize }) {
   }
   const open = useSelector((state) => state.chat.open)
   const selectedRoom = useSelector((state) => state.chat.selectedRoom)
-  const tipColor = !selectedRoom ? '#1BB5D8' : '#EEF4F9'
-  const tipBackgroundImage = !selectedRoom
+  const hasConversation = Boolean(selectedRoom && selectedRoom.conversation)
+  const tipColor = !hasConversation ? '#1BB5D8' : '#EEF4F9'
+  const tipBackgroundImage = !hasConversation
     ? 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)'
     : '#EEF4F9'
 
