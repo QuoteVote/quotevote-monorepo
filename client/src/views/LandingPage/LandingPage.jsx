@@ -189,17 +189,29 @@ export default function LandingPage() {
   const dispatch = useDispatch()
   const history = useHistory()
 
+  // Redirect authenticated users to the search page
+  // Helper function to determine if we should show the landing page for guest users
+  // This ensures the landing page is only shown to non-logged-in users
+  const shouldShowGuestLandingPage = () => {
+    if (!isGuestMode) return false
+    // Extract URL parameters to determine the current page
+    const { page } = extractUrlParams({ search: window.location.search })
+    // If the current page is not the landing page, redirect to the search page
+    if (page !== 'landing') history.push('/search')
+  }
+
+  // Call the helper function to determine if we should show the landing page
   React.useEffect(() => {
-    if (tokenValidator(dispatch)) history.push('/search')
+    shouldShowGuestLandingPage()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <Box style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Enhanced Navbar */}
+      {/* Enhanced Navbar with logical grouping and responsive design */}
       <AppBar position="sticky" className={classes.navbar} elevation={0}>
         <Toolbar className={classes.toolbar}>
-          {/* Logo */}
+          {/* Logo with click handler to navigate to home */}
           <Box className={classes.logo} onClick={() => history.push('/')}>
             <img
               src="/assets/QuoteVoteLogo.png"
@@ -211,7 +223,7 @@ export default function LandingPage() {
             </Typography>
           </Box>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Grouped logically for better UX */}
           <Box className={classes.navLinks}>
             <Button
               className={classes.navButton}
@@ -220,6 +232,7 @@ export default function LandingPage() {
             >
               Home
             </Button>
+            {/* About button scrolls to the about section on the same page */}
             <Button
               className={classes.navButton}
               onClick={() => {
@@ -230,6 +243,7 @@ export default function LandingPage() {
             >
               About
             </Button>
+            {/* Donate button opens email client */}
             <Button
               className={classes.navButton}
               href="mailto:admin@quote.vote"
@@ -239,6 +253,7 @@ export default function LandingPage() {
             >
               Donate
             </Button>
+            {/* Login and Request Invite with distinct visual styles */}
             <Button
               className={classes.outlinedButton}
               onClick={() => history.push('/auth/login')}
@@ -292,11 +307,11 @@ export default function LandingPage() {
         </GridItem>
       </GridContainer>
 
-      {/* Enhanced Footer */}
+      {/* Enhanced Footer with organized sections for better navigation */}
       <Box component="footer" className={classes.footer} role="contentinfo">
         <Container className={classes.footerContent}>
           <Grid container spacing={4}>
-            {/* About Section */}
+            {/* About Section - Contains mission statement and contact information */}
             <Grid item xs={12} sm={6} md={3}>
               <Box className={classes.footerSection}>
                 <Typography variant="h6" className={classes.footerTitle}>
@@ -316,7 +331,7 @@ export default function LandingPage() {
               </Box>
             </Grid>
 
-            {/* Quick Links Section */}
+            {/* Quick Links Section - Direct access to important pages */}
             <Grid item xs={12} sm={6} md={3}>
               <Box className={classes.footerSection}>
                 <Typography variant="h6" className={classes.footerTitle}>
@@ -357,7 +372,7 @@ export default function LandingPage() {
               </Box>
             </Grid>
 
-            {/* Resources Section */}
+            {/* Resources Section - Important documentation links */}
             <Grid item xs={12} sm={6} md={3}>
               <Box className={classes.footerSection}>
                 <Typography variant="h6" className={classes.footerTitle}>
@@ -387,7 +402,7 @@ export default function LandingPage() {
               </Box>
             </Grid>
 
-            {/* Social Section */}
+            {/* Social Section - Connect with us on social media */}
             <Grid item xs={12} sm={6} md={3}>
               <Box className={classes.footerSection}>
                 <Typography variant="h6" className={classes.footerTitle}>
@@ -426,7 +441,7 @@ export default function LandingPage() {
             </Grid>
           </Grid>
 
-          {/* Footer Bottom */}
+          {/* Footer Bottom - Copyright and attribution */}
           <Box className={classes.footerBottom}>
             <Typography variant="body2" style={{ marginBottom: 8 }}>
               Made with <span style={{ color: '#e25555' }}>❤️</span> on Earth
