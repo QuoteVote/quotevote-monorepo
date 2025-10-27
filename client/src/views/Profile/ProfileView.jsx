@@ -5,6 +5,7 @@ import AppBar from 'components/Navbars/ProfileHeader'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { Link, Typography } from '@material-ui/core'
 import UserPosts from '../../components/UserPosts'
+import ReputationDisplay from '../../components/Profile/ReputationDisplay'
 
 const useStyles = makeStyles(({
   root: {
@@ -77,6 +78,12 @@ function ProfileView({
       </div>
 
       <div className={classes.content}>
+        {profileUser.reputation && (
+          <ReputationDisplay 
+            reputation={profileUser.reputation}
+            onRefresh={() => window.location.reload()}
+          />
+        )}
         <UserPosts userId={profileUser._id} />
       </div>
     </div>
