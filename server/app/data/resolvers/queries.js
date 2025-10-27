@@ -4,6 +4,10 @@ import * as groupQuery from './queries/group';
 import * as messageQuery from './queries/message';
 import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
+import * as presenceQuery from './queries/presence';
+import * as rosterQuery from './queries/roster';
+import * as blocklistQuery from './queries/blocklist';
+import * as typingQuery from './queries/typing';
 
 export const resolver_query = function () {
   return {
@@ -32,5 +36,20 @@ export const resolver_query = function () {
     messageRoom: messageQuery.getUserChatRoom(),
     notifications: notificationQuery.getNotifications(),
     messageReactions: messageQuery.getUserMessageReactions(),
+
+    // Presence queries
+    getUserPresence: presenceQuery.getUserPresence(),
+    getBuddyListPresence: presenceQuery.getBuddyListPresence(),
+
+    // Roster queries
+    getUserRoster: rosterQuery.getUserRoster(),
+    getPendingRosterRequests: rosterQuery.getPendingRosterRequests(),
+
+    // Blocklist queries
+    getUserBlocklist: blocklistQuery.getUserBlocklist(),
+    isUserBlocked: blocklistQuery.isUserBlocked(),
+
+    // Typing indicator queries
+    getTypingIndicators: typingQuery.getTypingIndicators(),
   };
 };

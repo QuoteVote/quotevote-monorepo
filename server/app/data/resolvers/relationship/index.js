@@ -7,3 +7,8 @@ export * from './vote_relationship';
 export * from './quote_relationship';
 export * from './notification_relationship';
 export * from './user_relationship';
+export * from './presence_relationship';
+export * from './roster_relationship';
+export * from './typing_relationship';
+export * from './blocklist_relationship';
+export * from './read_receipt_relationship';

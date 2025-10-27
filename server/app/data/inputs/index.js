@@ -10,3 +10,7 @@ export * from './RequestUserAccessInput';
 export * from './CardPaymentMethodInput';
 export * from './ReactionInput';
 export * from './ReportUserInput';
+export * from './PresenceInput';
+export * from './RosterInput';
+export * from './TypingInput';
+export * from './BlockUserInput';

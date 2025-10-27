@@ -776,3 +776,126 @@ export const SEARCH_USERNAMES = gql`
     }
   }
 `
+
+// Chat System Queries
+export const GET_USER_PRESENCE = gql`
+  query getUserPresence($userId: String!) {
+    getUserPresence(userId: $userId) {
+      _id
+      userId
+      status
+      awayMessage
+      lastHeartbeat
+      lastSeen
+      updatedAt
+      user {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+export const GET_BUDDY_LIST_PRESENCE = gql`
+  query getBuddyListPresence($userIds: [String!]!) {
+    getBuddyListPresence(userIds: $userIds) {
+      _id
+      userId
+      status
+      awayMessage
+      lastHeartbeat
+      lastSeen
+      updatedAt
+      user {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+export const GET_USER_ROSTER = gql`
+  query getUserRoster {
+    getUserRoster {
+      _id
+      userId
+      contactUserId
+      status
+      initiatedBy
+      createdAt
+      updatedAt
+      contact {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+export const GET_PENDING_ROSTER_REQUESTS = gql`
+  query getPendingRosterRequests {
+    getPendingRosterRequests {
+      _id
+      userId
+      contactUserId
+      status
+      initiatedBy
+      createdAt
+      updatedAt
+      contact {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+export const GET_USER_BLOCKLIST = gql`
+  query getUserBlocklist {
+    getUserBlocklist {
+      _id
+      userId
+      blockedUserId
+      reason
+      createdAt
+      blockedUser {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+export const IS_USER_BLOCKED = gql`
+  query isUserBlocked($userId: String!) {
+    isUserBlocked(userId: $userId)
+  }
+`
+
+export const GET_TYPING_INDICATORS = gql`
+  query getTypingIndicators($conversationId: String!) {
+    getTypingIndicators(conversationId: $conversationId) {
+      _id
+      conversationId
+      userId
+      isTyping
+      lastTypingAt
+      user {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`

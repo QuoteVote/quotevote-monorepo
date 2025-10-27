@@ -7,3 +7,4 @@ export * from './removeContentChatRoom';
 export * from './updateMessageReadBy';
 export * from './updateReaction';
 export * from './deleteMessage';
+export * from './markMessagesAsRead';

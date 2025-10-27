@@ -12,6 +12,6 @@ type Message {
   mutation_type: String
   deleted: Boolean
   user: User
-  readBy: JSON
+  readBy: [ReadReceipt]
 }
 `;

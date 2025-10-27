@@ -327,3 +327,112 @@ export const RECALCULATE_REPUTATION = gql`
     }
   }
 `
+
+// Chat System Mutations
+export const UPDATE_PRESENCE = gql`
+  mutation updatePresence($presence: PresenceInput!) {
+    updatePresence(presence: $presence) {
+      _id
+      userId
+      status
+      awayMessage
+      lastHeartbeat
+      lastSeen
+      updatedAt
+    }
+  }
+`
+
+export const SEND_HEARTBEAT = gql`
+  mutation sendHeartbeat {
+    sendHeartbeat {
+      _id
+      userId
+      status
+      awayMessage
+      lastHeartbeat
+      lastSeen
+      updatedAt
+    }
+  }
+`
+
+export const ADD_ROSTER_CONTACT = gql`
+  mutation addRosterContact($roster: RosterInput!) {
+    addRosterContact(roster: $roster) {
+      _id
+      userId
+      contactUserId
+      status
+      initiatedBy
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+export const ACCEPT_ROSTER_CONTACT = gql`
+  mutation acceptRosterContact($contactUserId: String!) {
+    acceptRosterContact(contactUserId: $contactUserId) {
+      _id
+      userId
+      contactUserId
+      status
+      initiatedBy
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+export const BLOCK_USER = gql`
+  mutation blockUser($block: BlockUserInput!) {
+    blockUser(block: $block) {
+      _id
+      userId
+      blockedUserId
+      reason
+      createdAt
+    }
+  }
+`
+
+export const UNBLOCK_USER = gql`
+  mutation unblockUser($blockedUserId: String!) {
+    unblockUser(blockedUserId: $blockedUserId) {
+      success
+      message
+    }
+  }
+`
+
+export const UPDATE_TYPING_INDICATOR = gql`
+  mutation updateTypingIndicator($typing: TypingInput!) {
+    updateTypingIndicator(typing: $typing) {
+      _id
+      conversationId
+      userId
+      isTyping
+      lastTypingAt
+    }
+  }
+`
+
+export const MARK_MESSAGES_AS_READ = gql`
+  mutation markMessagesAsRead($conversationId: String!) {
+    markMessagesAsRead(conversationId: $conversationId) {
+      _id
+      messageRoomId
+      userId
+      userName
+      userAvatar
+      title
+      text
+      created
+      readBy {
+        userId
+        readAt
+      }
+    }
+  }
+`

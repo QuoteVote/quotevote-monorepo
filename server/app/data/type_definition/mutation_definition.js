@@ -109,4 +109,28 @@ export const Mutation = `type Mutation {
   # Mutation for toggling voting on a post
     toggleVoting(postId: String!): Post
 
+  # Mutation for updating user presence
+    updatePresence(presence: PresenceInput!): Presence
+
+  # Mutation for sending heartbeat
+    sendHeartbeat: Presence
+
+  # Mutation for adding a roster contact
+    addRosterContact(roster: RosterInput!): Roster
+
+  # Mutation for accepting a roster contact
+    acceptRosterContact(contactUserId: String!): Roster
+
+  # Mutation for blocking a user
+    blockUser(block: BlockUserInput!): Blocklist
+
+  # Mutation for unblocking a user
+    unblockUser(blockedUserId: String!): JSON
+
+  # Mutation for updating typing indicator
+    updateTypingIndicator(typing: TypingInput!): TypingIndicator
+
+  # Mutation for marking messages as read
+    markMessagesAsRead(conversationId: String!): [Message]
+
 }`;

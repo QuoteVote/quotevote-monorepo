@@ -72,4 +72,25 @@ type Query {
 
   " This will query the action Reactions"
   actionReactions(actionId: String!): [Reaction]
+
+  " Get user presence information"
+  getUserPresence(userId: String!): Presence
+
+  " Get presence for multiple users (buddy list)"
+  getBuddyListPresence(userIds: [String!]!): [Presence]
+
+  " Get user roster (contacts)"
+  getUserRoster: [Roster]
+
+  " Get pending roster requests"
+  getPendingRosterRequests: [Roster]
+
+  " Get user blocklist"
+  getUserBlocklist: [Blocklist]
+
+  " Check if user is blocked"
+  isUserBlocked(userId: String!): Boolean
+
+  " Get typing indicators for a conversation"
+  getTypingIndicators(conversationId: String!): [TypingIndicator]
 }`;

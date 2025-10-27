@@ -21,8 +21,11 @@ const schema = mongoose.Schema({
     required: true,
   },
   readBy: {
-    type: [mongoose.Schema.Types.ObjectId],
-    required: true,
+    type: [{
+      userId: mongoose.Schema.Types.ObjectId,
+      readAt: Date,
+    }],
+    default: [],
   },
   deleted: {
     type: Boolean,
