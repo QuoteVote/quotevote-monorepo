@@ -20,3 +20,5 @@ export * from './DeletedQuote';
 export * from './DeletedComment';
 export * from './DeletedVote';
 export * from './DeletedMessage';
+export * from './Presence';
+export * from './Conversation';

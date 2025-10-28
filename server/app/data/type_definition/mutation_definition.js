@@ -115,4 +115,10 @@ export const Mutation = `type Mutation {
   # Mutation for setting current user presence
     presenceSet(status: String!, text: String): Presence!
 
+  # Mutation for ensuring a direct conversation exists
+    convEnsureDirect(otherUserId: ID!): Conversation!
+
+  # Mutation for sending a message
+    msgSend(conversationId: ID!, body: String!): Message!
+
 }`;

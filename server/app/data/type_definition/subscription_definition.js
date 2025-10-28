@@ -12,5 +12,8 @@ type Subscription {
     
     # Presence stream for specific users
     presenceStream(userIds: [ID!]): Presence
+    
+    # New message in conversation subscription
+    msgNew(conversationId: ID!): Message!
 }
 `;

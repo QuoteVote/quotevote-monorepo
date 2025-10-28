@@ -9,6 +9,7 @@ import * as userInviteMutations from './mutations/userInvite';
 import * as quoteMutations from './mutations/quote';
 import * as notificationMutations from './mutations/notification';
 import * as presenceMutations from './mutations/presence';
+import * as chatMutations from './mutations/chat';
 
 // eslint-disable-next-line camelcase,import/prefer-default-export
 export const resolver_mutations = function () {
@@ -78,5 +79,9 @@ export const resolver_mutations = function () {
     sendUserInvite: userMutations.sendUserInvite(),
     reportUser: userMutations.reportUser(),
     recalculateReputation: userMutations.recalculateReputation(),
+
+    // Chat mutations
+    convEnsureDirect: chatMutations.convEnsureDirect(),
+    msgSend: chatMutations.msgSend(),
   };
 };

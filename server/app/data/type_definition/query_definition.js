@@ -78,4 +78,10 @@ type Query {
 
   " Get all online users presence status "
   presenceOnlineUsers: [Presence!]!
+
+  " Get all conversations for current user "
+  conversations: [Conversation!]!
+
+  " Get a specific conversation by ID "
+  conversation(id: ID!): Conversation
 }`;

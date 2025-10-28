@@ -1,0 +1,33 @@
+type Conversation {
+  id: ID!
+  participantIds: [ID!]!
+  isRoom: Boolean!
+  postId: ID
+  createdAt: String!
+  participants: [User!]
+  messages: [Message!]
+}
+
+type Message {
+  id: ID!
+  conversationId: ID!
+  authorId: ID!
+  body: String!
+  createdAt: String!
+  editedAt: String
+  author: User
+}
+
+extend type Query {
+  conversations: [Conversation!]!
+  conversation(id: ID!): Conversation
+}
+
+extend type Mutation {
+  convEnsureDirect(otherUserId: ID!): Conversation!
+  msgSend(conversationId: ID!, body: String!): Message!
+}
+
+extend type Subscription {
+  msgNew(conversationId: ID!): Message!
+}
