@@ -109,4 +109,10 @@ export const Mutation = `type Mutation {
   # Mutation for toggling voting on a post
     toggleVoting(postId: String!): Post
 
+  # Mutation for setting user presence
+    setPresence(userId: String!, status: String!, text: String): Presence
+
+  # Mutation for setting current user presence
+    presenceSet(status: String!, text: String): Presence!
+
 }`;

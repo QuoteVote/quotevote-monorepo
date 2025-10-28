@@ -8,6 +8,7 @@ import * as userMutations from './mutations/user';
 import * as userInviteMutations from './mutations/userInvite';
 import * as quoteMutations from './mutations/quote';
 import * as notificationMutations from './mutations/notification';
+import * as presenceMutations from './mutations/presence';
 
 // eslint-disable-next-line camelcase,import/prefer-default-export
 export const resolver_mutations = function () {
@@ -23,6 +24,8 @@ export const resolver_mutations = function () {
     reportPost: postMutations.reportPost(),
     deletePost: postMutations.deletePost(),
     toggleVoting: postMutations.toggleVoting(),
+    setPresence: presenceMutations.setPresenceStatus(),
+    presenceSet: presenceMutations.setPresenceForCurrentUser(),
 
     // Domain
     createGroup: groupMutations.createGroup(),
