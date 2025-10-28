@@ -52,7 +52,9 @@ const StatusEditor = ({ open, onClose, currentStatus, currentAwayMessage }) => {
       onClose();
     },
     onError: (error) => {
-      console.error('Error updating presence:', error);
+      console.warn('Error updating presence (non-critical):', error.message);
+      // Still close the dialog even if there's an error
+      onClose();
     },
   });
 

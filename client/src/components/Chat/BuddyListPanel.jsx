@@ -121,20 +121,31 @@ const BuddyListPanel = ({ onSelectContact }) => {
   const classes = useStyles();
   const [presenceMap, setPresenceMap] = useState({});
 
-  const { data: rosterData, loading: rosterLoading } = useQuery(GET_USER_ROSTER);
-  const { data: pendingData } = useQuery(GET_PENDING_ROSTER_REQUESTS);
+  const { data: rosterData, loading: rosterLoading, error: rosterError } = useQuery(GET_USER_ROSTER, {
+    onError: (error) => {
+      console.warn('Roster query error (non-critical):', error.message);
+    },
+  });
+  const { data: pendingData, error: pendingError } = useQuery(GET_PENDING_ROSTER_REQUESTS, {
+    onError: (error) => {
+      console.warn('Pending requests query error (non-critical):', error.message);
+    },
+  });
 
   const roster = rosterData?.getUserRoster || [];
   const pendingRequests = pendingData?.getPendingRosterRequests || [];
 
   const userIds = roster.map((r) => r.contactUserId);
 
-  const { data: presenceData, refetch: refetchPresence } = useQuery(
+  const { data: presenceData, refetch: refetchPresence, error: presenceError } = useQuery(
     GET_BUDDY_LIST_PRESENCE,
     {
       variables: { userIds },
       skip: userIds.length === 0,
       pollInterval: 30000, // Poll every 30 seconds
+      onError: (error) => {
+        console.warn('Presence query error (non-critical):', error.message);
+      },
     }
   );
 

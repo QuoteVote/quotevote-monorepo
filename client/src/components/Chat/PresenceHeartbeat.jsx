@@ -9,21 +9,35 @@ import { SEND_HEARTBEAT } from '../../graphql/mutations';
 const PresenceHeartbeat = () => {
   const [sendHeartbeat] = useMutation(SEND_HEARTBEAT, {
     onError: (error) => {
-      console.error('Error sending heartbeat:', error);
+      // Silently log error without crashing the app
+      console.warn('Heartbeat error (non-critical):', error.message);
     },
   });
 
   useEffect(() => {
-    // Send initial heartbeat
-    sendHeartbeat();
+    // Wrap in try-catch to prevent crashes
+    const sendHeartbeatSafely = async () => {
+      try {
+        await sendHeartbeat();
+      } catch (error) {
+        // Silently handle error
+        console.warn('Heartbeat failed (non-critical):', error.message);
+      }
+    };
+
+    // Send initial heartbeat after a small delay to ensure auth is ready
+    const initialTimeout = setTimeout(() => {
+      sendHeartbeatSafely();
+    }, 1000);
 
     // Set up interval to send heartbeat every 30 seconds
     const interval = setInterval(() => {
-      sendHeartbeat();
+      sendHeartbeatSafely();
     }, 30000);
 
     // Cleanup on unmount
     return () => {
+      clearTimeout(initialTimeout);
       clearInterval(interval);
     };
   }, [sendHeartbeat]);
