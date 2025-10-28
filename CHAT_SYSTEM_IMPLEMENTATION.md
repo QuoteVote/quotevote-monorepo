@@ -76,9 +76,17 @@ This implementation adds a purpose-built, presence-aware chat system to Quote.Vo
 ### Frontend (React / Material-UI)
 
 #### Components
+- **ChatSidebar**: Main chat UI wrapper with responsive behavior
+  - Desktop: 360px persistent drawer on right
+  - Mobile: Full-screen temporary drawer with FAB
 - **BuddyListPanel**: Displays contacts grouped by presence
 - **StatusEditor**: Dialog for updating status and away message
 - **PresenceHeartbeat**: Background service for heartbeat
+
+#### UI Integration
+- **Navbar**: Chat icon button (desktop) and menu item (mobile)
+- **Layout**: Integrated into Scoreboard layout with state management
+- **Responsive**: Adapts to screen size with appropriate UX patterns
 
 #### GraphQL Integration
 - Queries for fetching roster, presence, blocklist
@@ -155,7 +163,40 @@ rosterUpdate(userId: String!): Roster
 
 ## Usage Examples
 
-### Frontend: Display Buddy List
+### Frontend: Integrated Chat UI (Current Implementation)
+
+The chat system is now fully integrated into the main application:
+
+```jsx
+// In Scoreboard.jsx layout
+import { ChatSidebar, PresenceHeartbeat } from '../components/Chat';
+
+function Scoreboard() {
+  const [chatOpen, setChatOpen] = useState(false);
+  const loggedIn = useSelector((state) => !!state.user.data._id);
+
+  return (
+    <>
+      <MainNavBar onChatToggle={() => setChatOpen(!chatOpen)} />
+      {loggedIn && <PresenceHeartbeat />}
+      {loggedIn && <ChatSidebar open={chatOpen} onClose={() => setChatOpen(false)} />}
+      {/* Rest of app */}
+    </>
+  );
+}
+```
+
+**Desktop Experience:**
+- Chat icon in navbar (top-right)
+- Click to open 360px sidebar from right
+- Persistent drawer stays open until closed
+
+**Mobile Experience:**
+- Floating Action Button (bottom-right)
+- "Chat" option in hamburger menu
+- Full-screen drawer with swipe-to-dismiss
+
+### Frontend: Standalone Buddy List (Alternative)
 
 ```jsx
 import { BuddyListPanel } from '../components/Chat';

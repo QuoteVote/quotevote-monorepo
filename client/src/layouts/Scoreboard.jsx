@@ -20,6 +20,7 @@ import { SET_SNACKBAR } from 'store/ui'
 import Snackbar from 'mui-pro/Snackbar/Snackbar'
 import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
+import { ChatSidebar, PresenceHeartbeat } from '../components/Chat'
 import withUser from '../hoc/withUser'
 
 const theme = createTheme({
@@ -46,12 +47,17 @@ function Scoreboard(props) {
   const history = useHistory()
   const dispatch = useDispatch()
   const snackbar = useSelector((state) => state.ui.snackbar)
+  const loggedIn = useSelector((state) => !!state.user.data._id)
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [page, setPage] = React.useState('Home')
+  const [chatOpen, setChatOpen] = React.useState(false)
   // styles
   const classes = useStyles()
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
+  }
+  const handleChatToggle = () => {
+    setChatOpen(!chatOpen)
   }
   const [color] = React.useState('blue')
   const [bgColor] = React.useState('black')
@@ -120,7 +126,12 @@ function Scoreboard(props) {
         <MainNavBar
           classes={classes}
           page={page}
+          onChatToggle={handleChatToggle}
         />
+        {/* Presence Heartbeat - Only for logged-in users */}
+        {loggedIn && <PresenceHeartbeat />}
+        {/* Chat Sidebar */}
+        {loggedIn && <ChatSidebar open={chatOpen} onClose={() => setChatOpen(false)} />}
         {/* REMOVED: Old Sidebar that was showing on mobile
         <Hidden only={['md', 'lg', 'xl']}>
           <Sidebar

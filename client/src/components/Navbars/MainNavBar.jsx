@@ -16,6 +16,7 @@ import Box from '@material-ui/core/Box'
 import MenuIcon from '@material-ui/icons/Menu'
 import CloseIcon from '@material-ui/icons/Close'
 import GitHubIcon from '@material-ui/icons/GitHub'
+import ChatIcon from '@material-ui/icons/Chat'
 import Dialog from '@material-ui/core/Dialog'
 import Avatar from '@material-ui/core/Avatar'
 import { NavLink, useHistory } from 'react-router-dom'
@@ -107,6 +108,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   iconButton: {
+    color: '#0A2342',
+    transition: 'all 0.2s',
+    '&:hover': {
+      color: '#2AE6B2',
+      transform: 'scale(1.1)',
+    },
+  },
+  chatButton: {
     color: '#0A2342',
     transition: 'all 0.2s',
     '&:hover': {
@@ -208,6 +217,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MainNavBar(props) {
+  const { onChatToggle } = props
   const classes = useStyles()
   const avatar = useSelector((state) => state.user.data.avatar)
   const name = useSelector((state) => state.user.data.name)
@@ -310,6 +320,13 @@ function MainNavBar(props) {
                 >
                   Create Quote
                 </Button>
+                <IconButton
+                  onClick={onChatToggle}
+                  aria-label="Open chat"
+                  className={classes.chatButton}
+                >
+                  <ChatIcon />
+                </IconButton>
                 <IconButton
                   href="https://github.com/QuoteVote/quotevote-monorepo"
                   target="_blank"
@@ -447,6 +464,18 @@ function MainNavBar(props) {
             <Divider className={classes.divider} />
 
             <ListItem disableGutters>
+              <Button
+                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
+                onClick={() => {
+                  onChatToggle()
+                  closeDrawer()
+                }}
+                startIcon={<ChatIcon />}
+              >
+                Chat
+              </Button>
+            </ListItem>
+            <ListItem disableGutters>
               <NavLink to="/Profile" style={{ width: '100%', textDecoration: 'none' }}>
                 <Button
                   className={`${classes.drawerButton} ${classes.drawerTextButton}`}
@@ -496,6 +525,7 @@ function MainNavBar(props) {
 
 MainNavBar.propTypes = {
   classes: PropTypes.object,
+  onChatToggle: PropTypes.func,
 }
 
 export default MainNavBar
