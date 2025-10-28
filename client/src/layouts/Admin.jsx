@@ -8,6 +8,9 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import PerfectScrollbar from 'perfect-scrollbar'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
+import { useAuthModal } from '@/Context/AuthModalContext'
+import RequestInviteDialog from '@/components/RequestInviteDialog'
+
 // Images
 // import sidebar2 from '/assets/sidebar-2.jpg'
 
@@ -40,14 +43,12 @@ export default function Dashboard(props) {
   const [logo, setLogo] = React.useState('/assets/logo-white.svg')
   // styles
   const classes = useStyles()
-  const mainPanelClasses =
-    `${classes.mainPanel
-    } ${
-      cx({
-        [classes.mainPanelSidebarMini]: miniActive,
-        [classes.mainPanelWithPerfectScrollbar]:
-        navigator.platform.indexOf('Win') > -1,
-      })}`
+  const { isModalOpen, closeAuthModal } = useAuthModal()
+  const mainPanelClasses = `${classes.mainPanel} ${cx({
+    [classes.mainPanelSidebarMini]: miniActive,
+    [classes.mainPanelWithPerfectScrollbar]:
+      navigator.platform.indexOf('Win') > -1,
+  })}`
   // ref for main panel div
   const mainPanel = React.createRef()
   // effect instead of componentDidMount, componentDidUpdate and componentWillUnmount
@@ -114,21 +115,22 @@ export default function Dashboard(props) {
     }
     return activeRoute
   }
-  const getRoutes = (routes) => routes.map((prop, key) => {
-    if (prop.collapse) {
-      return getRoutes(prop.views)
-    }
-    if (prop.layout === '/admin') {
-      return (
-        <Route
-          path={prop.layout + prop.path}
-          component={prop.component}
-          key={key}
-        />
-      )
-    }
-    return null
-  })
+  const getRoutes = (routes) =>
+    routes.map((prop, key) => {
+      if (prop.collapse) {
+        return getRoutes(prop.views)
+      }
+      if (prop.layout === '/admin') {
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            component={prop.component}
+            key={key}
+          />
+        )
+      }
+      return null
+    })
   const sidebarMinimize = () => {
     setMiniActive(!miniActive)
   }
@@ -192,6 +194,7 @@ export default function Dashboard(props) {
           miniActive={miniActive}
         />
       </div>
+      <RequestInviteDialog open={isModalOpen} onClose={closeAuthModal} />
     </div>
   )
 }

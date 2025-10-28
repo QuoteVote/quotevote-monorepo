@@ -22,6 +22,8 @@ import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import { ChatSidebar, PresenceHeartbeat } from '../components/Chat'
 import withUser from '../hoc/withUser'
+import { useAuthModal } from '../Context/AuthModalContext'
+import RequestInviteDialog from '../components/RequestInviteDialog'
 
 const theme = createTheme({
   palette: {
@@ -175,6 +177,7 @@ function Scoreboard(props) {
             ) : null
           }
         </main>
+        <RequestInviteDialog open={isModalOpen} onClose={closeAuthModal} />
       </div>
     </MuiThemeProvider>
   )
