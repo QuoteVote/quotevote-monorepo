@@ -69,7 +69,7 @@ const ChatSidebar = ({ open: externalOpen, onClose: externalOnClose }) => {
   const classes = useStyles();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const loggedIn = useSelector((state) => !!state.user.data._id);
+  const loggedIn = useSelector((state) => state.user?.data?._id);
   
   const [internalOpen, setInternalOpen] = useState(false);
   const [statusEditorOpen, setStatusEditorOpen] = useState(false);

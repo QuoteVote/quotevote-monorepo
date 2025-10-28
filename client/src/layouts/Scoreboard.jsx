@@ -49,7 +49,7 @@ function Scoreboard(props) {
   const history = useHistory()
   const dispatch = useDispatch()
   const snackbar = useSelector((state) => state.ui.snackbar)
-  const loggedIn = useSelector((state) => !!state.user.data._id)
+  const loggedIn = useSelector((state) => !!state.user?.data?._id)
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [page, setPage] = React.useState('Home')
   const [chatOpen, setChatOpen] = React.useState(false)

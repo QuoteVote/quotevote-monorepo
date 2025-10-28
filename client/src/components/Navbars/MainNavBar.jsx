@@ -219,9 +219,9 @@ const useStyles = makeStyles((theme) => ({
 function MainNavBar(props) {
   const { onChatToggle } = props
   const classes = useStyles()
-  const avatar = useSelector((state) => state.user.data.avatar)
-  const name = useSelector((state) => state.user.data.name)
-  const loggedIn = useSelector((state) => !!state.user.data._id)
+  const avatar = useSelector((state) => state.user?.data?.avatar)
+  const name = useSelector((state) => state.user?.data?.name)
+  const loggedIn = useSelector((state) => !!state.user?.data?._id)
   const [open, setOpen] = React.useState(false)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
   const dispatch = useDispatch()
