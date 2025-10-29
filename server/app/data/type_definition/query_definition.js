@@ -84,4 +84,7 @@ type Query {
 
   " Get a specific conversation by ID "
   conversation(id: ID!): Conversation
+
+  " Get user roster "
+  getRoster: Roster!
 }`;

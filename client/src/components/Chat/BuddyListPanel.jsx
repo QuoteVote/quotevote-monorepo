@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useQuery, useSubscription } from '@apollo/client';
 import {
@@ -10,9 +10,13 @@ import {
   Box,
   CircularProgress,
   Paper,
+  Button,
+  IconButton
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 import DisplayAvatar from '../Avatar';
 import { usePresence } from '../../hooks/usePresence';
+import StatusEditor from './StatusEditor';
 import {
   GET_ONLINE_USERS,
   PRESENCE_UPDATES_SUBSCRIPTION,
@@ -31,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     background: 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)',
     color: '#ffffff',
     fontWeight: 600,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   listContainer: {
     maxHeight: 400,
@@ -73,6 +80,9 @@ const useStyles = makeStyles((theme) => ({
   away: {
     backgroundColor: '#ff9800',
   },
+  dnd: {
+    backgroundColor: '#f44336',
+  },
   offline: {
     backgroundColor: '#9e9e9e',
   },
@@ -98,10 +108,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     padding: theme.spacing(4),
   },
+  statusButton: {
+    minWidth: 'auto',
+    padding: theme.spacing(0.5),
+    color: 'white',
+  },
 }));
 
 function BuddyListPanel() {
   const classes = useStyles();
+  const [statusEditorOpen, setStatusEditorOpen] = useState(false);
+  const [currentUserStatus, setCurrentUserStatus] = useState('online');
+  const [currentUserText, setCurrentUserText] = useState('');
 
   // Use presence hook to manage online/offline status and heartbeat
   usePresence();
@@ -146,6 +164,8 @@ function BuddyListPanel() {
         return classes.online;
       case 'away':
         return classes.away;
+      case 'dnd':
+        return classes.dnd;
       case 'offline':
         return classes.offline;
       default:
@@ -195,80 +215,95 @@ function BuddyListPanel() {
   }
 
   return (
-    <Paper className={classes.root}>
-      <Box className={classes.header}>
-        <Typography variant="h6">
-          Online Users ({onlineUsers.length})
-        </Typography>
-      </Box>
-      <Box className={classes.listContainer}>
-        {onlineUsers.length === 0 ? (
-          <Box className={classes.emptyState}>
-            <Typography variant="body2">
-              No users online
-            </Typography>
-          </Box>
-        ) : (
-          <List>
-            {onlineUsers.map((user) => (
-              <ListItem key={user.userId} className={classes.listItem}>
-                <ListItemAvatar>
-                  <Box className={classes.avatarContainer}>
-                    <DisplayAvatar
-                      topType={user.topType || 'ShortHairShortFlat'}
-                      accessoriesType={user.accessoriesType || 'Blank'}
-                      hairColor={user.hairColor || 'BrownDark'}
-                      facialHairType={user.facialHairType || 'Blank'}
-                      clotheType={user.clotheType || 'Hoodie'}
-                      clotheColor={user.clotheColor || 'Blue03'}
-                      eyeType={user.eyeType || 'Default'}
-                      eyebrowType={user.eyebrowType || 'Default'}
-                      mouthType={user.mouthType || 'Smile'}
-                      skinColor={user.skinColor || 'Light'}
-                      height={40}
-                    />
-                    <Box
-                      className={`${classes.statusIndicator} ${getStatusClass(
-                        user.status
-                      )}`}
-                    />
-                  </Box>
-                </ListItemAvatar>
-                <ListItemText
-                  className={classes.userInfo}
-                  primary={
-                    <Typography className={classes.displayName}>
-                      {user.displayName || `User ${user.userId.substring(0, 8)}`}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      {user.text && (
-                        <Typography
-                          component="span"
-                          className={classes.statusText}
-                        >
-                          {user.text}
-                        </Typography>
-                      )}
-                      {!user.text && (
-                        <Typography
-                          component="span"
-                          variant="body2"
-                          color="textSecondary"
-                        >
-                          {formatLastSeen(user.lastSeen)}
-                        </Typography>
-                      )}
-                    </>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
-      </Box>
-    </Paper>
+    <>
+      <Paper className={classes.root}>
+        <Box className={classes.header}>
+          <Typography variant="h6">
+            Online Users ({onlineUsers.length})
+          </Typography>
+          <IconButton 
+            className={classes.statusButton}
+            onClick={() => setStatusEditorOpen(true)}
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Box>
+        <Box className={classes.listContainer}>
+          {onlineUsers.length === 0 ? (
+            <Box className={classes.emptyState}>
+              <Typography variant="body2">
+                No users online
+              </Typography>
+            </Box>
+          ) : (
+            <List>
+              {onlineUsers.map((user) => (
+                <ListItem key={user.userId} className={classes.listItem}>
+                  <ListItemAvatar>
+                    <Box className={classes.avatarContainer}>
+                      <DisplayAvatar
+                        topType={user.topType || 'ShortHairShortFlat'}
+                        accessoriesType={user.accessoriesType || 'Blank'}
+                        hairColor={user.hairColor || 'BrownDark'}
+                        facialHairType={user.facialHairType || 'Blank'}
+                        clotheType={user.clotheType || 'Hoodie'}
+                        clotheColor={user.clotheColor || 'Blue03'}
+                        eyeType={user.eyeType || 'Default'}
+                        eyebrowType={user.eyebrowType || 'Default'}
+                        mouthType={user.mouthType || 'Smile'}
+                        skinColor={user.skinColor || 'Light'}
+                        height={40}
+                      />
+                      <Box
+                        className={`${classes.statusIndicator} ${getStatusClass(
+                          user.status
+                        )}`}
+                      />
+                    </Box>
+                  </ListItemAvatar>
+                  <ListItemText
+                    className={classes.userInfo}
+                    primary={
+                      <Typography className={classes.displayName}>
+                        {user.displayName || `User ${user.userId.substring(0, 8)}`}
+                      </Typography>
+                    }
+                    secondary={
+                      <>
+                        {user.text && (
+                          <Typography
+                            component="span"
+                            className={classes.statusText}
+                          >
+                            {user.text}
+                          </Typography>
+                        )}
+                        {!user.text && (
+                          <Typography
+                            component="span"
+                            variant="body2"
+                            color="textSecondary"
+                          >
+                            {formatLastSeen(user.lastSeen)}
+                          </Typography>
+                        )}
+                      </>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </Box>
+      </Paper>
+      
+      <StatusEditor
+        open={statusEditorOpen}
+        onClose={() => setStatusEditorOpen(false)}
+        currentStatus={currentUserStatus}
+        currentText={currentUserText}
+      />
+    </>
   );
 }
 

@@ -18,4 +18,5 @@ type User {
   downvotes: Int
   contributorBadge: Boolean
   reputation: UserReputation
+  blockedUserIds: [ID!]
 }`;

@@ -18,16 +18,62 @@ type Message {
   author: User
 }
 
+type TypingPayload {
+  conversationId: ID!
+  userId: ID!
+  isTyping: Boolean!
+  lastUpdated: String!
+}
+
+type Receipt {
+  conversationId: ID!
+  userId: ID!
+  lastSeenMessageId: ID
+  lastSeenAt: String!
+}
+
+type Contact {
+  userId: ID!
+  status: String!
+  createdAt: String!
+  updatedAt: String!
+  nickname: String
+  user: User
+}
+
+type Roster {
+  userId: ID!
+  contacts: [Contact!]!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type RosterResponse {
+  success: Boolean!
+  message: String!
+}
+
 extend type Query {
   conversations: [Conversation!]!
   conversation(id: ID!): Conversation
+  getRoster: Roster!
 }
 
 extend type Mutation {
   convEnsureDirect(otherUserId: ID!): Conversation!
   msgSend(conversationId: ID!, body: String!): Message!
+  msgTyping(conversationId: ID!, isTyping: Boolean!): Boolean!
+  msgRead(conversationId: ID!, messageId: ID!): Boolean!
+  addContact(userId: ID!): RosterResponse!
+  acceptContact(userId: ID!): RosterResponse!
+  rejectContact(userId: ID!): RosterResponse!
+  removeContact(userId: ID!): RosterResponse!
+  blockUser(userId: ID!): RosterResponse!
+  unblockUser(userId: ID!): RosterResponse!
 }
 
 extend type Subscription {
   msgNew(conversationId: ID!): Message!
+  msgTypingUpdate(conversationId: ID!): TypingPayload!
+  receiptUpdate(conversationId: ID!): Receipt!
 }

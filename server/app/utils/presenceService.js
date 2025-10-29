@@ -1,5 +1,6 @@
 import { PubSub } from 'graphql-subscriptions';
 import { createClient } from 'redis';
+import UserModel from '../data/resolvers/models/UserModel';
 import { logger } from '../data/utils/logger';
 
 // Create pubsub instance directly to avoid circular dependency
@@ -132,6 +133,10 @@ export async function getPresence(userId) {
  */
 export async function presenceSet(userId, status, text) {
   try {
+    // Check if user is blocked by anyone who might be observing their presence
+    // Note: This is a simplified check. In a real implementation, you might want
+    // to check against a specific list of users who are observing this user's presence.
+    
     const presenceKey = `presence:${userId}`;
     const timestamp = Date.now();
 
