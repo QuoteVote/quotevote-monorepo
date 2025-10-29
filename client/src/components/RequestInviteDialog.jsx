@@ -16,6 +16,9 @@ import { useLocation } from 'react-router-dom'
 import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
 import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'
 
+// Email validation regex pattern
+const EMAIL_VALIDATION_PATTERN = /^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i
+
 const useStyles = makeStyles((theme) => ({
   dialogWrapper: {
     borderRadius: theme.spacing(2),
@@ -129,11 +132,8 @@ export default function RequestInviteDialog({ open, onClose }) {
 
   const handleSubmit = async () => {
     setError('')
-    const pattern = new RegExp(
-      /^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i,
-    )
 
-    if (!pattern.test(email)) {
+    if (!EMAIL_VALIDATION_PATTERN.test(email)) {
       setError('Please enter a valid email address')
       return
     }
