@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import {
   Card,
   CardActions,
@@ -119,13 +119,13 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   const isFollowing = includes(_followingId, userId)
 
   // Guest guard function that opens modal instead of redirecting
-  const ensureAuth = () => {
+  const ensureAuth = useCallback(() => {
     if (!tokenValidator(dispatch)) {
       setOpenInvite(true)
       return false
     }
     return true
-  }
+  }, [dispatch])
 
   // Query to get user details for tooltips
   const { loading: usersLoading, data: usersData } = useQuery(GET_USERS)
