@@ -19,6 +19,7 @@ import ScrollableFeed from 'react-scrollable-feed';
 import { GET_ROOM_MESSAGES, GET_CONVERSATION } from '../../graphql/query';
 import { SEND_MESSAGE, MSG_TYPING, MSG_READ } from '../../graphql/mutations';
 import { NEW_MESSAGE_SUBSCRIPTION, MSG_TYPING_UPDATE, RECEIPT_UPDATE } from '../../graphql/subscription';
+import useTypingIndicator from './useTypingIndicator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -219,6 +220,9 @@ const ChatWindow = ({ conversationId }) => {
       variables: { messageRoomId: conversationId },
     }],
   });
+
+  // Mutation to send read receipt
+  const [msgRead] = useMutation(MSG_READ);
 
   // Handle sending a message
   const handleSendMessage = () => {
