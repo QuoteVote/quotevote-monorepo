@@ -106,11 +106,12 @@ export const userLogin = async (
       }),
     )
     // Validate and redirect to prevent open redirect vulnerabilities
-    // Only allow relative paths starting with /
+    // Only allow safe relative paths: single slash start, no hostname, safe characters
     let targetPath = '/search'
     if (redirectPath && typeof redirectPath === 'string') {
-      // Check if it's a relative path starting with /
-      if (redirectPath.startsWith('/') && !redirectPath.startsWith('//')) {
+      // Regex allows: /, alphanumeric, -, _, ?, =, &, #, and % (for encoding)
+      const SAFE_PATH_REGEX = /^\/[a-zA-Z0-9/_?=&#%-]*$/
+      if (SAFE_PATH_REGEX.test(redirectPath)) {
         targetPath = redirectPath
       }
     }

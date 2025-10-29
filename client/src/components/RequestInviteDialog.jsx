@@ -145,7 +145,11 @@ export default function RequestInviteDialog({ open, onClose }) {
         fetchPolicy: 'network-only',
       })
 
-      if (checkDuplicate && checkDuplicate.data.checkDuplicateEmail.length) {
+      if (
+        checkDuplicate &&
+        Array.isArray(checkDuplicate.data.checkDuplicateEmail) &&
+        checkDuplicate.data.checkDuplicateEmail.length > 0
+      ) {
         setError(
           'This email address has already been used to request an invite.',
         )
@@ -187,8 +191,8 @@ export default function RequestInviteDialog({ open, onClose }) {
     }
   }, [])
 
-  // Get current URL path to pass as redirect parameter
-  const currentPath = location.pathname + location.search
+  // Get current URL path to pass as redirect parameter (including hash)
+  const currentPath = location.pathname + location.search + location.hash
   const loginUrl = `/auth/login?redirect=${encodeURIComponent(currentPath)}`
 
   return (
@@ -271,7 +275,7 @@ export default function RequestInviteDialog({ open, onClose }) {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                   className={classes.emailInput}
                   fullWidth
                 />
