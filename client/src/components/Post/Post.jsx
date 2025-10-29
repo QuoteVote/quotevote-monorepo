@@ -115,6 +115,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     endIndex: 0,
   })
   const [open, setOpen] = useState(false)
+  const [openInvite, setOpenInvite] = useState(false)
 
   const isFollowing = includes(_followingId, userId)
 
@@ -866,6 +867,10 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
             timeout={1000}
           />
         )}
+        <RequestInviteDialog
+          open={openInvite}
+          onClose={() => setOpenInvite(false)}
+        />
       </Card>
     </>
   )
