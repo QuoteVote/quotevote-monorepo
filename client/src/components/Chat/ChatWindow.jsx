@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useQuery, useSubscription, useMutation } from '@apollo/react-hooks';
+import { useQuery, useSubscription, useMutation } from '@apollo/client';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -17,9 +17,8 @@ import DoneIcon from '@material-ui/icons/Done';
 import DoneAllIcon from '@material-ui/icons/DoneAll';
 import ScrollableFeed from 'react-scrollable-feed';
 import { GET_ROOM_MESSAGES, GET_CONVERSATION } from '../../graphql/query';
-import { SEND_MESSAGE, MSG_TYPING, MSG_READ, BLOCK_USER } from '../../graphql/mutations';
+import { SEND_MESSAGE, MSG_TYPING, MSG_READ } from '../../graphql/mutations';
 import { NEW_MESSAGE_SUBSCRIPTION, MSG_TYPING_UPDATE, RECEIPT_UPDATE } from '../../graphql/subscription';
-import useTypingIndicator from './useTypingIndicator';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -250,18 +249,22 @@ const ChatWindow = ({ conversationId }) => {
       const lastMessage = messagesData.messages[messagesData.messages.length - 1];
       if (lastMessage) {
         // Send read receipt for the last message
-        const [msgRead] = useMutation(MSG_READ);
-        msgRead({
-          variables: {
-            conversationId,
-            messageId: lastMessage._id
+        const sendReadReceipt = async () => {
+          try {
+            await msgRead({
+              variables: {
+                conversationId,
+                messageId: lastMessage._id
+              }
+            });
+          } catch (error) {
+            console.error('Error sending read receipt:', error);
           }
-        }).catch((error) => {
-          console.error('Error sending read receipt:', error);
-        });
+        };
+        sendReadReceipt();
       }
     }
-  }, [messagesData, conversationId]);
+  }, [messagesData, conversationId, msgRead]);
 
   // Clean up old typing indicators (older than 10 seconds)
   useEffect(() => {
