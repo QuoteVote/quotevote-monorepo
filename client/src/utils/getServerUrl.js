@@ -5,11 +5,12 @@ export const getBaseServerUrl = () => {
     const previewUrl = process.env.DEPLOY_PRIME_URL
     // Sample previewUrl: https://deploy-preview-212--quotevote.netlify.app
     const PR_NUMBER = previewUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)[1]
-    const testUrl = `https://quotevote-api-pr-${PR_NUMBER}.up.railway.app`;
-    console.log('Test URL:', testUrl)
+    effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`;
   } else if (process.env.REACT_APP_SERVER) {
     effectiveUrl = `${process.env.REACT_APP_SERVER}`
   }
+
+  console.log('Effective Base URL:', effectiveUrl)
   return effectiveUrl
 }
 
