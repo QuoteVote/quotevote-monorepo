@@ -1,5 +1,5 @@
 export const getBaseServerUrl = () => {
-  const effectiveUrl = 'https://api.quote.vote'
+  let effectiveUrl = 'https://api.quote.vote'
   if(process.env.DEPLOY_PRIME_URL) {
     console.log('Using Railway preview URL:', process.env.DEPLOY_PRIME_URL)
     const previewUrl = process.env.DEPLOY_PRIME_URL
