@@ -35,16 +35,6 @@ type ReputationHistory {
   reason: String!
 }
 
-type UserInvite {
-  _id: String!
-  email: String!
-  status: String!
-  _inviterId: String!
-  _invitedUserId: String
-  joined: String
-  createdAt: String!
-  updatedAt: String!
-}
 
 type UserReport {
   _id: String!
