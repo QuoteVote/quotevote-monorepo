@@ -162,11 +162,6 @@ try {
 // Instead of mutating the enzyme module (which may be read-only in some
 // environments), expose the wrapped helpers on a single global object that the
 // shimmed enzyme exports will call into if present.
-global.__WRAPPED_ENZYME = {
-  shallow: global.shallow,
-  render: global.render,
-  mount: global.mount,
-}
 
 global.sinon = sinon
 global.MockedProvider = MockedProvider
