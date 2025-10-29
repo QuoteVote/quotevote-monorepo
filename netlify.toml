@@ -1,12 +1,11 @@
 [build]
-  base = "client"
-  command = "rm -rf node_modules && npm ci --legacy-peer-deps && npm run build"
-  publish = "build"
+  base = "client/"
+  command = "npm run build"
+  publish = "client/dist/"
 
 [build.environment]
-  NODE_VERSION = "22"
-  ROLLUP_SKIP_NATIVE = "true"
-  NODE_ENV = "production"
+  NODE_VERSION = "18"
+  NPM_FLAGS = "--legacy-peer-deps"
 
 [[redirects]]
   from = "/*"
