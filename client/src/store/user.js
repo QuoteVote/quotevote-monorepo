@@ -105,8 +105,15 @@ export const userLogin = async (
         loginError: null,
       }),
     )
-    // Redirect to the original path if provided, otherwise go to /search
-    const targetPath = redirectPath || '/search'
+    // Validate and redirect to prevent open redirect vulnerabilities
+    // Only allow relative paths starting with /
+    let targetPath = '/search'
+    if (redirectPath && typeof redirectPath === 'string') {
+      // Check if it's a relative path starting with /
+      if (redirectPath.startsWith('/') && !redirectPath.startsWith('//')) {
+        targetPath = redirectPath
+      }
+    }
     history.push(targetPath)
   }
 }
