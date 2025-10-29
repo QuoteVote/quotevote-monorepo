@@ -82,6 +82,7 @@ export default defineConfig(({ mode }) => {
         env.REACT_APP_SERVER_WS,
       ),
       'process.env.REACT_APP_DOMAIN': JSON.stringify(env.REACT_APP_DOMAIN),
+      'process.env.DEPLOY_PRIME_URL': JSON.stringify(env.DEPLOY_PRIME_URL),
       global: 'window',
     },
     optimizeDeps: {
