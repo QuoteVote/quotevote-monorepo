@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   Dialog,
@@ -121,6 +121,7 @@ export default function RequestInviteDialog({ open, onClose }) {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [submitted, setSubmitted] = useState(false)
+  const timeoutRef = useRef(null)
   const client = useApolloClient()
   const [requestUserAccess, { loading }] = useMutation(
     REQUEST_USER_ACCESS_MUTATION,
@@ -155,8 +156,8 @@ export default function RequestInviteDialog({ open, onClose }) {
         variables: { requestUserAccessInput: { email } },
       })
       setSubmitted(true)
-      // Auto-close after 3 seconds
-      setTimeout(() => {
+      // Auto-close after 3 seconds with cleanup
+      timeoutRef.current = setTimeout(() => {
         handleClose()
       }, 3000)
     } catch (err) {
@@ -166,11 +167,25 @@ export default function RequestInviteDialog({ open, onClose }) {
   }
 
   const handleClose = () => {
+    // Clear timeout if it exists
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
     setEmail('')
     setError('')
     setSubmitted(false)
     if (onClose) onClose()
   }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   // Get current URL path to pass as redirect parameter
   const currentPath = location.pathname + location.search
