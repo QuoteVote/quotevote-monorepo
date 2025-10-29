@@ -1,0 +1,81 @@
+services:
+  client:
+    container_name: "quotevote-client"
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:4000/graphql
+      - REACT_APP_WS_URL=ws://localhost:4000/graphql
+      - CLIENT_URL=http://localhost:3000
+      - REACT_APP_SERVER=http://localhost:4000
+    networks:
+      - quotevote-net
+    volumes:
+      - ./client:/app/client
+      - /app/client/node_modules
+  server:
+    container_name: "quotevote-server"
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - DATABASE_URL=mongodb://localdev:password@mongo:27017/quotevote-dev
+      - PORT=4000
+      - NODE_ENV=dev
+      - REACT_APP_API_URL=http://localhost:4000/graphql
+      - REACT_APP_WS_URL=ws://localhost:4000/graphql
+      - CLIENT_URL=http://localhost:3000
+      - SECRET=your-jwt-secret
+      - STRIPE_SECRET_KEY=your-stripe-secret
+      - EMAIL_SERVICE=your-email-service
+      - EMAIL_USER=your-email-user
+      - EMAIL_PASS=your-email-password
+    networks:
+      - quotevote-net
+    volumes:
+      - ./server:/app/server
+      - /app/server/node_modules
+    depends_on:
+      - mongo
+  mongo:
+    container_name: "quotevote-mongo"
+    build:
+      context: ./server/dev_db
+      dockerfile: db.Dockerfile
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - "quotevote-dev-data:/data/db"
+    networks:
+      - quotevote-net
+
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4 
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: localdev
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://localdev:password@mongo:27017/quotevote-dev
+      ME_CONFIG_BASICAUTH: false
+    networks:
+      - quotevote-net
+
+
+volumes:
+  quotevote-dev-data:
+
+networks:
+  quotevote-net:
+    driver: bridge

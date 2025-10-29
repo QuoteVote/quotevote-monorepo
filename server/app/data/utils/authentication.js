@@ -64,7 +64,7 @@ export const register = (req, res) => {
         return;
       }
       const {
-        name, email, username, password,
+        name, email, username, password, status
       } = req.body;
       const hash_password = generateHashPassword(password);
       const userData = {
@@ -72,6 +72,7 @@ export const register = (req, res) => {
         email,
         username,
         hash_password,
+        status
       };
 
       const creatorData = {
@@ -81,6 +82,24 @@ export const register = (req, res) => {
         created: new Date(),
         options: {},
       };
+
+      new UserModel(userData).save((err, user) => {
+        if (err) {
+          return res.status(500).json({
+            error_message: "Error saving user", error: err
+          })
+        }
+
+        res.status(200).json({
+          message: 'User registered successfully',
+          user: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            username: user.username
+          }
+        })
+      });
     });
   } catch (err) {
     res.status(401)

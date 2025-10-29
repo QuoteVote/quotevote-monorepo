@@ -40,6 +40,17 @@ Deploy Quote Vote locally, in production, or for your organization.
 - Production Deployment
 - Self-Hosting Guide
 
+### 🔌 [API Documentation](./api/)
+
+Complete GraphQL API reference and guides for developers.
+
+- GraphQL Schema Reference
+- Authentication Patterns  
+- Query and Mutation Examples
+- Real-time Subscriptions
+
+*Perfect for developers integrating with or extending Quote Vote.*
+
 ## 🎯 Quick Start
 
 New to Quote Vote? Start here:

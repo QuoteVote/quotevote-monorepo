@@ -21,6 +21,8 @@ import Snackbar from 'mui-pro/Snackbar/Snackbar'
 import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
+import { useAuthModal } from '../Context/AuthModalContext'
+import RequestInviteDialog from '../components/RequestInviteDialog'
 
 const theme = createTheme({
   palette: {
@@ -46,6 +48,7 @@ function Scoreboard(props) {
   const history = useHistory()
   const dispatch = useDispatch()
   const snackbar = useSelector((state) => state.ui.snackbar)
+  const { isModalOpen, closeAuthModal } = useAuthModal()
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [page, setPage] = React.useState('Home')
   // styles
@@ -116,12 +119,12 @@ function Scoreboard(props) {
     <MuiThemeProvider theme={theme}>
       <div className={classes.root}>
         <CssBaseline />
-        <Hidden only={['xs', 'sm']}>
-          <MainNavBar
-            classes={classes}
-            page={page}
-          />
-        </Hidden>
+        {/* FIXED: Show MainNavBar on ALL screen sizes */}
+        <MainNavBar
+          classes={classes}
+          page={page}
+        />
+        {/* REMOVED: Old Sidebar that was showing on mobile
         <Hidden only={['md', 'lg', 'xl']}>
           <Sidebar
             routes={appRoutes}
@@ -136,6 +139,7 @@ function Scoreboard(props) {
             dispatch={dispatch}
           />
         </Hidden>
+        */}
         <main className={classes.content}>
           {getRoute() ? (
             <Switch>
@@ -163,6 +167,7 @@ function Scoreboard(props) {
             ) : null
           }
         </main>
+        <RequestInviteDialog open={isModalOpen} onClose={closeAuthModal} />
       </div>
     </MuiThemeProvider>
   )

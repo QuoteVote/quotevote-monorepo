@@ -577,6 +577,17 @@ export default function SearchPage() {
     setFocusedInput(null)
   }
 
+  // Helper function to determine if we should show the landing page for guest users
+  const shouldShowGuestLandingPage = () => {
+    if (!isGuestMode) return false
+    
+    const { page } = extractUrlParams({ search: window.location.search })
+    const hasPageParam = Boolean(page)
+    
+    // Show landing page only when no search, no filters, no interactions, and no page params
+    return !searchKey.trim() && !hasActiveFilters() && !hasEverInteractedWithFilters && !hasPageParam
+  }
+
   // Helper function to check if any filters are active
   const hasActiveFilters = () => {
     return (

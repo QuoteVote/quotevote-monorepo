@@ -409,121 +409,88 @@ export default function InfoSections() {
           alignItems="center"
           spacing={isMobileDevice ? 2 : 4}
         >
-          <Grid
-            item
-            xs={6}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-            }}
-          >
-            <section style={{ marginTop: isMobileDevice ? '1rem' : '2rem' }}>
-              <Grid
-                container
-                spacing={isMobileDevice ? 0 : 4}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Grid item xs={12}>
+          <section style={{ margin: '3rem 1rem 3rem 1rem' }}>
+            <Grid container spacing={4} alignItems="center" justifyContent="center">
+              <Grid item xs={12}>
+                <Grid
+                  container
+                  spacing={0}
+                  alignItems="center"
+                  justifyContent="center"
+                  direction="row"
+                >
                   <Grid
-                    container
-                    spacing={0}
-                    alignItems="center"
-                    justifyContent="center"
-                    direction="row"
+                    item
+                    xs={3}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'right',
+                      marginRight: -70,
+                      marginLeft: 75,
+                    }}
                   >
-                    <Grid
-                      item
-                      lg={3}
+                    <img src="/assets/donate-emoji-1.svg" alt="Donate Emoji 1" />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={6}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Typography
+                      variant="body1"
                       style={{
-                        display: 'flex',
-                        justifyContent: 'right',
-                        marginRight: isMobileDevice ? 0 : -20,
+                        textAlign: 'center',
+                        fontWeight: 500,
+                        marginBottom: 16,
                       }}
                     >
-                      <img
-                        src="/assets/donate-emoji-1.svg"
-                        alt="Donate Emoji 1"
-                        style={{
-                          width: isMobileDevice ? 200 : '100%',
-                          height: isMobileDevice ? 200 : '100%',
-                        }}
-                      />
-                    </Grid>
-                    <Grid
-                      item
-                      xs={10}
-                      lg={6}
+                      Quote.Vote is non-profit, open source, and donation-supported.
+                    </Typography>
+                    <Typography
+                      variant="body1"
                       style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
+                        textAlign: 'center',
+                        fontWeight: 500,
+                        marginBottom: 16,
                       }}
                     >
-                      <Typography
-                        variant={isMobileDevice ? 'body2' : 'body1'}
-                        style={{
-                          textAlign: 'left',
-                          fontWeight: 500,
-                          fontSize: isMobileDevice ? 14 : 24,
-                          marginBottom: 16,
-                        }}
-                      >
-                        Quote.Vote is non-profit, open source, and
-                        donation-supported.
-                      </Typography>
-                      <Typography
-                        variant={isMobileDevice ? 'body2' : 'body1'}
-                        style={{
-                          textAlign: 'left',
-                          fontWeight: 500,
-                          fontSize: isMobileDevice ? 14 : 24,
-                          marginBottom: 16,
-                        }}
-                      >
-                        Our only funding comes from people like you.
-                      </Typography>
+                      Our only funding comes from people like you.
+                    </Typography>
 
-                      <Button
-                        variant="contained"
-                        style={{
-                          fontWeight: 500,
-                          fontSize: isMobileDevice ? 16 : 24,
-                        }}
-                        color="secondary"
-                        onClick={() => {
-                          window.location.href = DONATE_URL
-                        }}
-                        size={isMobileDevice ? 'small' : 'large'}
-                      >
-                        Please Donate
-                      </Button>
-                    </Grid>
-                    <Grid
-                      item
-                      xs={1}
-                      lg={3}
+                    <Button
+                      variant="contained"
                       style={{
-                        display: 'flex',
-                        justifyContent: 'left',
-                        marginLeft: isMobileDevice ? 0 : -20,
+                        fontWeight: 500,
+                        fontSize: 18,
                       }}
+                      color="secondary"
+                      onClick={() => {
+                        window.location.href = DONATE_URL
+                      }}
+                      size={isMobileDevice ? 'small' : 'large'}
                     >
-                      <img
-                        src="/assets/donate-emoji-2.svg"
-                        alt="Donate Emoji 1"
-                        style={{
-                          width: isMobileDevice ? 200 : '100%',
-                          height: isMobileDevice ? 200 : '100%',
-                        }}
-                      />
-                    </Grid>
+                      Please Donate
+                    </Button>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={3}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'left',
+                      marginLeft: -30,
+                    }}
+                  >
+                    <img src="/assets/donate-emoji-2.svg" alt="Donate Emoji 1" />
                   </Grid>
                 </Grid>
               </Grid>
-            </section>
-          </Grid>
+            </Grid>
+          </section>
 
           <Grid item xs={12}>
             <img

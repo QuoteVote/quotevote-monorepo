@@ -3,10 +3,16 @@ import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import { IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import { useMutation } from '@apollo/react-hooks'
-import { requireAuth } from 'utils/auth'
-import { CREATE_POST_MESSAGE_ROOM, UPDATE_POST_BOOKMARK } from '../../graphql/mutations'
+import useGuestGuard from 'utils/useGuestGuard'
 import {
-    GET_CHAT_ROOMS, GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY,
+  CREATE_POST_MESSAGE_ROOM,
+  UPDATE_POST_BOOKMARK,
+} from '../../graphql/mutations'
+import {
+  GET_CHAT_ROOMS,
+  GET_POST,
+  GET_TOP_POSTS,
+  GET_USER_ACTIVITY,
 } from '../../graphql/query'
 
 function BookmarkIconButton(props) {
@@ -15,11 +21,14 @@ function BookmarkIconButton(props) {
     user,
     limit,
   } = props
+  const ensureAuth = useGuestGuard()
   const [createPostMessageRoom] = useMutation(CREATE_POST_MESSAGE_ROOM)
 
   const [updatePostBookmark] = useMutation(UPDATE_POST_BOOKMARK)
   const handleClick = async (e) => {
     e.stopPropagation()
+    if (!ensureAuth()) return
+
     await updatePostBookmark({
       variables: { postId: _id, userId: user._id },
     })
@@ -48,7 +57,12 @@ function BookmarkIconButton(props) {
         },
         {
           query: GET_TOP_POSTS,
-          variables: { limit: limit || 5, offset: 0, searchKey: '', interactions: false },
+          variables: {
+            limit: limit || 5,
+            offset: 0,
+            searchKey: '',
+            interactions: false,
+          },
         },
       ],
     })
@@ -57,7 +71,7 @@ function BookmarkIconButton(props) {
   const isBookmarked = bookmarkedBy && bookmarkedBy.includes(user._id)
   return (
     <>
-      <IconButton {...props} onClick={requireAuth(handleClick)}>
+      <IconButton {...props} onClick={handleClick}>
         {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
       </IconButton>
     </>

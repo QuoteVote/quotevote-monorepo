@@ -8,6 +8,7 @@ import { createBrowserHistory } from 'history'
 import store, { persistor } from '../store/store'
 import client from '../config/apollo'
 import customTheme from '../theme'
+import { AuthModalProvider } from '../Context/AuthModalContext'
 const hist = createBrowserHistory()
 const theme = createTheme(customTheme)
 
@@ -16,9 +17,11 @@ const withTestWrapper = (Component) => (props) => (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <Router history={hist}>
-            <Component {...props} />
-          </Router>
+          <AuthModalProvider>
+            <Router history={hist}>
+              <Component {...props} />
+            </Router>
+          </AuthModalProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>

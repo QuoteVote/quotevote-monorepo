@@ -2,6 +2,7 @@ import { Button, Grid, Typography } from '@material-ui/core'
 import { useState } from 'react'
 import { useMutation } from '@apollo/react-hooks'
 import { REQUEST_USER_ACCESS_MUTATION } from '../../graphql/mutations'
+import { useMobileDetection } from '../../utils/display'
 
 export const DONATE_URL = 'mailto:admin@quote.vote'
 
@@ -10,6 +11,7 @@ export default function SearchGuestSections() {
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const isMobileDevice = useMobileDetection()
 
   const [requestUserAccess] = useMutation(REQUEST_USER_ACCESS_MUTATION)
 
@@ -454,8 +456,8 @@ export default function SearchGuestSections() {
         </Grid>
       </section>
 
-      <section style={{ marginTop: '3rem' }}>
-        <Grid container spacing={4} alignItems="center" justifyContent="center">
+      <section style={{ margin: '3rem 1rem 0 1rem' }}>
+        <Grid container spacing={4} alignItems="center" justifyContent="center" >
           <Grid item xs={12}>
             <Grid
               container
@@ -470,7 +472,8 @@ export default function SearchGuestSections() {
                 style={{
                   display: 'flex',
                   justifyContent: 'right',
-                  marginRight: -20,
+                  marginRight: -70,
+                  marginLeft: 75,
                 }}
               >
                 <img src="/assets/donate-emoji-1.svg" alt="Donate Emoji 1" />
@@ -487,7 +490,7 @@ export default function SearchGuestSections() {
                 <Typography
                   variant="body1"
                   style={{
-                    textAlign: 'left',
+                    textAlign: 'center',
                     fontWeight: 500,
                     marginBottom: 16,
                   }}
@@ -497,7 +500,7 @@ export default function SearchGuestSections() {
                 <Typography
                   variant="body1"
                   style={{
-                    textAlign: 'left',
+                    textAlign: 'center',
                     fontWeight: 500,
                     marginBottom: 16,
                   }}
@@ -509,12 +512,13 @@ export default function SearchGuestSections() {
                   variant="contained"
                   style={{
                     fontWeight: 500,
-                    fontSize: 24,
+                    fontSize: 18,
                   }}
                   color="secondary"
-                  onClick={() => {  
+                  onClick={() => {
                     window.location.href = DONATE_URL
                   }}
+                  size={isMobileDevice ? 'small' : 'large'}
                 >
                   Please Donate
                 </Button>
@@ -525,7 +529,7 @@ export default function SearchGuestSections() {
                 style={{
                   display: 'flex',
                   justifyContent: 'left',
-                  marginLeft: -20,
+                  marginLeft: -30,
                 }}
               >
                 <img src="/assets/donate-emoji-2.svg" alt="Donate Emoji 1" />
@@ -538,7 +542,6 @@ export default function SearchGuestSections() {
       <section
         style={{
           width: '100%',
-          marginTop: '3rem',
           padding: '3rem 0',
         }}
       >

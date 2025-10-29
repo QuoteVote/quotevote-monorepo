@@ -6,3 +6,6 @@ export * from './searchUser';
 export * from './findUserByEmail';
 export * from './verifyUserPasswordResetToken';
 export * from './getUserFollowInfo';
+export * from './getUserReputation';
+export * from './getUserInvites';
+export * from './getUserReports';

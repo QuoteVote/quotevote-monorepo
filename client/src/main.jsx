@@ -36,6 +36,8 @@ import customTheme from './theme'
 import 'assets/scss/material-dashboard-pro-react.scss'
 import LogoutPage from './components/LogoutPage'
 
+import { AuthModalProvider } from './Context/AuthModalContext'
+
 import 'fontsource-montserrat'
 import ErrorPage from './mui-pro/views/Pages/ErrorPage'
 
@@ -60,16 +62,18 @@ ReactDOM.render(
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
             <HelmetProvider>
-              <Router history={hist}>
-                <Switch>
-                  <Route path="/auth" component={AuthLayout} />
-                  <Route path="/unauth" component={TokenExpired} />
-                  <Route path="/logout" component={LogoutPage} />
-                  <Route path="/error" component={ErrorPage} />
-                  <Route path="/" component={Scoreboard} />
-                  <Redirect from="*" to="/search" />
-                </Switch>
-              </Router>
+              <AuthModalProvider>
+                <Router history={hist}>
+                  <Switch>
+                    <Route path="/auth" component={AuthLayout} />
+                    <Route path="/unauth" component={TokenExpired} />
+                    <Route path="/logout" component={LogoutPage} />
+                    <Route path="/error" component={ErrorPage} />
+                    <Route path="/" component={Scoreboard} />
+                    <Redirect from="*" to="/search" />
+                  </Switch>
+                </Router>
+              </AuthModalProvider>
             </HelmetProvider>
           </ThemeProvider>
         </PersistGate>
