@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
+import { getBaseServerUrl } from '../utils/getServerUrl'
 
 const userSlice = createSlice({
   name: 'user',
@@ -52,11 +53,13 @@ const userSlice = createSlice({
 // Create functions, then export them
 const { actions } = userSlice
 
+
+
 // Private function(s) for actions
 const getToken = async (username, password) => {
   try {
     return await axios.post(
-      `${process.env.REACT_APP_SERVER}/login`,
+      `${getBaseServerUrl()}/login`,
       {
         username,
         password,

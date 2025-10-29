@@ -1,20 +1,23 @@
 import {
-    ApolloClient,
-    InMemoryCache,
-    createHttpLink,
-    split,
-    ApolloLink,
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+  split,
+  ApolloLink,
 } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 import { serializeObjectIds } from '../utils/objectIdSerializer'
+import { getGraphqlServerUrl, getGraphqlWsServerUrl } from '../utils/getServerUrl'
 
 // Determine if we're using a local server
-const isLocalServer = process.env.REACT_APP_SERVER && process.env.REACT_APP_SERVER.includes('localhost')
+const isLocalServer = process.env.REACT_APP_SERVER && process.env.REACT_APP_SERVER.includes('localhost');
+
+const effectiveUrl = getGraphqlServerUrl()
 
 const httpLink = createHttpLink({
-  uri: process.env.REACT_APP_SERVER ? `${process.env.REACT_APP_SERVER}/graphql` : 'https://api.quote.vote/graphql',
+  uri: effectiveUrl,
   credentials: isLocalServer ? 'include' : 'omit', // Only include credentials for local server
 })
 
@@ -38,7 +41,7 @@ const authLink = new ApolloLink((operation, forward) => {
 
 // Create a WebSocket link:
 const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
-  url: process.env.REACT_APP_SERVER_WS ? `${process.env.REACT_APP_SERVER_WS}/graphql` : 'wss://api.quote.vote/graphql',
+  url: getGraphqlWsServerUrl(),
   connectionParams: () => ({
     authToken: `Bearer ${localStorage.getItem('token')}`,
   }),

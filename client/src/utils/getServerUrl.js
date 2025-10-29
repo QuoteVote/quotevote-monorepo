@@ -1,0 +1,26 @@
+export const getBaseServerUrl = () => {
+  let effectiveUrl = 'https://api.quote.vote'
+  if(process.env.DEPLOY_PRIME_URL) {
+    console.log('Using Railway preview URL:', process.env.DEPLOY_PRIME_URL)
+    const previewUrl = process.env.DEPLOY_PRIME_URL
+    // Sample previewUrl: https://deploy-preview-212--quotevote.netlify.app
+    const PR_NUMBER = previewUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)[1]
+    effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`;
+  } else if (process.env.REACT_APP_SERVER) {
+    effectiveUrl = `${process.env.REACT_APP_SERVER}`
+  }
+
+  console.log('Effective Base URL:', effectiveUrl)
+  return effectiveUrl
+}
+
+export const getGraphqlServerUrl = () => {
+  const baseUrl = getBaseServerUrl()
+  return `${baseUrl}/graphql`
+}
+
+export const getGraphqlWsServerUrl = () => {
+  const baseUrl = getBaseServerUrl()
+  const replacedUrl = baseUrl.replace('https://', 'wss://')
+  return `${replacedUrl}/graphql`
+}
