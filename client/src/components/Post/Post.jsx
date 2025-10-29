@@ -1,24 +1,32 @@
-import { useState } from 'react';
-import { Card, CardActions, CardContent, CardHeader, IconButton, FormControlLabel, Tooltip } from '@material-ui/core';
-import Switch from '@material-ui/core/Switch';
-import { makeStyles } from '@material-ui/core/styles';
-import BlockIcon from '@material-ui/icons/Block';
-import LinkIcon from '@material-ui/icons/Link';
-import DeleteIcon from '@material-ui/icons/Delete';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
-import { includes } from 'lodash';
-import copy from 'clipboard-copy';
-import moment from 'moment';
-import SweetAlert from 'react-bootstrap-sweetalert';
-import FollowButton from 'components/CustomButtons/FollowButton';
-import VotingBoard from '../VotingComponents/VotingBoard';
-import VotingPopup from '../VotingComponents/VotingPopup';
-import { SET_SNACKBAR } from '../../store/ui';
-import useGuestGuard from 'utils/useGuestGuard';
-import RequestInviteDialog from '../RequestInviteDialog';
+import { useState } from 'react'
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  IconButton,
+  FormControlLabel,
+  Tooltip,
+} from '@material-ui/core'
+import Switch from '@material-ui/core/Switch'
+import { makeStyles } from '@material-ui/core/styles'
+import BlockIcon from '@material-ui/icons/Block'
+import LinkIcon from '@material-ui/icons/Link'
+import DeleteIcon from '@material-ui/icons/Delete'
+import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useHistory } from 'react-router-dom'
+import { includes } from 'lodash'
+import copy from 'clipboard-copy'
+import moment from 'moment'
+import SweetAlert from 'react-bootstrap-sweetalert'
+import FollowButton from 'components/CustomButtons/FollowButton'
+import VotingBoard from '../VotingComponents/VotingBoard'
+import VotingPopup from '../VotingComponents/VotingPopup'
+import { SET_SNACKBAR } from '../../store/ui'
+import { tokenValidator } from 'store/user'
+import RequestInviteDialog from '../RequestInviteDialog'
 import {
   ADD_COMMENT,
   ADD_QUOTE,
@@ -28,14 +36,19 @@ import {
   REJECT_POST,
   DELETE_POST,
   TOGGLE_VOTING,
-} from '../../graphql/mutations';
-import { GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY, GET_USERS } from '../../graphql/query';
-import AvatarDisplay from '../Avatar';
-import BookmarkIconButton from '../CustomButtons/BookmarkIconButton';
-import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle';
-import ApproveButton from '../CustomButtons/ApproveButton';
-import RejectButton from '../CustomButtons/RejectButton';
-import { serializeVotedBy } from '../../utils/objectIdSerializer';
+} from '../../graphql/mutations'
+import {
+  GET_POST,
+  GET_TOP_POSTS,
+  GET_USER_ACTIVITY,
+  GET_USERS,
+} from '../../graphql/query'
+import AvatarDisplay from '../Avatar'
+import BookmarkIconButton from '../CustomButtons/BookmarkIconButton'
+import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
+import ApproveButton from '../CustomButtons/ApproveButton'
+import RejectButton from '../CustomButtons/RejectButton'
+import { serializeVotedBy } from '../../utils/objectIdSerializer'
 
 const useStyles = makeStyles((theme) => ({
   header2: {
@@ -80,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     overflow: 'auto',
     [theme.breakpoints.down('sm')]: {
-      height: (props) => props.postHeight >= 742 ? '83vh' : 'auto',
+      height: (props) => (props.postHeight >= 742 ? '83vh' : 'auto'),
     },
   },
   ...buttonStyle,
@@ -93,15 +106,27 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   const { _followingId } = user
   const dispatch = useDispatch()
   const history = useHistory()
-  const ensureAuth = useGuestGuard()
   const parsedCreated = moment(created).format('LLL')
 
   // State declarations
-  const [selectedText, setSelectedText] = useState({ text: '', startIndex: 0, endIndex: 0 })
+  const [selectedText, setSelectedText] = useState({
+    text: '',
+    startIndex: 0,
+    endIndex: 0,
+  })
   const [open, setOpen] = useState(false)
   const [openInvite, setOpenInvite] = useState(false)
 
   const isFollowing = includes(_followingId, userId)
+
+  // Guest guard function that opens modal instead of redirecting
+  const ensureAuth = () => {
+    if (!tokenValidator(dispatch)) {
+      setOpenInvite(true)
+      return false
+    }
+    return true
+  }
 
   // Query to get user details for tooltips
   const { loading: usersLoading, data: usersData } = useQuery(GET_USERS)
@@ -110,15 +135,15 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     if (!post.rejectedBy || post.rejectedBy.length === 0) {
       return 'No users rejected this post.'
     }
-    
+
     if (usersLoading || !usersData) {
       return 'Loading...'
     }
 
-    const rejectedUsers = usersData.users.filter((user) => 
-      post.rejectedBy.includes(user._id)
+    const rejectedUsers = usersData.users.filter((user) =>
+      post.rejectedBy.includes(user._id),
     )
-    
+
     if (rejectedUsers.length === 0) {
       return 'No users rejected this post.'
     }
@@ -131,7 +156,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     displayUsers.forEach((user) => {
       content += `• @${user.username}\n`
     })
-    
+
     if (remaining > 0) {
       content += `\n... and ${remaining} more`
     }
@@ -143,15 +168,15 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     if (!post.approvedBy || post.approvedBy.length === 0) {
       return 'No users approved this post.'
     }
-    
+
     if (usersLoading || !usersData) {
       return 'Loading...'
     }
 
-    const approvedUsers = usersData.users.filter((user) => 
-      post.approvedBy.includes(user._id)
+    const approvedUsers = usersData.users.filter((user) =>
+      post.approvedBy.includes(user._id),
     )
-    
+
     if (approvedUsers.length === 0) {
       return 'No users approved this post.'
     }
@@ -164,7 +189,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     displayUsers.forEach((user) => {
       content += `• @${user.username}\n`
     })
-    
+
     if (remaining > 0) {
       content += `\n... and ${remaining} more`
     }
@@ -173,15 +198,11 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   }
 
   const RejectTooltipContent = () => (
-    <div style={{ whiteSpace: 'pre-line' }}>
-      {getRejectTooltipContent()}
-    </div>
+    <div style={{ whiteSpace: 'pre-line' }}>{getRejectTooltipContent()}</div>
   )
 
   const ApproveTooltipContent = () => (
-    <div style={{ whiteSpace: 'pre-line' }}>
-      {getApproveTooltipContent()}
-    </div>
+    <div style={{ whiteSpace: 'pre-line' }}>{getApproveTooltipContent()}</div>
   )
 
   const handleToggleVoteButtons = async () => {
@@ -305,13 +326,18 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     post.rejectedBy.some((id) => id?.toString() === userIdStr)
 
   // Check if user has already voted on this post (ignore deleted votes)
-  const hasVoted = Array.isArray(post.votedBy) && 
-    post.votedBy.some((vote) => vote.userId?.toString() === userIdStr && vote.deleted !== true)
+  const hasVoted =
+    Array.isArray(post.votedBy) &&
+    post.votedBy.some(
+      (vote) => vote.userId?.toString() === userIdStr && vote.deleted !== true,
+    )
 
   // Get the user's vote type if they have voted (ignore deleted votes)
   const getUserVoteType = () => {
     if (!hasVoted) return null
-    const userVote = post.votedBy.find((vote) => vote.userId?.toString() === userIdStr && vote.deleted !== true)
+    const userVote = post.votedBy.find(
+      (vote) => vote.userId?.toString() === userIdStr && vote.deleted !== true,
+    )
     return userVote ? userVote.type : null
   }
 
@@ -360,7 +386,9 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           },
         },
       })
-      cache.evict({ id: cache.identify({ __typename: 'Post', _id: deletePost._id }) })
+      cache.evict({
+        id: cache.identify({ __typename: 'Post', _id: deletePost._id }),
+      })
       cache.gc()
     },
     refetchQueries: [
@@ -465,7 +493,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       )
       return
     }
-    
+
     const vote = {
       content: selectedText.text || '',
       postId: post._id,
@@ -683,7 +711,9 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
               >
                 {name}
               </span>
-              <span style={{ color: '#888', marginLeft: 8 }}>{parsedCreated}</span>
+              <span style={{ color: '#888', marginLeft: 8 }}>
+                {parsedCreated}
+              </span>
             </div>
           }
           avatar={
@@ -693,18 +723,28 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           }
           action={pointsHeader}
         />
-        <CardContent style={{ fontSize: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <CardContent
+          style={{
+            fontSize: '16px',
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           {hasVoted && (
-            <div style={{ 
-              backgroundColor: '#e3f2fd', 
-              padding: '8px 12px', 
-              borderRadius: '4px', 
-              marginBottom: '12px',
-              border: '1px solid #2196f3',
-              color: '#1976d2',
-              fontSize: '14px'
-            }}>
-              ✓ You have already {getUserVoteType() === 'up' ? 'upvoted' : 'downvoted'} this post
+            <div
+              style={{
+                backgroundColor: '#e3f2fd',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                marginBottom: '12px',
+                border: '1px solid #2196f3',
+                color: '#1976d2',
+                fontSize: '14px',
+              }}
+            >
+              ✓ You have already{' '}
+              {getUserVoteType() === 'up' ? 'upvoted' : 'downvoted'} this post
             </div>
           )}
           <VotingBoard
@@ -755,8 +795,8 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
         >
           {post.enable_voting && (
             <div style={{ display: 'flex', gap: 8 }}>
-              <Tooltip 
-                title={<RejectTooltipContent />} 
+              <Tooltip
+                title={<RejectTooltipContent />}
                 arrow
                 componentsProps={{
                   tooltip: {
@@ -777,8 +817,8 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
                   />
                 </div>
               </Tooltip>
-              <Tooltip 
-                title={<ApproveTooltipContent />} 
+              <Tooltip
+                title={<ApproveTooltipContent />}
                 arrow
                 componentsProps={{
                   tooltip: {
