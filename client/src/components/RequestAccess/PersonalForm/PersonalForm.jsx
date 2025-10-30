@@ -29,164 +29,159 @@ const PersonalForm = (props) => {
   } = props
 
   return (
-    <Grid container justify="center" style={{ marginRight: 24 }} spacing={2}>
+    <Grid container justify="center" style={{ minHeight: '100vh' }}>
       <Grid item xs={12}>
-        <Typography align="center" className={classes.header}>
-          {requestInviteSuccessful ? 'Thank you for' : 'Get access to your'}
-          {' '}
-          <span className={classes.header} style={{ color: '#52b274' }}>
-            {requestInviteSuccessful ? 'joining us' : 'Personal Plan!'}
-          </span>
-        </Typography>
-      </Grid>
-      <Grid item xs={12} hidden={requestInviteSuccessful}>
-        <Typography align="center" className={classes.subHeader}>
-          Pay what you like, or pay nothing at all
-        </Typography>
-      </Grid>
-      <Grid item xs={12} style={{ marginTop: requestInviteSuccessful ? '4%' : '2%' }}>
-        <Grid container spacing={2}>
-          <Grid container item xs={12} md={6} justify="center" alignItems="center">
-            <img
-              alt="Personal Plan"
-              height={500}
-              src="/assets/PersonalPlan.png"
-              style={{
-                width: '489px',
-                height: '265px',
-                objectFit: 'contain',
-              }}
-            />
-          </Grid>
-          {requestInviteSuccessful ? (
+        <Grid style={{ marginTop: '50px' }}>
+          <Typography align="center" className={classes.header}>
+            {requestInviteSuccessful ? 'Thank you for' : 'Get access to your'}
+            {' '}
+            <span className={classes.header} style={{ color: '#52b274' }}>
+              {requestInviteSuccessful ? 'joining us' : 'Personal Plan!'}
+            </span>
+          </Typography>
+        </Grid>
+        <Grid item xs={12} hidden={requestInviteSuccessful}>
+          <Typography align="center" className={classes.subHeader}>
+            Pay what you like, or pay nothing at all
+          </Typography>
+        </Grid>
+        <Grid item xs={12} style={{ marginTop: requestInviteSuccessful ? '4%' : '2%' }}>
+          <Grid container style={{ marginTop: '60px' }}>
             <Grid container item xs={12} md={6} justify="center" alignItems="center">
-              <div className={classes.opaqueBackground}>
-                <Typography className={classes.message}>
-                  <br />
-                  When an account becomes available, an
-                  <br />
-                  invite will be sent to the email address you
-                  <br />
-                  provided.
-                </Typography>
-              </div>
+              <img
+                alt="Personal Plan"
+                src="/assets/PersonalPlan.png"
+                className={classes.image}
+              />
             </Grid>
-          ) : (
-            <Grid item container xs={11} md={6} spacing={2}>
-              <Grid item xs={12}>
-                <Card>
-                  <CardHeader
-                    avatar={(
-                      <Typography className={classes.stepNumber}>
-                        1
-                      </Typography>
-                    )}
-                    title={(
-                      <Typography
-                        style={{
-                          font: 'Roboto',
-                          fontsize: '18px',
-                          lineHeight: 1.56,
-                        }}
-                      >
-                        Your Personal Info
-                      </Typography>
-                    )}
-                  />
+            {requestInviteSuccessful ? (
+              <Grid container item xs={12} md={6} justify="center" alignItems="center" style={{ paddingTop: '10px' }}>
+                <div className={classes.opaqueBackground}>
+                  <Typography className={classes.message}>
+                    When an account becomes available, an
+                    invite will be sent to the email address you
+                    provided.
+                  </Typography>
+                </div>
+              </Grid>
+            ) : (
+              <Grid item container xs={11} md={6} spacing={2}>
+                <Grid item xs={12}>
+                  <Card className={classes.card}>
+                    <CardHeader
+                      avatar={(
+                        <Typography className={classes.stepNumber}>
+                          1
+                        </Typography>
+                      )}
+                      title={(
+                        <Typography
+                          style={{
+                            fontFamily: 'Roboto',
+                            fontSize: '18px',
+                            lineHeight: 1.56,
+                          }}
+                        >
+                          Your Personal Info
+                        </Typography>
+                      )}
+                    />
 
-                  {!isContinued && (
-                    <form onSubmit={handleSubmit(onContinue)}>
-                      <CardContent>
-                        <Grid container spacing={2}>
-                          <Grid item xs={6}>
-                            <TextField
-                              fullWidth
-                              required
-                              label="First Name"
-                              name="firstName"
-                              id="firstName"
-                              error={errors.firstName}
-                              helperText={errors.firstName && errors.firstName.message}
-                              inputRef={register({
-                                required: 'First Name is required',
-                                minLength: {
-                                  value: 1,
-                                  message: 'First Name should be more than 1 character',
-                                },
-                                maxLength: {
-                                  value: 20,
-                                  message: 'First Name should be less than twenty characters',
-                                },
-                              })}
-                            />
+                    {!isContinued && (
+                      <form onSubmit={handleSubmit(onContinue)}>
+                        <CardContent>
+                          <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                              <TextField
+                                fullWidth
+                                required
+                                label="First Name"
+                                name="firstName"
+                                id="firstName"
+                                error={!!errors.firstName}
+                                helperText={errors.firstName && errors.firstName.message}
+                                inputRef={register({
+                                  required: 'First Name is required',
+                                  minLength: {
+                                    value: 1,
+                                    message: 'First Name should be more than 1 character',
+                                  },
+                                  maxLength: {
+                                    value: 20,
+                                    message: 'First Name should be less than twenty characters',
+                                  },
+                                })}
+                              />
+                            </Grid>
+                            <Grid item xs={6}>
+                              <TextField
+                                fullWidth
+                                required
+                                label="Last Name"
+                                name="lastName"
+                                id="lastName"
+                                error={!!errors.lastName}
+                                helperText={errors.lastName && errors.lastName.message}
+                                inputRef={register({
+                                  required: 'Last Name is required',
+                                  minLength: {
+                                    value: 1,
+                                    message: 'Last Name should be more than 1 character',
+                                  },
+                                  maxLength: {
+                                    value: 20,
+                                    message: 'Last Name should be less than twenty characters',
+                                  },
+                                })}
+                              />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <TextField
+                                fullWidth
+                                required
+                                label="Email"
+                                name="email"
+                                id="email"
+                                error={!!errors.email}
+                                helperText={errors.email && errors.email.message}
+                                inputRef={register({
+                                  required: 'Email is required',
+                                  pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: 'Invalid email address',
+                                  },
+                                })}
+                              />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Button variant="contained" className={classes.greenBtn} type="submit">
+                                Continue
+                              </Button>
+                            </Grid>
                           </Grid>
-                          <Grid item xs={6}>
-                            <TextField
-                              fullWidth
-                              required
-                              label="Last Name"
-                              name="lastName"
-                              id="lastName"
-                              error={errors.lastName}
-                              helperText={errors.lastName && errors.lastName.message}
-                              inputRef={register({
-                                required: 'Last Name is required',
-                                minLength: {
-                                  value: 1,
-                                  message: 'Last Name should be more than 1 character',
-                                },
-                                maxLength: {
-                                  value: 20,
-                                  message: 'Last Name should be less than twenty characters',
-                                },
-                              })}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <TextField
-                              fullWidth
-                              required
-                              label="Email"
-                              name="email"
-                              id="email"
-                              error={errors.email}
-                              helperText={errors.email && errors.email.message}
-                              inputRef={register({
-                                required: 'Email is required',
-                                pattern: {
-                                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                  message: 'Invalid email address',
-                                },
-                              })}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Button variant="contained" className={classes.greenBtn} type="submit">
-                              Continue
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </form>
-                  )}
-                </Card>
+                        </CardContent>
+                      </form>
+                    )}
+                  </Card>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <PaymentMethod
+                    cardDetails={cardDetails}
+                    onSubmit={onSubmit}
+                    isContinued={isContinued}
+                    setCardDetails={setCardDetails}
+                    errorMessage={errorMessage}
+                    loading={loading}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <PaymentMethod
-                  cardDetails={cardDetails}
-                  onSubmit={onSubmit}
-                  isContinued={isContinued}
-                  setCardDetails={setCardDetails}
-                  errorMessage={errorMessage}
-                  loading={loading}
-                />
-              </Grid>
-            </Grid>
-          )}
+            )}
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
-  );
+  )
 }
 
 PersonalForm.propTypes = {

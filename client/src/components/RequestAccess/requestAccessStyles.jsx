@@ -9,15 +9,16 @@ const requestAccessStyles = (theme) => ({
     },
   },
   header: {
-    height: '41px',
+    height: 'auto',
     objectFit: 'contain',
     font: 'Montserrat',
-    fontSize: '34px',
-    fontWeight: 'bold',
-    letterspacing: '0.25px',
+    fontSize: 'clamp(18px, 5vw, 34px)',
+    fontWeight: 700,
+    letterSpacing: '0.25px',
     [theme.breakpoints.down('sm')]: {
-      marginTop: 100,
-      fontSize: '20px',
+      marginTop: theme.spacing(2),
+      textAlign: 'center',
+      lineHeight: 1.05,
     },
   },
   subHeader: {
@@ -58,6 +59,9 @@ const requestAccessStyles = (theme) => ({
     fontSize: 24,
     lineHeight: 1.25,
     [theme.breakpoints.down('sm')]: {
+      fontSize: 20,
+    },
+    [theme.breakpoints.down('xs')]: {
       fontSize: 18,
     },
   },
@@ -148,12 +152,31 @@ const requestAccessStyles = (theme) => ({
   },
   opaqueBackground: {
     background: 'rgba(0,0,0,0.5)', // black with 50% opacity
-    padding: '12px',
-    borderRadius: '12px',
+    padding: theme.spacing(4),
+    borderRadius: 12,
     color: '#fff',
     textAlign: 'center',
-    maxWidth: '90%',
+    maxWidth: '60%',
     margin: '0 auto',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '400px',
+      padding: theme.spacing(3),
+    },
+  },
+  '@media (max-width: 960px)': {
+    header: {
+      fontSize: 'clamp(18px, 6vw, 28px)',
+    },
+  },
+  '@media (max-width: 520px)': {
+    image: {
+      maxWidth: '92%',
+      maxHeight: '30vh',
+    },
+    opaqueBackground: {
+      maxWidth: '50px',
+      minWidth: '80%',
+    },
   },
 })
 
