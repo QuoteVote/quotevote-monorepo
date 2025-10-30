@@ -189,20 +189,8 @@ export default function LandingPage() {
   const dispatch = useDispatch()
   const history = useHistory()
 
-  // Redirect authenticated users to the search page
-  // Helper function to determine if we should show the landing page for guest users
-  // This ensures the landing page is only shown to non-logged-in users
-  const shouldShowGuestLandingPage = () => {
-    if (!isGuestMode) return false
-    // Extract URL parameters to determine the current page
-    const { page } = extractUrlParams({ search: window.location.search })
-    // If the current page is not the landing page, redirect to the search page
-    if (page !== 'landing') history.push('/search')
-  }
-
-  // Call the helper function to determine if we should show the landing page
   React.useEffect(() => {
-    shouldShowGuestLandingPage()
+    if (tokenValidator(dispatch)) history.push('/search')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
