@@ -48,9 +48,17 @@ const landingPageStyle = (theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    [theme.breakpoints.down('md')]: {
+      gap: 25,
+    },
     [theme.breakpoints.down('sm')]: {
       marginTop: -60,
-      gap: 20,
+      gap: 18,
+      padding: '0 8px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      gap: 15,
+      padding: '0 4px',
     },
   },
   listItem: {
@@ -79,6 +87,13 @@ const landingPageStyle = (theme) => ({
     marginRight: 5,
     [theme.breakpoints.down('sm')]: {
       width: '90%',
+      maxWidth: 280,
+      marginTop: 8,
+      marginBottom: 8,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '85%',
+      fontSize: 14,
     },
   },
   listItemTextLogin: {
@@ -97,14 +112,32 @@ const landingPageStyle = (theme) => ({
     marginRight: 5,
     [theme.breakpoints.down('sm')]: {
       width: '90%',
+      maxWidth: 280,
+      marginTop: 8,
+      marginBottom: 8,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '85%',
+      fontSize: 14,
     },
   },
   card: {
     padding: '20px',
     width: '70%',
     margin: '10px',
+    [theme.breakpoints.down('md')]: {
+      width: '85%',
+      padding: '16px',
+    },
     [theme.breakpoints.down('sm')]: {
-      width: '100%',
+      width: '90%',
+      padding: '16px 12px',
+      margin: '8px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '95%',
+      padding: '12px 10px',
+      margin: '6px',
     },
   },
   listItemHeaderText: {
@@ -113,11 +146,29 @@ const landingPageStyle = (theme) => ({
     fontSize: '1.5rem',
     fontWeight: 'bold',
     margin: '10px',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.25rem',
+      margin: '8px 0',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '1.125rem',
+      margin: '6px 0',
+    },
   },
   listItemText: {
     marginBottom: 10,
     fontSize: '.75rem',
     fontWeight: 'bold',
+    lineHeight: 1.5,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      marginBottom: 12,
+      lineHeight: 1.6,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8125rem',
+      marginBottom: 10,
+    },
   },
   listItemTextDonate: {
     backgroundColor: 'white',
@@ -137,6 +188,13 @@ const landingPageStyle = (theme) => ({
     marginRight: 5,
     [theme.breakpoints.down('sm')]: {
       width: '90%',
+      maxWidth: 280,
+      marginTop: 8,
+      marginBottom: 8,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: '85%',
+      fontSize: 14,
     },
   },
   contact: {
@@ -148,16 +206,32 @@ const landingPageStyle = (theme) => ({
     fontSize: '.75rem',
     fontWeight: 'bold',
     margin: '10px',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      flexWrap: 'wrap',
+      padding: '0 10px',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8125rem',
+    },
     // style for the link
     '& a': {
       color: 'white',
       textDecoration: 'underline',
+      wordBreak: 'break-word',
     },
   },
   listItemMakeWithLove: {
     marginTop: -20,
     textAlign: 'center',
     fontSize: '.75rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      marginTop: -10,
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.8125rem',
+    },
     '& span': {
       fontFamily: 'Montserrat',
       fontWeight: 'bold',
