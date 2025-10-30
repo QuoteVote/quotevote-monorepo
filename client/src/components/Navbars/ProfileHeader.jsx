@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import ChatIcon from '@material-ui/icons/Chat'
-import { Tooltip } from '@material-ui/core'
 
 //  Local
 import FollowButton from 'components/CustomButtons/FollowButton'
@@ -22,6 +21,7 @@ import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'
 import { GET_CHAT_ROOM } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import ProfileBadge, { ProfileBadgeContainer } from '../Profile/ProfileBadge'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -43,25 +43,19 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 15,
     },
   },
-  badgeCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: '50%',
-    backgroundColor: '#ea4c89', // green, or pick your brand color
+  userInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5),
+  },
+  badgeWrapper: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-    border: '2px solid #fff',
-  },
-  badgeIcon: {
-    width: 48,
-    height: 48,
-    objectFit: 'contain',
-  },
-  avatarWrapper: {
-    position: 'relative',
-    display: 'inline-block',
+    marginTop: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
+      marginTop: theme.spacing(1.5),
+    },
   },
 }))
 
@@ -112,42 +106,44 @@ export default function ProfileHeader(props) {
             <AvatarDisplay height={75} width={75} {...avatar} />
           </Avatar>
         </Grid>
-        <Grid item>
-          <Typography variant="h6" noWrap>
-            {username}
-          </Typography>
-          <Typography
-            onClick={() => history.push(`/Profile/${username}/followers`)}
-            variant="overline"
-            noWrap
-          >
-            <span className={classes.points}>
-              {`${_followersId ? _followersId.length : 0} Followers`}
-            </span>
-          </Typography>
-          <Typography
-            onClick={() => history.push(`/Profile/${username}/following`)}
-            variant="overline"
-            noWrap
-          >
-            <span className={classes.points}>
-              {`${_followingId ? _followingId.length : 0} Following`}
-            </span>
-          </Typography>
-        </Grid>
-        {contributorBadge && (
-          <Grid item style={{ marginLeft: 16, display: 'flex', alignItems: 'center' }}>
-            <Tooltip title="Founders Badge" placement="top">
-              <div className={classes.badgeCircle}>
-                <img
-                  src={process.env.PUBLIC_URL + '/assets/badge.png'}
-                  alt="Contributor Badge"
-                  className={classes.badgeIcon}
-                />
+        <Grid item xs>
+          <div className={classes.userInfo}>
+            <Typography variant="h6" noWrap>
+              {username}
+            </Typography>
+            <div>
+              <Typography
+                onClick={() => history.push(`/Profile/${username}/followers`)}
+                variant="overline"
+                noWrap
+                component="span"
+                style={{ cursor: 'pointer' }}
+              >
+                <span className={classes.points}>
+                  {`${_followersId ? _followersId.length : 0} Followers`}
+                </span>
+              </Typography>
+              <Typography
+                onClick={() => history.push(`/Profile/${username}/following`)}
+                variant="overline"
+                noWrap
+                component="span"
+                style={{ cursor: 'pointer' }}
+              >
+                <span className={classes.points}>
+                  {`${_followingId ? _followingId.length : 0} Following`}
+                </span>
+              </Typography>
+            </div>
+            {contributorBadge && (
+              <div className={classes.badgeWrapper}>
+                <ProfileBadgeContainer>
+                  <ProfileBadge type="contributor" />
+                </ProfileBadgeContainer>
               </div>
-            </Tooltip>
-          </Grid>
-        )}
+            )}
+          </div>
+        </Grid>
       </Grid>
       <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
         <Grid item>
