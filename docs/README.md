@@ -6,6 +6,16 @@ Welcome to the Quote Vote documentation! This is a text-first civic engagement p
 
 This documentation is organized into the following sections:
 
+### 📘 [User Manual](./user-manual/)
+
+**New to Quote.Vote?** Start here to learn how to use the platform.
+
+- Creating an account and logging in
+- Voting on text passages
+- Creating posts and quotes
+- Participating in discussions
+- Safety and moderation tools
+
 ### 🚀 [Getting Started](./getting-started/)
 
 Everything you need to get Quote Vote running locally and make your first contribution.
@@ -53,9 +63,11 @@ Complete GraphQL API reference and guides for developers.
 
 ## 🎯 Quick Start
 
-New to Quote Vote? Start here:
+**New User?** Learn how to use Quote.Vote:
+- **[User Manual](./user-manual/README.md)** - Complete guide to using the platform
 
-1. **[Installation Guide](./getting-started/installation.md)** - Get up and running in 30 minutes
+**Developer?** Start here:
+1. **[Installation Guide](./getting-started/README.md)** - Get up and running in 30 minutes
 2. **[Architecture Overview](./architecture/README.md)** - Understand the system
 3. **[Contributing Guide](./contributing/README.md)** - Make your first contribution
 
