@@ -1,13 +1,23 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import {
   Dialog,
   DialogContent,
   IconButton,
   makeStyles,
+  Grid,
+  Input,
+  Typography,
+  Button,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import RequestAccessForm from './RequestAccess/RequestAccessForm'
+import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import { useLocation } from 'react-router-dom'
+import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
+import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'
+
+// Email validation regex pattern
+const EMAIL_VALIDATION_PATTERN = /^(("[\w-+\s]+")|([\w-+]+(?:\.[\w-+]+)*)|("[\w-+\s]+")([\w-+]+(?:\.[\w-+]+)*))(@((?:[\w-+]+\.)*\w[\w-+]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][\d]\.|1[\d]{2}\.|[\d]{1,2}\.))((25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\.){2}(25[0-5]|2[0-4][\d]|1[\d]{2}|[\d]{1,2})\]?$)/i
 
 const useStyles = makeStyles((theme) => ({
   dialogWrapper: {
@@ -74,22 +84,121 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(1),
     },
   },
+  missionLink: {
+    color: '#52b274',
+    textDecoration: 'none',
+    fontSize: 'clamp(0.875rem, 2vw, 0.95rem)',
+    fontWeight: 500,
+    transition: 'color 0.3s ease',
+    '&:hover': {
+      color: '#4a9f63',
+      textDecoration: 'underline',
+    },
+  },
+  requestButton: {
+    backgroundColor: '#52b274',
+    color: 'white',
+    padding: theme.spacing(1.5, 3),
+    borderRadius: theme.spacing(1),
+    textTransform: 'none',
+    fontSize: '1rem',
+    fontWeight: 500,
+    width: '100%',
+    '&:hover': {
+      backgroundColor: '#4a9f63',
+    },
+  },
+  loginLink: {
+    color: '#52b274',
+    textDecoration: 'none',
+    fontWeight: 500,
+    '&:hover': {
+      textDecoration: 'underline',
+    },
+  },
 }))
 
 export default function RequestInviteDialog({ open, onClose }) {
   const classes = useStyles()
+  const location = useLocation()
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const timeoutRef = useRef(null)
+  const client = useApolloClient()
+  const [requestUserAccess, { loading }] = useMutation(
+    REQUEST_USER_ACCESS_MUTATION,
+  )
 
-  const handleSuccess = () => {
-    // Auto-close modal after 3 seconds on successful submission
-    setTimeout(() => {
-      onClose()
-    }, 3000)
+  const handleSubmit = async () => {
+    setError('')
+
+    if (!EMAIL_VALIDATION_PATTERN.test(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
+    try {
+      const checkDuplicate = await client.query({
+        query: GET_CHECK_DUPLICATE_EMAIL,
+        variables: { email },
+        fetchPolicy: 'network-only',
+      })
+
+      if (
+        checkDuplicate &&
+        Array.isArray(checkDuplicate.data.checkDuplicateEmail) &&
+        checkDuplicate.data.checkDuplicateEmail.length > 0
+      ) {
+        setError(
+          'This email address has already been used to request an invite.',
+        )
+        return
+      }
+
+      await requestUserAccess({
+        variables: { requestUserAccessInput: { email } },
+      })
+      setSubmitted(true)
+      // Auto-close after 3 seconds with cleanup
+      timeoutRef.current = setTimeout(() => {
+        handleClose()
+      }, 3000)
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again later.')
+      console.error(err)
+    }
   }
+
+  const handleClose = () => {
+    // Clear timeout if it exists
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+    setEmail('')
+    setError('')
+    setSubmitted(false)
+    if (onClose) onClose()
+  }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Get current URL path to pass as redirect parameter (including hash)
+  const currentPath = location.pathname + location.search + location.hash
+  const loginUrl = `/auth/login?redirect=${encodeURIComponent(currentPath)}`
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       maxWidth="sm"
       fullWidth
       scroll="body"
@@ -104,13 +213,137 @@ export default function RequestInviteDialog({ open, onClose }) {
       <IconButton
         aria-label="close"
         className={classes.closeButton}
-        onClick={onClose}
+        onClick={handleClose}
         size="small"
       >
         <CloseIcon fontSize="small" />
       </IconButton>
       <DialogContent className={classes.dialogContent}>
-        <RequestAccessForm onSuccess={handleSuccess} />
+        {submitted ? (
+          <Grid container direction="column" alignItems="center" spacing={2}>
+            <Grid item xs={12}>
+              <Typography
+                variant="h6"
+                align="center"
+                style={{ fontWeight: 600, color: '#212121' }}
+              >
+                Thank you for joining us
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography
+                align="center"
+                style={{
+                  color: '#666',
+                  fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                  lineHeight: 1.6,
+                }}
+              >
+                When an account becomes available, an invite will be sent to the
+                email provided.
+              </Typography>
+            </Grid>
+          </Grid>
+        ) : (
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            spacing={2}
+            style={{ padding: 0 }}
+          >
+            <Grid item xs={12} style={{ width: '100%' }}>
+              <Typography
+                variant="body1"
+                style={{
+                  textAlign: 'center',
+                  color: '#212121',
+                  marginBottom: '1rem',
+                  fontSize: 'clamp(0.875rem, 2vw, 1rem)',
+                  lineHeight: 1.6,
+                  fontWeight: 500,
+                }}
+              >
+                You need an account to contribute. Viewing is public, but
+                posting, voting, and quoting require an invite.
+              </Typography>
+
+              <div className={classes.emailInputWrapper}>
+                <Input
+                  disableUnderline
+                  placeholder="Enter Your Email Address"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                  className={classes.emailInput}
+                  fullWidth
+                />
+              </div>
+
+              {error && (
+                <div
+                  style={{
+                    backgroundColor: '#ffebee',
+                    border: '1px solid #ffcdd2',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    marginTop: '1rem',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Typography
+                    style={{
+                      color: '#c62828',
+                      fontSize: 'clamp(0.875rem, 2vw, 0.95rem)',
+                      fontWeight: 500,
+                      margin: 0,
+                    }}
+                  >
+                    {error}
+                  </Typography>
+                </div>
+              )}
+
+              <div
+                style={{
+                  textAlign: 'center',
+                  marginTop: '1rem',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <a
+                  href="/auth/request-access#mission"
+                  className={classes.missionLink}
+                >
+                  Learn more about our mission here
+                </a>
+              </div>
+
+              <Button
+                onClick={handleSubmit}
+                disabled={loading}
+                className={classes.requestButton}
+              >
+                Request Invite
+              </Button>
+
+              <Typography
+                align="center"
+                style={{
+                  marginTop: '1rem',
+                  fontSize: 'clamp(0.875rem, 2vw, 0.95rem)',
+                  color: '#666',
+                }}
+              >
+                Already have an account?{' '}
+                <a href={loginUrl} className={classes.loginLink}>
+                  Login
+                </a>
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
       </DialogContent>
     </Dialog>
   )

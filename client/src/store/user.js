@@ -44,7 +44,8 @@ const userSlice = createSlice({
       state.data = action.payload
     },
     UPDATE_FOLLOWING: (state, action) => {
-      state.data._followingId = action.payload /* eslint-disable-line no-underscore-dangle */
+      state.data._followingId =
+        action.payload /* eslint-disable-line no-underscore-dangle */
     },
   },
 })
@@ -68,7 +69,7 @@ const getToken = async (username, password) => {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
+      },
     )
   } catch (err) {
     return { error: err }
@@ -76,22 +77,26 @@ const getToken = async (username, password) => {
 }
 
 // Public functions that dispatch multiple actions
-export const userLogin = async (username, password, dispatch, history) => {
+export const userLogin = async (
+  username,
+  password,
+  dispatch,
+  history,
+  redirectPath = null,
+) => {
   dispatch(actions.USER_LOGIN_REQUEST())
-  dispatch(
-    actions.USER_LOGIN_FAILURE({ loginError: null, loading: true })
-  )
+  dispatch(actions.USER_LOGIN_FAILURE({ loginError: null, loading: true }))
   const result = await getToken(username, password)
   if ('error' in result) {
     const serverConnectionRefuseError = {
       data: { message: 'Connection refuse' },
     }
     const errorMessage =
-      typeof result.error.response !== 'undefined' ?
-        result.error.response.data.message :
-        serverConnectionRefuseError
+      typeof result.error.response !== 'undefined'
+        ? result.error.response.data.message
+        : serverConnectionRefuseError
     dispatch(
-      actions.USER_LOGIN_FAILURE({ loginError: errorMessage, loading: false })
+      actions.USER_LOGIN_FAILURE({ loginError: errorMessage, loading: false }),
     )
   } else {
     const { token, user } = result.data
@@ -101,16 +106,26 @@ export const userLogin = async (username, password, dispatch, history) => {
         data: user,
         loading: false,
         loginError: null,
-      })
+      }),
     )
-    history.push('/search')
+    // Validate and redirect to prevent open redirect vulnerabilities
+    // Only allow safe relative paths: single slash start, no hostname, safe characters
+    let targetPath = '/search'
+    if (redirectPath && typeof redirectPath === 'string') {
+      // Regex allows: /, alphanumeric, -, _, ?, =, &, #, and % (for encoding)
+      const SAFE_PATH_REGEX = /^\/[a-zA-Z0-9/_?=&#%-]*$/
+      if (SAFE_PATH_REGEX.test(redirectPath)) {
+        targetPath = redirectPath
+      }
+    }
+    history.push(targetPath)
   }
 }
 
 export function tokenValidator(dispatch) {
   dispatch(actions.USER_TOKEN_VALIDATION())
   const storedToken = localStorage.getItem('token')
-  
+
   if (!storedToken) {
     dispatch(actions.USER_LOGOUT())
     return false
@@ -119,14 +134,14 @@ export function tokenValidator(dispatch) {
   try {
     const decoded = jwtDecode(storedToken)
     const currentTime = Date.now() / 1000
-    
+
     // Check if token is expired
     if (decoded.exp && decoded.exp < currentTime) {
       localStorage.removeItem('token')
       dispatch(actions.USER_LOGOUT())
       return false
     }
-    
+
     dispatch(actions.USER_TOKEN_VALIDATED())
     return true
   } catch (err) {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import {
   Card,
   CardActions,
@@ -25,7 +25,8 @@ import FollowButton from 'components/CustomButtons/FollowButton'
 import VotingBoard from '../VotingComponents/VotingBoard'
 import VotingPopup from '../VotingComponents/VotingPopup'
 import { SET_SNACKBAR } from '../../store/ui'
-import useGuestGuard from 'utils/useGuestGuard'
+import { tokenValidator } from 'store/user'
+import RequestInviteDialog from '../RequestInviteDialog'
 import {
   ADD_COMMENT,
   ADD_QUOTE,
@@ -105,7 +106,6 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   const { _followingId } = user
   const dispatch = useDispatch()
   const history = useHistory()
-  const ensureAuth = useGuestGuard()
   const parsedCreated = moment(created).format('LLL')
 
   // State declarations
@@ -115,8 +115,18 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     endIndex: 0,
   })
   const [open, setOpen] = useState(false)
+  const [openInvite, setOpenInvite] = useState(false)
 
   const isFollowing = includes(_followingId, userId)
+
+  // Guest guard function that opens modal instead of redirecting
+  const ensureAuth = useCallback(() => {
+    if (!tokenValidator(dispatch)) {
+      setOpenInvite(true)
+      return false
+    }
+    return true
+  }, [dispatch])
 
   // Query to get user details for tooltips
   const { loading: usersLoading, data: usersData } = useQuery(GET_USERS)
@@ -857,6 +867,10 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
             timeout={1000}
           />
         )}
+        <RequestInviteDialog
+          open={openInvite}
+          onClose={() => setOpenInvite(false)}
+        />
       </Card>
     </>
   )
