@@ -20,12 +20,15 @@ const requestAccessStyles = (theme) => ({
       textAlign: 'center',
       lineHeight: 1.05,
     },
+    '@media (max-width: 960px)': {
+      fontSize: 'clamp(18px, 6vw, 28px)',
+    },
   },
   subHeader: {
     height: '28px',
     font: 'Roboto',
     fontSize: '22px',
-    letterspacing: '0.25px',
+    letterSpacing: '0.25px',
     lineHeight: 1.27,
     [theme.breakpoints.down('sm')]: {
       fontSize: '17px',
@@ -38,19 +41,19 @@ const requestAccessStyles = (theme) => ({
     backgroundColor: '#52b274',
     opacity: 0.85,
     font: 'Roboto',
-    fontsize: '18px',
+    fontSize: '18px',
     lineHeight: 1.56,
     color: '#ffffff',
     padding: '3px 6px',
   },
   stepName: {
     font: 'Roboto',
-    fontsize: '18px',
+    fontSize: '18px',
     lineHeight: 1.56,
   },
   note: {
     font: 'Roboto',
-    fontsize: '16px',
+    fontSize: '16px',
     lineHeight: 1.56,
     color: '#424556',
   },
@@ -71,7 +74,7 @@ const requestAccessStyles = (theme) => ({
     font: 'Montserrat',
     fontSize: '34px',
     fontWeight: 'bold',
-    letterspacing: '0.25px',
+    letterSpacing: '0.25px',
     [theme.breakpoints.down('sm')]: {
       marginTop: 100,
     },
@@ -83,7 +86,7 @@ const requestAccessStyles = (theme) => ({
   },
   plansCardHeader: {
     font: 'Montserrat',
-    fontsize: 37,
+    fontSize: 37,
     lineHeight: 1.56,
     fontWeight: 600,
     color: '#333333',
@@ -91,7 +94,7 @@ const requestAccessStyles = (theme) => ({
   },
   plansCardText: {
     font: 'Roboto',
-    fontsize: 20,
+    fontSize: 20,
     lineHeight: 0.75,
     fontWeight: 500,
     color: '#333333',
@@ -162,20 +165,20 @@ const requestAccessStyles = (theme) => ({
       maxWidth: '400px',
       padding: theme.spacing(3),
     },
-  },
-  '@media (max-width: 960px)': {
-    header: {
-      fontSize: 'clamp(18px, 6vw, 28px)',
+    '@media (max-width: 520px)': {
+      maxWidth: '80%',
     },
   },
-  '@media (max-width: 520px)': {
-    image: {
+  image: {
+    width: '100%',
+    maxWidth: 489,
+    height: 'auto',
+    maxHeight: '35vh',
+    objectFit: 'contain',
+    margin: '0 auto',
+    '@media (max-width: 520px)': {
       maxWidth: '92%',
       maxHeight: '30vh',
-    },
-    opaqueBackground: {
-      maxWidth: '50px',
-      minWidth: '80%',
     },
   },
 })
