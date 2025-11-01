@@ -44,12 +44,13 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **JWT** - Authentication
 - **WebSocket** - Real-time subscriptions
 - **Stripe** - Payment processing
-- **Nodemailer** - Email functionality
+- **SendGrid** - Email functionality (primary)
+- **Nodemailer** - Email functionality (fallback)
 
 ## 📁 Project Structure
 
 ```
-monorepo/
+quotevote-monorepo/
 ├── client/                 # React frontend application
 │   ├── src/
 │   │   ├── components/     # Reusable UI components
@@ -94,8 +95,6 @@ monorepo/
    ```bash
    # Install dependencies for both client and server
    npm run install:all
-   # or
-   npm install --legacy-peer-deps
    ```
 
    **Alternative: Install individual workspaces**
@@ -110,33 +109,55 @@ monorepo/
 
 3. **Environment Setup**
 
-   Create `.env` files in both `client/` and `server/` directories:
+   Create `.env` files in both `client/` and `server/` directories (examples provided as `.env.example` in each folder):
 
-   **Server Environment Variables:**
+   **Server Environment Variables (server/.env):**
 
    ```env
    NODE_ENV=development
    PORT=4000
    DATABASE_URL=mongodb://localhost:27017/quote-vote
-   JWT_SECRET=your-jwt-secret
-   STRIPE_SECRET_KEY=your-stripe-secret
-   EMAIL_SERVICE=your-email-service
-   EMAIL_USER=your-email-user
+   SECRET=your-jwt-secret
+   CLIENT_URL=http://localhost:3000
+
+   # Stripe Configuration (Optional)
+   STRIPE_ENVIRONMENT=sandbox
+   SANDBOX_STRIPE_SECRET_KEY=your-sandbox-stripe-key
+   LIVE_STRIPE_SECRET_KEY=your-live-stripe-key
+
+   # SendGrid Email (Primary - Optional)
+   SENDGRID_API_KEY=your-sendgrid-api-key
+   SENDGRID_SENDER_EMAIL=noreply@yourdomain.com
+
+   # Nodemailer SMTP (Fallback - Optional)
+   EMAIL_SERVICE=gmail
+   EMAIL_USER=your-email@gmail.com
    EMAIL_PASS=your-email-password
    ```
 
-   **Client Environment Variables:**
+   **Client Environment Variables (client/.env):**
 
    ```env
    REACT_APP_API_URL=http://localhost:4000/graphql
    REACT_APP_WS_URL=ws://localhost:4000/graphql
    ```
 
+   See the [Environment Variables Reference](#-environment-variables-reference) section below for detailed descriptions.
+
 4. **Start Development Database**
 
+   **Option 1: Using Docker (recommended)**
    ```bash
+   # macOS/Linux
    npm run dev-db-start --workspace=server
+
+   # Windows
+   docker compose -f server/dev_db/compose.yml up -d
    ```
+
+   **Option 2: Using local MongoDB**
+
+   Ensure MongoDB is running on `mongodb://localhost:27017`
 
 5. **Run the Application**
 
@@ -149,7 +170,10 @@ monorepo/
    **Option 2: Run individual services**
 
    ```bash
-   # Terminal 1 - Backend
+   # Terminal 1 - Backend (Windows)
+   npm run dev-windows:server
+
+   # Terminal 1 - Backend (macOS/Linux)
    npm run dev:server
 
    # Terminal 2 - Frontend
@@ -157,7 +181,7 @@ monorepo/
    ```
 
 6. **Access the Application**
-   - Frontend: http://localhost:5173
+   - Frontend: http://localhost:3000
    - GraphQL Playground: http://localhost:4000/graphql
 
 ## 🧪 Testing
@@ -168,20 +192,42 @@ monorepo/
 npm run test
 ```
 
-### Individual workspace testing
+### Server Tests
 
+The server uses two testing frameworks:
+
+**Run Jest tests (integration and snapshot tests)**
 ```bash
-# Frontend tests
-npm run test:client
-
-# Backend tests
 npm run test:server
 ```
 
-### Frontend specific testing
-
+**Run Mocha/Chai unit tests**
 ```bash
-npm run cypress:open --workspace=client  # E2E tests
+npm run unittest:server
+```
+
+### Client Tests
+
+The client uses Vitest for unit tests and Cypress for E2E tests:
+
+**Run Vitest unit tests**
+```bash
+npm run test:client
+```
+
+**Run tests in watch mode**
+```bash
+npm run test:watch --workspace=client
+```
+
+**Run tests with coverage**
+```bash
+npm run test:coverage --workspace=client
+```
+
+**Run Cypress E2E tests**
+```bash
+npm run cypress:open --workspace=client
 ```
 
 ## 🏗️ Development Commands
@@ -223,6 +269,191 @@ npm run lint:server       # Lint server only
   ```
 - **API Documentation**: Available at GraphQL Playground
 - **Component Documentation**: See `client/docs/` for detailed guides
+
+## 🔑 Environment Variables Reference
+
+### Server Environment Variables
+
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `NODE_ENV` | Environment mode (`dev`, `development`, `production`) | No | `development` |
+| `PORT` | HTTP port for the GraphQL server | No | `4000` |
+| `DATABASE_URL` | MongoDB connection string | **Yes** | `mongodb://localhost:27017/quote-vote` |
+| `SECRET` | JWT signing secret for authentication tokens | **Yes** | - |
+| `CLIENT_URL` | Base URL of the frontend (used for CORS and email links) | **Yes** | `http://localhost:3000` |
+| `STRIPE_ENVIRONMENT` | Stripe environment (`sandbox` or `production`) | No | `sandbox` |
+| `SANDBOX_STRIPE_SECRET_KEY` | Stripe API key for sandbox/testing | No | - |
+| `LIVE_STRIPE_SECRET_KEY` | Stripe API key for production | No | - |
+| `SENDGRID_API_KEY` | SendGrid API key for transactional emails | No | - |
+| `SENDGRID_SENDER_EMAIL` | Verified sender email address for SendGrid | No | - |
+| `EMAIL_SERVICE` | SMTP service for Nodemailer (alternative to SendGrid) | No | - |
+| `EMAIL_USER` | SMTP username for Nodemailer | No | - |
+| `EMAIL_PASS` | SMTP password for Nodemailer | No | - |
+
+### Client Environment Variables
+
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `REACT_APP_API_URL` | GraphQL HTTP endpoint URL | **Yes** | `http://localhost:4000/graphql` |
+| `REACT_APP_WS_URL` | GraphQL WebSocket endpoint URL | **Yes** | `ws://localhost:4000/graphql` |
+
+## 🔌 API Endpoints
+
+### Authentication Endpoints (REST)
+
+The application provides REST endpoints for authentication:
+
+#### Register a New User
+```bash
+POST /register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "username": "johndoe",
+  "password": "securepassword123"
+}
+```
+
+#### Login
+```bash
+POST /login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "securepassword123"
+}
+```
+
+#### Authenticate (Get Token)
+```bash
+POST /authenticate
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "securepassword123"
+}
+```
+
+#### Create Guest User
+```bash
+POST /guest
+Content-Type: application/json
+```
+
+### GraphQL API
+
+All GraphQL requests go to `/graphql` and require an `Authorization` header with a JWT token (except for public queries).
+
+**Example Query:**
+```graphql
+query {
+  posts(limit: 10, offset: 0, approved: true) {
+    posts {
+      _id
+      title
+      content
+      author {
+        username
+      }
+      created
+    }
+    total
+  }
+}
+```
+
+**Example Mutation:**
+```graphql
+mutation {
+  addPost(post: {
+    title: "My Post"
+    content: "Post content"
+    userId: "USER_ID"
+  }) {
+    _id
+    title
+    content
+  }
+}
+```
+
+For a complete list of available queries and mutations, visit the GraphQL Playground at `http://localhost:4000/graphql` when the server is running.
+
+### Key GraphQL Operations
+
+**Queries:**
+- `posts`, `post`, `featuredPosts`, `topPosts` - Post-related queries
+- `users`, `user`, `searchUser` - User-related queries
+- `activities` - Activity feed
+- `notifications` - User notifications
+- `messages`, `messageRooms` - Messaging queries
+- `groups`, `group` - Group queries
+
+**Mutations:**
+- `addPost`, `approvePost`, `rejectPost`, `deletePost`, `reportPost` - Post operations
+- `addVote`, `deleteVote` - Voting operations
+- `addComment`, `deleteComment` - Comment operations
+- `addQuote`, `deleteQuote` - Quote operations
+- `followUser`, `updateUser`, `updateUserAvatar` - User operations
+- `createMessage`, `deleteMessage` - Messaging operations
+- `sendPasswordResetEmail`, `updateUserPassword` - Password reset
+- `addStripeCustomer` - Payment operations
+
+## 🎨 Code Quality & Formatting
+
+### Linting
+
+The project uses ESLint with Airbnb configuration.
+
+**Lint all code:**
+```bash
+npm run lint
+```
+
+**Lint client only:**
+```bash
+npm run lint:client
+```
+
+**Lint server only:**
+```bash
+npm run lint:server
+```
+
+**Auto-fix linting issues (client):**
+```bash
+npm run lint:fix --workspace=client
+```
+
+### Code Formatting
+
+The project uses Prettier for consistent code formatting.
+
+**Configuration:**
+- Single quotes
+- No semicolons
+- Trailing commas
+- Arrow function parentheses required
+
+**Format code (client):**
+```bash
+npm run prettify --workspace=client
+```
+
+### Linting Rules
+
+**Client (`client/.eslintrc.cjs`):**
+- Extends: `airbnb`, `airbnb/hooks`, `plugin:jest/recommended`
+- Parser: `babel-eslint`
+- Plugins: `react`, `jsx-a11y`, `cypress`, `only-warn`
+
+**Server (`server/package.json`):**
+- Extends: `airbnb/base`, `plugin:import/errors`
+- Parser: `babel-eslint`
 
 ## 🚀 Deployment
 

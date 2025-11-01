@@ -34,14 +34,12 @@ Guide                                                               | Descriptio
 2. **Install Dependencies**
 
    ```bash
-   # Install root dependencies
-   npm install
+   # Install dependencies for both client and server (recommended)
+   npm run install:all
 
-   # Install client dependencies
-   cd client && npm install
-
-   # Install server dependencies
-   cd ../server && npm install
+   # Or install individually
+   npm run install:client
+   npm run install:server
    ```
 
 3. **Environment Configuration**
@@ -50,19 +48,54 @@ Guide                                                               | Descriptio
    # From the root directory, copy example environment files
    cp server/.env.example server/.env
    cp client/.env.example client/.env
-
-   # Edit the new .env files with your local configuration (MongoDB URI, etc.)
    ```
 
-4. **Start Development Servers**
+   **Required Server Environment Variables (`server/.env`):**
+   ```env
+   DATABASE_URL=mongodb://localhost:27017/quote-vote
+   SECRET=your-jwt-secret-key
+   CLIENT_URL=http://localhost:3000
+   ```
+
+   **Required Client Environment Variables (`client/.env`):**
+   ```env
+   REACT_APP_API_URL=http://localhost:4000/graphql
+   REACT_APP_WS_URL=ws://localhost:4000/graphql
+   ```
+
+   See the main [README.md](./README.md#-environment-variables-reference) for a complete list of environment variables.
+
+4. **Start MongoDB**
 
    ```bash
-   # Terminal 1: Start backend (from root)
-   cd server && npm run dev
+   # Using Docker (recommended)
+   # macOS/Linux
+   npm run dev-db-start --workspace=server
 
-   # Terminal 2: Start frontend (from root)
-   cd client && npm run dev
+   # Windows
+   docker compose -f server/dev_db/compose.yml up -d
+
+   # Or use your local MongoDB installation
    ```
+
+5. **Start Development Servers**
+
+   ```bash
+   # Option 1: Run both client and server simultaneously
+   npm run dev
+
+   # Option 2: Run individually
+   # Terminal 1: Start backend
+   npm run dev-windows:server  # Windows
+   npm run dev:server          # macOS/Linux
+
+   # Terminal 2: Start frontend
+   npm run dev:client
+   ```
+
+6. **Access the Application**
+   - Frontend: http://localhost:3000
+   - GraphQL Playground: http://localhost:4000/graphql
 
 ## How to Contribute
 
