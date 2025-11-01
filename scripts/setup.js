@@ -236,8 +236,7 @@ WS_PATH=/graphql
 # Session Secret
 SECRET=your-session-secret-change-in-production
 
-# Lyricist Token
-LYRICIST_TOKEN=your_lyricist_token
+
 `;
 
   // Client .env template
