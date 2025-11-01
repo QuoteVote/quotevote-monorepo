@@ -70,7 +70,7 @@ npm run dev
 
 ## 🔗 Access URLs
 
-- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
 - **GraphQL Playground:** [http://localhost:4000/graphql](http://localhost:4000/graphql)
 
 Refer to the Installation Guide for more details.
@@ -81,9 +81,9 @@ See the Contributing Guidelines before submitting changes.
 
 ## 🛠 Troubleshooting
 
-- **Port conflicts:** Ensure ports 5173 (frontend) and 4000 (backend) are available.
+- **Port conflicts:** Ensure ports 3000 (frontend) and 4000 (backend) are available.
 - **Dependency issues:** Run `npm install --legacy-peer-deps`.
-- **Database connection:** Confirm MongoDB is running.
+- **Database connection:** Confirm MongoDB is running and `DATABASE_URL` is set correctly in `server/.env`.
 
 For more help, check the Installation Guide or ask in Discord.
 
