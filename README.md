@@ -157,7 +157,7 @@ monorepo/
    ```
 
 6. **Access the Application**
-   - Frontend: http://localhost:5173
+   - Frontend: http://localhost:3000
    - GraphQL Playground: http://localhost:4000/graphql
 
 ## 🧪 Testing

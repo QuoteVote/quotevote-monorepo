@@ -70,7 +70,7 @@ npm run dev
 
 ## 🔗 Access URLs
 
-- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Frontend:** [http://localhost:3000](http://localhost:3000)
 - **GraphQL Playground:** [http://localhost:4000/graphql](http://localhost:4000/graphql)
 
 Refer to the Installation Guide for more details.

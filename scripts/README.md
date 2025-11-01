@@ -174,14 +174,14 @@ Starting development servers...
 Services will be available at:
   Backend:  http://localhost:4000
   GraphQL:  http://localhost:4000/graphql
-  Frontend: http://localhost:5173
+  Frontend: http://localhost:3000
 
 Press Ctrl+C to stop both servers
 ────────────────────────────────────────────────────────────
 ```
 
 #### Access Points
-- **Frontend**: http://localhost:5173
+- **Frontend**: http://localhost:3000
 - **GraphQL API**: http://localhost:4000/graphql
 - **Backend**: http://localhost:4000
 
@@ -257,7 +257,7 @@ Quick Start:
      npm run start-dev
 
   2. Open the application
-     http://localhost:5173
+     http://localhost:3000
 
   3. Login with the credentials above
 ```
@@ -344,7 +344,7 @@ Quick Start:
      npm run start-dev
 
   2. Open the application
-     http://localhost:5173
+     http://localhost:3000
 
   3. Login with the credentials above
 ```

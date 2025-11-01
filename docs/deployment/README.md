@@ -52,7 +52,7 @@ npm run dev
 
 Access:
 
-- Frontend: http://localhost:5173
+- Frontend: http://localhost:3000
 - Backend: http://localhost:4000
 - GraphQL: http://localhost:4000/graphql
 
