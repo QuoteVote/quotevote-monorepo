@@ -27,7 +27,7 @@ if (process.env.CLIENT_URL.endsWith('/')) {
   process.env.CLIENT_URL = process.env.CLIENT_URL.slice(0, -1);
 }
 
-const GRAPHQL_PORT = process.env.PORT || 3000;
+const GRAPHQL_PORT = process.env.PORT || 4000;
 
 logger.info('Database', process.env.DATABASE_URL);
 
