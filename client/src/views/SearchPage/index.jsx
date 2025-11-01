@@ -8,15 +8,20 @@ import {
   Button,
 } from '@material-ui/core'
 import { useQuery } from '@apollo/react-hooks'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useState, useEffect, useMemo } from 'react'
 import SearchIcon from '@material-ui/icons/Search'
+import LocationOnIcon from '@material-ui/icons/LocationOn'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import format from 'date-fns/format'
 import { jwtDecode } from 'jwt-decode'
-import { GET_TOP_POSTS, GET_FEATURED_POSTS } from '../../graphql/query'
+import { GET_TOP_POSTS, GET_FEATURED_POSTS, LOCAL_QUOTES } from '../../graphql/query'
 import { serializePost } from '../../utils/objectIdSerializer'
+import { fetchLocation, selectLocation, selectIsLoading as selectLocationLoading, selectError as selectLocationError } from '../../store/location'
+import { checkPermission } from '../../utils/geolocationService'
+import LocationPermissionDialog from '../../components/LocationPermissionDialog'
+import LocationBadge from '../../components/LocationBadge'
 import PaginatedPostsList from '../../components/Post/PaginatedPostsList'
 import ErrorBoundary from '../../components/ErrorBoundary'
 import Carousel from '../../components/Carousel/Carousel'
@@ -300,6 +305,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchPage() {
   const classes = useStyles()
+  const dispatch = useDispatch()
   const [showResults, setShowResults] = useState(true)
   const [searchKey, setSearchKey] = useState('')
   const user = useSelector((state) => state.user.data)
@@ -312,7 +318,16 @@ export default function SearchPage() {
   const [activeFilters, setActiveFilters] = useState({
     friends: false,
     interactions: false,
+    local: false,
   })
+  
+  // Location permission dialog state
+  const [showPermissionDialog, setShowPermissionDialog] = useState(false)
+  
+  // Get location state from Redux
+  const userLocation = useSelector(selectLocation)
+  const isLocationLoading = useSelector(selectLocationLoading)
+  const locationError = useSelector(selectLocationError)
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
   const [focusedInput, setFocusedInput] = useState(null)
 
@@ -355,6 +370,21 @@ export default function SearchPage() {
     setIsGuestMode(guestMode)
   }, [user])
 
+
+  // Query for local quotes when local filter is active
+  const { data: localQuotesData, loading: localQuotesLoading, error: localQuotesError } = useQuery(LOCAL_QUOTES, {
+    variables: {
+      near: userLocation ? {
+        latitude: userLocation.lat,
+        longitude: userLocation.lng,
+      } : null,
+      radiusKm: 10, // Default 10km radius
+      limit: 50,
+      offset: 0,
+    },
+    skip: !activeFilters.local || !userLocation,
+    fetchPolicy: 'network-only',
+  })
 
   const { data: featuredData, refetch: refetchFeatured, loading: featuredLoading } = useQuery(GET_FEATURED_POSTS, {
     variables: {
@@ -440,6 +470,50 @@ export default function SearchPage() {
       interactions: !prev.interactions,
     }))
     setShowResults(true)
+  }
+
+  const handleLocalFilter = async () => {
+    console.log('Local filter clicked, current state:', activeFilters.local)
+    // Mark that user has interacted with filters
+    setHasEverInteractedWithFilters(true)
+    
+    const newLocalState = !activeFilters.local
+    
+    if (newLocalState) {
+      // User is turning on local filter
+      try {
+        const permissionState = await checkPermission()
+        
+        if (permissionState === 'denied') {
+          // Show error - permission was denied
+          console.warn('Location permission denied')
+          setShowPermissionDialog(true)
+          return
+        }
+        
+        if (permissionState === 'prompt' || !userLocation) {
+          // Show permission dialog
+          setShowPermissionDialog(true)
+          return
+        }
+        
+        // Permission already granted and we have location
+        setActiveFilters((prev) => ({
+          ...prev,
+          local: true,
+        }))
+        setShowResults(true)
+      } catch (error) {
+        console.error('Error checking location permission:', error)
+      }
+    } else {
+      // User is turning off local filter
+      setActiveFilters((prev) => ({
+        ...prev,
+        local: false,
+      }))
+      setShowResults(true)
+    }
   }
 
   const handleSortOrderToggle = () => {
@@ -656,6 +730,31 @@ export default function SearchPage() {
               >
                 🧲
               </IconButton>
+            </Tooltip>
+            <Tooltip
+              title={
+                isGuestMode
+                  ? 'Local: Login to filter posts by your location'
+                  : activeFilters.local
+                  ? 'Local: Showing posts near you (click to show all)'
+                  : 'Local: Show posts near your location'
+              }
+              placement="bottom"
+              arrow
+            >
+              <span>
+                <IconButton
+                  aria-label="local"
+                  className={`${classes.icon} ${
+                    activeFilters.local ? classes.activeFilter : ''
+                  }`}
+                  onClick={handleLocalFilter}
+                  disabled={isGuestMode}
+                  style={{ opacity: isGuestMode ? 0.5 : 1 }}
+                >
+                  <LocationOnIcon />
+                </IconButton>
+              </span>
             </Tooltip>
             <Tooltip
               title={
@@ -969,22 +1068,75 @@ export default function SearchPage() {
               )}
               
               <Grid item xs={12} className={classes.list}>
-                <PaginatedPostsList
-                  searchKey={searchKey}
-                  startDateRange={dateRangeFilter.startDate ? format(dateRangeFilter.startDate, 'yyyy-MM-dd') : ''}
-                  endDateRange={dateRangeFilter.endDate ? format(dateRangeFilter.endDate, 'yyyy-MM-dd') : ''}
-                  friendsOnly={(user && user._id) ? activeFilters.friends : false}
-                  interactions={activeFilters.interactions}
-                  sortOrder={sortOrder === 'asc' ? sortOrder : undefined}
-                  defaultPageSize={20}
-                  pageParam="page"
-                  pageSizeParam="page_size"
-                  cols={1}
-                  showPageInfo={true}
-                  showFirstLast={true}
-                  maxVisiblePages={5}
-                  onTotalCountChange={setTotalCount}
-                />
+                {activeFilters.local && userLocation ? (
+                  <>
+                    {isLocationLoading && (
+                      <Typography variant="body1" style={{ padding: '20px', textAlign: 'center' }}>
+                        Getting your location...
+                      </Typography>
+                    )}
+                    {localQuotesError && (
+                      <Typography variant="body1" color="error" style={{ padding: '20px', textAlign: 'center' }}>
+                        Error loading local quotes: {localQuotesError.message}
+                      </Typography>
+                    )}
+                    {localQuotesLoading && !isLocationLoading && (
+                      <LoadingSpinner />
+                    )}
+                    {localQuotesData && localQuotesData.localQuotes && (
+                      <div style={{ padding: '20px' }}>
+                        <Typography variant="h6" gutterBottom>
+                          {localQuotesData.localQuotes.length} quotes near you
+                        </Typography>
+                        {localQuotesData.localQuotes.length === 0 ? (
+                          <Typography variant="body1" color="textSecondary" style={{ marginTop: '20px' }}>
+                            No quotes found nearby. Try expanding your search radius or check back later.
+                          </Typography>
+                        ) : (
+                          <div>
+                            {localQuotesData.localQuotes.map((quote) => (
+                              <Paper key={quote._id} style={{ padding: '16px', marginBottom: '12px' }}>
+                                <Typography variant="body1" gutterBottom>
+                                  "{quote.quote}"
+                                </Typography>
+                                <Typography variant="caption" color="textSecondary">
+                                  by {quote.user?.username || 'Anonymous'}
+                                </Typography>
+                                {quote.placeLabel && (
+                                  <div style={{ marginTop: '8px' }}>
+                                    <LocationBadge 
+                                      placeLabel={quote.placeLabel}
+                                      distance={quote.distanceFromUser}
+                                      variant="chip"
+                                      size="small"
+                                    />
+                                  </div>
+                                )}
+                              </Paper>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <PaginatedPostsList
+                    searchKey={searchKey}
+                    startDateRange={dateRangeFilter.startDate ? format(dateRangeFilter.startDate, 'yyyy-MM-dd') : ''}
+                    endDateRange={dateRangeFilter.endDate ? format(dateRangeFilter.endDate, 'yyyy-MM-dd') : ''}
+                    friendsOnly={(user && user._id) ? activeFilters.friends : false}
+                    interactions={activeFilters.interactions}
+                    sortOrder={sortOrder === 'asc' ? sortOrder : undefined}
+                    defaultPageSize={20}
+                    pageParam="page"
+                    pageSizeParam="page_size"
+                    cols={1}
+                    showPageInfo={true}
+                    showFirstLast={true}
+                    maxVisiblePages={5}
+                    onTotalCountChange={setTotalCount}
+                  />
+                )}
               </Grid>
             </>
           )}
@@ -996,6 +1148,28 @@ export default function SearchPage() {
           {isGuestMode && !hasActiveFilters() && !hasEverInteractedWithFilters && <GuestFooter />}
         </Grid>
       </div>
+
+      <LocationPermissionDialog
+        open={showPermissionDialog}
+        onAllow={async () => {
+          try {
+            await dispatch(fetchLocation())
+            setShowPermissionDialog(false)
+            setActiveFilters((prev) => ({ ...prev, local: true }))
+            setShowResults(true)
+          } catch (error) {
+            console.error('Error fetching location:', error)
+            setShowPermissionDialog(false)
+          }
+        }}
+        onDeny={() => {
+          setShowPermissionDialog(false)
+          setActiveFilters((prev) => ({ ...prev, local: false }))
+        }}
+        onClose={() => {
+          setShowPermissionDialog(false)
+        }}
+      />
     </ErrorBoundary>
   );
 }

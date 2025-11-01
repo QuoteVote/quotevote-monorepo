@@ -665,3 +665,29 @@ export const GET_FEATURED_POSTS = gql`
     }
   }
 `
+
+export const LOCAL_QUOTES = gql`
+  query localQuotes($near: GeoInput!, $radiusKm: Float, $limit: Int, $offset: Int) {
+    localQuotes(near: $near, radiusKm: $radiusKm, limit: $limit, offset: $offset) {
+      _id
+      postId
+      quoter
+      quoted
+      quote
+      startWordIndex
+      endWordIndex
+      created
+      deleted
+      isLocal
+      placeLabel
+      distanceFromUser
+      user {
+        _id
+        username
+        name
+        avatar
+        contributorBadge
+      }
+    }
+  }
+`

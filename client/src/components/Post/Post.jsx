@@ -6,7 +6,7 @@ import BlockIcon from '@material-ui/icons/Block';
 import LinkIcon from '@material-ui/icons/Link';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 import { includes } from 'lodash';
@@ -17,6 +17,9 @@ import FollowButton from 'components/CustomButtons/FollowButton';
 import VotingBoard from '../VotingComponents/VotingBoard';
 import VotingPopup from '../VotingComponents/VotingPopup';
 import { SET_SNACKBAR } from '../../store/ui';
+import { fetchLocation, selectLocation, selectIsLoading as selectLocationLoading } from '../../store/location';
+import { checkPermission } from '../../utils/geolocationService';
+import LocationPermissionDialog from '../LocationPermissionDialog';
 import useGuestGuard from 'utils/useGuestGuard';
 import RequestInviteDialog from '../RequestInviteDialog';
 import {
@@ -96,10 +99,16 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   const ensureAuth = useGuestGuard()
   const parsedCreated = moment(created).format('LLL')
 
+  // Location state from Redux
+  const userLocation = useSelector(selectLocation)
+  const isLocationLoading = useSelector(selectLocationLoading)
+
   // State declarations
   const [selectedText, setSelectedText] = useState({ text: '', startIndex: 0, endIndex: 0 })
   const [open, setOpen] = useState(false)
   const [openInvite, setOpenInvite] = useState(false)
+  const [isLocalQuote, setIsLocalQuote] = useState(false)
+  const [showLocationPermissionDialog, setShowLocationPermissionDialog] = useState(false)
 
   const isFollowing = includes(_followingId, userId)
 
@@ -496,6 +505,28 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   }
   const handleAddQuote = async () => {
     if (!ensureAuth()) return
+
+    // Check if user wants to post as local but location permission is not granted
+    if (isLocalQuote && !userLocation) {
+      const permissionStatus = await checkPermission()
+      if (permissionStatus === 'prompt' || permissionStatus === 'denied') {
+        setShowLocationPermissionDialog(true)
+        return
+      }
+      // If permission is granted but location not yet fetched, fetch it
+      if (permissionStatus === 'granted' && !isLocationLoading) {
+        dispatch(fetchLocation())
+        dispatch(
+          SET_SNACKBAR({
+            open: true,
+            message: 'Fetching your location...',
+            type: 'info',
+          }),
+        )
+        return
+      }
+    }
+
     const quote = {
       quote: selectedText.text,
       postId: post._id,
@@ -503,6 +534,13 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       quoted: userId,
       startWordIndex: selectedText.startIndex,
       endWordIndex: selectedText.endIndex,
+      ...(isLocalQuote && userLocation && {
+        isLocal: true,
+        location: {
+          latitude: userLocation.lat,
+          longitude: userLocation.lng,
+        },
+      }),
     }
     try {
       await addQuote({ variables: { quote } })
@@ -513,6 +551,8 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           type: 'success',
         }),
       )
+      // Reset local quote toggle after successful submission
+      setIsLocalQuote(false)
     } catch (err) {
       dispatch(
         SET_SNACKBAR({
@@ -725,6 +765,8 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
                 votedBy={serializeVotedBy(post.votedBy)}
                 hasVoted={hasVoted}
                 userVoteType={getUserVoteType()}
+                isLocalQuote={isLocalQuote}
+                onLocalToggle={setIsLocalQuote}
               />
             )}
           </VotingBoard>
@@ -831,6 +873,35 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       <RequestInviteDialog
         open={openInvite}
         onClose={() => setOpenInvite(false)}
+      />
+      <LocationPermissionDialog
+        open={showLocationPermissionDialog}
+        onAllow={async () => {
+          setShowLocationPermissionDialog(false)
+          dispatch(fetchLocation())
+          dispatch(
+            SET_SNACKBAR({
+              open: true,
+              message: 'Fetching your location...',
+              type: 'info',
+            }),
+          )
+        }}
+        onDeny={() => {
+          setShowLocationPermissionDialog(false)
+          setIsLocalQuote(false)
+          dispatch(
+            SET_SNACKBAR({
+              open: true,
+              message: 'Location permission denied. Quote will not be posted as local.',
+              type: 'warning',
+            }),
+          )
+        }}
+        onClose={() => {
+          setShowLocationPermissionDialog(false)
+          setIsLocalQuote(false)
+        }}
       />
     </>
   )

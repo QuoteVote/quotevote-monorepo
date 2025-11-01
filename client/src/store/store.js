@@ -7,12 +7,14 @@ import userReducer from 'store/user'
 import uiReducer, { uiInitialState } from 'store/ui'
 import chatReducer from 'store/chat'
 import filterReducer from 'store/filter'
+import locationReducer from 'store/location'
 
 const rootReducer = combineReducers({
   user: userReducer,
   ui: uiReducer,
   chat: chatReducer,
   filter: filterReducer,
+  location: locationReducer,
 })
 
 const persistConfig = {
