@@ -224,6 +224,71 @@ npm run lint:server       # Lint server only
 - **API Documentation**: Available at GraphQL Playground
 - **Component Documentation**: See `client/docs/` for detailed guides
 
+## 💬 Chat & Presence Feature
+
+### Overview
+
+The Chat & Presence feature provides real-time messaging capabilities with presence indicators, typing notifications, and read receipts. Users can engage in direct conversations, see when others are online, and get feedback on message delivery status.
+
+### API Endpoints
+
+#### GraphQL Mutations
+
+- `convEnsureDirect(otherUserId: ID!)` - Create or get a direct conversation with another user
+- `msgSend(conversationId: ID!, body: String!)` - Send a message in a conversation (rate limited to 30 messages/minute)
+- `msgTyping(conversationId: ID!, isTyping: Boolean!)` - Send typing indicator for a conversation
+- `msgRead(conversationId: ID!, messageId: ID!)` - Mark a message as read
+- `blockUser(userId: ID!)` - Block a user from messaging
+- `unblockUser(userId: ID!)` - Unblock a previously blocked user
+
+#### GraphQL Queries
+
+- `conversations` - Get all conversations for the current user
+- `conversation(id: ID!)` - Get details of a specific conversation including participants
+- `getBlockedUsers` - Get list of currently blocked users
+
+#### GraphQL Subscriptions
+
+- `msgNew(conversationId: ID!)` - Subscribe to new messages in a conversation
+- `msgTypingUpdate(conversationId: ID!)` - Subscribe to typing indicators in a conversation
+- `receiptUpdate(conversationId: ID!)` - Subscribe to read receipt updates in a conversation
+
+### Usage Instructions
+
+1. **Starting a Conversation**
+   - Use `convEnsureDirect` mutation to create or get a direct conversation with another user
+   - Use the returned conversation ID for messaging
+
+2. **Sending Messages**
+   - Use `msgSend` mutation with conversation ID and message body
+   - Messages are rate-limited to 30 per minute per user
+
+3. **Typing Indicators**
+   - Send `msgTyping(conversationId, true)` when user starts typing
+   - Send `msgTyping(conversationId, false)` when user stops typing or after 2 seconds of inactivity
+
+4. **Read Receipts**
+   - Send `msgRead(conversationId, messageId)` when a message is read
+   - Subscribers will receive updates through `receiptUpdate` subscription
+
+5. **Blocking Users**
+   - Use `blockUser(userId)` to prevent a user from messaging you
+   - Use `unblockUser(userId)` to restore messaging capability
+   - Check `getBlockedUsers` to see your blocked users list
+
+### Real-time Features
+
+- **Presence Indicators**: See when other users are online
+- **Typing Notifications**: Real-time "User is typing..." indicators
+- **Read Receipts**: Visual confirmation when messages are read
+- **Instant Messaging**: Real-time message delivery with WebSocket subscriptions
+
+### Rate Limiting & Blocking
+
+- Users are limited to 30 messages per minute
+- Blocked users cannot send messages to users who have blocked them
+- Rate limiting and blocking are enforced server-side for security
+
 ## 🚀 Deployment
 
 ### Build for Production

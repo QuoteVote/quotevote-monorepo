@@ -20,6 +20,21 @@ SMTP_PORT=
 SMTP_USER=
 SMTP_PASS=
 CLIENT_URL=
+REDIS_URL=redis://localhost:6379
+```
+
+## Redis Requirement
+
+The presence feature requires Redis to be running. Install Redis and make sure it's accessible at the URL specified in REDIS_URL.
+
+> On Windows, you can install Redis using:
+```
+winget install Redis.Redis
+```
+
+> Or run Redis using Docker:
+```
+docker run -d -p 6379:6379 redis:latest
 ```
 
 ## Install node modules

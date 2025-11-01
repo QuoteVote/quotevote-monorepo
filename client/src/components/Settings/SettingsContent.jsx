@@ -20,6 +20,7 @@ import AvatarDisplay from '../Avatar'
 import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
 import SignOutButton from '../CustomButtons/SignOutButton'
 import ManageInviteButton from '../CustomButtons/ManageInviteButton'
+import BlockedUsers from './BlockedUsers'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
@@ -377,6 +378,12 @@ function SettingsContent({ setOpen }) {
                 </Link>
               </Grid>
             </Grid>
+            
+            {/* Blocked Users Section */}
+            <Grid item>
+              <BlockedUsers />
+            </Grid>
+            
             {!loading && error && (<Typography className={classes.error}>{replaceGqlError(error.message)}</Typography>)}
             {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
           </Grid>

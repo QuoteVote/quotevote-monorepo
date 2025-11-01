@@ -72,4 +72,19 @@ type Query {
 
   " This will query the action Reactions"
   actionReactions(actionId: String!): [Reaction]
+
+  " Get user presence status "
+  presence(userId: String!): Presence
+
+  " Get all online users presence status "
+  presenceOnlineUsers: [Presence!]!
+
+  " Get all conversations for current user "
+  conversations: [Conversation!]!
+
+  " Get a specific conversation by ID "
+  conversation(id: ID!): Conversation
+
+  " Get user roster "
+  getRoster: Roster!
 }`;

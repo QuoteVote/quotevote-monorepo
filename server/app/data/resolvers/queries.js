@@ -4,6 +4,8 @@ import * as groupQuery from './queries/group';
 import * as messageQuery from './queries/message';
 import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
+import * as presenceQuery from './queries/presence';
+import * as chatQuery from './queries/chat';
 
 export const resolver_query = function () {
   return {
@@ -25,6 +27,8 @@ export const resolver_query = function () {
     groups: groupQuery.getGroups(),
     group: groupQuery.getGroupById(),
     actionReactions: postQuery.getActionReactions(),
+    presence: presenceQuery.getPresenceById(),
+    presenceOnlineUsers: presenceQuery.getPresenceOnlineUsers(),
 
     // Messages
     messages: messageQuery.getUserMessages(),
@@ -32,5 +36,9 @@ export const resolver_query = function () {
     messageRoom: messageQuery.getUserChatRoom(),
     notifications: notificationQuery.getNotifications(),
     messageReactions: messageQuery.getUserMessageReactions(),
+
+    // Conversations
+    conversations: chatQuery.getConversations(),
+    conversation: chatQuery.getConversation(),
   };
 };

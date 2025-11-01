@@ -154,6 +154,7 @@ export const GET_CHAT_ROOM = gql`
     }
   }
 `
+
 export const GET_CHAT_ROOMS = gql`
   query chatRooms {
     messageRooms {
@@ -186,6 +187,50 @@ export const GET_ROOM_MESSAGES = gql`
         avatar
         contributorBadge
       }
+    }
+  }
+`
+
+export const GET_CONVERSATION = gql`
+  query conversation($conversationId: ID!) {
+    conversation(id: $conversationId) {
+      id
+      participantIds
+      isRoom
+      postId
+      createdAt
+      participants {
+        _id
+        name
+        username
+        avatar
+        blockedUserIds
+      }
+    }
+  }
+`
+
+export const GET_ROSTER = gql`
+  query getRoster {
+    getRoster {
+      userId
+      contacts {
+        userId
+        status
+        createdAt
+        updatedAt
+        nickname
+        user {
+          _id
+          name
+          username
+          email
+          avatar
+          contributorBadge
+        }
+      }
+      createdAt
+      updatedAt
     }
   }
 `
@@ -639,6 +684,7 @@ export const GET_CHECK_DUPLICATE_EMAIL = gql`
     checkDuplicateEmail(email: $email)
   }
 `
+
 export const VERIFY_PASSWORD_RESET_TOKEN = gql`
   query verifyUserPasswordResetToken($token: String!) {
     verifyUserPasswordResetToken(token: $token)
@@ -690,6 +736,7 @@ export const GET_LATEST_QUOTES = gql`
     }
   }
 `
+
 export const GET_FEATURED_POSTS = gql` 
   query featuredPosts(
     $limit: Int

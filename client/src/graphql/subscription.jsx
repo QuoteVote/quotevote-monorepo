@@ -37,3 +37,25 @@ export const NEW_NOTIFICATION_SUBSCRIPTION = gql`
     }
   }
 `
+
+export const MSG_TYPING_UPDATE = gql`
+  subscription msgTypingUpdate($conversationId: ID!) {
+    msgTypingUpdate(conversationId: $conversationId) {
+      conversationId
+      userId
+      isTyping
+      lastUpdated
+    }
+  }
+`
+
+export const RECEIPT_UPDATE = gql`
+  subscription receiptUpdate($conversationId: ID!) {
+    receiptUpdate(conversationId: $conversationId) {
+      conversationId
+      userId
+      lastSeenMessageId
+      lastSeenAt
+    }
+  }
+`

@@ -109,4 +109,43 @@ export const Mutation = `type Mutation {
   # Mutation for toggling voting on a post
     toggleVoting(postId: String!): Post
 
+  # Mutation for setting user presence
+    setPresence(userId: String!, status: String!, text: String): Presence
+
+  # Mutation for setting current user presence
+    presenceSet(status: String!, text: String): Presence!
+
+  # Mutation for ensuring a direct conversation exists
+    convEnsureDirect(otherUserId: ID!): Conversation!
+
+  # Mutation for sending a message
+    msgSend(conversationId: ID!, body: String!): Message!
+    
+  # Mutation for sending typing indicator
+    msgTyping(conversationId: ID!, isTyping: Boolean!): Boolean!
+    
+  # Mutation for marking a message as read
+    msgRead(conversationId: ID!, messageId: ID!): Boolean!
+    
+  # Mutation for adding a contact to roster
+    addContact(userId: ID!): RosterResponse!
+    
+  # Mutation for accepting a contact request
+    acceptContact(userId: ID!): RosterResponse!
+    
+  # Mutation for rejecting a contact request
+    rejectContact(userId: ID!): RosterResponse!
+    
+  # Mutation for removing a contact from roster
+    removeContact(userId: ID!): RosterResponse!
+    
+  # Mutation for blocking a user
+    blockUser(userId: ID!): RosterResponse!
+    
+  # Mutation for unblocking a user
+    unblockUser(userId: ID!): RosterResponse!
+    
+  # Query for getting user roster
+    getRoster: Roster!
+
 }`;

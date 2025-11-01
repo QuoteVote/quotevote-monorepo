@@ -100,6 +100,7 @@ export const UPDATE_POST_BOOKMARK = gql`
     }
   }
 `
+
 export const SEND_MESSAGE = gql`
   mutation chat($message: MessageInput!) {
     createMessage(message: $message) {
@@ -169,6 +170,7 @@ export const UPDATE_USER_PASSWORD = gql`
     updateUserPassword(username: $username, password: $password, token: $token)
   }
 `
+
 export const UPDATE_USER = gql`
   mutation updateUser($user: UserInput!) {
     updateUser(user: $user) {
@@ -323,6 +325,84 @@ export const RECALCULATE_REPUTATION = gql`
   mutation recalculateReputation($userId: String!) {
     recalculateReputation(userId: $userId) {
       code
+      message
+    }
+  }
+`
+
+export const MSG_TYPING = gql`
+  mutation msgTyping($conversationId: ID!, $isTyping: Boolean!) {
+    msgTyping(conversationId: $conversationId, isTyping: $isTyping)
+  }
+`
+
+export const MSG_READ = gql`
+  mutation msgRead($conversationId: ID!, $messageId: ID!) {
+    msgRead(conversationId: $conversationId, messageId: $messageId)
+  }
+`
+
+export const CONV_ENSURE_DIRECT = gql`
+  mutation convEnsureDirect($otherUserId: ID!) {
+    convEnsureDirect(otherUserId: $otherUserId) {
+      id
+      participantIds
+      isRoom
+      postId
+      createdAt
+    }
+  }
+`
+
+export const ADD_CONTACT = gql`
+  mutation addContact($userId: ID!) {
+    addContact(userId: $userId) {
+      success
+      message
+    }
+  }
+`
+
+export const ACCEPT_CONTACT = gql`
+  mutation acceptContact($userId: ID!) {
+    acceptContact(userId: $userId) {
+      success
+      message
+    }
+  }
+`
+
+export const REJECT_CONTACT = gql`
+  mutation rejectContact($userId: ID!) {
+    rejectContact(userId: $userId) {
+      success
+      message
+    }
+  }
+`
+
+export const REMOVE_CONTACT = gql`
+  mutation removeContact($userId: ID!) {
+    removeContact(userId: $userId) {
+      success
+      message
+    }
+  }
+`
+
+export const BLOCK_USER = gql`
+  mutation blockUser($userId: ID!) {
+    blockUser(userId: $userId) {
+      success
+      message
+    }
+  }
+`
+
+export const UNBLOCK_USER = gql`
+  mutation unblockUser($userId: ID!) {
+    unblockUser(userId: $userId) {
+      success
       message
     }
   }
