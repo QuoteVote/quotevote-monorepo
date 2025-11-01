@@ -6,7 +6,7 @@
  * 
  * This script:
  * 1. Verifies MongoDB is running
- * 2. Clears any processes on ports 4000 and 5173
+ * 2. Clears any processes on ports 4000 and 3000
  * 3. Starts both backend and frontend servers concurrently
  * 4. Handles graceful shutdown on Ctrl+C
  */
@@ -160,13 +160,13 @@ async function checkMongoDB() {
 
 /**
  * Clear any processes running on required ports
- * Kills processes on ports 4000 and 5173
+ * Kills processes on ports 4000 and 3000
  */
 async function clearPorts() {
-  console.log('\nClearing ports 4000 and 5173...');
+  console.log('\nClearing ports 4000 and 3000...');
   
   const os = getOS();
-  const ports = [4000, 5173];
+  const ports = [4000, 3000];
   let killedAny = false;
   
   for (const port of ports) {
