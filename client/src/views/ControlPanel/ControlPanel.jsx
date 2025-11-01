@@ -421,7 +421,7 @@ const UserInvitationRequestsTab = ({ data }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filterAndSortData(data.userInviteRequests).map((row) => (
+              {data?.userInviteRequests && filterAndSortData(data.userInviteRequests).map((row) => (
                 <TableRow key={row._id}>
                   <TableCell align="left">{row.email}</TableCell>
                   <TableCell align="center">
@@ -459,6 +459,10 @@ const UserInvitationRequestsTab = ({ data }) => {
 const StatisticsTab = ({ data }) => {
   const classes = useStyles()
   const activeUsersCount = 0
+  
+  if (!data || !data.userInviteRequests || !Array.isArray(data.userInviteRequests)) {
+    return <div>No data available</div>
+  }
   
   const inviteRequestCount = data.userInviteRequests.filter(
     (user) => parseInt(user.status) === 1,
@@ -654,13 +658,34 @@ const ControlPanelContainer = ({ data }) => {
 }
 
 const ControlPanel = () => {
-  const { data } = useQuery(USER_INVITE_REQUESTS)
+  const { data, loading, error } = useQuery(USER_INVITE_REQUESTS)
   const classes = useStyles()
   const { admin } = useSelector((state) => state.user.data)
   if (!admin) {
     return <Unauthorized />
   }
-  if (data) {
+  if (loading) {
+    return (
+      <Grid container spacing={2} className={classes.panelContainer}>
+        <Grid item xs={12}>
+          <Skeleton animation="wave" style={{ width: '25%' }} />
+        </Grid>
+        <Grid container item xs={12}>
+          <Grid container item xs={6} className={classes.sectionBorder}>
+            <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
+          </Grid>
+          <Grid container item xs={6} justify="flex-end">
+            <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
+          </Grid>
+        </Grid>
+      </Grid>
+    )
+  }
+  if (error) {
+    console.error('Error fetching user invite requests:', error)
+    return <div>Error loading invite requests: {error.message}</div>
+  }
+  if (data && data.userInviteRequests) {
     return <ControlPanelContainer data={data} />
   }
   return (

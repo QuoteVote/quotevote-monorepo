@@ -123,6 +123,10 @@ function InviteTable({ data }) {
   })
   const classes = useStyles()
 
+  if (!data || !data.userInviteRequests || !Array.isArray(data.userInviteRequests)) {
+    return <div>No invite requests found</div>
+  }
+
   return (
     <TableContainer className={classes.tableContainer} component={Paper}>
       <Table aria-label="Invite Table">
@@ -155,7 +159,7 @@ function InviteTable({ data }) {
 }
 
 export default function ManageInvites() {
-  const { data } = useQuery(USER_INVITE_REQUESTS)
+  const { data, loading, error } = useQuery(USER_INVITE_REQUESTS)
   // const {contents} = data
   /* const handleAccept = (user) => {
       switch(user.status) {
@@ -166,7 +170,24 @@ export default function ManageInvites() {
           console.log(update)
       } */
 
-  if (data) {
+  if (loading) {
+    return (
+      <GridContainer>
+        loading...
+      </GridContainer>
+    )
+  }
+
+  if (error) {
+    console.error('Error fetching user invite requests:', error)
+    return (
+      <GridContainer>
+        Error loading invite requests: {error.message}
+      </GridContainer>
+    )
+  }
+
+  if (data && data.userInviteRequests) {
     return (
       <GridContainer>
         <Headers />
