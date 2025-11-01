@@ -8,6 +8,11 @@
     "server"
   ],
   "scripts": {
+    "setup": "node scripts/setup.js",
+    "start-dev": "node scripts/start.js",
+    "create-admin": "node scripts/create-admin.js",
+    "create-dev": "node scripts/create-dev.js",
+    "docker": "node scripts/docker.js",
     "install:all": "npm install --legacy-peer-deps",
     "install:client": "npm install --legacy-peer-deps --workspace=client",
     "install:server": "npm install --workspace=server",
