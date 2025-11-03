@@ -30,7 +30,7 @@ See Quote Vote in action! Watch our demonstration videos to get a quick overview
 
 Platform demonstration on Windows
 
-<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600"></video>
+<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows demonstration video"></video>
 
 ### Linux Demo
 
