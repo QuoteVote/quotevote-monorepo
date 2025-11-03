@@ -36,7 +36,7 @@ Platform demonstration on Windows
 
 Platform demonstration on Linux
 
-<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600"></video>
+<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux demonstration video"></video>
 
 **These videos showcase:**
 - Creating and voting on posts
