@@ -22,6 +22,28 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **Dark/Light Themes**: Customizable user interface themes
 - **Accessibility**: WCAG compliant design with screen reader support
 
+## 🎥 Demo Videos
+
+See Quote Vote in action! Watch our demonstration videos to get a quick overview of the platform's features and functionality:
+
+### Windows Demo
+
+Platform demonstration on Windows
+
+<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600"></video>
+
+### Linux Demo
+
+Platform demonstration on Linux
+
+<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600"></video>
+
+**These videos showcase:**
+- Creating and voting on posts
+- Highlighting and discussing quotes
+- Using the moderation tools
+- Navigating the user interface
+
 ## 🛠 Tech Stack
 
 ### Frontend (`client/`)
@@ -262,19 +284,27 @@ npm run start:server  # Uses PM2 for production
    npm install --legacy-peer-deps
    ```
 
-2. **Port conflicts**
+2. **Babel installation issues**
+
+   If you encounter Babel runtime installation errors, use:
+
+   ```bash
+   npm install @babel/runtime --legacy-peer-deps
+   ```
+
+3. **Port conflicts**
 
    - Frontend: Change port in `client/vite.config.js`
    - Backend: Change `PORT` in server `.env` file
 
-3. **Database connection issues**
+4. **Database connection issues**
 
    ```bash
    # Start development database
    npm run dev-db-start --workspace=server
    ```
 
-4. **Workspace-specific issues**
+5. **Workspace-specific issues**
    ```bash
    # Clear node_modules and reinstall
    rm -rf node_modules client/node_modules server/node_modules
