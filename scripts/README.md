@@ -58,7 +58,7 @@ A complete walkthrough demonstrating:
 
 **Platform:** Windows 10, 11 (PowerShell, CMD, Git Bash compatible)
 
-<video src="../docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600"></video>
+<video src="../docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows setup demonstration video"></video>
 
 A complete walkthrough demonstrating:
 - Initial project setup using `setup.js`
