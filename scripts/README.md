@@ -38,7 +38,10 @@ Visual step-by-step guides for setting up and using QuoteVote scripts.
 ### Available Videos
 
 #### QuoteVote - Linux Setup
-**File:** `../docs/videos/QouteVote - linux.mp4`
+
+**Platform:** Linux (Arch, Ubuntu, Debian, Fedora compatible)
+
+<video src="../docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux setup demonstration video"></video>
 
 A complete walkthrough demonstrating:
 - Initial project setup using `setup.js`
@@ -49,7 +52,22 @@ A complete walkthrough demonstrating:
 
 **Duration:** Full setup demonstration from clone to running application
 
-**Platform:** Linux (Arch, Ubuntu, Debian, Fedora compatible)
+---
+
+#### QuoteVote - Windows Setup
+
+**Platform:** Windows 10, 11 (PowerShell, CMD, Git Bash compatible)
+
+<video src="../docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows setup demonstration video"></video>
+
+A complete walkthrough demonstrating:
+- Initial project setup using `setup.js`
+- Creating admin and developer accounts
+- Starting development servers with `start.js`
+- Navigating the QuoteVote application
+- Common workflows and tips for Windows users
+
+**Duration:** Full setup demonstration from clone to running application
 
 ---
 
@@ -478,6 +496,12 @@ npm run setup
 ```bash
 # Use legacy peer deps (already handled by setup)
 npm install --legacy-peer-deps
+```
+
+**Babel installation issues:**
+```bash
+# If you encounter Babel runtime installation errors
+npm install @babel/runtime --legacy-peer-deps
 ```
 
 **Permission errors (Linux/macOS):**
