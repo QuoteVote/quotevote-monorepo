@@ -41,7 +41,7 @@ Visual step-by-step guides for setting up and using QuoteVote scripts.
 
 **Platform:** Linux (Arch, Ubuntu, Debian, Fedora compatible)
 
-<video src="../docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600"></video>
+<video src="../docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux setup demonstration video"></video>
 
 A complete walkthrough demonstrating:
 - Initial project setup using `setup.js`
