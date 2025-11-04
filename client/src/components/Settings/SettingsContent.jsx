@@ -20,6 +20,7 @@ import AvatarDisplay from '../Avatar'
 import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
 import SignOutButton from '../CustomButtons/SignOutButton'
 import ManageInviteButton from '../CustomButtons/ManageInviteButton'
+import AdminPanelButton from '../CustomButtons/AdminPanelButton'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
@@ -227,6 +228,11 @@ function SettingsContent({ setOpen }) {
     history.push('/ControlPanel')
     setOpen(false)
   }
+
+  const handleAdminPanel = () => {
+    history.push('/ControlPanel')
+    setOpen(false)
+  }
   
   const hasChange = Object.keys(formState.dirtyFields).length
   
@@ -388,13 +394,14 @@ function SettingsContent({ setOpen }) {
             direction="row"
             justify="space-between"
             alignItems="flex-end"
+            spacing={1}
           >
             <Grid item>
               <SignOutButton onClick={handleLogout} />
             </Grid>
             {otherUserData.admin && (
               <Grid item>
-                <ManageInviteButton onClick={handleInvite} />
+                <AdminPanelButton onClick={handleAdminPanel} />
               </Grid>
             )}
             <Grid item>

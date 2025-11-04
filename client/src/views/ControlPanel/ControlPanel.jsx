@@ -22,6 +22,12 @@ import Box from '@material-ui/core/Box'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Switch from '@material-ui/core/Switch'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@material-ui/core/styles'
+import Breadcrumbs from '@material-ui/core/Breadcrumbs'
+import Link from '@material-ui/core/Link'
+import NavigateNextIcon from '@material-ui/icons/NavigateNext'
+import HomeIcon from '@material-ui/icons/Home'
 
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
@@ -608,6 +614,8 @@ const UserManagementTab = () => {
 
 const ControlPanelContainer = ({ data }) => {
   const classes = useStyles()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [tabValue, setTabValue] = React.useState(0)
 
   const handleTabChange = (event, newValue) => {
@@ -616,9 +624,21 @@ const ControlPanelContainer = ({ data }) => {
 
   return (
     <Grid container spacing={2} className={classes.panelContainer}>
+      <Grid container className={classes.breadcrumb}>
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+          <Link color="inherit" href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <HomeIcon style={{ marginRight: 4, fontSize: 20 }} />
+            {!isMobile && 'Home'}
+          </Link>
+          <Typography color="textPrimary" style={{ fontWeight: 'bold' }}>
+            Admin Panel
+          </Typography>
+        </Breadcrumbs>
+      </Grid>
+      
       <Grid container>
         <Typography className={classes.panelHeader}>
-          Invite Control Panel
+          Admin Control Panel
         </Typography>
       </Grid>
       
@@ -630,12 +650,13 @@ const ControlPanelContainer = ({ data }) => {
           className={classes.tabsContainer}
           indicatorColor="secondary"
           textColor="secondary"
-          variant="fullWidth"
+          variant={isMobile ? "scrollable" : "fullWidth"}
+          scrollButtons={isMobile ? "on" : "auto"}
         >
-          <Tab label="User Invitation Requests" />
+          <Tab label={isMobile ? "Invites" : "User Invitation Requests"} />
           <Tab label="Statistics" />
-          <Tab label="Featured Posts" />
-          <Tab label="User Management" />
+          <Tab label={isMobile ? "Featured" : "Featured Posts"} />
+          <Tab label={isMobile ? "Users" : "User Management"} />
         </Tabs>
       </Grid>
 
