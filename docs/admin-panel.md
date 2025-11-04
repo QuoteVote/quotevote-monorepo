@@ -13,7 +13,7 @@ The Admin Panel (formerly "Invite Control Panel") is a comprehensive administrat
 ### Access Methods
 
 #### 1. Via Settings Page
-For users with admin privileges, an **Admin Panel** button with an AdminPanelSettings icon appears in the Settings page footer.
+For users with admin privileges, an **Admin Panel** button with a Security shield icon appears in the Settings page footer.
 
 **Location**: Settings → Bottom navigation bar → "Admin" button
 
