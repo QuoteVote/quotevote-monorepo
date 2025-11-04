@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
-import AdminPanelSettingsIcon from '@material-ui/icons/AdminPanelSettings'
+import SecurityIcon from '@material-ui/icons/Security'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -39,7 +39,7 @@ function AdminPanelButton(props) {
     <Button
       {...props}
       className={classNames(classes.button, className)}
-      startIcon={<AdminPanelSettingsIcon className={classes.icon} />}
+      startIcon={<SecurityIcon className={classes.icon} />}
     >
       Admin
     </Button>
