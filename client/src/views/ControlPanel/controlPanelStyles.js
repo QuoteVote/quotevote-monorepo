@@ -95,13 +95,24 @@ const requestAccessStyles = (theme) => ({
       transform: 'translateY(-1px)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '55px',
-      height: '28px',
+      minWidth: '60px',
+      height: '32px',
       margin: '0px',
-      padding: '4px 8px',
-      fontSize: '10px',
-      borderRadius: '4px',
-      fontWeight: 500,
+      padding: '6px 12px',
+      fontSize: '11px',
+      borderRadius: '6px',
+      fontWeight: 600,
+      letterSpacing: '0.3px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      transition: 'all 0.2s ease',
+      '&:hover': {
+        transform: 'translateY(-1px)',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+      },
+      '&:active': {
+        transform: 'translateY(0px)',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      },
     },
   },
   pendingStatus: {
@@ -359,8 +370,8 @@ const requestAccessStyles = (theme) => ({
   // Actions cell styling for mobile
   actionsCell: {
     [theme.breakpoints.down('sm')]: {
-      padding: '8px 4px',
-      minWidth: '120px',
+      padding: '8px 6px',
+      minWidth: '140px',
     },
   },
 
@@ -398,9 +409,10 @@ const requestAccessStyles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       flexDirection: 'row',
-      gap: '2px',
-      minWidth: '120px',
+      gap: '4px',
+      minWidth: '140px',
       justifyContent: 'center',
+      alignItems: 'center',
     },
   },
 

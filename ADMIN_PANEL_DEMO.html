@@ -341,21 +341,68 @@
             }
             
             .btn {
-                font-size: 10px;
-                padding: 4px 8px;
-                min-width: 55px;
-                height: 28px;
+                font-size: 11px;
+                padding: 6px 12px;
+                min-width: 60px;
+                height: 32px;
                 margin: 0px;
-                font-weight: 500;
-                border-radius: 4px;
+                font-weight: 600;
+                border-radius: 6px;
+                letter-spacing: 0.3px;
+                transition: all 0.2s ease;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+            
+            .btn:active {
+                transform: translateY(0px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
             
             .action-buttons {
                 display: flex;
                 flex-direction: row;
-                gap: 2px;
-                min-width: 100px;
+                gap: 4px;
+                min-width: 130px;
                 justify-content: center;
+                align-items: center;
+            }
+            
+            /* Accept button - Green, positive */
+            .btn-accept {
+                background: linear-gradient(135deg, #4caf50, #45a049);
+                color: white;
+                border: none;
+            }
+            
+            .btn-accept:hover {
+                background: linear-gradient(135deg, #45a049, #3d8b40);
+            }
+            
+            /* Decline button - Red, negative */
+            .btn-decline {
+                background: linear-gradient(135deg, #f44336, #e53935);
+                color: white;
+                border: none;
+            }
+            
+            .btn-decline:hover {
+                background: linear-gradient(135deg, #e53935, #d32f2f);
+            }
+            
+            /* Other action buttons - Blue, neutral */
+            .btn-neutral {
+                background: linear-gradient(135deg, #2196f3, #1976d2);
+                color: white;
+                border: none;
+            }
+            
+            .btn-neutral:hover {
+                background: linear-gradient(135deg, #1976d2, #1565c0);
             }
             
             .featured-select {
@@ -705,8 +752,8 @@
                                 <td><span class="status-badge status-pending">Pending</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn">Decline</button>
-                                        <button class="btn">Accept</button>
+                                        <button class="btn btn-decline">Decline</button>
+                                        <button class="btn btn-accept">Accept</button>
                                     </div>
                                 </td>
                             </tr>
@@ -714,7 +761,7 @@
                                 <td>jane.smith@quotevote.com</td>
                                 <td>Nov 04, 2025</td>
                                 <td><span class="status-badge status-accepted">Accepted</span></td>
-                                <td><button class="btn">Resend</button></td>
+                                <td><button class="btn btn-neutral">Resend</button></td>
                             </tr>
                             <tr>
                                 <td>mike.wilson@quotevote.com</td>
@@ -722,8 +769,8 @@
                                 <td><span class="status-badge status-pending">Pending</span></td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="btn">Decline</button>
-                                        <button class="btn">Accept</button>
+                                        <button class="btn btn-decline">Decline</button>
+                                        <button class="btn btn-accept">Accept</button>
                                     </div>
                                 </td>
                             </tr>
@@ -731,7 +778,7 @@
                                 <td>sarah.jones@quotevote.com</td>
                                 <td>Nov 02, 2025</td>
                                 <td><span class="status-badge status-declined">Declined</span></td>
-                                <td><button class="btn">Reset</button></td>
+                                <td><button class="btn btn-neutral">Reset</button></td>
                             </tr>
                         </tbody>
                     </table>
