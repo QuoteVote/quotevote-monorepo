@@ -370,6 +370,8 @@ const requestAccessStyles = (theme) => ({
       overflowX: 'auto',
       overflowY: 'auto',
       WebkitOverflowScrolling: 'touch',
+      transform: 'translateZ(0)',
+      WebkitTransform: 'translateZ(0)',
       '&::-webkit-scrollbar': {
         height: '4px',
       },

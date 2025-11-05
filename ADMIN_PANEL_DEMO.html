@@ -154,6 +154,7 @@
             font-size: 14px;
             margin-bottom: 20px;
             -webkit-appearance: none;
+            appearance: none;
             -webkit-border-radius: 8px;
             background: white;
             transition: all 0.2s ease;
@@ -193,7 +194,15 @@
             .table-container {
                 max-height: calc(100vh - 280px);
                 border-radius: 8px;
+                overflow-x: auto;
+                overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            table {
+                min-width: 700px;
             }
             
             .table-container::-webkit-scrollbar {
@@ -213,6 +222,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
         
         th {
@@ -302,26 +312,47 @@
                 white-space: nowrap;
             }
             
-            .status-badge {
-                min-width: 65px;
-                height: 28px;
+            /* Email column specific */
+            td:first-child {
+                max-width: 140px;
+                font-size: 13px;
+                padding: 8px 6px;
+                text-align: left;
+            }
+            
+            /* Date column */
+            td:nth-child(2) {
                 font-size: 11px;
-                padding: 4px 8px;
+                white-space: nowrap;
+            }
+            
+            /* Actions column */
+            td:last-child {
+                padding: 6px 2px;
+            }
+            
+            .status-badge {
+                min-width: 60px;
+                height: 24px;
+                font-size: 10px;
+                padding: 3px 6px;
+                margin: 2px;
             }
             
             .btn {
-                font-size: 11px;
-                padding: 6px 10px;
-                min-width: 60px;
-                height: 28px;
-                margin: 2px;
+                font-size: 10px;
+                padding: 3px 6px;
+                min-width: 52px;
+                height: 26px;
+                margin: 1px;
+                font-weight: 500;
             }
             
             .action-buttons {
                 display: flex;
                 flex-direction: column;
-                gap: 4px;
-                min-width: 70px;
+                gap: 2px;
+                min-width: 110px;
             }
             
             .featured-select {
