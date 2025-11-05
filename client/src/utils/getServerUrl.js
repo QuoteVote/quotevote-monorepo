@@ -1,13 +1,13 @@
 export const getBaseServerUrl = () => {
   let effectiveUrl = 'https://api.quote.vote'
   
-  // Check for Netlify deploy preview using REACT_APP_ prefixed variable
-  const deployUrl = process.env.REACT_APP_DEPLOY_PRIME_URL || window.location.origin
+  // Use window.location to detect Netlify deploy preview (FREE - no env var needed!)
+  const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
   
-  if(deployUrl && deployUrl.includes('deploy-preview')) {
-    console.log('Using Railway preview URL for deploy:', deployUrl)
-    // Sample deployUrl: https://deploy-preview-212--quotevote.netlify.app
-    const prMatch = deployUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)
+  if(currentUrl && currentUrl.includes('deploy-preview')) {
+    console.log('Detected Netlify preview deploy:', currentUrl)
+    // Sample currentUrl: https://deploy-preview-237--quotevote.netlify.app
+    const prMatch = currentUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)
     if (prMatch && prMatch[1]) {
       const PR_NUMBER = prMatch[1]
       effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
