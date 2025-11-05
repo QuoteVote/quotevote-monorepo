@@ -95,12 +95,12 @@ const requestAccessStyles = (theme) => ({
       transform: 'translateY(-1px)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '48px',
-      height: '24px',
+      minWidth: '55px',
+      height: '28px',
       margin: '0px',
-      padding: '2px 4px',
-      fontSize: '9px',
-      borderRadius: '3px',
+      padding: '4px 8px',
+      fontSize: '10px',
+      borderRadius: '4px',
       fontWeight: 500,
     },
   },
@@ -359,8 +359,8 @@ const requestAccessStyles = (theme) => ({
   // Actions cell styling for mobile
   actionsCell: {
     [theme.breakpoints.down('sm')]: {
-      padding: '6px 2px',
-      minWidth: '100px',
+      padding: '8px 4px',
+      minWidth: '120px',
     },
   },
 
@@ -397,9 +397,10 @@ const requestAccessStyles = (theme) => ({
   mobileActionsContainer: {
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
-      flexDirection: 'column',
-      gap: '0px',
-      minWidth: '100px',
+      flexDirection: 'row',
+      gap: '2px',
+      minWidth: '120px',
+      justifyContent: 'center',
     },
   },
 
