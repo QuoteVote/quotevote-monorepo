@@ -95,12 +95,12 @@ const requestAccessStyles = (theme) => ({
       transform: 'translateY(-1px)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '52px',
-      height: '26px',
+      minWidth: '48px',
+      height: '24px',
       margin: '1px',
-      padding: '3px 6px',
-      fontSize: '10px',
-      borderRadius: '4px',
+      padding: '2px 4px',
+      fontSize: '9px',
+      borderRadius: '3px',
       fontWeight: 500,
     },
   },
@@ -360,7 +360,7 @@ const requestAccessStyles = (theme) => ({
   actionsCell: {
     [theme.breakpoints.down('sm')]: {
       padding: '6px 2px',
-      minWidth: '110px',
+      minWidth: '100px',
     },
   },
 
@@ -398,8 +398,8 @@ const requestAccessStyles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '4px',
-      minWidth: '80px',
+      gap: '1px',
+      minWidth: '100px',
     },
   },
 
