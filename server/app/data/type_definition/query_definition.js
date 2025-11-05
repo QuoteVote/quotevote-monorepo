@@ -1,4 +1,4 @@
-export const Query = `
+const Query = `
 type Query {
 
   " This will give the public news feed "
@@ -72,4 +72,6 @@ type Query {
 
   " This will query the action Reactions"
   actionReactions(actionId: String!): [Reaction]
-}`;
+};
+
+export default Query;

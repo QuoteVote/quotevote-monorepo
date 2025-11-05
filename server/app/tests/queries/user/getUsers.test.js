@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { expect } from 'chai';
 import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import UserModel from '~/resolvers/models/UserModel';
-import { getUsers } from '~/resolvers/queries/user';
+import getUsers from '~/resolvers/queries/user/getUsers';
 
 const usersData = [
   {
