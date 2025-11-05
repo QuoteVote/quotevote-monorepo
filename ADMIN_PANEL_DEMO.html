@@ -147,14 +147,26 @@
         /* Search Input */
         .search-input {
             width: 100%;
-            max-width: 400px;
+            max-width: 300px;
             padding: 12px 16px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
             margin-bottom: 20px;
+            -webkit-appearance: none;
+            -webkit-border-radius: 8px;
             background: white;
             transition: all 0.2s ease;
+        }
+        
+        /* Mobile search improvements */
+        @media (max-width: 768px) {
+            .search-input {
+                max-width: 100%;
+                padding: 10px 12px;
+                font-size: 16px; /* Prevents zoom on iOS */
+                margin-bottom: 16px;
+            }
         }
         
         .search-input:hover {
@@ -216,6 +228,7 @@
             text-align: center;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
         
         td {
@@ -223,6 +236,131 @@
             text-align: center;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .container {
+                padding: 12px;
+                padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            }
+            
+            .header {
+                font-size: 24px;
+                margin-bottom: 16px;
+            }
+            
+            .breadcrumb {
+                padding: 8px 12px;
+                margin-bottom: 16px;
+                font-size: 12px;
+            }
+            
+            .tabs {
+                padding: 6px;
+            }
+            
+            .tab {
+                font-size: 12px;
+                padding: 8px 12px;
+                min-width: 80px;
+            }
+            
+            .card {
+                padding: 16px;
+                border-radius: 8px;
+                margin-bottom: 16px;
+            }
+            
+            .card-header {
+                font-size: 18px;
+                margin-bottom: 16px;
+            }
+            
+            .filter-input {
+                margin-bottom: 16px;
+                font-size: 14px;
+            }
+            
+            th {
+                font-size: 11px;
+                padding: 8px 4px;
+                min-height: 48px;
+                white-space: nowrap;
+            }
+            
+            td {
+                font-size: 12px;
+                padding: 8px 4px;
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            
+            .status-badge {
+                min-width: 65px;
+                height: 28px;
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+            
+            .btn {
+                font-size: 11px;
+                padding: 6px 10px;
+                min-width: 60px;
+                height: 28px;
+                margin: 2px;
+            }
+            
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                min-width: 70px;
+            }
+            
+            .featured-select {
+                min-width: 70px;
+                font-size: 12px;
+            }
+            
+            .switch {
+                transform: scale(0.8);
+            }
+            
+            /* Hide less important columns on very small screens */
+            @media (max-width: 480px) {
+                .hide-mobile {
+                    display: none;
+                }
+                
+                td {
+                    max-width: 80px;
+                    font-size: 11px;
+                }
+                
+                .tab {
+                    font-size: 11px;
+                    padding: 6px 8px;
+                    min-width: 70px;
+                }
+            }
+        }
+        
+        /* Touch-friendly interactions */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:active {
+                transform: scale(0.95);
+            }
+            
+            .tab:active {
+                transform: scale(0.98);
+            }
         }
         
         tr:hover {
@@ -243,6 +381,69 @@
             cursor: default;
             padding: 6px 12px;
             transition: all 0.2s ease;
+        }
+        
+        /* Mobile-friendly Select Dropdown */
+        .featured-select {
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            min-width: 70px;
+            background: white;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+            background-size: 16px;
+            padding-right: 28px;
+        }
+        
+        /* Mobile Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #52b274;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
         }
         
         .status-pending {
@@ -468,8 +669,10 @@
                                 <td>Nov 05, 2025</td>
                                 <td><span class="status-badge status-pending">Pending</span></td>
                                 <td>
-                                    <button class="btn">Decline</button>
-                                    <button class="btn">Accept</button>
+                                    <div class="action-buttons">
+                                        <button class="btn">Decline</button>
+                                        <button class="btn">Accept</button>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -483,8 +686,10 @@
                                 <td>Nov 03, 2025</td>
                                 <td><span class="status-badge status-pending">Pending</span></td>
                                 <td>
-                                    <button class="btn">Decline</button>
-                                    <button class="btn">Accept</button>
+                                    <div class="action-buttons">
+                                        <button class="btn">Decline</button>
+                                        <button class="btn">Accept</button>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -545,7 +750,7 @@
                                 <td>The Evolution of Democracy in Modern Society</td>
                                 <td>An insightful analysis of democratic principles...</td>
                                 <td>
-                                    <select>
+                                    <select class="featured-select">
                                         <option value="">None</option>
                                         <option value="1" selected>1</option>
                                         <option value="2">2</option>
@@ -559,7 +764,7 @@
                                 <td>Climate Change: Facts vs Fiction</td>
                                 <td>Examining the scientific evidence behind...</td>
                                 <td>
-                                    <select>
+                                    <select class="featured-select">
                                         <option value="" selected>None</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -573,7 +778,7 @@
                                 <td>Technology's Impact on Education</td>
                                 <td>How digital tools are transforming learning...</td>
                                 <td>
-                                    <select>
+                                    <select class="featured-select">
                                         <option value="" selected>None</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
