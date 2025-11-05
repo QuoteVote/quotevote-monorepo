@@ -113,30 +113,30 @@ const ActionButtons = ({ status, id }) => {
   switch (Number(status)) {
     case 1: // pending
       return (
-        <div style={{ width: 200 }}>
+        <div className={classes.mobileActionsContainer}>
           <Button
             variant="contained"
-            color="secondary"
             className={classes.button}
             style={{
-              backgroundColor: '#f44336',
+              background: 'linear-gradient(135deg, #f44336, #e53935)',
             }}
             onClick={handleDecline}
             disabled={loading}
+            title="Decline"
           >
-            Decline
+            ✕
           </Button>
           <Button
             variant="contained"
-            color="primary"
             className={classes.button}
             style={{
-              backgroundColor: '#52b274',
+              background: 'linear-gradient(135deg, #4caf50, #45a049)',
             }}
             onClick={handleAccept}
             disabled={loading}
+            title="Accept"
           >
-            Accept
+            ✓
           </Button>
         </div>
       )
@@ -146,12 +146,13 @@ const ActionButtons = ({ status, id }) => {
           variant="contained"
           className={classes.button}
           style={{
-            backgroundColor: '#f44336',
+            background: 'linear-gradient(135deg, #2196f3, #1976d2)',
           }}
           onClick={handleReset}
           disabled={loading}
+          title="Reset"
         >
-          Reset
+          ↺
         </Button>
       )
     case 4: // active
@@ -160,12 +161,13 @@ const ActionButtons = ({ status, id }) => {
           variant="contained"
           className={classes.button}
           style={{
-            backgroundColor: '#52b274',
+            background: 'linear-gradient(135deg, #2196f3, #1976d2)',
           }}
           onClick={handleAccept}
           disabled={loading}
+          title="Resend"
         >
-          Resend
+          ↻
         </Button>
       )
     default:
