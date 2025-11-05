@@ -1,7 +1,7 @@
 const requestAccessStyles = (theme) => ({
-  // Main container with gradient background
+  // Main container - clean white background matching Quote.Vote
   panelContainer: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#f5f5f5',
     minHeight: '100vh',
     padding: theme.spacing(4),
     [theme.breakpoints.down('md')]: {
@@ -12,23 +12,22 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Glassmorphism breadcrumb
+  // Clean breadcrumb matching Quote.Vote style
   breadcrumb: {
-    background: 'rgba(255, 255, 255, 0.15)',
-    backdropFilter: 'blur(10px)',
-    borderRadius: 12,
+    background: 'white',
+    borderRadius: 8,
     padding: theme.spacing(1.5, 2),
     marginBottom: theme.spacing(3),
-    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
     '& a': {
-      color: 'white',
+      color: '#52b274',
       transition: 'all 0.3s ease',
       '&:hover': {
-        color: '#ffd700',
+        color: '#3d8a59',
       },
     },
     '& .MuiTypography-root': {
-      color: 'white',
+      color: '#333',
       fontWeight: 600,
     },
     [theme.breakpoints.down('sm')]: {
@@ -37,54 +36,49 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Modern header with gradient text
+  // Clean header matching Quote.Vote typography
   panelHeader: {
     fontFamily: 'Montserrat, sans-serif',
-    fontSize: '2.5rem',
-    fontWeight: 800,
-    background: 'linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    marginBottom: theme.spacing(4),
-    textShadow: '0 2px 10px rgba(0,0,0,0.1)',
+    fontSize: '2rem',
+    fontWeight: 700,
+    color: '#333',
+    marginBottom: theme.spacing(3),
     letterSpacing: '-0.5px',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.75rem',
+      fontSize: '1.5rem',
       marginBottom: theme.spacing(2),
     },
   },
 
-  // Enhanced tabs with glassmorphism
+  // Clean tabs matching Quote.Vote
   tabsContainer: {
-    background: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
-    borderRadius: 16,
+    background: 'white',
+    borderRadius: 8,
     padding: theme.spacing(1),
     marginBottom: theme.spacing(3),
-    border: '1px solid rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
     '& .MuiTabs-indicator': {
-      backgroundColor: '#ffd700',
+      backgroundColor: '#52b274',
       height: 3,
       borderRadius: 3,
     },
     [theme.breakpoints.down('sm')]: {
       marginBottom: theme.spacing(2),
-      borderRadius: 12,
     },
   },
 
   tab: {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: '#666',
     fontWeight: 600,
     fontSize: '0.95rem',
     textTransform: 'none',
     transition: 'all 0.3s ease',
     '&.Mui-selected': {
-      color: 'white',
+      color: '#52b274',
     },
     '&:hover': {
-      color: 'white',
-      background: 'rgba(255, 255, 255, 0.1)',
+      color: '#52b274',
+      background: 'rgba(82, 178, 116, 0.05)',
     },
   },
 
@@ -107,51 +101,46 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Premium card design
+  // Clean card design matching Quote.Vote
   card: {
-    background: 'rgba(255, 255, 255, 0.95)',
-    backdropFilter: 'blur(20px)',
-    borderRadius: 20,
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
+    background: 'white',
+    borderRadius: 8,
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
     overflow: 'hidden',
     transition: 'all 0.3s ease',
     '&:hover': {
-      transform: 'translateY(-4px)',
-      boxShadow: '0 12px 48px rgba(0, 0, 0, 0.15)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
     },
     [theme.breakpoints.down('sm')]: {
-      borderRadius: 16,
+      borderRadius: 8,
+      boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
     },
   },
 
   cardHeader: {
     fontFamily: 'Montserrat, sans-serif',
-    fontSize: '1.5rem',
+    fontSize: '1.25rem',
     fontWeight: 700,
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
+    color: '#52b274',
     marginBottom: theme.spacing(2),
-    letterSpacing: '-0.3px',
+    letterSpacing: '-0.2px',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.25rem',
+      fontSize: '1.1rem',
       marginBottom: theme.spacing(1.5),
     },
   },
 
-  // Modern search input
+  // Clean search input matching Quote.Vote
   filterInput: {
     '& .MuiOutlinedInput-root': {
-      borderRadius: 12,
-      background: 'rgba(103, 126, 234, 0.05)',
+      borderRadius: 8,
       transition: 'all 0.3s ease',
       '&:hover': {
-        background: 'rgba(103, 126, 234, 0.1)',
+        borderColor: '#52b274',
       },
       '&.Mui-focused': {
-        background: 'white',
-        boxShadow: '0 4px 12px rgba(103, 126, 234, 0.2)',
+        borderColor: '#52b274',
+        boxShadow: '0 0 0 2px rgba(82, 178, 116, 0.1)',
       },
     },
     marginBottom: theme.spacing(2),
@@ -161,12 +150,12 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Enhanced table
+  // Clean table matching Quote.Vote
   tableContainer: {
     maxHeight: 600,
     overflowX: 'auto',
     overflowY: 'auto',
-    borderRadius: 12,
+    borderRadius: 8,
     '&::-webkit-scrollbar': {
       width: 8,
       height: 8,
@@ -176,10 +165,10 @@ const requestAccessStyles = (theme) => ({
       borderRadius: 10,
     },
     '&::-webkit-scrollbar-thumb': {
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: '#52b274',
       borderRadius: 10,
       '&:hover': {
-        background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+        background: '#3d8a59',
       },
     },
     [theme.breakpoints.down('sm')]: {
@@ -189,18 +178,18 @@ const requestAccessStyles = (theme) => ({
 
   columnHeader: {
     fontFamily: 'Roboto, sans-serif',
-    fontSize: '0.95rem',
-    fontWeight: 700,
-    color: '#667eea',
-    background: 'linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%)',
-    borderBottom: '2px solid #667eea',
+    fontSize: '0.9rem',
+    fontWeight: 600,
+    color: '#333',
+    background: '#f5f5f5',
+    borderBottom: '2px solid #e0e0e0',
     position: 'sticky',
     top: 0,
     zIndex: 10,
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.8rem',
+      fontSize: '0.75rem',
       padding: theme.spacing(1, 0.5),
     },
   },
@@ -216,120 +205,116 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Premium status badges
+  // Clean status badges matching Quote.Vote
   pendingStatus: {
-    background: 'linear-gradient(135deg, #ffd89b 0%, #19547b 100%)',
+    background: '#ff9800',
     color: 'white',
-    padding: '6px 16px',
-    borderRadius: 20,
+    padding: '6px 14px',
+    borderRadius: 16,
     fontWeight: 600,
-    fontSize: '0.85rem',
+    fontSize: '0.8rem',
     textTransform: 'capitalize',
-    boxShadow: '0 4px 12px rgba(255, 216, 155, 0.3)',
     cursor: 'default',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      transform: 'scale(1.05)',
-      boxShadow: '0 6px 16px rgba(255, 216, 155, 0.4)',
+      background: '#fb8c00',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '4px 12px',
-      fontSize: '0.75rem',
+      padding: '4px 10px',
+      fontSize: '0.7rem',
     },
   },
 
   acceptedStatus: {
-    background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+    background: '#4caf50',
     color: 'white',
-    padding: '6px 16px',
-    borderRadius: 20,
+    padding: '6px 14px',
+    borderRadius: 16,
     fontWeight: 600,
-    fontSize: '0.85rem',
+    fontSize: '0.8rem',
     textTransform: 'capitalize',
-    boxShadow: '0 4px 12px rgba(56, 239, 125, 0.3)',
     cursor: 'default',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      transform: 'scale(1.05)',
-      boxShadow: '0 6px 16px rgba(56, 239, 125, 0.4)',
+      background: '#66bb6a',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '4px 12px',
-      fontSize: '0.75rem',
+      padding: '4px 10px',
+      fontSize: '0.7rem',
     },
   },
 
   declinedStatus: {
-    background: 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)',
+    background: '#f44336',
     color: 'white',
-    padding: '6px 16px',
-    borderRadius: 20,
+    padding: '6px 14px',
+    borderRadius: 16,
     fontWeight: 600,
-    fontSize: '0.85rem',
+    fontSize: '0.8rem',
     textTransform: 'capitalize',
-    boxShadow: '0 4px 12px rgba(235, 51, 73, 0.3)',
     cursor: 'default',
-    transition: 'all 0.3s ease',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      transform: 'scale(1.05)',
-      boxShadow: '0 6px 16px rgba(235, 51, 73, 0.4)',
+      background: '#ef5350',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '4px 12px',
-      fontSize: '0.75rem',
+      padding: '4px 10px',
+      fontSize: '0.7rem',
     },
   },
 
-  // Modern action buttons
+  // Clean action buttons matching Quote.Vote
   button: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#52b274',
     color: 'white',
-    padding: '8px 20px',
-    borderRadius: 12,
+    padding: '8px 18px',
+    borderRadius: 8,
     textTransform: 'none',
     fontWeight: 600,
-    fontSize: '0.9rem',
-    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-    transition: 'all 0.3s ease',
+    fontSize: '0.875rem',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+    transition: 'all 0.2s ease',
     border: 'none',
     cursor: 'pointer',
     '&:hover': {
-      transform: 'translateY(-2px)',
-      boxShadow: '0 6px 20px rgba(102, 126, 234, 0.4)',
-      background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+      background: '#3d8a59',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
     },
     '&:active': {
-      transform: 'translateY(0)',
+      transform: 'scale(0.98)',
     },
     '&:disabled': {
       opacity: 0.6,
       cursor: 'not-allowed',
     },
     [theme.breakpoints.down('sm')]: {
-      padding: '6px 14px',
-      fontSize: '0.8rem',
-      borderRadius: 10,
+      padding: '6px 12px',
+      fontSize: '0.75rem',
+      borderRadius: 6,
     },
   },
 
-  // Featured row highlight
+  // Featured row highlight matching Quote.Vote
   featuredRow: {
-    background: 'linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%)',
-    borderLeft: '4px solid #ffd700',
-    transition: 'all 0.3s ease',
+    background: 'rgba(82, 178, 116, 0.05)',
+    borderLeft: '4px solid #52b274',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      background: 'linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%)',
+      background: 'rgba(82, 178, 116, 0.1)',
     },
   },
 
-  // Select dropdown
+  // Clean select dropdown
   slotSelect: {
     minWidth: 100,
     '& .MuiOutlinedInput-root': {
-      borderRadius: 10,
-      transition: 'all 0.3s ease',
+      borderRadius: 8,
+      transition: 'all 0.2s ease',
       '&:hover': {
-        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.2)',
+        borderColor: '#52b274',
+      },
+      '&.Mui-focused': {
+        borderColor: '#52b274',
       },
     },
     [theme.breakpoints.down('sm')]: {
