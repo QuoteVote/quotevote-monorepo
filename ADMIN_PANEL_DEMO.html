@@ -328,8 +328,11 @@
             
             /* Actions column */
             td:last-child {
-                padding: 8px 4px;
+                padding: 8px 8px;
                 min-width: 80px;
+                text-align: center;
+                vertical-align: middle;
+                white-space: nowrap;
             }
             
             .status-badge {
@@ -346,7 +349,7 @@
                 height: 36px;
                 border-radius: 50%;
                 border: none;
-                display: flex;
+                display: inline-flex;
                 align-items: center;
                 justify-content: center;
                 cursor: pointer;
@@ -354,7 +357,10 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 font-size: 16px;
                 color: white;
-                margin: 0 2px;
+                margin: 0;
+                flex-shrink: 0;
+                line-height: 1;
+                text-align: center;
             }
             
             .icon-btn:hover {
@@ -397,10 +403,21 @@
             .action-buttons {
                 display: flex;
                 flex-direction: row;
-                gap: 6px;
+                gap: 8px;
                 min-width: 80px;
                 justify-content: center;
                 align-items: center;
+                width: 100%;
+                height: 100%;
+            }
+            
+            /* Single icon centering */
+            .single-icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
             }
             
             /* Accept button - Green, positive */
@@ -792,7 +809,7 @@
                                 <td>jane.smith@quotevote.com</td>
                                 <td>Nov 04, 2025</td>
                                 <td><span class="status-badge status-accepted">Accepted</span></td>
-                                <td><button class="icon-btn icon-neutral" title="Resend">↻</button></td>
+                                <td><div class="single-icon"><button class="icon-btn icon-neutral" title="Resend">↻</button></div></td>
                             </tr>
                             <tr>
                                 <td>mike.wilson@quotevote.com</td>
@@ -809,7 +826,7 @@
                                 <td>sarah.jones@quotevote.com</td>
                                 <td>Nov 02, 2025</td>
                                 <td><span class="status-badge status-declined">Declined</span></td>
-                                <td><button class="icon-btn icon-neutral" title="Reset">↺</button></td>
+                                <td><div class="single-icon"><button class="icon-btn icon-neutral" title="Reset">↺</button></div></td>
                             </tr>
                         </tbody>
                     </table>
