@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button'
 
 import { useHistory } from 'react-router-dom'
 
-import styles from '../../assets/jss/material-dashboard-pro-react/views/errorPageStyles'
+import styles from 'assets/jss/material-dashboard-pro-react/views/errorPageStyles'
 
 const useStyles = makeStyles(styles)
 
