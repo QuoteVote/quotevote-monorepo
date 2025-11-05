@@ -294,6 +294,7 @@ const requestAccessStyles = (theme) => ({
       padding: 8,
     },
   },
+  
   mobileTableCell: {
     [theme.breakpoints.down('sm')]: {
       padding: '8px 4px',
@@ -304,22 +305,90 @@ const requestAccessStyles = (theme) => ({
       whiteSpace: 'nowrap',
     },
   },
-  card: {
-    [theme.breakpoints.down('sm')]: {
-      boxShadow: theme.shadows[2],
-    },
-  },
-  breadcrumb: {
-    marginBottom: theme.spacing(2),
-    [theme.breakpoints.down('sm')]: {
-      marginBottom: theme.spacing(1),
-    },
-  },
+  
   stickyHeader: {
     position: 'sticky',
     top: 0,
     backgroundColor: theme.palette.background.paper,
     zIndex: 10,
+  },
+  
+  // Statistics Chart Styling
+  statisticsCard: {
+    background: 'linear-gradient(135deg, #52b274 0%, #449a5f 100%)',
+    color: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 16,
+    marginBottom: 16,
+    '& .ct-chart': {
+      color: 'white',
+    },
+    '& .ct-line': {
+      stroke: 'white',
+      strokeWidth: 3,
+    },
+    '& .ct-point': {
+      stroke: 'white',
+      fill: 'white',
+    },
+  },
+  
+  statisticsFooter: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    fontSize: '16px',
+    fontWeight: 500,
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      gap: 8,
+      fontSize: '14px',
+    },
+  },
+  
+  // User Management Styling
+  userManagementSwitch: {
+    '& .MuiSwitch-switchBase.Mui-checked': {
+      color: '#52b274',
+      '&:hover': {
+        backgroundColor: 'rgba(82, 178, 116, 0.08)',
+      },
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+      backgroundColor: '#52b274',
+    },
+  },
+  
+  // Featured Posts specific styling
+  featuredPostTitle: {
+    maxWidth: 200,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: 120,
+    },
+  },
+  
+  featuredPostSummary: {
+    maxWidth: 150,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    color: '#666',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
+  
+  postIdCell: {
+    fontFamily: 'monospace',
+    fontSize: '12px',
+    color: '#888',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
 })
 
