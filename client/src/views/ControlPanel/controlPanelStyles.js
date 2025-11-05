@@ -1,108 +1,494 @@
 const requestAccessStyles = (theme) => ({
+  // Clean, professional admin panel styles
   tableContainer: {
-    maxHeight: 500,
+    maxHeight: 600,
+    overflowX: 'auto',
+    overflowY: 'auto',
+    borderRadius: 8,
+    border: '1px solid #e0e0e0',
+    backgroundColor: 'white',
+    [theme.breakpoints.down('sm')]: {
+      maxHeight: 'calc(100vh - 280px)',
+      borderRadius: 4,
+    },
   },
   panelContainer: {
+    backgroundColor: '#fafafa',
+    minHeight: '100vh',
     [theme.breakpoints.up('lg')]: {
-      padding: 20,
-      paddingTop: 30,
+      padding: 24,
+      paddingTop: 32,
     },
     [theme.breakpoints.down('md')]: {
-      padding: 10,
+      padding: 16,
     },
-    [theme.breakpoints.down('xs')]: {
-      padding: 0,
+    [theme.breakpoints.down('sm')]: {
+      padding: 12,
+      paddingTop: 16,
     },
   },
   panelHeader: {
-    font: 'Montserrat',
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: 'black',
-    marginBottom: 25,
+    fontFamily: 'Montserrat, sans-serif',
+    fontSize: '28px',
+    fontWeight: 700,
+    color: '#333',
+    marginBottom: 24,
+    textAlign: 'left',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '24px',
+      marginBottom: 16,
+    },
   },
   cardHeader: {
-    font: 'Montserrat',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    letterSpacing: '0.2px',
+    fontFamily: 'Montserrat, sans-serif',
+    fontSize: '20px',
+    fontWeight: 600,
+    letterSpacing: '0.1px',
     color: '#52b274',
-    marginBottom: 10,
+    marginBottom: 16,
+    display: 'flex',
+    alignItems: 'center',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '18px',
+      marginBottom: 12,
+    },
   },
   columnHeader: {
-    font: 'Roboto',
-    fontSize: '17px',
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '14px',
+    fontWeight: 600,
+    color: '#666',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    padding: '16px 12px',
+    backgroundColor: '#f8f9fa',
+    borderBottom: '2px solid #e9ecef',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '11px',
+      padding: '8px 4px',
+      whiteSpace: 'nowrap',
+      minHeight: '48px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
   },
   button: {
-    width: '83.1px',
-    height: '20.8px',
-    borderRadius: '3px',
-    textTransform: 'none',
+    minWidth: '36px',
+    height: '36px',
+    margin: '0px',
+    padding: '0px',
+    fontSize: '16px',
+    borderRadius: '50%',
+    fontWeight: 400,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    transition: 'all 0.2s ease',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     color: 'white',
-    margin: 5,
+    flexShrink: 0,
+    lineHeight: 1,
+    textAlign: 'center',
+    border: 'none',
+    cursor: 'pointer',
+    '&:hover': {
+      transform: 'translateY(-2px) scale(1.05)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    },
+    '&:active': {
+      transform: 'translateY(0px) scale(0.98)',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    },
   },
   pendingStatus: {
-    borderRadius: '10px',
-    backgroundColor: '#d8d8d8',
-    '&:hover': {
-      backgroundColor: '#d8d8d8',
-    },
-    width: '83.1px',
-    height: '20.8px',
-    textTransform: 'none',
-    margin: 5,
-    color: 'black',
+    borderRadius: '16px',
+    backgroundColor: '#ff9800',
+    color: 'white',
+    minWidth: '80px',
+    height: '32px',
+    textTransform: 'capitalize',
+    margin: '4px',
+    padding: '6px 12px',
+    fontWeight: 600,
+    fontSize: '12px',
     cursor: 'default',
+    boxShadow: '0 2px 4px rgba(255,152,0,0.3)',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#fb8c00',
+      boxShadow: '0 4px 8px rgba(255,152,0,0.4)',
+    },
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '60px',
+      height: '24px',
+      fontSize: '10px',
+      padding: '3px 6px',
+      margin: '2px',
+    },
   },
   acceptedStatus: {
-    borderRadius: '10px',
+    borderRadius: '16px',
     backgroundColor: '#4caf50',
-    '&:hover': {
-      backgroundColor: '#4caf50',
-    },
-    width: '83.1px',
-    height: '20.8px',
-    textTransform: 'none',
-    margin: 5,
     color: 'white',
+    minWidth: '80px',
+    height: '32px',
+    textTransform: 'capitalize',
+    margin: '4px',
+    fontWeight: 600,
+    fontSize: '12px',
     cursor: 'default',
+    padding: '6px 12px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 4px rgba(76,175,80,0.3)',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#66bb6a',
+      boxShadow: '0 4px 8px rgba(76,175,80,0.4)',
+    },
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '65px',
+      height: '28px',
+      fontSize: '11px',
+      padding: '4px 8px',
+    },
   },
   declinedStatus: {
-    borderRadius: '10px',
-    backgroundColor: '#ff6060',
-    '&:hover': {
-      backgroundColor: '#ff6060',
-    },
-    width: '83.1px',
-    height: '20.8px',
-    textTransform: 'none',
-    margin: 5,
+    borderRadius: '16px',
+    backgroundColor: '#f44336',
     color: 'white',
+    minWidth: '80px',
+    height: '32px',
+    textTransform: 'capitalize',
+    margin: '4px',
+    fontWeight: 600,
+    fontSize: '12px',
     cursor: 'default',
+    padding: '6px 12px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 4px rgba(244,67,54,0.3)',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#ef5350',
+      boxShadow: '0 4px 8px rgba(244,67,54,0.4)',
+    },
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '65px',
+      height: '28px',
+      fontSize: '11px',
+      padding: '4px 8px',
+    },
   },
+
+  // Enhanced styling for all admin components
   graphText: {
-    font: 'Roboto',
-    fontSize: '18px',
-    fontWeight: 300,
-    lineHeight: 1.39,
-    color: '#333333',
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '16px',
+    fontWeight: 400,
+    lineHeight: 1.5,
+    color: '#555',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '14px',
+    },
   },
+
   featuredRow: {
-    backgroundColor: '#fff8e1',
+    backgroundColor: 'rgba(82, 178, 116, 0.08)',
+    borderLeft: '4px solid #52b274',
+    transition: 'background-color 0.2s ease',
+    '&:hover': {
+      backgroundColor: 'rgba(82, 178, 116, 0.12)',
+    },
   },
+
   slotSelect: {
-    minWidth: 80,
+    minWidth: 100,
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 8,
+      backgroundColor: 'white',
+      '&:hover': {
+        borderColor: '#52b274',
+      },
+      '&.Mui-focused': {
+        borderColor: '#52b274',
+      },
+    },
+    [theme.breakpoints.down('sm')]: {
+      minWidth: 80,
+    },
   },
+
   filterInput: {
-    marginBottom: 15,
-  },
-  tabsContainer: {
-    borderBottom: 1,
-    borderColor: 'divider',
     marginBottom: 20,
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 8,
+      backgroundColor: 'white',
+      '&:hover': {
+        borderColor: '#52b274',
+      },
+      '&.Mui-focused': {
+        borderColor: '#52b274',
+        boxShadow: '0 0 0 2px rgba(82, 178, 116, 0.1)',
+      },
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 16,
+      width: '100%',
+    },
   },
+
+  tabsContainer: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginBottom: 24,
+    padding: '8px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    '& .MuiTabs-indicator': {
+      backgroundColor: '#52b274',
+      height: 3,
+      borderRadius: '2px',
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 16,
+      padding: '4px',
+    },
+  },
+
   tabPanel: {
-    paddingTop: 20,
+    paddingTop: 24,
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: 16,
+    },
+  },
+
+  // Card styling
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+    border: '1px solid #f0f0f0',
+    [theme.breakpoints.down('sm')]: {
+      borderRadius: 8,
+      padding: 16,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    },
+  },
+
+  // Breadcrumb styling
+  breadcrumb: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 24,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.06)',
+    '& a': {
+      color: '#52b274',
+      textDecoration: 'none',
+      '&:hover': {
+        color: '#449a5f',
+      },
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 16,
+      padding: 8,
+    },
+  },
+
+  mobileTableCell: {
+    [theme.breakpoints.down('sm')]: {
+      padding: '8px 4px',
+      fontSize: '12px',
+      maxWidth: '120px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      lineHeight: '1.3',
+      minHeight: '48px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '6px 2px',
+      fontSize: '11px',
+      maxWidth: '100px',
+    },
+  },
+
+  // Email cell specific styling for mobile
+  emailCell: {
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '140px',
+      fontSize: '13px',
+      padding: '8px 6px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      textAlign: 'left',
+    },
+    [theme.breakpoints.down('xs')]: {
+      maxWidth: '110px',
+      fontSize: '12px',
+    },
+  },
+
+  // Date cell styling for mobile
+  dateCell: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '11px',
+      padding: '8px 4px',
+      whiteSpace: 'nowrap',
+    },
+  },
+
+  // Status cell styling for mobile
+  statusCell: {
+    [theme.breakpoints.down('sm')]: {
+      padding: '8px 4px',
+    },
+  },
+
+  // Actions cell styling (all views)
+  actionsCell: {
+    padding: '8px 8px',
+    minWidth: '80px',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    whiteSpace: 'nowrap',
+  },
+
+  // Mobile-specific table styles
+  mobileTableWrapper: {
+    [theme.breakpoints.down('sm')]: {
+      overflowX: 'auto',
+      overflowY: 'auto',
+      WebkitOverflowScrolling: 'touch',
+      transform: 'translateZ(0)',
+      WebkitTransform: 'translateZ(0)',
+      '&::-webkit-scrollbar': {
+        height: '4px',
+      },
+      '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#52b274',
+        borderRadius: '2px',
+      },
+    },
+  },
+
+  // iOS safe area handling
+  safeAreaContainer: {
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: 'env(safe-area-inset-bottom)',
+      minHeight: 'calc(100vh - env(safe-area-inset-bottom))',
+    },
+  },
+
+  // Action buttons container (all views)
+  mobileActionsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '8px',
+    minWidth: '80px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+
+  stickyHeader: {
+    position: 'sticky',
+    top: 0,
+    backgroundColor: theme.palette.background.paper,
+    zIndex: 10,
+  },
+
+  // Statistics Chart Styling
+  statisticsCard: {
+    background: 'linear-gradient(135deg, #52b274 0%, #449a5f 100%)',
+    color: 'white',
+    borderRadius: 12,
+    padding: 20,
+    marginTop: 16,
+    marginBottom: 16,
+    '& .ct-chart': {
+      color: 'white',
+    },
+    '& .ct-line': {
+      stroke: 'white',
+      strokeWidth: 3,
+    },
+    '& .ct-point': {
+      stroke: 'white',
+      fill: 'white',
+    },
+  },
+
+  statisticsFooter: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    fontSize: '16px',
+    fontWeight: 500,
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      gap: 8,
+      fontSize: '14px',
+    },
+  },
+
+  // User Management Styling
+  userManagementSwitch: {
+    '& .MuiSwitch-switchBase.Mui-checked': {
+      color: '#52b274',
+      '&:hover': {
+        backgroundColor: 'rgba(82, 178, 116, 0.08)',
+      },
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+      backgroundColor: '#52b274',
+    },
+  },
+
+  // Featured Posts specific styling
+  featuredPostTitle: {
+    maxWidth: 200,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: 120,
+    },
+  },
+
+  featuredPostSummary: {
+    maxWidth: 150,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    color: '#666',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
+
+  postIdCell: {
+    fontFamily: 'monospace',
+    fontSize: '12px',
+    color: '#888',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
 })
 

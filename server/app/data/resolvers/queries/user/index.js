@@ -1,6 +1,6 @@
 export * from './findUserById';
 export * from './getUserInvites';
-export * from './getUsers';
+export { default as getUsers } from './getUsers';
 export * from './getUserVoteLogs';
 export * from './searchUser';
 export * from './findUserByEmail';

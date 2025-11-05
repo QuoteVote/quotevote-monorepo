@@ -1,4 +1,3 @@
-import React from 'react'
 import { Avatar, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -19,7 +18,7 @@ import Link from '@material-ui/core/Link'
 import AvatarDisplay from '../Avatar'
 import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
 import SignOutButton from '../CustomButtons/SignOutButton'
-import ManageInviteButton from '../CustomButtons/ManageInviteButton'
+import AdminPanelButton from '../CustomButtons/AdminPanelButton'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
@@ -54,10 +53,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       position: 'sticky',
       bottom: 0,
-      backgroundColor: 'inherit',
+      backgroundColor: theme.palette.background.paper,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       borderTop: `1px solid ${theme.palette.divider}`,
+      zIndex: 10,
+      boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
     },
   },
   title: {
@@ -170,27 +171,23 @@ function SettingsContent({ setOpen }) {
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
-  } = useSelector((state) => {
-    console.log(state)
-    return state.user.data
-  })
-  console.log(otherUserData)
+  } = useSelector((state) => state.user.data)
   const handleChangeAvatar = () => {
     setOpen(false)
     history.push(`/Profile/${username}/avatar`)
   }
-  
+
   const defaultValues = {
     username, password: username, name,
   }
-  
+
   const {
     register, handleSubmit, errors, formState, reset,
   } = useForm({ defaultValues })
-  
+
   const isPasswordTouched = 'password' in Object.keys(formState.dirtyFields)
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
-  
+
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
     const otherVariables = values.password === password ? otherValues : values
@@ -223,13 +220,13 @@ function SettingsContent({ setOpen }) {
     history.push('/auth/login')
   }
 
-  const handleInvite = () => {
+  const handleAdminPanel = () => {
     history.push('/ControlPanel')
     setOpen(false)
   }
-  
+
   const hasChange = Object.keys(formState.dirtyFields).length
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid
@@ -250,9 +247,9 @@ function SettingsContent({ setOpen }) {
           >
             <Grid item>
               {!isMobileDevice && (
-                 <Typography className={classes.title}>
-                    Settings
-                  </Typography>
+                <Typography className={classes.title}>
+                  Settings
+                </Typography>
               )}
             </Grid>
             <Grid item>
@@ -381,24 +378,26 @@ function SettingsContent({ setOpen }) {
             {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
           </Grid>
         </Grid>
-        
+
         <Grid item className={classes.buttonContainer}>
           <Grid
             container
             direction="row"
             justify="space-between"
             alignItems="flex-end"
+            spacing={isMobileDevice ? 1 : 1}
+            wrap={isMobileDevice ? 'wrap' : 'nowrap'}
           >
-            <Grid item>
-              <SignOutButton onClick={handleLogout} />
+            <Grid item xs={isMobileDevice ? 6 : 'auto'}>
+              <SignOutButton onClick={handleLogout} fullWidth={isMobileDevice} />
             </Grid>
             {otherUserData.admin && (
-              <Grid item>
-                <ManageInviteButton onClick={handleInvite} />
+              <Grid item xs={isMobileDevice ? 6 : 'auto'}>
+                <AdminPanelButton onClick={handleAdminPanel} fullWidth={isMobileDevice} />
               </Grid>
             )}
-            <Grid item>
-              <SettingsSaveButton disabled={!hasChange} />
+            <Grid item xs={isMobileDevice ? 12 : 'auto'}>
+              <SettingsSaveButton disabled={!hasChange} fullWidth={isMobileDevice} />
             </Grid>
           </Grid>
         </Grid>

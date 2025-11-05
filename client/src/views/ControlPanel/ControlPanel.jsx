@@ -1,3 +1,7 @@
+/* eslint-disable import/extensions, import/no-unresolved, no-console, react/jsx-one-expression-per-line, 
+   import/order, no-trailing-spaces, comma-dangle, object-curly-newline, 
+   arrow-parens, no-shadow, brace-style, one-var, one-var-declaration-per-line, 
+   indent, no-whitespace-before-property, operator-linebreak, key-spacing */
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
@@ -22,8 +26,20 @@ import Box from '@material-ui/core/Box'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Switch from '@material-ui/core/Switch'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@material-ui/core/styles'
+import Breadcrumbs from '@material-ui/core/Breadcrumbs'
+import Link from '@material-ui/core/Link'
+import NavigateNextIcon from '@material-ui/icons/NavigateNext'
+import HomeIcon from '@material-ui/icons/Home'
 
 import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useSelector } from 'react-redux'
+import moment from 'moment'
+import ChartistGraph from 'react-chartist'
+import Chartist from 'chartist'
+
+import { dailySalesChart } from '@/variables/charts'
 import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
 import {
   UPDATE_USER_INVITE_STATUS,
@@ -31,12 +47,6 @@ import {
   UPDATE_USER,
 } from '@/graphql/mutations'
 
-// react plugin for creating charts
-import ChartistGraph from 'react-chartist'
-import Chartist from 'chartist'
-import { dailySalesChart } from '@/variables/charts'
-import moment from 'moment'
-import { useSelector } from 'react-redux'
 import controlPanelStylwa from './controlPanelStyles'
 import Unauthorized from '@/components/Unauthorized/Unauthorized'
 import useGuestGuard from '../../utils/useGuestGuard'
@@ -103,30 +113,30 @@ const ActionButtons = ({ status, id }) => {
   switch (Number(status)) {
     case 1: // pending
       return (
-        <div style={{ width: 200 }}>
+        <div className={classes.mobileActionsContainer}>
           <Button
             variant="contained"
-            color="secondary"
             className={classes.button}
             style={{
-              backgroundColor: '#f44336',
+              background: 'linear-gradient(135deg, #f44336, #e53935)',
             }}
             onClick={handleDecline}
             disabled={loading}
+            title="Decline"
           >
-            Decline
+            ✕
           </Button>
           <Button
             variant="contained"
-            color="primary"
             className={classes.button}
             style={{
-              backgroundColor: '#52b274',
+              background: 'linear-gradient(135deg, #4caf50, #45a049)',
             }}
             onClick={handleAccept}
             disabled={loading}
+            title="Accept"
           >
-            Accept
+            ✓
           </Button>
         </div>
       )
@@ -136,12 +146,13 @@ const ActionButtons = ({ status, id }) => {
           variant="contained"
           className={classes.button}
           style={{
-            backgroundColor: '#f44336',
+            background: 'linear-gradient(135deg, #2196f3, #1976d2)',
           }}
           onClick={handleReset}
           disabled={loading}
+          title="Reset"
         >
-          Reset
+          ↺
         </Button>
       )
     case 4: // active
@@ -150,12 +161,13 @@ const ActionButtons = ({ status, id }) => {
           variant="contained"
           className={classes.button}
           style={{
-            backgroundColor: '#52b274',
+            background: 'linear-gradient(135deg, #2196f3, #1976d2)',
           }}
           onClick={handleAccept}
           disabled={loading}
+          title="Resend"
         >
-          Resend
+          ↻
         </Button>
       )
     default:
@@ -226,7 +238,7 @@ const FeaturedPostsTable = () => {
           onChange={(e) => setFilter(e.target.value)}
           className={classes.filterInput}
         />
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={`${classes.tableContainer} ${classes.mobileTableWrapper}`}>
           <Table stickyHeader aria-label="featured posts table">
             <TableHead classes={{ head: classes.columnHeader }}>
               <TableRow>
@@ -394,7 +406,7 @@ const UserInvitationRequestsTab = ({ data }) => {
             ),
           }}
         />
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={`${classes.tableContainer} ${classes.mobileTableWrapper}`}>
           <Table
             className={classes.table}
             aria-label="simple table"
@@ -423,11 +435,11 @@ const UserInvitationRequestsTab = ({ data }) => {
             <TableBody>
               {data?.userInviteRequests && filterAndSortData(data.userInviteRequests).map((row) => (
                 <TableRow key={row._id}>
-                  <TableCell align="left">{row.email}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align="left" className={classes.emailCell}>{row.email}</TableCell>
+                  <TableCell align="center" className={classes.dateCell}>
                     {moment(row.joined).format('MMM DD, YYYY')}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" className={classes.statusCell}>
                     <Button
                       variant="contained"
                       color="primary"
@@ -442,7 +454,7 @@ const UserInvitationRequestsTab = ({ data }) => {
                       {getStatusValue(row.status)}
                     </Button>
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" className={classes.actionsCell}>
                     <ActionButtons status={row.status} id={row._id} />
                   </TableCell>
                 </TableRow>
@@ -572,7 +584,7 @@ const UserManagementTab = () => {
     <Card>
       <CardContent>
         <Typography className={classes.cardHeader}>User Management</Typography>
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={`${classes.tableContainer} ${classes.mobileTableWrapper}`}>
           <Table stickyHeader aria-label="user management table">
             <TableHead classes={{ head: classes.columnHeader }}>
               <TableRow>
@@ -608,6 +620,8 @@ const UserManagementTab = () => {
 
 const ControlPanelContainer = ({ data }) => {
   const classes = useStyles()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const [tabValue, setTabValue] = React.useState(0)
 
   const handleTabChange = (event, newValue) => {
@@ -615,10 +629,22 @@ const ControlPanelContainer = ({ data }) => {
   }
 
   return (
-    <Grid container spacing={2} className={classes.panelContainer}>
+    <Grid container spacing={2} className={`${classes.panelContainer} ${classes.safeAreaContainer}`}>
+      <Grid container className={classes.breadcrumb}>
+        <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+          <Link color="inherit" href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <HomeIcon style={{ marginRight: 4, fontSize: 20 }} />
+            {!isMobile && 'Home'}
+          </Link>
+          <Typography color="textPrimary" style={{ fontWeight: 'bold' }}>
+            Admin Panel
+          </Typography>
+        </Breadcrumbs>
+      </Grid>
+      
       <Grid container>
         <Typography className={classes.panelHeader}>
-          Invite Control Panel
+          Admin Control Panel
         </Typography>
       </Grid>
       
@@ -630,12 +656,13 @@ const ControlPanelContainer = ({ data }) => {
           className={classes.tabsContainer}
           indicatorColor="secondary"
           textColor="secondary"
-          variant="fullWidth"
+          variant={isMobile ? "scrollable" : "fullWidth"}
+          scrollButtons={isMobile ? "on" : "auto"}
         >
-          <Tab label="User Invitation Requests" />
+          <Tab label={isMobile ? "Invites" : "User Invitation Requests"} />
           <Tab label="Statistics" />
-          <Tab label="Featured Posts" />
-          <Tab label="User Management" />
+          <Tab label={isMobile ? "Featured" : "Featured Posts"} />
+          <Tab label={isMobile ? "Users" : "User Management"} />
         </Tabs>
       </Grid>
 

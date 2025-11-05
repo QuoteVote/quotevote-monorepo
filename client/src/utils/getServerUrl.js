@@ -1,16 +1,21 @@
 export const getBaseServerUrl = () => {
+  // Default to production backend
   let effectiveUrl = 'https://api.quote.vote'
-  if(process.env.DEPLOY_PRIME_URL && process.env.DEPLOY_PRIME_URL.includes('deploy-preview')) {
-    console.log('Using Railway preview URL:', process.env.DEPLOY_PRIME_URL)
-    const previewUrl = process.env.DEPLOY_PRIME_URL
-    // Sample previewUrl: https://deploy-preview-212--quotevote.netlify.app
-    const PR_NUMBER = previewUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)[1]
-    effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`;
-  } else if (process.env.REACT_APP_SERVER) {
-    effectiveUrl = `${process.env.REACT_APP_SERVER}`
+
+  // Check for explicit server override first
+  if (process.env.REACT_APP_SERVER) {
+    effectiveUrl = process.env.REACT_APP_SERVER
+    return effectiveUrl
   }
 
-  console.log('Effective Base URL:', effectiveUrl)
+  // Use window.location to detect Netlify deploy preview (FREE - no env var needed!)
+  const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
+
+  if (currentUrl && currentUrl.includes('deploy-preview')) {
+    // Keep production backend for preview deploys since Railway doesn't auto-create PR environments
+    // This allows reviewers to test UI changes without backend setup
+  }
+
   return effectiveUrl
 }
 

@@ -1,6 +1,6 @@
 import * as types from '../types';
 import * as inputs from '../inputs';
-import { Query } from './query_definition';
+import Query from './query_definition';
 import { Mutation } from './mutation_definition';
 import { Scalar } from './scalar_definition';
 import Subscription from './subscription_definition';

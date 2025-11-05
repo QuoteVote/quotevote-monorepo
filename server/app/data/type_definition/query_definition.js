@@ -1,4 +1,4 @@
-export const Query = `
+const Query = `
 type Query {
 
   " This will give the public news feed "
@@ -28,8 +28,8 @@ type Query {
   " This will query a post message room"
   postMessageRoom(postId: String!): MessageRoom
 
-  " This will query the list of available users "
-  users: [User]
+  " This will query the list of available users (Admin only) "
+  users(limit: Int, offset: Int): [User]
 
   " This will query the user "
   user(user_id: String, username: String, creatorId: String): User
@@ -72,4 +72,6 @@ type Query {
 
   " This will query the action Reactions"
   actionReactions(actionId: String!): [Reaction]
-}`;
+};
+
+export default Query;
