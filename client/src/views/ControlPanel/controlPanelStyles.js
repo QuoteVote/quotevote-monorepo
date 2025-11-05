@@ -77,48 +77,31 @@ const requestAccessStyles = (theme) => ({
     },
   },
   button: {
-    minWidth: '90px',
+    minWidth: '36px',
     height: '36px',
-    borderRadius: '6px',
-    textTransform: 'none',
-    color: 'white',
-    margin: '0 4px',
-    padding: '8px 16px',
-    fontWeight: 600,
-    fontSize: '13px',
-    backgroundColor: '#52b274',
+    margin: '0px',
+    padding: '0px',
+    fontSize: '16px',
+    borderRadius: '50%',
+    fontWeight: 400,
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     transition: 'all 0.2s ease',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    flexShrink: 0,
+    lineHeight: 1,
+    textAlign: 'center',
+    border: 'none',
+    cursor: 'pointer',
     '&:hover': {
-      backgroundColor: '#449a5f',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-      transform: 'translateY(-1px)',
+      transform: 'translateY(-2px) scale(1.05)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
     },
-    [theme.breakpoints.down('sm')]: {
-      minWidth: '36px',
-      height: '36px',
-      margin: '0px',
-      padding: '0px',
-      fontSize: '16px',
-      borderRadius: '50%',
-      fontWeight: 400,
+    '&:active': {
+      transform: 'translateY(0px) scale(0.98)',
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      transition: 'all 0.2s ease',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'white',
-      flexShrink: 0,
-      lineHeight: 1,
-      textAlign: 'center',
-      '&:hover': {
-        transform: 'translateY(-2px) scale(1.05)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-      },
-      '&:active': {
-        transform: 'translateY(0px) scale(0.98)',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-      },
     },
   },
   pendingStatus: {
@@ -373,15 +356,13 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Actions cell styling for mobile
+  // Actions cell styling (all views)
   actionsCell: {
-    [theme.breakpoints.down('sm')]: {
-      padding: '8px 8px',
-      minWidth: '80px',
-      textAlign: 'center',
-      verticalAlign: 'middle',
-      whiteSpace: 'nowrap',
-    },
+    padding: '8px 8px',
+    minWidth: '80px',
+    textAlign: 'center',
+    verticalAlign: 'middle',
+    whiteSpace: 'nowrap',
   },
 
   // Mobile-specific table styles
@@ -413,18 +394,16 @@ const requestAccessStyles = (theme) => ({
     },
   },
 
-  // Mobile action buttons container
+  // Action buttons container (all views)
   mobileActionsContainer: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'flex',
-      flexDirection: 'row',
-      gap: '8px',
-      minWidth: '80px',
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%',
-    },
+    display: 'flex',
+    flexDirection: 'row',
+    gap: '8px',
+    minWidth: '80px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
   },
 
   stickyHeader: {
