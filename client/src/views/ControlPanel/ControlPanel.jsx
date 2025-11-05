@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions, import/no-unresolved, no-console, react/jsx-one-expression-per-line */
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
@@ -30,6 +31,12 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext'
 import HomeIcon from '@material-ui/icons/Home'
 
 import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useSelector } from 'react-redux'
+import moment from 'moment'
+import ChartistGraph from 'react-chartist'
+import Chartist from 'chartist'
+
+import { dailySalesChart } from '@/variables/charts'
 import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
 import {
   UPDATE_USER_INVITE_STATUS,
@@ -37,12 +44,6 @@ import {
   UPDATE_USER,
 } from '@/graphql/mutations'
 
-// react plugin for creating charts
-import ChartistGraph from 'react-chartist'
-import Chartist from 'chartist'
-import { dailySalesChart } from '@/variables/charts'
-import moment from 'moment'
-import { useSelector } from 'react-redux'
 import controlPanelStylwa from './controlPanelStyles'
 import Unauthorized from '@/components/Unauthorized/Unauthorized'
 import useGuestGuard from '../../utils/useGuestGuard'
