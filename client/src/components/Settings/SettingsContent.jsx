@@ -55,10 +55,12 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       position: 'sticky',
       bottom: 0,
-      backgroundColor: 'inherit',
+      backgroundColor: theme.palette.background.paper,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       borderTop: `1px solid ${theme.palette.divider}`,
+      zIndex: 10,
+      boxShadow: '0 -2px 8px rgba(0,0,0,0.1)',
     },
   },
   title: {
@@ -394,18 +396,19 @@ function SettingsContent({ setOpen }) {
             direction="row"
             justify="space-between"
             alignItems="flex-end"
-            spacing={1}
+            spacing={isMobileDevice ? 1 : 1}
+            wrap={isMobileDevice ? 'wrap' : 'nowrap'}
           >
-            <Grid item>
-              <SignOutButton onClick={handleLogout} />
+            <Grid item xs={isMobileDevice ? 6 : 'auto'}>
+              <SignOutButton onClick={handleLogout} fullWidth={isMobileDevice} />
             </Grid>
             {otherUserData.admin && (
-              <Grid item>
-                <AdminPanelButton onClick={handleAdminPanel} />
+              <Grid item xs={isMobileDevice ? 6 : 'auto'}>
+                <AdminPanelButton onClick={handleAdminPanel} fullWidth={isMobileDevice} />
               </Grid>
             )}
-            <Grid item>
-              <SettingsSaveButton disabled={!hasChange} />
+            <Grid item xs={isMobileDevice ? 12 : 'auto'}>
+              <SettingsSaveButton disabled={!hasChange} fullWidth={isMobileDevice} />
             </Grid>
           </Grid>
         </Grid>
