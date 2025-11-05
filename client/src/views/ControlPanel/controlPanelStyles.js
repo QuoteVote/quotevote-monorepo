@@ -95,12 +95,13 @@ const requestAccessStyles = (theme) => ({
       transform: 'translateY(-1px)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '60px',
-      height: '28px',
+      minWidth: '52px',
+      height: '26px',
       margin: '1px',
-      padding: '4px 8px',
-      fontSize: '11px',
+      padding: '3px 6px',
+      fontSize: '10px',
       borderRadius: '4px',
+      fontWeight: 500,
     },
   },
   pendingStatus: {
@@ -358,8 +359,8 @@ const requestAccessStyles = (theme) => ({
   // Actions cell styling for mobile
   actionsCell: {
     [theme.breakpoints.down('sm')]: {
-      padding: '8px 4px',
-      minWidth: '90px',
+      padding: '6px 2px',
+      minWidth: '110px',
     },
   },
 
