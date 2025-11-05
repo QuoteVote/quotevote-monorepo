@@ -1,4 +1,3 @@
-import React from 'react'
 import { Avatar, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -19,7 +18,6 @@ import Link from '@material-ui/core/Link'
 import AvatarDisplay from '../Avatar'
 import SettingsSaveButton from '../CustomButtons/SettingsSaveButton'
 import SignOutButton from '../CustomButtons/SignOutButton'
-import ManageInviteButton from '../CustomButtons/ManageInviteButton'
 import AdminPanelButton from '../CustomButtons/AdminPanelButton'
 import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
@@ -173,24 +171,20 @@ function SettingsContent({ setOpen }) {
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
-  } = useSelector((state) => {
-    console.log(state)
-    return state.user.data
-  })
-  console.log(otherUserData)
+  } = useSelector((state) => state.user.data)
   const handleChangeAvatar = () => {
     setOpen(false)
     history.push(`/Profile/${username}/avatar`)
   }
-  
+
   const defaultValues = {
     username, password: username, name,
   }
-  
+
   const {
     register, handleSubmit, errors, formState, reset,
   } = useForm({ defaultValues })
-  
+
   const isPasswordTouched = 'password' in Object.keys(formState.dirtyFields)
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
   
@@ -226,18 +220,13 @@ function SettingsContent({ setOpen }) {
     history.push('/auth/login')
   }
 
-  const handleInvite = () => {
-    history.push('/ControlPanel')
-    setOpen(false)
-  }
-
   const handleAdminPanel = () => {
     history.push('/ControlPanel')
     setOpen(false)
   }
-  
+
   const hasChange = Object.keys(formState.dirtyFields).length
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid
@@ -258,9 +247,9 @@ function SettingsContent({ setOpen }) {
           >
             <Grid item>
               {!isMobileDevice && (
-                 <Typography className={classes.title}>
-                    Settings
-                  </Typography>
+                <Typography className={classes.title}>
+                  Settings
+                </Typography>
               )}
             </Grid>
             <Grid item>
@@ -389,7 +378,7 @@ function SettingsContent({ setOpen }) {
             {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
           </Grid>
         </Grid>
-        
+
         <Grid item className={classes.buttonContainer}>
           <Grid
             container
