@@ -97,7 +97,7 @@ const requestAccessStyles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       minWidth: '48px',
       height: '24px',
-      margin: '1px',
+      margin: '0px',
       padding: '2px 4px',
       fontSize: '9px',
       borderRadius: '3px',
@@ -398,7 +398,7 @@ const requestAccessStyles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '1px',
+      gap: '0px',
       minWidth: '100px',
     },
   },
