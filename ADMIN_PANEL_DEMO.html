@@ -242,10 +242,97 @@
         }
         
         td {
-            padding: 16px 12px;
+            padding: 8px 8px;
             text-align: center;
             border-bottom: 1px solid #f0f0f0;
             vertical-align: middle;
+        }
+        
+        /* Actions column (all views) */
+        td:last-child {
+            padding: 8px 8px;
+            min-width: 80px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        
+        /* Icon buttons - circular, modern design (all views) */
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 16px;
+            color: white;
+            margin: 0;
+            flex-shrink: 0;
+            line-height: 1;
+            text-align: center;
+        }
+        
+        .icon-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .icon-btn:active {
+            transform: translateY(0px) scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Accept icon - Green, checkmark */
+        .icon-accept {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+        }
+        
+        .icon-accept:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+        }
+        
+        /* Decline icon - Red, X mark */
+        .icon-decline {
+            background: linear-gradient(135deg, #f44336, #e53935);
+        }
+        
+        .icon-decline:hover {
+            background: linear-gradient(135deg, #e53935, #d32f2f);
+        }
+        
+        /* Other icons - Blue, neutral */
+        .icon-neutral {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+        }
+        
+        .icon-neutral:hover {
+            background: linear-gradient(135deg, #1976d2, #1565c0);
+        }
+        
+        /* Action buttons container (all views) */
+        .action-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            min-width: 80px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Single icon centering (all views) */
+        .single-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
         }
         
         /* Mobile Responsive Styles */
@@ -305,7 +392,7 @@
             
             td {
                 font-size: 12px;
-                padding: 8px 4px;
+                padding: 8px 8px;
                 max-width: 120px;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -326,15 +413,7 @@
                 white-space: nowrap;
             }
             
-            /* Actions column (all views) */
-            td:last-child {
-                padding: 8px 8px;
-                min-width: 80px;
-                text-align: center;
-                vertical-align: middle;
-                white-space: nowrap;
-            }
-            
+                        
             .status-badge {
                 min-width: 60px;
                 height: 24px;
@@ -343,36 +422,7 @@
                 margin: 2px;
             }
             
-            /* Icon buttons - circular, modern design (all views) */
-            .icon-btn {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                border: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                font-size: 16px;
-                color: white;
-                margin: 0;
-                flex-shrink: 0;
-                line-height: 1;
-                text-align: center;
-            }
-            
-            .icon-btn:hover {
-                transform: translateY(-2px) scale(1.05);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            }
-            
-            .icon-btn:active {
-                transform: translateY(0px) scale(0.98);
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            
+                        
             /* Accept icon - Green, checkmark */
             .icon-accept {
                 background: linear-gradient(135deg, #4caf50, #45a049);
