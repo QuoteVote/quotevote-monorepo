@@ -16,27 +16,9 @@ export const getBaseServerUrl = () => {
   
   if(currentUrl && currentUrl.includes('deploy-preview')) {
     console.log('✅ Detected Netlify preview deploy:', currentUrl)
-    // Sample currentUrl: https://deploy-preview-237--quotevote.netlify.app
-    const prMatch = currentUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)
-    console.log('🔍 Regex match result:', prMatch)
-    
-    if (prMatch && prMatch[1]) {
-      const PR_NUMBER = prMatch[1]
-      console.log('✅ Extracted PR number:', PR_NUMBER)
-      
-      // IMPORTANT: Railway PR environments must be manually created!
-      // Check if Railway PR backend exists, otherwise fall back to production
-      const railwayPrUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
-      
-      console.log('🚂 Railway PR backend URL:', railwayPrUrl)
-      console.log('⚠️ NOTE: If Railway PR environment does not exist, will fall back to production backend')
-      console.log('⚠️ To create Railway PR environment, trigger a deployment in Railway dashboard')
-      
-      // Use Railway PR backend if it exists, otherwise production will be used
-      effectiveUrl = railwayPrUrl
-    } else {
-      console.warn('⚠️ Could not extract PR number from URL, using production backend')
-    }
+    console.log('📡 Using production backend for preview deploys (Railway PR environments not auto-created)')
+    // Keep production backend for preview deploys since Railway doesn't auto-create PR environments
+    // This allows reviewers to test UI changes without backend setup
   } else {
     console.log('🌐 Using production backend:', effectiveUrl)
   }
