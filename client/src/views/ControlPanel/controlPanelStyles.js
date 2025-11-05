@@ -179,7 +179,7 @@ const requestAccessStyles = (theme) => ({
       padding: '4px 8px',
     },
   },
-  
+
   // Enhanced styling for all admin components
   graphText: {
     fontFamily: 'Roboto, sans-serif',
@@ -191,7 +191,7 @@ const requestAccessStyles = (theme) => ({
       fontSize: '14px',
     },
   },
-  
+
   featuredRow: {
     backgroundColor: 'rgba(82, 178, 116, 0.08)',
     borderLeft: '4px solid #52b274',
@@ -200,7 +200,7 @@ const requestAccessStyles = (theme) => ({
       backgroundColor: 'rgba(82, 178, 116, 0.12)',
     },
   },
-  
+
   slotSelect: {
     minWidth: 100,
     '& .MuiOutlinedInput-root': {
@@ -217,7 +217,7 @@ const requestAccessStyles = (theme) => ({
       minWidth: 80,
     },
   },
-  
+
   filterInput: {
     marginBottom: 20,
     '& .MuiOutlinedInput-root': {
@@ -236,7 +236,7 @@ const requestAccessStyles = (theme) => ({
       width: '100%',
     },
   },
-  
+
   tabsContainer: {
     backgroundColor: 'white',
     borderRadius: 8,
@@ -253,14 +253,14 @@ const requestAccessStyles = (theme) => ({
       padding: '4px',
     },
   },
-  
+
   tabPanel: {
     paddingTop: 24,
     [theme.breakpoints.down('sm')]: {
       paddingTop: 16,
     },
   },
-  
+
   // Card styling
   card: {
     backgroundColor: 'white',
@@ -274,7 +274,7 @@ const requestAccessStyles = (theme) => ({
       boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
     },
   },
-  
+
   // Breadcrumb styling
   breadcrumb: {
     backgroundColor: 'white',
@@ -294,7 +294,7 @@ const requestAccessStyles = (theme) => ({
       padding: 8,
     },
   },
-  
+
   mobileTableCell: {
     [theme.breakpoints.down('sm')]: {
       padding: '8px 4px',
@@ -305,14 +305,14 @@ const requestAccessStyles = (theme) => ({
       whiteSpace: 'nowrap',
     },
   },
-  
+
   stickyHeader: {
     position: 'sticky',
     top: 0,
     backgroundColor: theme.palette.background.paper,
     zIndex: 10,
   },
-  
+
   // Statistics Chart Styling
   statisticsCard: {
     background: 'linear-gradient(135deg, #52b274 0%, #449a5f 100%)',
@@ -333,7 +333,7 @@ const requestAccessStyles = (theme) => ({
       fill: 'white',
     },
   },
-  
+
   statisticsFooter: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -346,7 +346,7 @@ const requestAccessStyles = (theme) => ({
       fontSize: '14px',
     },
   },
-  
+
   // User Management Styling
   userManagementSwitch: {
     '& .MuiSwitch-switchBase.Mui-checked': {
@@ -359,7 +359,7 @@ const requestAccessStyles = (theme) => ({
       backgroundColor: '#52b274',
     },
   },
-  
+
   // Featured Posts specific styling
   featuredPostTitle: {
     maxWidth: 200,
@@ -370,7 +370,7 @@ const requestAccessStyles = (theme) => ({
       maxWidth: 120,
     },
   },
-  
+
   featuredPostSummary: {
     maxWidth: 150,
     overflow: 'hidden',
@@ -381,7 +381,7 @@ const requestAccessStyles = (theme) => ({
       display: 'none',
     },
   },
-  
+
   postIdCell: {
     fontFamily: 'monospace',
     fontSize: '12px',

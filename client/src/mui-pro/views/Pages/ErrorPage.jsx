@@ -1,16 +1,10 @@
-import React from 'react'
-
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 
 import { useHistory } from 'react-router-dom'
 
-// core components
-import GridContainer from 'mui-pro/Grid/GridContainer'
-import GridItem from 'mui-pro/Grid/GridItem'
-
-import styles from 'assets/jss/material-dashboard-pro-react/views/errorPageStyles'
+import styles from '../../assets/jss/material-dashboard-pro-react/views/errorPageStyles'
 
 const useStyles = makeStyles(styles)
 
