@@ -95,22 +95,25 @@ const requestAccessStyles = (theme) => ({
       transform: 'translateY(-1px)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '60px',
-      height: '32px',
-      margin: '0px',
-      padding: '6px 12px',
-      fontSize: '11px',
-      borderRadius: '6px',
-      fontWeight: 600,
-      letterSpacing: '0.3px',
+      minWidth: '36px',
+      height: '36px',
+      margin: '0 2px',
+      padding: '0px',
+      fontSize: '16px',
+      borderRadius: '50%',
+      fontWeight: 400,
       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       transition: 'all 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
       '&:hover': {
-        transform: 'translateY(-1px)',
-        boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
+        transform: 'translateY(-2px) scale(1.05)',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
       },
       '&:active': {
-        transform: 'translateY(0px)',
+        transform: 'translateY(0px) scale(0.98)',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       },
     },
@@ -370,8 +373,8 @@ const requestAccessStyles = (theme) => ({
   // Actions cell styling for mobile
   actionsCell: {
     [theme.breakpoints.down('sm')]: {
-      padding: '8px 6px',
-      minWidth: '140px',
+      padding: '8px 4px',
+      minWidth: '80px',
     },
   },
 
@@ -409,8 +412,8 @@ const requestAccessStyles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       flexDirection: 'row',
-      gap: '4px',
-      minWidth: '140px',
+      gap: '6px',
+      minWidth: '80px',
       justifyContent: 'center',
       alignItems: 'center',
     },
