@@ -187,7 +187,7 @@ function SettingsContent({ setOpen }) {
 
   const isPasswordTouched = 'password' in Object.keys(formState.dirtyFields)
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
-  
+
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
     const otherVariables = values.password === password ? otherValues : values
