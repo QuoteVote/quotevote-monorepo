@@ -63,10 +63,17 @@ const requestAccessStyles = (theme) => ({
     padding: '16px 12px',
     backgroundColor: '#f8f9fa',
     borderBottom: '2px solid #e9ecef',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
     [theme.breakpoints.down('sm')]: {
-      fontSize: '12px',
-      padding: '12px 8px',
+      fontSize: '11px',
+      padding: '8px 4px',
       whiteSpace: 'nowrap',
+      minHeight: '48px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
   button: {
@@ -298,11 +305,58 @@ const requestAccessStyles = (theme) => ({
   mobileTableCell: {
     [theme.breakpoints.down('sm')]: {
       padding: '8px 4px',
-      fontSize: '13px',
-      maxWidth: '150px',
+      fontSize: '12px',
+      maxWidth: '120px',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
+      lineHeight: '1.3',
+      minHeight: '48px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '6px 2px',
+      fontSize: '11px',
+      maxWidth: '100px',
+    },
+  },
+  
+  // Mobile-specific table styles
+  mobileTableWrapper: {
+    [theme.breakpoints.down('sm')]: {
+      overflowX: 'auto',
+      overflowY: 'auto',
+      WebkitOverflowScrolling: 'touch',
+      '&::-webkit-scrollbar': {
+        height: '4px',
+      },
+      '&::-webkit-scrollbar-track': {
+        background: '#f1f1f1',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: '#52b274',
+        borderRadius: '2px',
+      },
+    },
+  },
+  
+  // iOS safe area handling
+  safeAreaContainer: {
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: 'env(safe-area-inset-bottom)',
+      minHeight: 'calc(100vh - env(safe-area-inset-bottom))',
+    },
+  },
+  
+  // Mobile action buttons container
+  mobileActionsContainer: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '4px',
+      minWidth: '80px',
     },
   },
 

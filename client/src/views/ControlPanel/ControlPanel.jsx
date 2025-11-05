@@ -232,7 +232,7 @@ const FeaturedPostsTable = () => {
           onChange={(e) => setFilter(e.target.value)}
           className={classes.filterInput}
         />
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={`${classes.tableContainer} ${classes.mobileTableWrapper}`}>
           <Table stickyHeader aria-label="featured posts table">
             <TableHead classes={{ head: classes.columnHeader }}>
               <TableRow>
@@ -400,7 +400,7 @@ const UserInvitationRequestsTab = ({ data }) => {
             ),
           }}
         />
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={`${classes.tableContainer} ${classes.mobileTableWrapper}`}>
           <Table
             className={classes.table}
             aria-label="simple table"
@@ -578,7 +578,7 @@ const UserManagementTab = () => {
     <Card>
       <CardContent>
         <Typography className={classes.cardHeader}>User Management</Typography>
-        <TableContainer className={classes.tableContainer}>
+        <TableContainer className={`${classes.tableContainer} ${classes.mobileTableWrapper}`}>
           <Table stickyHeader aria-label="user management table">
             <TableHead classes={{ head: classes.columnHeader }}>
               <TableRow>
@@ -623,7 +623,7 @@ const ControlPanelContainer = ({ data }) => {
   }
 
   return (
-    <Grid container spacing={2} className={classes.panelContainer}>
+    <Grid container spacing={2} className={`${classes.panelContainer} ${classes.safeAreaContainer}`}>
       <Grid container className={classes.breadcrumb}>
         <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
           <Link color="inherit" href="/" style={{ display: 'flex', alignItems: 'center' }}>
