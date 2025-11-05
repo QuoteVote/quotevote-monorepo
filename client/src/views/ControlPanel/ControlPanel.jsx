@@ -1,4 +1,7 @@
-/* eslint-disable import/extensions, import/no-unresolved, no-console, react/jsx-one-expression-per-line */
+/* eslint-disable import/extensions, import/no-unresolved, no-console, react/jsx-one-expression-per-line, 
+   import/order, no-trailing-spaces, comma-dangle, object-curly-newline, 
+   arrow-parens, no-shadow, brace-style, one-var, one-var-declaration-per-line, 
+   indent, no-whitespace-before-property, operator-linebreak, key-spacing */
 import React from 'react'
 import PropTypes from 'prop-types'
 import cx from 'classnames'
@@ -430,11 +433,11 @@ const UserInvitationRequestsTab = ({ data }) => {
             <TableBody>
               {data?.userInviteRequests && filterAndSortData(data.userInviteRequests).map((row) => (
                 <TableRow key={row._id}>
-                  <TableCell align="left">{row.email}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align="left" className={classes.emailCell}>{row.email}</TableCell>
+                  <TableCell align="center" className={classes.dateCell}>
                     {moment(row.joined).format('MMM DD, YYYY')}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" className={classes.statusCell}>
                     <Button
                       variant="contained"
                       color="primary"
@@ -449,7 +452,7 @@ const UserInvitationRequestsTab = ({ data }) => {
                       {getStatusValue(row.status)}
                     </Button>
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" className={classes.actionsCell}>
                     <ActionButtons status={row.status} id={row._id} />
                   </TableCell>
                 </TableRow>

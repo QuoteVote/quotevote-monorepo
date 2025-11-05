@@ -95,11 +95,12 @@ const requestAccessStyles = (theme) => ({
       transform: 'translateY(-1px)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '70px',
-      height: '32px',
-      margin: '2px',
-      padding: '6px 12px',
-      fontSize: '12px',
+      minWidth: '60px',
+      height: '28px',
+      margin: '1px',
+      padding: '4px 8px',
+      fontSize: '11px',
+      borderRadius: '4px',
     },
   },
   pendingStatus: {
@@ -110,13 +111,10 @@ const requestAccessStyles = (theme) => ({
     height: '32px',
     textTransform: 'capitalize',
     margin: '4px',
+    padding: '6px 12px',
     fontWeight: 600,
     fontSize: '12px',
     cursor: 'default',
-    padding: '6px 12px',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
     boxShadow: '0 2px 4px rgba(255,152,0,0.3)',
     transition: 'all 0.2s ease',
     '&:hover': {
@@ -124,10 +122,11 @@ const requestAccessStyles = (theme) => ({
       boxShadow: '0 4px 8px rgba(255,152,0,0.4)',
     },
     [theme.breakpoints.down('sm')]: {
-      minWidth: '65px',
-      height: '28px',
-      fontSize: '11px',
-      padding: '4px 8px',
+      minWidth: '60px',
+      height: '24px',
+      fontSize: '10px',
+      padding: '3px 6px',
+      margin: '2px',
     },
   },
   acceptedStatus: {
@@ -322,7 +321,48 @@ const requestAccessStyles = (theme) => ({
       maxWidth: '100px',
     },
   },
-  
+
+  // Email cell specific styling for mobile
+  emailCell: {
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: '140px',
+      fontSize: '13px',
+      padding: '8px 6px',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
+      textAlign: 'left',
+    },
+    [theme.breakpoints.down('xs')]: {
+      maxWidth: '110px',
+      fontSize: '12px',
+    },
+  },
+
+  // Date cell styling for mobile
+  dateCell: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '11px',
+      padding: '8px 4px',
+      whiteSpace: 'nowrap',
+    },
+  },
+
+  // Status cell styling for mobile
+  statusCell: {
+    [theme.breakpoints.down('sm')]: {
+      padding: '8px 4px',
+    },
+  },
+
+  // Actions cell styling for mobile
+  actionsCell: {
+    [theme.breakpoints.down('sm')]: {
+      padding: '8px 4px',
+      minWidth: '90px',
+    },
+  },
+
   // Mobile-specific table styles
   mobileTableWrapper: {
     [theme.breakpoints.down('sm')]: {
@@ -341,7 +381,7 @@ const requestAccessStyles = (theme) => ({
       },
     },
   },
-  
+
   // iOS safe area handling
   safeAreaContainer: {
     [theme.breakpoints.down('sm')]: {
@@ -349,7 +389,7 @@ const requestAccessStyles = (theme) => ({
       minHeight: 'calc(100vh - env(safe-area-inset-bottom))',
     },
   },
-  
+
   // Mobile action buttons container
   mobileActionsContainer: {
     [theme.breakpoints.down('sm')]: {
