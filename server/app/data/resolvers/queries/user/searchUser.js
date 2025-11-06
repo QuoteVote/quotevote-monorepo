@@ -9,6 +9,8 @@ export const searchUser = () => {
         return [];
       }
 
+      // FIELD FILTERING: Exclude sensitive fields from search results
+      // Exclude: hash_password, password reset tokens, internal tokens, wallet info, email
       const users = await UserModel.find({
         $or: [
           {
@@ -24,7 +26,9 @@ export const searchUser = () => {
         ],
         // Remove the exclusion of current user so you can search for yourself
         // _id: { $ne: context.user._id },
-      });
+      })
+      .select('-hash_password -__v -passwordResetToken -passwordResetExpires -_wallet -email')
+      .limit(50); // Limit results to prevent abuse
 
       return users;
     } catch (error) {
