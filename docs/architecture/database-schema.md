@@ -134,37 +134,159 @@ This document outlines the conceptual schema design for the MongoDB collections 
 // schema.index({ postId: 1, userId: 1, startWordIndex: 1, endWordIndex: 1 }); // No unique constraint; allows overlapping ranges
 ```
 
-## Collection: `message_rooms` (Corresponds to `MessageRoomModel.js`)
+## Collection: `presence` (Corresponds to `PresenceModel.js`)
+
+Tracks user online status and heartbeat information for the presence-aware chat system.
 
 ```javascript
 {
   _id: ObjectId,
-  participants: { type: [ObjectId], required: true, index: true }, // Renamed from 'users'
-  postId: { type: ObjectId, index: true }, // Optional: Link if this is a post's chatroom
-  messageType: { type: String, enum: ['post_chat', 'direct_message'], required: true, index: true },
-  createdAt: { type: Date, default: Date.now },
-  // Optional cache fields for performance
-  lastMessageId: { type: ObjectId },
-  lastMessageAt: { type: Date, index: true }, // For sorting conversations
-  lastMessageSnippet: String,
-  // unreadCounts: [ { userId: ObjectId, count: Number } ] // Cache unread count per participant?
+  userId: { type: ObjectId, required: true, unique: true, index: true },
+  status: { 
+    type: String, 
+    enum: ['online', 'away', 'dnd', 'invisible', 'offline'],
+    default: 'offline',
+    required: true
+  },
+  statusMessage: { type: String, maxlength: 200, default: '' },
+  lastHeartbeat: { type: Date, required: true, index: true },
+  lastSeen: { type: Date, default: Date.now },
+  expiresAt: { type: Date, index: true } // TTL index - auto-deletes after 5 minutes
 }
 ```
 
-## Collection: `messages` (Corresponds to `MessageModel.js`)
+**Indexes:**
+- `userId`: Unique index
+- `lastHeartbeat`: Index for stale presence detection
+- `expiresAt`: TTL index (expires after 0 seconds, set to 5 minutes in future)
+
+**Key Features:**
+- Auto-expires stale presence after 5 minutes of no heartbeat
+- Status can be `online`, `away`, `dnd`, `invisible`, or `offline`
+- Custom status messages up to 200 characters
+- TTL index automatically cleans up expired records
+
+## Collection: `rosters` (Corresponds to `RosterModel.js`)
+
+Manages buddy relationships and blocking status for the chat system.
+
+```javascript
+{
+  _id: ObjectId,
+  userId: { type: ObjectId, required: true, index: true },
+  buddyId: { type: ObjectId, required: true, index: true },
+  status: { 
+    type: String, 
+    enum: ['pending', 'accepted', 'blocked'],
+    default: 'pending',
+    required: true
+  },
+  initiatedBy: { type: ObjectId, required: true },
+  created: { type: Date, default: Date.now },
+  updated: { type: Date, default: Date.now }
+}
+```
+
+**Indexes:**
+- Compound unique: `{ userId: 1, buddyId: 1 }`
+- `{ userId: 1, status: 1 }` for efficient queries
+
+**Status Flow:**
+1. `pending` - Initial buddy request
+2. `accepted` - Mutual acceptance (enables DMs)
+3. `blocked` - User has blocked the other
+
+**Reciprocal Entries:**
+- When a buddy request is accepted, a reciprocal roster entry is automatically created
+- Both entries must be `accepted` for direct messaging to work
+
+## Collection: `typingindicators` (Corresponds to `TypingIndicatorModel.js`)
+
+Tracks active typing indicators per conversation.
 
 ```javascript
 {
   _id: ObjectId,
   messageRoomId: { type: ObjectId, required: true, index: true },
-  senderId: { type: ObjectId, required: true, index: true }, // Renamed from 'userId'
-  text: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now, index: true }, // For sorting messages
-  readBy: { type: [ObjectId], default: [], index: true } // Users who have read this message
-  // title: String, // Use case unclear (from MessageModel) - Subject?
-  // reactions: [ EmbeddedReactionSubdocument ], // Optional message reactions (using ReactionModel?)
+  userId: { type: ObjectId, required: true, index: true },
+  isTyping: { type: Boolean, required: true },
+  timestamp: { type: Date, default: Date.now, index: true, expires: 10 } // TTL: 10 seconds
 }
 ```
+
+**Indexes:**
+- `messageRoomId`: Index for room queries
+- `userId`: Index for user queries
+- `timestamp`: TTL index (expires after 10 seconds)
+
+**Key Features:**
+- Auto-expires after 10 seconds of inactivity
+- Automatically cleared when message is sent
+- Used for real-time typing indicator display
+
+## Collection: `message_rooms` (Corresponds to `MessageRoomModel.js`)
+
+Message rooms for both direct messages and group chats.
+
+```javascript
+{
+  _id: ObjectId,
+  users: { type: [ObjectId], required: true, index: true },
+  postId: { type: ObjectId, index: true }, // Optional: Link if this is a post's chatroom
+  messageType: { 
+    type: String, 
+    enum: ['USER', 'POST'], 
+    required: true, 
+    index: true 
+  },
+  isDirect: { type: Boolean, default: false }, // True for two-user DMs
+  created: { type: Date, default: Date.now },
+  lastActivity: { type: Date, default: Date.now, index: true }, // For sorting conversations
+  lastSeenMessages: { 
+    type: Map, 
+    of: ObjectId, // Message ID
+    default: {} 
+  } // Tracks last message seen per user for read receipts
+}
+```
+
+**Indexes:**
+- `{ users: 1, lastActivity: -1 }` for efficient room queries
+- `postId`: Index for post-linked rooms
+
+**Room Types:**
+- **Direct Message (`USER`)**: Two-user conversations, requires mutual roster acceptance
+- **Group Chat (`POST`)**: Post-anchored group conversations, auto-adds users
+
+## Collection: `messages` (Corresponds to `MessageModel.js`)
+
+Individual messages within rooms.
+
+```javascript
+{
+  _id: ObjectId,
+  messageRoomId: { type: ObjectId, required: true, index: true },
+  userId: { type: ObjectId, required: true, index: true },
+  title: String, // Optional message title
+  text: { type: String, required: true },
+  created: { type: Date, required: true, index: true },
+  readBy: { type: [ObjectId], default: [] }, // Users who have read this message
+  readByDetailed: [{
+    userId: ObjectId,
+    readAt: Date
+  }], // Detailed read receipt tracking with timestamps
+  deliveredTo: [{
+    userId: ObjectId,
+    deliveredAt: Date
+  }], // Delivery receipts
+  deleted: { type: Boolean, default: false }
+}
+```
+
+**Read Receipt Tracking:**
+- `readBy`: Simple array of user IDs who have read the message
+- `readByDetailed`: Detailed tracking with timestamps
+- `lastSeenMessages` in MessageRoom: Tracks last message seen per user
 
 ## Collection: `notifications` (Corresponds to `NotificationModel.js`)
 
