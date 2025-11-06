@@ -87,6 +87,7 @@ export const resolver_mutations = function () {
     // Roster mutations
     addBuddy: rosterMutations.addBuddy,
     acceptBuddy: rosterMutations.acceptBuddy,
+    declineBuddy: rosterMutations.declineBuddy,
     blockBuddy: rosterMutations.blockBuddy,
     unblockBuddy: rosterMutations.unblockBuddy,
     removeBuddy: rosterMutations.removeBuddy,

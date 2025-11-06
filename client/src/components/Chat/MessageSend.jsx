@@ -99,25 +99,38 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
     skip: !user || type !== 'USER' || !selectedRoom,
   })
 
-  // Determine if user is blocked
-  const isBlocked = React.useMemo(() => {
-    if (type !== 'USER' || !selectedRoom || !rosterData?.getRoster) return false
+  // Determine blocking status: who blocked whom
+  const blockingStatus = React.useMemo(() => {
+    if (type !== 'USER' || !selectedRoom || !rosterData?.getRoster) return null
     
     const otherUserId = selectedRoom.users?.find(
       (id) => id?.toString() !== user?._id?.toString()
     )?.toString()
     
-    if (!otherUserId) return false
+    if (!otherUserId) return null
     
-    return rosterData.getRoster.some((r) => {
+    const currentUserId = user?._id?.toString()
+    
+    // Check if current user blocked the other user
+    const currentUserBlockedOther = rosterData.getRoster.some((r) => {
       const rUserId = r.userId?.toString()
       const rBuddyId = r.buddyId?.toString()
-      const currentUserId = user?._id?.toString()
-      
-      // Check if the other user has blocked the current user
+      return rUserId === currentUserId && rBuddyId === otherUserId && r.status === 'blocked'
+    })
+    
+    // Check if the other user blocked the current user
+    const otherUserBlockedCurrent = rosterData.getRoster.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
       return rUserId === otherUserId && rBuddyId === currentUserId && r.status === 'blocked'
     })
+    
+    if (currentUserBlockedOther) return 'blocker' // Current user is the blocker
+    if (otherUserBlockedCurrent) return 'blocked' // Current user is blocked
+    return null
   }, [type, selectedRoom, rosterData, user])
+  
+  const isBlocked = blockingStatus !== null
   
   // Typing indicator - only if room exists
   const { handleTyping, stopTyping } = useTypingIndicator(messageRoomId)
@@ -127,9 +140,15 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
       // Check if error is due to blocking
       const errorMessage = err.message || 'Failed to send message'
       if (errorMessage.includes('blocked') || errorMessage.includes('Cannot send message')) {
+        // Determine who blocked whom for error message
+        const isBlocker = blockingStatus === 'blocker'
+        const message = isBlocker
+          ? 'You have blocked this user. You cannot send messages to them.'
+          : 'You have been blocked by this user. You cannot send messages.'
+        
         dispatch(SET_SNACKBAR({
           open: true,
-          message: 'You have been blocked by this user. You cannot send messages.',
+          message,
           type: 'warning',
         }))
       } else {
@@ -171,9 +190,14 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
     
     // Check if user is blocked
     if (isBlocked) {
+      const isBlocker = blockingStatus === 'blocker'
+      const message = isBlocker
+        ? 'You have blocked this user. You cannot send messages to them.'
+        : 'You have been blocked by this user. You cannot send messages.'
+      
       dispatch(SET_SNACKBAR({
         open: true,
-        message: 'You have been blocked by this user. You cannot send messages.',
+        message,
         type: 'warning',
       }))
       return
@@ -255,7 +279,13 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
       )}
       <InputBase
         className={classes.input}
-        placeholder={isBlocked ? 'You cannot send messages to this user' : 'Type a message...'}
+        placeholder={
+          isBlocked
+            ? blockingStatus === 'blocker'
+              ? 'You have blocked this user'
+              : 'You cannot send messages to this user'
+            : 'Type a message...'
+        }
         inputProps={{ 'aria-label': 'message input' }}
         fullWidth
         multiline

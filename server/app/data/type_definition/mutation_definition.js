@@ -126,6 +126,9 @@ export const Mutation = `type Mutation {
   # Mutation for accepting a buddy request
     acceptBuddy(rosterId: String!): Roster
   
+  # Mutation for declining a buddy request
+    declineBuddy(rosterId: String!): DeletedRoster
+  
   # Mutation for blocking a user
     blockBuddy(buddyId: String!): Roster
   
