@@ -35,10 +35,25 @@ MongoDB collections and data models:
 - User model and relationships
 - Post model and voting structure
 - Comment and notification models
+- Chat system collections (Presence, Roster, TypingIndicator)
 - Indexing strategy
 - Data relationships and queries
 
 **Note:** This document describes the database structure in detail. Future updates will include ER diagrams and query examples.
+
+### [Chat System](./chat-system.md)
+
+Comprehensive technical overview of the presence-aware chat system:
+
+- System architecture and data flow
+- Database schema for chat collections
+- GraphQL API (queries, mutations, subscriptions)
+- Frontend components and hooks
+- Backend resolvers and services
+- Presence, typing indicators, and read receipts
+- Moderation and safety features
+
+**Note:** This is a detailed technical document covering the complete chat implementation.
 
 ## 🎯 Quick Overview
 
@@ -88,6 +103,7 @@ The following documents provide in-depth technical details:
 
 - **[Backend Architecture](./backend-architecture.md)** - Comprehensive backend overview
 - **[Frontend Architecture](./frontend-architecture.md)** - Comprehensive frontend overview
+- **[Chat System](./chat-system.md)** - Presence-aware chat system implementation
 
 These documents are technical and detailed. If you're new to Quote Vote, start with the Getting Started guide first!
 
