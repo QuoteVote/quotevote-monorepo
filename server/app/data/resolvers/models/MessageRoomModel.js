@@ -26,6 +26,12 @@ const schema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // Track last seen message per user for read receipts
+  lastSeenMessages: {
+    type: Map,
+    of: mongoose.Schema.Types.ObjectId, // Message ID
+    default: {},
+  },
 });
 
 // Index for efficient queries

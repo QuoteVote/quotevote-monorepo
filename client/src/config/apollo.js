@@ -39,14 +39,38 @@ const authLink = new ApolloLink((operation, forward) => {
   return forward(operation)
 })
 
-// Create a WebSocket link:
+// Create a WebSocket link with enhanced reconnection handling:
 const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
   url: getGraphqlWsServerUrl(),
   connectionParams: () => ({
     authToken: `Bearer ${localStorage.getItem('token')}`,
   }),
-  retryAttempts: 5,
-  shouldRetry: () => true,
+  retryAttempts: Infinity, // Retry indefinitely
+  shouldRetry: (errOrCloseEvent) => {
+    // Retry on any error or close event
+    console.log('[WebSocket] Retry attempt:', errOrCloseEvent);
+    return true;
+  },
+  // Exponential backoff for reconnection
+  retryWait: async function* retryWait() {
+    for (let i = 0; ; i++) {
+      yield new Promise((resolve) => {
+        const delay = Math.min(1000 * Math.pow(2, i), 30000); // Max 30 seconds
+        setTimeout(() => resolve(), delay);
+      });
+    }
+  },
+  on: {
+    opened: () => {
+      console.log('[WebSocket] Connection opened');
+    },
+    closed: () => {
+      console.log('[WebSocket] Connection closed');
+    },
+    error: (error) => {
+      console.error('[WebSocket] Connection error:', error);
+    },
+  },
 })) : null
 
 // Custom link to handle ObjectID serialization

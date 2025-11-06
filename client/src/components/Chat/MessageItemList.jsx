@@ -41,6 +41,9 @@ export default function MessageItemList() {
   } = useQuery(GET_ROOM_MESSAGES, {
     variables: { messageRoomId },
     skip: !messageRoomId,
+    // Poll every 3 seconds to update read receipts in real-time
+    pollInterval: messageRoomId ? 3000 : 0,
+    fetchPolicy: 'cache-and-network',
   })
 
   // Fetch full post with creator info if this is a POST type room
@@ -49,15 +52,32 @@ export default function MessageItemList() {
     skip: !postId || messageType !== 'POST',
   })
 
-  useSubscription(
+  const { data: subscriptionData, error: subscriptionError } = useSubscription(
     NEW_MESSAGE_SUBSCRIPTION,
     messageRoomId ? {
       variables: { messageRoomId },
-      onSubscriptionData: async () => {
-        await refetch()
+      onSubscriptionData: async ({ subscriptionData: subData }) => {
+        if (subData?.data?.message) {
+          // Refetch messages to get the latest list
+          await refetch()
+        }
+      },
+      onError: (err) => {
+        console.error('[Message Subscription] Error:', err)
+        // Try to refetch on error to ensure we have the latest messages
+        refetch().catch((refetchErr) => {
+          console.error('[Message Subscription] Refetch error:', refetchErr)
+        })
       },
     } : { skip: true },
   )
+
+  // Log subscription status for debugging
+  React.useEffect(() => {
+    if (subscriptionError) {
+      console.error('[Message Subscription] Subscription error:', subscriptionError)
+    }
+  }, [subscriptionError])
 
   if (!messageRoomId) {
     return (

@@ -17,6 +17,7 @@ import {
 
 import { schema } from './data/schema';
 import requireAuth from '~/utils/requireAuth';
+import { startPresenceCleanup } from './data/utils/presence/cleanupStalePresence';
 
 if (process.env.NODE_ENV === 'dev') {
   dotenvConfig.config({ path: './.env' });
@@ -172,6 +173,8 @@ async function startServer() {
 
   httpServer.listen({ port: GRAPHQL_PORT }, () => {
     console.log(`Apollo Server on http://localhost:${GRAPHQL_PORT}/graphql`);
+    // Start presence cleanup job
+    startPresenceCleanup();
   });
 }
 
