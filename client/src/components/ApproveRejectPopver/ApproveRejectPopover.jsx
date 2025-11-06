@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 
 import { useQuery } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'
+import { useSelector } from 'react-redux'
 
 import Popover from '@material-ui/core/Popover'
 import List from '@material-ui/core/List'
@@ -30,7 +31,14 @@ const useStyles = makeStyles((theme) => ({
 const MAX_DISPLAY = 5;
 const ApproveRejectPopover = (props) => {
   const classes = useStyles()
-  const { loading, data } = useQuery(GET_USERS)
+  // Get admin status from user state
+  const { admin } = useSelector((state) => state.user.data || {})
+  
+  // Query to get user details (admin only - skip for non-admin users)
+  const { loading, data, error } = useQuery(GET_USERS, {
+    skip: !admin, // Only query if user is admin
+    errorPolicy: 'all', // Don't throw error, handle gracefully
+  })
   const {
     anchorEl,
     handlePopoverClose,
@@ -43,10 +51,81 @@ const ApproveRejectPopover = (props) => {
   const safeTypeArray = Array.isArray(typeArray) ? typeArray : []
   const typeLabel = type === 'approved' ? 'approved' : type === 'rejected' ? 'rejected' : '';
   let userList = []
-  if (data) {
+  if (data && data.users) {
     userList = data.users.filter((user) => safeTypeArray.includes(user._id))
   }
   const displayList = userList.slice(0, MAX_DISPLAY)
+  
+  // If user is not admin, show limited info
+  if (!admin) {
+    return (
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <List
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+        >
+          <ListItem>
+            <ListItemText 
+              primary={`${safeTypeArray.length} user(s) ${typeLabel} this post.`}
+              secondary="Admin access required to view user details."
+            />
+          </ListItem>
+        </List>
+      </Popover>
+    )
+  }
+  
+  // If there's an error, show error message
+  if (error) {
+    return (
+      <Popover
+        id="mouse-over-popover"
+        className={classes.popover}
+        classes={{
+          paper: classes.paper,
+        }}
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <List
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+        >
+          <ListItem>
+            <ListItemText primary="Unable to load user details." />
+          </ListItem>
+        </List>
+      </Popover>
+    )
+  }
   const renderListItems = () => {
     if (displayList.length > 0) {
       return displayList.map((user) => (
