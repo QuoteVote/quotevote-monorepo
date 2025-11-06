@@ -155,9 +155,11 @@ function PostPage({ postId }) {
 
   let messageRoomId
   let title
+  let currentPostId
   if (post) {
     messageRoomId = postData.post.messageRoom?._id
     title = postData.post.title
+    currentPostId = post._id || postData.post._id
   }
 
   const {
@@ -293,7 +295,7 @@ function PostPage({ postId }) {
               />
             </div>
             <div className={classes.mobileChatInputContainer}>
-              <PostChatSend messageRoomId={messageRoomId} title={title} />
+              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
             </div>
           </div>
         </div>
@@ -343,7 +345,7 @@ function PostPage({ postId }) {
             />
           </div>
           <div className={classes.desktopChatInputContainer}>
-            <PostChatSend messageRoomId={messageRoomId} title={title} />
+            <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
           </div>
         </div>
       </div>

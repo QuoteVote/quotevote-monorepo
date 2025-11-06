@@ -64,7 +64,7 @@ function PostChatSend(props) {
   const classes = useStyles()
   const dispatch = useDispatch()
   const commentInputRef = useRef(null)
-  const { messageRoomId, title } = props
+  const { messageRoomId, title, postId } = props
   const type = 'POST'
   const [text, setText] = useState('')
   const [error, setError] = useState(null) // eslint-disable-line no-unused-vars
@@ -95,7 +95,8 @@ function PostChatSend(props) {
     const message = {
       title,
       type,
-      messageRoomId,
+      messageRoomId: messageRoomId || null, // null if room doesn't exist yet
+      componentId: postId || null, // postId for creating room if needed
       text: text.trim(),
     }
 
@@ -191,6 +192,7 @@ function PostChatSend(props) {
 PostChatSend.propTypes = {
   messageRoomId: PropTypes.string,
   title: PropTypes.string,
+  postId: PropTypes.string,
 }
 
 export default PostChatSend

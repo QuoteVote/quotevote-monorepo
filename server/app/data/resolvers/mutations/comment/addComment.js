@@ -4,6 +4,7 @@ import PostModel from '../../models/PostModel';
 import { updateTrending } from '../../utils/post_utils';
 import { logActivity } from '../../utils/activities_utils';
 import { addNotification } from '~/resolvers/utils/notifications/addNotification';
+import { addUserToPostRoom } from '../../utils/message/addUserToPostRoom';
 
 export const addComment = (pubsub) => {
   return async (_, args) => {
@@ -18,6 +19,15 @@ export const addComment = (pubsub) => {
       await updateTrending(comment.postId);
 
       const post = await PostModel.findById(comment.postId);
+
+      // Add commenting user to the post's message room (if it exists or create it)
+      try {
+        await addUserToPostRoom(comment.postId, comment.userId);
+        logger.info(`Added user ${comment.userId} to post ${comment.postId} message room`);
+      } catch (roomError) {
+        // Log error but don't fail the comment creation
+        logger.error(`Error adding user to post message room: ${roomError.message}`);
+      }
 
       await logActivity(
         'COMMENTED',
