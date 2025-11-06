@@ -14,7 +14,7 @@ import BlockIcon from '@material-ui/icons/Block'
 import LinkIcon from '@material-ui/icons/Link'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { useHistory } from 'react-router-dom'
 import { includes } from 'lodash'
@@ -128,16 +128,31 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     return true
   }, [dispatch])
 
-  // Query to get user details for tooltips
-  const { loading: usersLoading, data: usersData } = useQuery(GET_USERS)
+  // Get admin status from user state
+  const { admin } = useSelector((state) => state.user.data || {})
+  
+  // Query to get user details for tooltips (admin only - skip for non-admin users)
+  const { loading: usersLoading, data: usersData, error: usersError } = useQuery(GET_USERS, {
+    skip: !admin, // Only query if user is admin
+    errorPolicy: 'all', // Don't throw error, handle gracefully
+  })
 
   const getRejectTooltipContent = () => {
     if (!post.rejectedBy || post.rejectedBy.length === 0) {
       return 'No users rejected this post.'
     }
 
+    // If user is not admin, show limited info
+    if (!admin) {
+      return `${post.rejectedBy.length} user(s) rejected this post.`
+    }
+
     if (usersLoading || !usersData) {
       return 'Loading...'
+    }
+
+    if (usersError) {
+      return 'Unable to load user details.'
     }
 
     const rejectedUsers = usersData.users.filter((user) =>
@@ -169,8 +184,17 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       return 'No users approved this post.'
     }
 
+    // If user is not admin, show limited info
+    if (!admin) {
+      return `${post.approvedBy.length} user(s) approved this post.`
+    }
+
     if (usersLoading || !usersData) {
       return 'Loading...'
+    }
+
+    if (usersError) {
+      return 'Unable to load user details.'
     }
 
     const approvedUsers = usersData.users.filter((user) =>

@@ -27,8 +27,8 @@ export const USER_INVITE_REQUESTS = gql`
 `
 
 export const GET_USERS = gql`
-  query users {
-    users {
+  query users($limit: Int, $offset: Int) {
+    users(limit: $limit, offset: $offset) {
       _id
       name
       username
