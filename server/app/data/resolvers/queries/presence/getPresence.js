@@ -1,6 +1,30 @@
 import Presence from '../../models/PresenceModel';
+import RosterModel from '../../models/RosterModel';
 
-export const getPresence = async (root, { userId }) => {
+export const getPresence = async (root, { userId }, context) => {
+  const { user } = context;
+  
+  // Check if either user has blocked the other - don't show presence if blocked
+  if (user && userId) {
+    const blocked = await RosterModel.findOne({
+      $or: [
+        { userId: user._id, buddyId: userId, status: 'blocked' },
+        { userId: userId, buddyId: user._id, status: 'blocked' },
+      ],
+    });
+
+    if (blocked) {
+      // Return offline status for blocked users (hide their presence)
+      return {
+        userId,
+        status: 'offline',
+        statusMessage: '',
+        lastSeen: null,
+        lastHeartbeat: null,
+      };
+    }
+  }
+
   const presence = await Presence.findOne({ userId });
 
   if (!presence) {

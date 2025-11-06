@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import MessageRoomModel from '~/resolvers/models/MessageRoomModel';
 import MessageModel from '~/resolvers/models/MessageModel';
+import RosterModel from '~/resolvers/models/RosterModel';
 
 export const getUserChatRooms = () => {
   return async (_, args, context) => {
@@ -53,6 +54,14 @@ export const getUserChatRooms = () => {
           isPostCreator: {
             $eq: ['$postDetails.userId', mongoose.Types.ObjectId(user._id)],
           },
+          // Get the most recent message timestamp for sorting
+          lastMessageTime: {
+            $cond: {
+              if: { $gt: [{ $size: '$messages' }, 0] },
+              then: { $max: '$messages.created' },
+              else: '$lastActivity', // Fall back to lastActivity if no messages
+            },
+          },
         },
       },
       {
@@ -85,6 +94,7 @@ export const getUserChatRooms = () => {
           created: 1,
           postId: 1,
           lastActivity: 1,
+          lastMessageTime: 1,
           postDetails: {
             _id: 1,
             title: 1,
@@ -94,10 +104,18 @@ export const getUserChatRooms = () => {
           },
         },
       },
+      // Sort by last message time (most recent first), then by lastActivity as fallback
+      {
+        $sort: {
+          lastMessageTime: -1,
+          lastActivity: -1,
+        },
+      },
     ]);
     
     // Format postDetails for GraphQL response
     // Aggregate returns plain objects, so we just need to format the postDetails
+    // Note: We no longer filter out blocked chats - both users can see their chat history
     const formattedRooms = allRooms.map((room) => {
       // Format postDetails if it exists
       if (room.postDetails && room.postDetails._id) {

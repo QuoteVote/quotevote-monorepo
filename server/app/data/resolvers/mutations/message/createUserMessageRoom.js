@@ -13,20 +13,6 @@ export const createUserMessageRoom = async (args, context) => {
     const userId = user._id;
     const recipientId = componentId;
 
-    // Check for mutual roster acceptance (buddy requirement for DMs)
-    const mutualRoster = await RosterModel.findOne({
-      $or: [
-        { userId, buddyId: recipientId, status: 'accepted' },
-        { userId: recipientId, buddyId: userId, status: 'accepted' },
-      ],
-    });
-
-    // Allow admins to bypass roster check
-    const currentUser = await UserModel.findById(userId);
-    if (!mutualRoster && !currentUser.admin) {
-      throw new Error('Cannot send DM: must be mutual buddies');
-    }
-
     // Check if either user has blocked the other
     const blocked = await RosterModel.findOne({
       $or: [

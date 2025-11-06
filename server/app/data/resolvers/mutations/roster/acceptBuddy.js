@@ -26,29 +26,38 @@ export const acceptBuddy = async (root, { rosterId }, context) => {
   rosterEntry.updated = new Date();
   await rosterEntry.save();
 
-  // Create reciprocal roster entry
-  const reciprocalExists = await Roster.findOne({
+  // Create or update reciprocal roster entry
+  let reciprocalRoster = await Roster.findOne({
     userId: user._id,
     buddyId: rosterEntry.userId,
   });
 
-  if (!reciprocalExists) {
-    await Roster.create({
+  if (!reciprocalRoster) {
+    reciprocalRoster = await Roster.create({
       userId: user._id,
       buddyId: rosterEntry.userId,
       status: 'accepted',
       initiatedBy: rosterEntry.initiatedBy,
     });
   } else {
-    reciprocalExists.status = 'accepted';
-    await reciprocalExists.save();
+    reciprocalRoster.status = 'accepted';
+    reciprocalRoster.updated = new Date();
+    await reciprocalRoster.save();
   }
 
-  // Notify the initiator
+  // Notify the initiator (original sender) about the acceptance
   await pubsub.publish('rosterEvent', {
     roster: {
       ...rosterEntry.toObject(),
       userId: rosterEntry.userId.toString(),
+    },
+  });
+
+  // Also notify the accepter (current user) about the reciprocal entry
+  await pubsub.publish('rosterEvent', {
+    roster: {
+      ...reciprocalRoster.toObject(),
+      userId: user._id.toString(),
     },
   });
 

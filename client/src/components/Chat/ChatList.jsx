@@ -164,11 +164,16 @@ const ChatList = ({ search, filterType }) => {
       })
     : filteredRooms;
 
-  // Sort by created date
+  // Sort by last message time (most recent first), fallback to lastActivity, then created
   const sortedRooms = [...searchFiltered].sort((a, b) => {
-    const aTime = new Date(a.created).getTime();
-    const bTime = new Date(b.created).getTime();
-    return bTime - aTime;
+    // Use lastMessageTime if available, otherwise use lastActivity, then created
+    const aTime = a.lastMessageTime 
+      ? new Date(a.lastMessageTime).getTime()
+      : (a.lastActivity ? new Date(a.lastActivity).getTime() : new Date(a.created).getTime());
+    const bTime = b.lastMessageTime 
+      ? new Date(b.lastMessageTime).getTime()
+      : (b.lastActivity ? new Date(b.lastActivity).getTime() : new Date(b.created).getTime());
+    return bTime - aTime; // Most recent first
   });
 
   const handleRoomClick = (room) => {

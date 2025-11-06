@@ -1,7 +1,21 @@
 import { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Avatar, Grid, IconButton, Typography, Fade } from '@material-ui/core'
+import { 
+  Avatar, 
+  IconButton, 
+  Typography, 
+  Fade, 
+  Menu, 
+  MenuItem, 
+  ListItemIcon, 
+  ListItemText, 
+  Divider 
+} from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import SettingsIcon from '@material-ui/icons/Settings'
+import BlockIcon from '@material-ui/icons/Block'
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
+import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import MessageSend from './MessageSend'
@@ -10,8 +24,10 @@ import TypingIndicator from './TypingIndicator'
 import { SELECTED_CHAT_ROOM } from '../../store/chat'
 import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
-import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES } from '../../graphql/query'
+import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES, GET_ROSTER } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
+import { useRosterManagement } from '../../hooks/useRosterManagement'
+import { SET_SNACKBAR as SET_UI_SNACKBAR } from '../../store/ui'
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -86,6 +102,31 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(0.25),
     fontWeight: 400,
   },
+  settingsButton: {
+    padding: theme.spacing(0.75),
+    color: theme.palette.text.secondary,
+    borderRadius: '50%',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+      color: '#52b274',
+      transform: 'scale(1.05)',
+    },
+  },
+  menuItem: {
+    padding: theme.spacing(1.25, 2),
+    fontSize: '0.875rem',
+  },
+  menuItemDanger: {
+    color: theme.palette.error.main,
+    '&:hover': {
+      backgroundColor: theme.palette.error.light + '20',
+    },
+  },
+  menuItemIcon: {
+    minWidth: 40,
+    color: 'inherit',
+  },
   content: {
     flex: 1,
     overflow: 'hidden',
@@ -129,13 +170,113 @@ const useStyles = makeStyles((theme) => ({
 function Header() {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const currentUser = useSelector((state) => state.user?.data)
+  const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const { blockBuddy, unblockBuddy, removeBuddy } = useRosterManagement()
+  const { refetch: refetchChatRooms } = useQuery(GET_CHAT_ROOMS, { skip: true })
+  const { data: rosterData } = useQuery(GET_ROSTER, { skip: !currentUser })
+  
+  const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
+  
+  // Get the other user's ID for USER type rooms
+  const otherUserId = messageType === 'USER' && users?.length === 2
+    ? users.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
+    : null
+
+  // Check if user is blocked
+  const isBlocked = otherUserId && rosterData?.getRoster?.some((r) => {
+    const rUserId = r.userId?.toString()
+    const rBuddyId = r.buddyId?.toString()
+    const currentUserId = currentUser?._id?.toString()
+    const otherId = otherUserId.toString()
+    
+    return (rUserId === currentUserId && rBuddyId === otherId && r.status === 'blocked') ||
+           (rUserId === otherId && rBuddyId === currentUserId && r.status === 'blocked')
+  })
+
   const handleBack = () => {
     dispatch(SELECTED_CHAT_ROOM(null))
   }
 
-  const { title, avatar, messageType } = useSelector(
-    (state) => state.chat?.selectedRoom?.room || {},
-  )
+  const handleSettingsClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleBlockUser = async () => {
+    if (!otherUserId) return
+    
+    try {
+      if (isBlocked) {
+        await unblockBuddy(otherUserId)
+        // Refetch chat rooms to update the list (chat will reappear after unblocking)
+        await refetchChatRooms()
+        dispatch(SET_UI_SNACKBAR({
+          open: true,
+          message: 'User unblocked successfully',
+          type: 'success',
+        }))
+      } else {
+        await blockBuddy(otherUserId)
+        // Refetch chat rooms to update the list (chat remains visible for both users)
+        await refetchChatRooms()
+        dispatch(SET_UI_SNACKBAR({
+          open: true,
+          message: 'User blocked successfully. Chat history is preserved, but they cannot send new messages.',
+          type: 'success',
+        }))
+        // Keep chat open so both users can see their chat history
+        // Only close the menu
+      }
+      handleMenuClose()
+    } catch (error) {
+      dispatch(SET_UI_SNACKBAR({
+        open: true,
+        message: error.message || `Failed to ${isBlocked ? 'unblock' : 'block'} user`,
+        type: 'danger',
+      }))
+    }
+  }
+
+  const handleRemoveBuddy = async () => {
+    if (!otherUserId) return
+    
+    try {
+      await removeBuddy(otherUserId)
+      // Refetch chat rooms to update the list
+      await refetchChatRooms()
+      dispatch(SET_UI_SNACKBAR({
+        open: true,
+        message: 'Buddy removed successfully',
+        type: 'success',
+      }))
+      handleMenuClose()
+    } catch (error) {
+      dispatch(SET_UI_SNACKBAR({
+        open: true,
+        message: error.message || 'Failed to remove buddy',
+        type: 'danger',
+      }))
+    }
+  }
+
+  const handleDeleteChat = () => {
+    // For now, just close the chat
+    // In the future, this could archive or delete the chat room
+    dispatch(SELECTED_CHAT_ROOM(null))
+    dispatch(SET_UI_SNACKBAR({
+      open: true,
+      message: 'Chat closed',
+      type: 'info',
+    }))
+    handleMenuClose()
+  }
+
+  const menuOpen = Boolean(anchorEl)
 
   return (
     <Fade in timeout={300}>
@@ -161,6 +302,70 @@ function Header() {
               {messageType === 'USER' ? 'Direct Message' : 'Group Chat'}
             </Typography>
           </div>
+
+          <IconButton 
+            onClick={handleSettingsClick} 
+            className={classes.settingsButton} 
+            size="small"
+            aria-label="Chat settings"
+          >
+            <SettingsIcon fontSize="small" />
+          </IconButton>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={menuOpen}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            PaperProps={{
+              style: {
+                minWidth: 200,
+                borderRadius: 12,
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+              },
+            }}
+          >
+            {messageType === 'USER' && otherUserId && (
+              <>
+                <MenuItem 
+                  onClick={handleBlockUser} 
+                  className={`${classes.menuItem} ${classes.menuItemDanger}`}
+                >
+                  <ListItemIcon className={classes.menuItemIcon}>
+                    <BlockIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
+                </MenuItem>
+                <MenuItem 
+                  onClick={handleRemoveBuddy} 
+                  className={`${classes.menuItem} ${classes.menuItemDanger}`}
+                >
+                  <ListItemIcon className={classes.menuItemIcon}>
+                    <RemoveCircleIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Remove Buddy" />
+                </MenuItem>
+                <Divider />
+              </>
+            )}
+            <MenuItem 
+              onClick={handleDeleteChat} 
+              className={`${classes.menuItem} ${classes.menuItemDanger}`}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Close Chat" />
+            </MenuItem>
+          </Menu>
         </div>
       </div>
     </Fade>

@@ -161,6 +161,8 @@ export const GET_CHAT_ROOMS = gql`
       users
       messageType
       created
+      lastActivity
+      lastMessageTime
       title
       avatar
       unreadMessages

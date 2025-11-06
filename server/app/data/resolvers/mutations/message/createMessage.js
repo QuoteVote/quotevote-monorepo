@@ -7,6 +7,7 @@ import { pubsub } from '~/resolvers/subscriptions';
 import { MUTATION_CREATED } from '~/resolvers/constants/common';
 import MessageRoomModel from '~/resolvers/models/MessageRoomModel';
 import TypingModel from '~/resolvers/models/TypingModel';
+import RosterModel from '~/resolvers/models/RosterModel';
 import { checkRateLimit } from '~/utils/rateLimiter';
 
 // eslint-disable-next-line import/prefer-default-export
@@ -39,6 +40,27 @@ export const createMessage = () => {
       }
     } else {
       messageRoom = await MessageRoomModel.findById(messageRoomId);
+      
+      // For existing USER type rooms (DMs), check for blocking and mutual acceptance
+      if (messageRoom && messageRoom.messageType === 'USER' && messageRoom.users?.length === 2) {
+        const otherUserId = messageRoom.users.find((id) => id.toString() !== user._id.toString());
+        
+        if (otherUserId) {
+          // Check if either user has blocked the other
+          const blocked = await RosterModel.findOne({
+            $or: [
+              { userId: user._id, buddyId: otherUserId, status: 'blocked' },
+              { userId: otherUserId, buddyId: user._id, status: 'blocked' },
+            ],
+          });
+
+          if (blocked) {
+            throw new UserInputError('Cannot send message: user is blocked', {
+              invalidArgs: Object.keys(args),
+            });
+          }
+        }
+      }
     }
 
     if (!messageRoom) {

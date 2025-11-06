@@ -19,8 +19,9 @@ import { Avatar } from '@material-ui/core'
 import { useQuery } from '@apollo/react-hooks'
 import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'
-import { GET_CHAT_ROOM } from '../../graphql/query'
+import { GET_CHAT_ROOM, GET_ROSTER } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import { SET_SNACKBAR } from '../../store/ui'
 import ProfileBadge, { ProfileBadgeContainer } from '../Profile/ProfileBadge'
 
 const useStyles = makeStyles((theme) => ({
@@ -86,8 +87,33 @@ export default function ProfileHeader(props) {
     fetchPolicy: 'network-only',
   })
 
+  // Check if current user is blocked by the profile user
+  const { data: rosterData } = useQuery(GET_ROSTER, {
+    skip: !loggedInUserId || sameUser,
+  })
+
+  const isBlockedByUser = rosterData?.getRoster?.some((r) => {
+    const rUserId = r.userId?.toString()
+    const rBuddyId = r.buddyId?.toString()
+    const profileUserId = profileUser._id?.toString()
+    const currentUserId = loggedInUserId?.toString()
+    
+    // Check if profile user has blocked current user
+    return rUserId === profileUserId && rBuddyId === currentUserId && r.status === 'blocked'
+  })
+
   const room = !loading && data && data.messageRoom
   const handleMessageUser = async () => {
+    // Check if current user is blocked by the profile user
+    if (isBlockedByUser) {
+      dispatch(SET_SNACKBAR({
+        open: true,
+        message: 'You have been blocked by this user. You cannot send messages.',
+        type: 'warning',
+      }))
+      return
+    }
+
     dispatch(
       SELECTED_CHAT_ROOM({
         room,

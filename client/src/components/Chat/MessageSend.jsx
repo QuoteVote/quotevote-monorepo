@@ -3,13 +3,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useMutation } from '@apollo/react-hooks'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING, SELECTED_CHAT_ROOM } from '../../store/chat'
+import { SET_SNACKBAR } from '../../store/ui'
 import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
 import SendIcon from '@material-ui/icons/Send'
 import { Typography } from '@material-ui/core'
-import { GET_ROOM_MESSAGES, GET_CHAT_ROOMS } from '../../graphql/query'
+import { GET_ROOM_MESSAGES, GET_CHAT_ROOMS, GET_ROSTER } from '../../graphql/query'
 import { SEND_MESSAGE } from '../../graphql/mutations'
+import { useQuery } from '@apollo/react-hooks'
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useTypingIndicator } from '../../hooks/useTypingIndicator'
 
@@ -89,14 +91,54 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
   const [text, setText] = React.useState('')
   const [error, setError] = React.useState(null)
   const user = useSelector((state) => state.user?.data)
+  const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
   const ensureAuth = useGuestGuard()
+  
+  // Check if current user is blocked (only for USER type rooms)
+  const { data: rosterData } = useQuery(GET_ROSTER, {
+    skip: !user || type !== 'USER' || !selectedRoom,
+  })
+
+  // Determine if user is blocked
+  const isBlocked = React.useMemo(() => {
+    if (type !== 'USER' || !selectedRoom || !rosterData?.getRoster) return false
+    
+    const otherUserId = selectedRoom.users?.find(
+      (id) => id?.toString() !== user?._id?.toString()
+    )?.toString()
+    
+    if (!otherUserId) return false
+    
+    return rosterData.getRoster.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      const currentUserId = user?._id?.toString()
+      
+      // Check if the other user has blocked the current user
+      return rUserId === otherUserId && rBuddyId === currentUserId && r.status === 'blocked'
+    })
+  }, [type, selectedRoom, rosterData, user])
   
   // Typing indicator - only if room exists
   const { handleTyping, stopTyping } = useTypingIndicator(messageRoomId)
   const [createMessage, { loading }] = useMutation(SEND_MESSAGE, {
     onError: (err) => {
       console.error('Error sending message:', err)
-      setError(err.message || 'Failed to send message')
+      // Check if error is due to blocking
+      const errorMessage = err.message || 'Failed to send message'
+      if (errorMessage.includes('blocked') || errorMessage.includes('Cannot send message')) {
+        dispatch(SET_SNACKBAR({
+          open: true,
+          message: 'You have been blocked by this user. You cannot send messages.',
+          type: 'warning',
+        }))
+      } else {
+        dispatch(SET_SNACKBAR({
+          open: true,
+          message: errorMessage,
+          type: 'danger',
+        }))
+      }
       dispatch(CHAT_SUBMITTING(false))
     },
     onCompleted: (data) => {
@@ -126,6 +168,16 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
+    
+    // Check if user is blocked
+    if (isBlocked) {
+      dispatch(SET_SNACKBAR({
+        open: true,
+        message: 'You have been blocked by this user. You cannot send messages.',
+        type: 'warning',
+      }))
+      return
+    }
     
     // Stop typing indicator when sending
     stopTyping()
@@ -197,20 +249,22 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
   return (
     <Paper className={classes.root} elevation={0}>
       {error && (
-        <Typography variant="caption" color="error" style={{ marginBottom: 8 }}>
-          Unable to send a message.
+        <Typography variant="caption" color="error" style={{ marginBottom: 8, display: 'block', width: '100%' }}>
+          {error}
         </Typography>
       )}
       <InputBase
         className={classes.input}
-        placeholder="Type a message..."
+        placeholder={isBlocked ? 'You cannot send messages to this user' : 'Type a message...'}
         inputProps={{ 'aria-label': 'message input' }}
         fullWidth
         multiline
         rowsMin={1}
         rowsMax={5}
         value={text}
+        disabled={isBlocked}
         onChange={(event) => {
+          if (isBlocked) return
           const { value } = event.target
           setText(value)
           // Trigger typing indicator
@@ -221,6 +275,7 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
           }
         }}
         onKeyPress={(event) => {
+          if (isBlocked) return
           if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault()
             handleSubmit()
@@ -230,7 +285,7 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
       <IconButton
         type="submit"
         aria-label="Send"
-        disabled={loading || !text.trim()}
+        disabled={loading || !text.trim() || isBlocked}
         onClick={handleSubmit}
         className={classes.sendButton}
         size="small"
