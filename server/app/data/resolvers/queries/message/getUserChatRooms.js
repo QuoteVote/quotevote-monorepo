@@ -35,6 +35,18 @@ export const getUserChatRooms = () => {
         },
       },
       {
+        $lookup: {
+          from: 'comments', // MongoDB collection name (lowercase plural of 'Comments' model)
+          localField: 'postId',
+          foreignField: 'postId',
+          as: 'postComments',
+          pipeline: [
+            // Only include comments that have a postId (not null/undefined)
+            { $match: { postId: { $exists: true, $ne: null } } },
+          ],
+        },
+      },
+      {
         $addFields: {
           hasMessages: { $gt: [{ $size: '$messages' }, 0] },
           userHasMessages: {
@@ -45,6 +57,25 @@ export const getUserChatRooms = () => {
                     input: '$messages',
                     as: 'msg',
                     cond: { $eq: ['$$msg.userId', mongoose.Types.ObjectId(user._id)] },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+          userHasCommented: {
+            $gt: [
+              {
+                $size: {
+                  $filter: {
+                    input: '$postComments',
+                    as: 'comment',
+                    cond: {
+                      $and: [
+                        { $eq: ['$$comment.userId', mongoose.Types.ObjectId(user._id)] },
+                        { $ne: ['$$comment.deleted', true] }, // Exclude deleted comments
+                      ],
+                    },
                   },
                 },
               },
@@ -71,7 +102,8 @@ export const getUserChatRooms = () => {
             { messageType: { $ne: 'POST' } },
             // POST rooms - only show if:
             // 1. User is the post creator, OR
-            // 2. User has sent messages in the room (has participated)
+            // 2. User has sent messages in the room, OR
+            // 3. User has commented on the post
             {
               $and: [
                 { messageType: 'POST' },
@@ -79,6 +111,7 @@ export const getUserChatRooms = () => {
                   $or: [
                     { isPostCreator: true },
                     { userHasMessages: true },
+                    { userHasCommented: true },
                   ],
                 },
               ],
