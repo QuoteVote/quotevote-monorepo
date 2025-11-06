@@ -37,3 +37,53 @@ export const NEW_NOTIFICATION_SUBSCRIPTION = gql`
     }
   }
 `
+
+// ===== Presence Subscriptions =====
+export const PRESENCE_SUBSCRIPTION = gql`
+  subscription presence($userId: String) {
+    presence(userId: $userId) {
+      userId
+      status
+      statusMessage
+      lastSeen
+    }
+  }
+`
+
+// ===== Roster Subscriptions =====
+export const ROSTER_SUBSCRIPTION = gql`
+  subscription roster($userId: String!) {
+    roster(userId: $userId) {
+      _id
+      userId
+      buddyId
+      status
+      initiatedBy
+      created
+      updated
+      buddy {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+// ===== Typing Subscriptions =====
+export const TYPING_SUBSCRIPTION = gql`
+  subscription typing($messageRoomId: String!) {
+    typing(messageRoomId: $messageRoomId) {
+      messageRoomId
+      userId
+      user {
+        _id
+        name
+        username
+      }
+      isTyping
+      timestamp
+    }
+  }
+`

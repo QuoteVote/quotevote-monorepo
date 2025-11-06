@@ -6,6 +6,8 @@ import { createPostMessageRoom } from '~/resolvers/mutations/message/createPostM
 import { pubsub } from '~/resolvers/subscriptions';
 import { MUTATION_CREATED } from '~/resolvers/constants/common';
 import MessageRoomModel from '~/resolvers/models/MessageRoomModel';
+import TypingModel from '~/resolvers/models/TypingModel';
+import { checkRateLimit } from '~/utils/rateLimiter';
 
 // eslint-disable-next-line import/prefer-default-export
 export const createMessage = () => {
@@ -18,6 +20,13 @@ export const createMessage = () => {
 
     const { user } = context;
     const userDetails = await UserModel.findById(user._id);
+
+    // Rate limiting: 10 messages per minute
+    try {
+      checkRateLimit(user._id.toString(), 'sendMessage', 10, 60000);
+    } catch (error) {
+      throw new UserInputError(error.message);
+    }
 
     // Find or create a message room.
     let messageRoom;
@@ -46,6 +55,14 @@ export const createMessage = () => {
 
     // eslint-disable-next-line no-underscore-dangle
     messageRoomId = messageRoom._id;
+
+    // Clear typing indicator when message is sent
+    await TypingModel.deleteOne({ messageRoomId, userId: user._id });
+
+    // Update room's last activity
+    messageRoom.lastActivity = new Date();
+    await messageRoom.save();
+
     const userMessage = await new MessageModel({
       messageRoomId,
       userId: user._id,

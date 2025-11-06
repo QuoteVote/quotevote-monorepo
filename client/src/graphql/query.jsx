@@ -164,6 +164,14 @@ export const GET_CHAT_ROOMS = gql`
       title
       avatar
       unreadMessages
+      postId
+      postDetails {
+        _id
+        title
+        text
+        userId
+        url
+      }
     }
   }
 `
@@ -179,6 +187,7 @@ export const GET_ROOM_MESSAGES = gql`
       text
       type
       created
+      readBy
       user {
         _id
         name
@@ -773,6 +782,81 @@ export const SEARCH_USERNAMES = gql`
       username
       avatar
       contributorBadge
+    }
+  }
+`
+
+// ===== Presence Queries =====
+export const GET_PRESENCE = gql`
+  query getPresence($userId: String!) {
+    getPresence(userId: $userId) {
+      userId
+      status
+      statusMessage
+      lastSeen
+      lastHeartbeat
+    }
+  }
+`
+
+export const GET_BUDDY_LIST = gql`
+  query getBuddyList {
+    getBuddyList {
+      user {
+        _id
+        name
+        username
+        avatar
+        contributorBadge
+      }
+      presence {
+        status
+        statusMessage
+        lastSeen
+      }
+      roster {
+        _id
+        status
+        created
+        updated
+      }
+    }
+  }
+`
+
+export const GET_ROSTER = gql`
+  query getRoster {
+    getRoster {
+      _id
+      userId
+      buddyId
+      status
+      initiatedBy
+      created
+      updated
+      buddy {
+        _id
+        name
+        username
+        avatar
+      }
+    }
+  }
+`
+
+// ===== Typing Queries =====
+export const GET_TYPING_USERS = gql`
+  query getTypingUsers($messageRoomId: String!) {
+    getTypingUsers(messageRoomId: $messageRoomId) {
+      userId
+      user {
+        _id
+        name
+        username
+        avatar
+      }
+      isTyping
+      timestamp
     }
   }
 `

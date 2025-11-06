@@ -1,5 +1,5 @@
-import { Avatar, Grid, Paper, IconButton } from '@material-ui/core'
-import { Delete } from '@material-ui/icons'
+import { Avatar, Paper, IconButton, Tooltip, Typography } from '@material-ui/core'
+import { Delete, Done, DoneAll } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
@@ -8,68 +8,180 @@ import AvatarDisplay from '../Avatar'
 import { DELETE_MESSAGE } from '../../graphql/mutations'
 import { SET_SNACKBAR } from '../../store/ui'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
+  messageWrapper: {
+    marginBottom: theme.spacing(1.75),
+    display: 'flex',
+    width: '100%',
+    padding: theme.spacing(0, 2),
+    '&:hover': {
+      '& $deleteButton': {
+        opacity: 1,
+      },
+    },
+  },
+  messageWrapperOwn: {
+    justifyContent: 'flex-end',
+  },
+  messageWrapperOther: {
+    justifyContent: 'flex-start',
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    marginRight: theme.spacing(1.25),
+    marginLeft: theme.spacing(1.25),
+    flexShrink: 0,
+    border: `2px solid ${theme.palette.background.paper}`,
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+  },
+  avatarOwn: {
+    order: 2,
+    marginRight: theme.spacing(1.25),
+    marginLeft: 0,
+  },
+  bubbleContainer: {
+    maxWidth: '75%',
+    minWidth: '120px',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+  },
   bubble: {
     position: 'relative',
     background: '#ffffff',
-    minHeight: 30,
-    minWidth: 250,
-    marginLeft: '10px',
-    borderRadius: '2px',
-    padding: 5,
-    '&::after': {
-      content: "''",
-      position: 'absolute',
-      border: '10px solid transparent',
-      borderTop: '10px solid #ffffff',
-      top: '0px',
-      left: '-10px',
+    borderRadius: '20px 20px 20px 6px',
+    padding: theme.spacing(1.25, 1.75),
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+    wordWrap: 'break-word',
+    fontSize: '0.9375rem',
+    lineHeight: 1.5,
+    color: theme.palette.text.primary,
+    border: `1px solid ${theme.palette.grey[200]}`,
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.1)',
     },
   },
   bubbleReverse: {
     position: 'relative',
-    background: '#52b274',
-    minHeight: 30,
-    minWidth: 250,
-    color: 'white',
-    marginRight: '10px',
-    borderRadius: '2px',
-    padding: 5,
-    '&::after': {
-      content: "''",
-      position: 'absolute',
-      border: '10px solid transparent',
-      borderTop: '10px solid #52b274',
-      top: '0px',
-      right: '-10px',
+    background: 'linear-gradient(135deg, #52b274 0%, #4a9e63 100%)',
+    borderRadius: '20px 20px 6px 20px',
+    padding: theme.spacing(1.25, 1.75),
+    boxShadow: '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
+    wordWrap: 'break-word',
+    fontSize: '0.9375rem',
+    lineHeight: 1.5,
+    color: '#ffffff',
+    border: 'none',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      boxShadow: '0 6px 16px rgba(82, 178, 116, 0.4), 0 3px 6px rgba(82, 178, 116, 0.25)',
     },
   },
   deleteIcon: {
     color: '#f44336',
-    fontSize: '16px',
+    fontSize: '18px',
   },
   messageContainer: {
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
   },
   deleteButton: {
     position: 'absolute',
     top: '-8px',
     right: '-8px',
-    zIndex: 1,
-    backgroundColor: 'white',
+    zIndex: 10,
+    backgroundColor: '#ffffff',
     borderRadius: '50%',
-    padding: '4px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    padding: '6px',
+    boxShadow: '0 3px 10px rgba(0,0,0,0.2)',
+    width: 28,
+    height: 28,
+    opacity: 0,
+    transition: 'opacity 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#f5f5f5',
+      boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+      transform: 'scale(1.1)',
+    },
+  },
+  readReceipt: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginTop: theme.spacing(0.5),
+    marginRight: theme.spacing(0.75),
+    paddingRight: theme.spacing(0.5),
+    minHeight: 16,
+  },
+  readReceiptSent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: theme.spacing(0.5),
+    marginLeft: theme.spacing(0.75),
+    paddingLeft: theme.spacing(0.5),
+    minHeight: 16,
+  },
+  receiptIcon: {
+    fontSize: '1.1rem',
+    transition: 'all 0.2s ease',
+  },
+  receiptIconRead: {
+    color: '#52b274',
+    opacity: 1,
+    filter: 'drop-shadow(0 1px 2px rgba(82, 178, 116, 0.3))',
+  },
+  receiptIconSent: {
+    color: 'rgba(255, 255, 255, 0.85)',
+    opacity: 0.9,
+  },
+  receiptIconSentOther: {
+    color: 'rgba(0, 0, 0, 0.45)',
+    opacity: 0.7,
+  },
+  timestamp: {
+    fontSize: '0.6875rem',
+    color: 'rgba(0, 0, 0, 0.4)',
+    marginTop: theme.spacing(0.25),
+    paddingLeft: theme.spacing(0.5),
+  },
+  timestampOwn: {
+    fontSize: '0.6875rem',
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginTop: theme.spacing(0.25),
+    paddingRight: theme.spacing(0.5),
+    textAlign: 'right',
+  },
+  senderName: {
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    color: theme.palette.text.secondary,
+    marginBottom: theme.spacing(0.25),
+    paddingLeft: theme.spacing(0.5),
   },
 }))
 
 function MessageItem({ message }) {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const user = useSelector((state) => state.user.data)
+  const user = useSelector((state) => state.user?.data)
+  const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
+  
+  if (!user || !message) return null
+  
   const userId = user._id
   const isDefaultDirection = message.userId !== userId
-  const direction = isDefaultDirection ? 'row' : 'row-reverse'
+  const isOwnMessage = user._id === message.userId
+
+  // Get other user ID for DM read receipt check
+  const getOtherUserId = () => {
+    if (!selectedRoom || !selectedRoom.users) return null
+    const otherUser = selectedRoom.users.find((id) => id.toString() !== userId.toString())
+    return otherUser?.toString()
+  }
 
   const [deleteMessage] = useMutation(DELETE_MESSAGE, {
     update(cache, { data: { deleteMessage } }) {
@@ -106,41 +218,127 @@ function MessageItem({ message }) {
     }
   }
 
+  // Check if message is read - for DMs, check if the other user has read it
+  const readBy = message.readBy || []
+  const otherUserId = getOtherUserId()
+  
+  // For DMs: check if the recipient (other user) has read it
+  // For groups: check if anyone has read it
+  const isRead = selectedRoom?.messageType === 'USER' && otherUserId
+    ? readBy.some((id) => id.toString() === otherUserId)
+    : readBy.length > 0
+
+  // Format timestamp
+  const formatTime = (date) => {
+    if (!date) return ''
+    const d = new Date(date)
+    const now = new Date()
+    const diff = now - d
+    const minutes = Math.floor(diff / 60000)
+    
+    if (minutes < 1) return 'Just now'
+    if (minutes < 60) return `${minutes}m ago`
+    if (d.toDateString() === now.toDateString()) {
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
+    return d.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  }
+
+  // Get read receipt icon with better styling
+  const getReadReceiptIcon = () => {
+    if (!isOwnMessage) return null
+    
+    if (isRead) {
+      return (
+        <Tooltip title="Read" placement="top" arrow>
+          <DoneAll 
+            className={`${classes.receiptIcon} ${classes.receiptIconRead}`}
+            style={{ fontSize: '1.15rem' }}
+          />
+        </Tooltip>
+      )
+    }
+    return (
+      <Tooltip title="Sent" placement="top" arrow>
+        <Done 
+          className={`${classes.receiptIcon} ${isDefaultDirection ? classes.receiptIconSentOther : classes.receiptIconSent}`}
+          style={{ fontSize: '1rem' }}
+        />
+      </Tooltip>
+    )
+  }
+
   return (
-    <Grid
-      container
-      direction={direction}
-      justify="center"
-      alignItems="flex-start"
-    >
-      <Grid item>
-        <Avatar>
+    <div className={`${classes.messageWrapper} ${isDefaultDirection ? classes.messageWrapperOther : classes.messageWrapperOwn}`}>
+      {isDefaultDirection && (
+        <Avatar className={classes.avatar}>
           <AvatarDisplay height={40} width={40} {...message.user.avatar} />
         </Avatar>
-      </Grid>
-      <Grid item className={classes.messageContainer}>
-        <Paper
-          className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}
-        >
-          {message.text}
-        </Paper>
-        {(user._id === message.userId || user.admin) && (
-          <IconButton 
-            onClick={handleDelete} 
-            className={classes.deleteButton}
-            size="small"
-          >
-            <Delete className={classes.deleteIcon} />
-          </IconButton>
+      )}
+      <div className={classes.bubbleContainer}>
+        {isDefaultDirection && message.user?.name && (
+          <Typography className={classes.senderName}>
+            {message.user.name || message.user.username}
+          </Typography>
         )}
-      </Grid>
-    </Grid>
+        <div className={classes.messageContainer}>
+          <Paper
+            elevation={0}
+            className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}
+          >
+            <Typography 
+              variant="body2" 
+              style={{ 
+                color: isDefaultDirection ? 'inherit' : '#ffffff',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+                fontSize: '0.9375rem',
+                lineHeight: 1.5,
+              }}
+            >
+              {message.text}
+            </Typography>
+          </Paper>
+          {(user._id === message.userId || user.admin) && (
+            <IconButton 
+              onClick={handleDelete} 
+              className={classes.deleteButton}
+              size="small"
+            >
+              <Delete className={classes.deleteIcon} />
+            </IconButton>
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: isOwnMessage ? 'flex-end' : 'flex-start', gap: 6 }}>
+          {isOwnMessage && getReadReceiptIcon()}
+          <Typography 
+            className={isOwnMessage ? classes.timestampOwn : classes.timestamp}
+            style={{ 
+              color: isOwnMessage ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.4)',
+            }}
+          >
+            {formatTime(message.created)}
+          </Typography>
+        </div>
+      </div>
+      {!isDefaultDirection && (
+        <Avatar className={`${classes.avatar} ${classes.avatarOwn}`}>
+          <AvatarDisplay height={40} width={40} {...message.user.avatar} />
+        </Avatar>
+      )}
+    </div>
   )
 }
 
 MessageItem.propTypes = {
-  direction: PropTypes.any,
-  message: PropTypes.any,
+  message: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    user: PropTypes.object,
+    readBy: PropTypes.array,
+    created: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+  }).isRequired,
 }
 
 export default MessageItem

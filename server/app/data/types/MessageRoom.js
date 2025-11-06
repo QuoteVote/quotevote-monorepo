@@ -9,5 +9,14 @@ type MessageRoom {
   unreadMessages: Int
   postId: String
   messages: [Message]
+  postDetails: PostDetails
+}
+
+type PostDetails {
+  _id: ID
+  title: String
+  text: String
+  userId: ID
+  url: String
 }
 `;
