@@ -10,7 +10,7 @@ import TypingIndicator from './TypingIndicator'
 import { SELECTED_CHAT_ROOM } from '../../store/chat'
 import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
-import { GET_CHAT_ROOMS } from '../../graphql/query'
+import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
 
 function useWindowSize() {
@@ -241,16 +241,33 @@ function MessageBox() {
 
   useEffect(() => {
     if (!ensureAuth() || !messageRoomId) return
-    try {
-      updateMessageReadBy({
-        variables: { messageRoomId },
-        refetchQueries: [{ query: GET_CHAT_ROOMS }],
-      }).catch((err) => {
+    
+    // Update read receipts when room is opened
+    const updateReadReceipts = async () => {
+      try {
+        await updateMessageReadBy({
+          variables: { messageRoomId },
+          refetchQueries: [
+            { query: GET_CHAT_ROOMS },
+            { 
+              query: GET_ROOM_MESSAGES, 
+              variables: { messageRoomId } 
+            },
+          ],
+        })
+      } catch (err) {
         console.error('Error updating message read by:', err)
-      })
-    } catch (err) {
-      console.error('Error in updateMessageReadBy effect:', err)
+      }
     }
+    
+    updateReadReceipts()
+    
+    // Also update read receipts periodically (every 5 seconds) to catch updates from other users
+    const interval = setInterval(() => {
+      updateReadReceipts()
+    }, 5000)
+    
+    return () => clearInterval(interval)
   }, [messageRoomId, updateMessageReadBy, ensureAuth])
 
   return (

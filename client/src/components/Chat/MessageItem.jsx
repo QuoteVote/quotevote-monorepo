@@ -133,27 +133,32 @@ const useStyles = makeStyles((theme) => ({
     color: '#52b274',
     opacity: 1,
     filter: 'drop-shadow(0 1px 2px rgba(82, 178, 116, 0.3))',
+    fontSize: '1.15rem',
+    fontWeight: 'bold',
   },
   receiptIconSent: {
-    color: 'rgba(255, 255, 255, 0.85)',
-    opacity: 0.9,
+    color: 'rgba(0, 0, 0, 0.6)',
+    opacity: 1,
+    fontSize: '1rem',
   },
   receiptIconSentOther: {
-    color: 'rgba(0, 0, 0, 0.45)',
-    opacity: 0.7,
+    color: 'rgba(0, 0, 0, 0.5)',
+    opacity: 1,
   },
   timestamp: {
     fontSize: '0.6875rem',
-    color: 'rgba(0, 0, 0, 0.4)',
+    color: 'rgba(0, 0, 0, 0.65)',
     marginTop: theme.spacing(0.25),
     paddingLeft: theme.spacing(0.5),
+    fontWeight: 500,
   },
   timestampOwn: {
     fontSize: '0.6875rem',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(0, 0, 0, 0.65)',
     marginTop: theme.spacing(0.25),
     paddingRight: theme.spacing(0.5),
     textAlign: 'right',
+    fontWeight: 500,
   },
   senderName: {
     fontSize: '0.75rem',
@@ -222,11 +227,20 @@ function MessageItem({ message }) {
   const readBy = message.readBy || []
   const otherUserId = getOtherUserId()
   
+  // Normalize IDs to strings for comparison
+  const normalizeId = (id) => {
+    if (!id) return null
+    return id.toString ? id.toString() : String(id)
+  }
+  
+  const normalizedReadBy = readBy.map(normalizeId).filter(Boolean)
+  const normalizedOtherUserId = normalizeId(otherUserId)
+  
   // For DMs: check if the recipient (other user) has read it
   // For groups: check if anyone has read it
-  const isRead = selectedRoom?.messageType === 'USER' && otherUserId
-    ? readBy.some((id) => id.toString() === otherUserId)
-    : readBy.length > 0
+  const isRead = selectedRoom?.messageType === 'USER' && normalizedOtherUserId
+    ? normalizedReadBy.includes(normalizedOtherUserId)
+    : normalizedReadBy.length > 0
 
   // Format timestamp
   const formatTime = (date) => {
@@ -261,7 +275,7 @@ function MessageItem({ message }) {
     return (
       <Tooltip title="Sent" placement="top" arrow>
         <Done 
-          className={`${classes.receiptIcon} ${isDefaultDirection ? classes.receiptIconSentOther : classes.receiptIconSent}`}
+          className={`${classes.receiptIcon} ${classes.receiptIconSent}`}
           style={{ fontSize: '1rem' }}
         />
       </Tooltip>
@@ -314,7 +328,7 @@ function MessageItem({ message }) {
           <Typography 
             className={isOwnMessage ? classes.timestampOwn : classes.timestamp}
             style={{ 
-              color: isOwnMessage ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.4)',
+              color: 'rgba(0, 0, 0, 0.65)',
             }}
           >
             {formatTime(message.created)}

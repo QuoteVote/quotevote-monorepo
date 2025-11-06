@@ -64,7 +64,7 @@ const TypingIndicator = ({ messageRoomId }) => {
   const [typingUsers, setTypingUsers] = useState([]);
 
   // Subscribe to typing events
-  const { data } = useSubscription(
+  const { data, error: subscriptionError } = useSubscription(
     TYPING_SUBSCRIPTION,
     messageRoomId
       ? {
@@ -101,9 +101,19 @@ const TypingIndicator = ({ messageRoomId }) => {
               });
             }
           },
+          onError: (err) => {
+            console.error('[Typing Subscription] Error:', err);
+          },
         }
       : { skip: true },
   );
+
+  // Log subscription errors
+  useEffect(() => {
+    if (subscriptionError) {
+      console.error('[Typing Subscription] Subscription error:', subscriptionError);
+    }
+  }, [subscriptionError]);
 
   // Auto-remove typing users after 10 seconds (TTL on backend)
   useEffect(() => {

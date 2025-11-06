@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, List, ListItem, ListItemText, ListItemAvatar, Button, Typography } from '@material-ui/core';
+import { makeStyles, List, ListItem, ListItemText, ListItemAvatar, Button, Typography, Chip, IconButton, Avatar } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 import { GET_BUDDY_LIST, GET_ROSTER } from '../../graphql/query';
 import { SET_BUDDY_LIST, SET_PENDING_REQUESTS } from '../../store/chat';
 import { usePresenceSubscription } from '../../hooks/usePresenceSubscription';
@@ -57,13 +59,96 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#757575',
     boxShadow: '0 0 0 2px #fff',
   },
-  pendingRequest: {
-    backgroundColor: theme.palette.action.hover,
+  pendingRequestsContainer: {
+    padding: theme.spacing(1, 1.5),
+    backgroundColor: theme.palette.grey[50],
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  pendingRequestItem: {
+    padding: theme.spacing(0.75, 1),
     marginBottom: theme.spacing(0.5),
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    border: `1px solid ${theme.palette.grey[200]}`,
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: theme.palette.grey[50],
+      borderColor: theme.palette.grey[300],
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+    },
+    '&:last-child': {
+      marginBottom: 0,
+    },
+  },
+  pendingRequestAvatar: {
+    width: 32,
+    height: 32,
+    flexShrink: 0,
+  },
+  pendingRequestContent: {
+    flex: 1,
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.25),
+  },
+  pendingRequestName: {
+    fontSize: '0.8125rem',
+    fontWeight: 600,
+    color: theme.palette.text.primary,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  pendingRequestLabel: {
+    fontSize: '0.6875rem',
+    color: theme.palette.text.secondary,
+    fontStyle: 'italic',
+  },
+  pendingRequestActions: {
+    display: 'flex',
+    gap: theme.spacing(0.5),
+    flexShrink: 0,
   },
   acceptButton: {
-    marginLeft: 'auto',
-    marginRight: theme.spacing(1),
+    minWidth: 32,
+    width: 32,
+    height: 32,
+    padding: 0,
+    backgroundColor: '#52b274',
+    color: '#ffffff',
+    borderRadius: '50%',
+    '&:hover': {
+      backgroundColor: '#4a9e63',
+    },
+  },
+  declineButton: {
+    minWidth: 32,
+    width: 32,
+    height: 32,
+    padding: 0,
+    color: theme.palette.text.secondary,
+    '&:hover': {
+      backgroundColor: theme.palette.error.light,
+      color: theme.palette.error.main,
+    },
+  },
+  pendingRequestsBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 20,
+    height: 20,
+    padding: '0 6px',
+    borderRadius: 10,
+    backgroundColor: '#52b274',
+    color: '#ffffff',
+    fontSize: '0.6875rem',
+    fontWeight: 700,
+    marginLeft: theme.spacing(0.5),
   },
 }));
 
@@ -83,7 +168,7 @@ const BuddyListWithPresence = ({ search }) => {
   });
 
   const presenceMap = useSelector((state) => state.chat?.presenceMap || {});
-  const { acceptBuddy } = useRosterManagement();
+  const { acceptBuddy, blockBuddy } = useRosterManagement();
 
   // Subscribe to presence updates
   usePresenceSubscription();
@@ -119,7 +204,7 @@ const BuddyListWithPresence = ({ search }) => {
     }
   }, [rosterData, dispatch, currentUser]);
 
-  const handleAcceptBuddy = async (rosterId) => {
+  const handleAcceptBuddy = async (rosterId, buddyId) => {
     try {
       await acceptBuddy(rosterId);
       dispatch(SET_SNACKBAR({
@@ -133,6 +218,26 @@ const BuddyListWithPresence = ({ search }) => {
       dispatch(SET_SNACKBAR({
         open: true,
         message: error.message || 'Failed to accept buddy request',
+        type: 'danger',
+      }));
+    }
+  };
+
+  const handleDeclineBuddy = async (rosterId, buddyId) => {
+    try {
+      // Block the user to decline the request
+      await blockBuddy(buddyId);
+      dispatch(SET_SNACKBAR({
+        open: true,
+        message: 'Buddy request declined',
+        type: 'info',
+      }));
+      refetchRoster();
+      refetch();
+    } catch (error) {
+      dispatch(SET_SNACKBAR({
+        open: true,
+        message: error.message || 'Failed to decline buddy request',
         type: 'danger',
       }));
     }
@@ -219,39 +324,58 @@ const BuddyListWithPresence = ({ search }) => {
 
   return (
     <div className={classes.root}>
-      {/* Pending Requests Section */}
+      {/* Pending Requests Section - Compact Design */}
       {pendingRequests.length > 0 && (
-        <div>
-          <div className={classes.groupHeader}>
-            Pending Requests ({pendingRequests.length})
+        <div className={classes.pendingRequestsContainer}>
+          <div className={classes.groupHeader} style={{ padding: 0, marginBottom: 8 }}>
+            <Typography variant="caption" style={{ fontWeight: 700, fontSize: '0.75rem' }}>
+              Pending Requests
+            </Typography>
+            <span className={classes.pendingRequestsBadge}>
+              {pendingRequests.length}
+            </span>
           </div>
-          <List>
-            {pendingRequests.map((request) => {
-              const buddy = request.buddy || request.user || {};
-              if (!buddy || !request._id) return null;
-              
-              return (
-                <ListItem key={request._id} className={classes.pendingRequest}>
-                  <ListItemAvatar>
-                    <AvatarDisplay user={buddy} size={40} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={buddy.name || buddy.username || 'Unknown User'}
-                    secondary="wants to be your buddy"
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
+          {pendingRequests.map((request) => {
+            const buddy = request.buddy || {};
+            if (!buddy || !request._id) return null;
+            
+            // For received requests, the sender is the buddy (the one who initiated)
+            const buddyId = buddy._id || request.initiatedBy;
+            
+            return (
+              <div key={request._id} className={classes.pendingRequestItem}>
+                <Avatar className={classes.pendingRequestAvatar}>
+                  <AvatarDisplay height={32} width={32} {...(buddy.avatar || {})} />
+                </Avatar>
+                <div className={classes.pendingRequestContent}>
+                  <Typography className={classes.pendingRequestName}>
+                    {buddy.name || buddy.username || 'Unknown User'}
+                  </Typography>
+                  <Typography className={classes.pendingRequestLabel}>
+                    Wants to be your buddy
+                  </Typography>
+                </div>
+                <div className={classes.pendingRequestActions}>
+                  <IconButton
                     size="small"
                     className={classes.acceptButton}
-                    onClick={() => handleAcceptBuddy(request._id)}
+                    onClick={() => handleAcceptBuddy(request._id, buddyId)}
+                    title="Accept"
                   >
-                    Accept
-                  </Button>
-                </ListItem>
-              );
-            })}
-          </List>
+                    <CheckIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    className={classes.declineButton}
+                    onClick={() => handleDeclineBuddy(request._id, buddyId)}
+                    title="Decline"
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
