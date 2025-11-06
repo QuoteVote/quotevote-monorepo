@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import {
   ADD_BUDDY,
   ACCEPT_BUDDY,
+  DECLINE_BUDDY,
   BLOCK_BUDDY,
   UNBLOCK_BUDDY,
   REMOVE_BUDDY,
@@ -28,6 +29,10 @@ export const useRosterManagement = () => {
 
   const [acceptBuddyMutation] = useMutation(ACCEPT_BUDDY, {
     refetchQueries: [{ query: GET_BUDDY_LIST }, { query: GET_ROSTER }],
+  });
+
+  const [declineBuddyMutation] = useMutation(DECLINE_BUDDY, {
+    refetchQueries: [{ query: GET_ROSTER }],
   });
 
   const [blockBuddyMutation] = useMutation(BLOCK_BUDDY, {
@@ -64,6 +69,19 @@ export const useRosterManagement = () => {
       return result.data.acceptBuddy;
     } catch (error) {
       console.error('Accept buddy error:', error);
+      throw error;
+    }
+  };
+
+  const declineBuddy = async (rosterId) => {
+    try {
+      const result = await declineBuddyMutation({
+        variables: { rosterId },
+      });
+      dispatch(REMOVE_PENDING_REQUEST(rosterId));
+      return result.data.declineBuddy;
+    } catch (error) {
+      console.error('Decline buddy error:', error);
       throw error;
     }
   };
@@ -109,6 +127,7 @@ export const useRosterManagement = () => {
   return {
     addBuddy,
     acceptBuddy,
+    declineBuddy,
     blockBuddy,
     unblockBuddy,
     removeBuddy,

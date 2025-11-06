@@ -168,7 +168,7 @@ const BuddyListWithPresence = ({ search }) => {
   });
 
   const presenceMap = useSelector((state) => state.chat?.presenceMap || {});
-  const { acceptBuddy, blockBuddy } = useRosterManagement();
+  const { acceptBuddy, declineBuddy } = useRosterManagement();
 
   // Subscribe to presence updates
   usePresenceSubscription();
@@ -225,8 +225,8 @@ const BuddyListWithPresence = ({ search }) => {
 
   const handleDeclineBuddy = async (rosterId, buddyId) => {
     try {
-      // Block the user to decline the request
-      await blockBuddy(buddyId);
+      // Decline the request gracefully (removes pending request, doesn't block)
+      await declineBuddy(rosterId);
       dispatch(SET_SNACKBAR({
         open: true,
         message: 'Buddy request declined',

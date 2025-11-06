@@ -383,6 +383,15 @@ export const ACCEPT_BUDDY = gql`
   }
 `
 
+export const DECLINE_BUDDY = gql`
+  mutation declineBuddy($rosterId: String!) {
+    declineBuddy(rosterId: $rosterId) {
+      _id
+      success
+    }
+  }
+`
+
 export const BLOCK_BUDDY = gql`
   mutation blockBuddy($buddyId: String!) {
     blockBuddy(buddyId: $buddyId) {

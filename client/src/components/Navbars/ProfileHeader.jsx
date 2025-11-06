@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
@@ -87,28 +88,50 @@ export default function ProfileHeader(props) {
     fetchPolicy: 'network-only',
   })
 
-  // Check if current user is blocked by the profile user
+  // Check blocking status: who blocked whom
   const { data: rosterData } = useQuery(GET_ROSTER, {
     skip: !loggedInUserId || sameUser,
   })
 
-  const isBlockedByUser = rosterData?.getRoster?.some((r) => {
-    const rUserId = r.userId?.toString()
-    const rBuddyId = r.buddyId?.toString()
+  const blockingStatus = React.useMemo(() => {
+    if (!rosterData?.getRoster || sameUser) return null
+    
     const profileUserId = profileUser._id?.toString()
     const currentUserId = loggedInUserId?.toString()
     
-    // Check if profile user has blocked current user
-    return rUserId === profileUserId && rBuddyId === currentUserId && r.status === 'blocked'
-  })
+    // Check if current user blocked the profile user
+    const currentUserBlockedProfile = rosterData.getRoster.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      return rUserId === currentUserId && rBuddyId === profileUserId && r.status === 'blocked'
+    })
+    
+    // Check if profile user blocked the current user
+    const profileUserBlockedCurrent = rosterData.getRoster.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      return rUserId === profileUserId && rBuddyId === currentUserId && r.status === 'blocked'
+    })
+    
+    if (currentUserBlockedProfile) return 'blocker' // Current user is the blocker
+    if (profileUserBlockedCurrent) return 'blocked' // Current user is blocked
+    return null
+  }, [rosterData, profileUser._id, loggedInUserId, sameUser])
+  
+  const isBlocked = blockingStatus !== null
 
   const room = !loading && data && data.messageRoom
   const handleMessageUser = async () => {
-    // Check if current user is blocked by the profile user
-    if (isBlockedByUser) {
+    // Check if users are blocked
+    if (isBlocked) {
+      const isBlocker = blockingStatus === 'blocker'
+      const message = isBlocker
+        ? 'You have blocked this user. You cannot send messages to them.'
+        : 'You have been blocked by this user. You cannot send messages.'
+      
       dispatch(SET_SNACKBAR({
         open: true,
-        message: 'You have been blocked by this user. You cannot send messages.',
+        message,
         type: 'warning',
       }))
       return
