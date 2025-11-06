@@ -109,4 +109,34 @@ export const Mutation = `type Mutation {
   # Mutation for toggling voting on a post
     toggleVoting(postId: String!): Post
 
+  # ===== Presence Management =====
+  # Mutation for updating user presence status
+    updatePresence(presence: PresenceInput!): Presence
+  
+  # Mutation for heartbeat to keep presence alive
+    heartbeat: HeartbeatResponse
+  
+  # Mutation for clearing presence (logout)
+    clearPresence: Boolean
+
+  # ===== Roster Management =====
+  # Mutation for adding a buddy
+    addBuddy(roster: RosterInput!): Roster
+  
+  # Mutation for accepting a buddy request
+    acceptBuddy(rosterId: String!): Roster
+  
+  # Mutation for blocking a user
+    blockBuddy(buddyId: String!): Roster
+  
+  # Mutation for unblocking a user
+    unblockBuddy(buddyId: String!): Roster
+  
+  # Mutation for removing a buddy
+    removeBuddy(buddyId: String!): DeletedRoster
+
+  # ===== Typing Indicators =====
+  # Mutation for updating typing status
+    updateTyping(typing: TypingInput!): TypingResponse
+
 }`;

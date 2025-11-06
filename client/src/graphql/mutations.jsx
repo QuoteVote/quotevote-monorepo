@@ -327,3 +327,98 @@ export const RECALCULATE_REPUTATION = gql`
     }
   }
 `
+
+// ===== Presence Mutations =====
+export const UPDATE_PRESENCE = gql`
+  mutation updatePresence($presence: PresenceInput!) {
+    updatePresence(presence: $presence) {
+      _id
+      userId
+      status
+      statusMessage
+      lastHeartbeat
+      lastSeen
+    }
+  }
+`
+
+export const HEARTBEAT = gql`
+  mutation heartbeat {
+    heartbeat {
+      success
+      timestamp
+    }
+  }
+`
+
+export const CLEAR_PRESENCE = gql`
+  mutation clearPresence {
+    clearPresence
+  }
+`
+
+// ===== Roster Mutations =====
+export const ADD_BUDDY = gql`
+  mutation addBuddy($roster: RosterInput!) {
+    addBuddy(roster: $roster) {
+      _id
+      userId
+      buddyId
+      status
+      created
+      updated
+    }
+  }
+`
+
+export const ACCEPT_BUDDY = gql`
+  mutation acceptBuddy($rosterId: String!) {
+    acceptBuddy(rosterId: $rosterId) {
+      _id
+      userId
+      buddyId
+      status
+      updated
+    }
+  }
+`
+
+export const BLOCK_BUDDY = gql`
+  mutation blockBuddy($buddyId: String!) {
+    blockBuddy(buddyId: $buddyId) {
+      _id
+      userId
+      buddyId
+      status
+    }
+  }
+`
+
+export const UNBLOCK_BUDDY = gql`
+  mutation unblockBuddy($buddyId: String!) {
+    unblockBuddy(buddyId: $buddyId) {
+      _id
+      userId
+      buddyId
+      status
+    }
+  }
+`
+
+export const REMOVE_BUDDY = gql`
+  mutation removeBuddy($buddyId: String!) {
+    removeBuddy(buddyId: $buddyId) {
+      _id
+      success
+    }
+  }
+`
+
+// ===== Typing Mutations =====
+export const UPDATE_TYPING = gql`
+  mutation updateTyping($typing: TypingInput!) {
+    updateTyping(typing: $typing) {
+      success
+    }
+  }
+`

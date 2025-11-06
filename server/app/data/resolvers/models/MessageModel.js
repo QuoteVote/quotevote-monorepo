@@ -22,7 +22,23 @@ const schema = mongoose.Schema({
   },
   readBy: {
     type: [mongoose.Schema.Types.ObjectId],
-    required: true,
+    default: [],
+  },
+  // Enhanced read receipts with timestamps
+  readByDetailed: {
+    type: [{
+      userId: mongoose.Schema.Types.ObjectId,
+      readAt: Date,
+    }],
+    default: [],
+  },
+  // Delivery receipts
+  deliveredTo: {
+    type: [{
+      userId: mongoose.Schema.Types.ObjectId,
+      deliveredAt: Date,
+    }],
+    default: [],
   },
   deleted: {
     type: Boolean,

@@ -30,6 +30,9 @@ const resolvers = {
   Notification: relationship.notificationRelationship(),
   Vote: relationship.voteRelationship(),
   Quote: relationship.quoteRelationship(),
+  Presence: relationship.presenceRelationship(),
+  Roster: relationship.rosterRelationship(),
+  TypingIndicator: relationship.typingIndicatorRelationship(),
 };
 
 export { resolvers };
