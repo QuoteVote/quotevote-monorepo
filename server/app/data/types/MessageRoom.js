@@ -4,6 +4,8 @@ type MessageRoom {
   users: JSON
   messageType: String
   created: Date
+  lastActivity: Date
+  lastMessageTime: Date
   title: String
   avatar: JSON
   unreadMessages: Int

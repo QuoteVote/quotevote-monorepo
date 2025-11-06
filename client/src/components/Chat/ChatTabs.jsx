@@ -53,7 +53,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(0.5),
     fontSize: '0.7rem',
     '& .MuiBadge-badge': {
-      color: 'white',
+      backgroundColor: '#52b274',
+      color: '#ffffff',
+      fontWeight: 700,
+      fontSize: '0.6875rem',
+      minWidth: 20,
+      height: 20,
+      padding: '0 6px',
+      borderRadius: 10,
+      boxShadow: '0 2px 4px rgba(82, 178, 116, 0.3)',
     },
   },
   tabLabel: {
@@ -89,7 +97,6 @@ const ChatTabs = ({ value, onChange, dmCount, groupCount, onlineCount }) => {
             {dmCount > 0 && (
               <Badge
                 badgeContent={dmCount}
-                color="secondary"
                 className={classes.badge}
                 max={99}
               />
@@ -107,7 +114,6 @@ const ChatTabs = ({ value, onChange, dmCount, groupCount, onlineCount }) => {
             {groupCount > 0 && (
               <Badge
                 badgeContent={groupCount}
-                color="secondary"
                 className={classes.badge}
                 max={99}
               />
@@ -125,7 +131,6 @@ const ChatTabs = ({ value, onChange, dmCount, groupCount, onlineCount }) => {
             {onlineCount > 0 && (
               <Badge
                 badgeContent={onlineCount}
-                color="primary"
                 className={classes.badge}
                 max={99}
               />

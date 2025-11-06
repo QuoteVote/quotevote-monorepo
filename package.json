@@ -71,9 +71,10 @@
     "Vishal Thukral",
     "Jon Kolman",
     "Brahmananda Reddy"
-  ],  
+  ],
   "license": "LGPL-3.0-or-later",
   "dependencies": {
+    "@babel/runtime": "^7.28.4",
     "react-swipeable-views": "^0.14.0"
   }
 }
