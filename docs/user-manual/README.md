@@ -614,7 +614,7 @@ Quote.Vote is open-source! See our [Self-Hosting Guide](../deployment/README.md)
 - **Documentation**: [docs.quote.vote](https://docs.quote.vote)
 - **GitHub Issues**: [Report bugs or request features](https://github.com/QuoteVote/quotevote-monorepo/issues)
 - **Email Support**: admin@quote.vote
-- **Community Discord**: [Coming Soon]
+- **Community Discord**: https://discord.gg/WfTBmzq2
 
 ### Contributing
 

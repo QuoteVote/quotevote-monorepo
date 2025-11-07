@@ -562,7 +562,46 @@ const StatisticsTab = ({ data }) => {
 const UserManagementTab = () => {
   const classes = useStyles()
   const ensureAuth = useGuestGuard()
-  const { data, loading, refetch } = useQuery(GET_USERS)
+  const { data, loading, error, refetch } = useQuery(GET_USERS, {
+    variables: {
+      limit: 100, // Use max limit for admin panel
+      offset: 0,
+    },
+    errorPolicy: 'all', // Handle errors gracefully
+    fetchPolicy: 'cache-and-network',
+  })
+  
+  // Handle errors
+  if (error) {
+    if (error.message && error.message.includes('Authentication required')) {
+      return (
+        <Card>
+          <CardContent>
+            <Typography className={classes.cardHeader}>User Management</Typography>
+            <Typography color="error">Authentication required. Please log in.</Typography>
+          </CardContent>
+        </Card>
+      )
+    }
+    if (error.message && error.message.includes('Admin access required')) {
+      return (
+        <Card>
+          <CardContent>
+            <Typography className={classes.cardHeader}>User Management</Typography>
+            <Typography color="error">Admin access required to view users.</Typography>
+          </CardContent>
+        </Card>
+      )
+    }
+    return (
+      <Card>
+        <CardContent>
+          <Typography className={classes.cardHeader}>User Management</Typography>
+          <Typography color="error">Error loading users: {error.message}</Typography>
+        </CardContent>
+      </Card>
+    )
+  }
   const [updateUser] = useMutation(UPDATE_USER)
 
   if (loading || !data) return <Skeleton animation="wave" height={200} />
