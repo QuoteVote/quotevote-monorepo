@@ -109,4 +109,13 @@ export const Mutation = `type Mutation {
   # Mutation for toggling voting on a post
     toggleVoting(postId: String!): Post
 
+  # Mutation for reporting a user as a bot
+    reportBot(userId: String!, reporterId: String!): JSON
+
+  # Mutation for disabling a user account (admin only)
+    disableUser(userId: String!): User
+
+  # Mutation for enabling a user account (admin only)
+    enableUser(userId: String!): User
+
 }`;

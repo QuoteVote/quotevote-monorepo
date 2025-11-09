@@ -75,5 +75,10 @@ export const resolver_mutations = function () {
     sendUserInvite: userMutations.sendUserInvite(),
     reportUser: userMutations.reportUser(),
     recalculateReputation: userMutations.recalculateReputation(),
+
+    // Bot reporting and account management
+    reportBot: userMutations.reportBot(),
+    disableUser: userMutations.disableUser(),
+    enableUser: userMutations.enableUser(),
   };
 };

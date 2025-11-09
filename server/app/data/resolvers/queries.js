@@ -22,6 +22,7 @@ export const resolver_query = function () {
     getUserReputation: userQuery.getUserReputation(),
     getUserInvites: userQuery.getUserInvites(),
     getUserReports: userQuery.getUserReports(),
+    getBotReportedUsers: userQuery.getBotReportedUsers(),
     groups: groupQuery.getGroups(),
     group: groupQuery.getGroupById(),
     actionReactions: postQuery.getActionReactions(),
