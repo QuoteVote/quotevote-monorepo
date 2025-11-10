@@ -290,6 +290,26 @@ To maintain quality discussions:
 
 ## Chat & Real-time Rooms
 
+Quote.Vote features a comprehensive **presence-aware chat system** with direct messaging, group chats, and real-time features.
+
+### Quick Start
+
+- **Direct Messages**: Private one-on-one conversations with your buddies
+- **Group Chat Rooms**: Post-anchored group conversations
+- **Buddy List**: See your connections and their online status
+- **Presence Status**: Show when you're online, away, or busy
+
+### 📖 Complete Chat Guide
+
+For detailed information about all chat features, see the **[Complete Chat Guide](./chat-guide.md)**, which covers:
+
+- Buddy list and presence management
+- Direct messaging and group chats
+- Status and away messages
+- Typing indicators and read receipts
+- Blocking and safety features
+- Troubleshooting
+
 ### Post-Anchored Chat Rooms
 
 Each post has an optional **real-time chat room** for live discussion.
@@ -307,6 +327,8 @@ Each post has an optional **real-time chat room** for live discussion.
 
 - **Real-time messaging**: See messages instantly
 - **User presence**: See who's currently in the room
+- **Typing indicators**: See when someone is typing
+- **Read receipts**: Know when your messages are read
 - **Emoji reactions**: React to messages with emojis
 - **Message history**: Scroll up to see previous messages
 

@@ -14,19 +14,20 @@ export const getUserMessages = () => {
     const messagesWithUserData = await Promise.all(
       messages.map(async (message) => {
         const {
-          _id, messageRoomId, userId, title, text, created,
+          _id, messageRoomId, userId, title, text, created, readBy,
         } = message;
         const user = await UserModel.findOne({ _id: userId });
         
         return {
-          _id,
-          messageRoomId,
-          userId,
+          _id: _id.toString(),
+          messageRoomId: messageRoomId.toString(),
+          userId: userId.toString(),
           userName: user ? user.name : 'Unknown User',
           userAvatar: user ? user.avatar : '',
           title,
           text,
           created,
+          readBy: (readBy || []).map((id) => id.toString()), // Convert ObjectIds to strings
           type: messageRoom ? messageRoom.messageType : 'POST',
         };
       }),

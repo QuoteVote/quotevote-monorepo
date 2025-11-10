@@ -4,6 +4,8 @@ import * as groupQuery from './queries/group';
 import * as messageQuery from './queries/message';
 import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
+import * as presenceQuery from './queries/presence';
+import * as typingQuery from './queries/typing';
 
 export const resolver_query = function () {
   return {
@@ -33,5 +35,13 @@ export const resolver_query = function () {
     messageRoom: messageQuery.getUserChatRoom(),
     notifications: notificationQuery.getNotifications(),
     messageReactions: messageQuery.getUserMessageReactions(),
+
+    // Presence queries
+    getPresence: presenceQuery.getPresence,
+    getBuddyList: presenceQuery.getBuddyList,
+    getRoster: presenceQuery.getRoster,
+
+    // Typing queries
+    getTypingUsers: typingQuery.getTypingUsers,
   };
 };

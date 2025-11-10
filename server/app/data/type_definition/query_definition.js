@@ -75,4 +75,18 @@ type Query {
 
   " This will query the action Reactions"
   actionReactions(actionId: String!): [Reaction]
+
+  # ===== Presence Queries =====
+  " Get user presence by user ID"
+  getPresence(userId: String!): Presence
+
+  " Get buddy list with presence information"
+  getBuddyList: [BuddyWithPresence]
+
+  " Get roster entries"
+  getRoster: [Roster]
+
+  # ===== Typing Queries =====
+  " Get typing users in a message room"
+  getTypingUsers(messageRoomId: String!): [TypingIndicator]
 }`;

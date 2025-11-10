@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import _ from 'lodash'
-import { useState } from 'react'
 
 //  MUI
 import {
@@ -26,11 +26,11 @@ import { Avatar } from '@material-ui/core'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'
-import { GET_CHAT_ROOM } from '../../graphql/query'
+import { GET_CHAT_ROOM, GET_ROSTER } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import { SET_SNACKBAR } from '../../store/ui'
 import ProfileBadge, { ProfileBadgeContainer } from '../Profile/ProfileBadge'
 import { REPORT_BOT } from '../../graphql/mutations'
-import { SET_SNACKBAR } from '../../store/ui'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -74,7 +74,7 @@ export default function ProfileHeader(props) {
   const { profileUser } = props
   const loggedInUserId = useSelector((state) => state.user.data._id)
   const dispatch = useDispatch()
-  const [reportDialogOpen, setReportDialogOpen] = useState(false)
+  const [reportDialogOpen, setReportDialogOpen] = React.useState(false)
   const [reportBot, { loading: reportLoading }] = useMutation(REPORT_BOT)
 
   const {
@@ -97,8 +97,55 @@ export default function ProfileHeader(props) {
     fetchPolicy: 'network-only',
   })
 
+  // Check blocking status: who blocked whom
+  const { data: rosterData } = useQuery(GET_ROSTER, {
+    skip: !loggedInUserId || sameUser,
+  })
+
+  const blockingStatus = React.useMemo(() => {
+    if (!rosterData?.getRoster || sameUser) return null
+    
+    const profileUserId = profileUser._id?.toString()
+    const currentUserId = loggedInUserId?.toString()
+    
+    // Check if current user blocked the profile user
+    const currentUserBlockedProfile = rosterData.getRoster.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      return rUserId === currentUserId && rBuddyId === profileUserId && r.status === 'blocked'
+    })
+    
+    // Check if profile user blocked the current user
+    const profileUserBlockedCurrent = rosterData.getRoster.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      return rUserId === profileUserId && rBuddyId === currentUserId && r.status === 'blocked'
+    })
+    
+    if (currentUserBlockedProfile) return 'blocker' // Current user is the blocker
+    if (profileUserBlockedCurrent) return 'blocked' // Current user is blocked
+    return null
+  }, [rosterData, profileUser._id, loggedInUserId, sameUser])
+  
+  const isBlocked = blockingStatus !== null
+
   const room = !loading && data && data.messageRoom
   const handleMessageUser = async () => {
+    // Check if users are blocked
+    if (isBlocked) {
+      const isBlocker = blockingStatus === 'blocker'
+      const message = isBlocker
+        ? 'You have blocked this user. You cannot send messages to them.'
+        : 'You have been blocked by this user. You cannot send messages.'
+      
+      dispatch(SET_SNACKBAR({
+        open: true,
+        message,
+        type: 'warning',
+      }))
+      return
+    }
+
     dispatch(
       SELECTED_CHAT_ROOM({
         room,
@@ -140,6 +187,7 @@ export default function ProfileHeader(props) {
       )
     }
   }
+
   return (
     <ThemeProvider theme={mainTheme}>
       <Grid container direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>

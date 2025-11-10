@@ -8,6 +8,9 @@ import * as userMutations from './mutations/user';
 import * as userInviteMutations from './mutations/userInvite';
 import * as quoteMutations from './mutations/quote';
 import * as notificationMutations from './mutations/notification';
+import * as presenceMutations from './mutations/presence';
+import * as rosterMutations from './mutations/roster';
+import * as typingMutations from './mutations/typing';
 
 // eslint-disable-next-line camelcase,import/prefer-default-export
 export const resolver_mutations = function () {
@@ -80,5 +83,21 @@ export const resolver_mutations = function () {
     reportBot: userMutations.reportBot(),
     disableUser: userMutations.disableUser(),
     enableUser: userMutations.enableUser(),
+
+    // Presence mutations
+    updatePresence: presenceMutations.updatePresence,
+    heartbeat: presenceMutations.heartbeat,
+    clearPresence: presenceMutations.clearPresence,
+
+    // Roster mutations
+    addBuddy: rosterMutations.addBuddy,
+    acceptBuddy: rosterMutations.acceptBuddy,
+    declineBuddy: rosterMutations.declineBuddy,
+    blockBuddy: rosterMutations.blockBuddy,
+    unblockBuddy: rosterMutations.unblockBuddy,
+    removeBuddy: rosterMutations.removeBuddy,
+
+    // Typing mutations
+    updateTyping: typingMutations.updateTyping,
   };
 };
