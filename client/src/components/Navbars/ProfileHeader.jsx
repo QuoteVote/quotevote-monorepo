@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import ChatIcon from '@material-ui/icons/Chat'
-import BugReportIcon from '@material-ui/icons/BugReport'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -305,7 +304,6 @@ export default function ProfileHeader(props) {
                                   color="secondary"
                                   size="medium"
                                   className={classes.button}
-                                  startIcon={<BugReportIcon />}
                                   onClick={() => setReportDialogOpen(true)}
                                 >
                                   Report Bot
