@@ -36,8 +36,10 @@ import ChartistGraph from 'react-chartist'
 import Chartist from 'chartist'
 import { dailySalesChart } from '@/variables/charts'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import Snackbar from 'mui-pro/Snackbar/Snackbar'
 import controlPanelStylwa from './controlPanelStyles'
+import { SET_SNACKBAR } from '@/store/ui'
 import Unauthorized from '@/components/Unauthorized/Unauthorized'
 import useGuestGuard from '../../utils/useGuestGuard'
 
@@ -67,37 +69,58 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 }
 
-const ActionButtons = ({ status, id }) => {
+const ActionButtons = ({ status, id, onActionComplete }) => {
   const classes = useStyles()
   const ensureAuth = useGuestGuard()
+  const dispatch = useDispatch()
   const [sendUserInviteApproval, { loading }] = useMutation(
     UPDATE_USER_INVITE_STATUS,
   )
-  const submitData = async (selectedStatus) => {
+  const submitData = async (selectedStatus, successMessage) => {
     if (!ensureAuth()) return
-    await sendUserInviteApproval({
-      variables: {
-        userId: id,
-        inviteStatus: `${selectedStatus}`,
-      },
-      refetchQueries: [
-        {
-          query: USER_INVITE_REQUESTS,
+    try {
+      await sendUserInviteApproval({
+        variables: {
+          userId: id,
+          inviteStatus: `${selectedStatus}`,
         },
-      ],
-    })
+      })
+      if (onActionComplete) {
+        await onActionComplete()
+      }
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          type: 'success',
+          message: successMessage,
+        }),
+      )
+    } catch (error) {
+      console.error('Error updating invite status:', error)
+      const errorMessage =
+        error?.graphQLErrors?.[0]?.message ||
+        error?.message?.replace('GraphQL error: ', '') ||
+        'Failed to update invite status'
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          type: 'danger',
+          message: errorMessage,
+        }),
+      )
+    }
   }
 
   const handleDecline = async () => {
-    await submitData(2)
+    await submitData(2, 'Invitation declined')
   }
 
   const handleAccept = async () => {
-    await submitData(4)
+    await submitData(4, 'Invitation approved')
   }
 
   const handleReset = async () => {
-    await submitData(1)
+    await submitData(1, 'Invitation reset to pending')
   }
 
   switch (Number(status)) {
@@ -303,7 +326,7 @@ const FeaturedPostsTable = () => {
 }
 
 // User Invitation Requests Tab Component
-const UserInvitationRequestsTab = ({ data }) => {
+const UserInvitationRequestsTab = ({ data, onRefresh }) => {
   const classes = useStyles()
   const [sortConfig, setSortConfig] = React.useState({
     key: 'joined',
@@ -375,25 +398,37 @@ const UserInvitationRequestsTab = ({ data }) => {
     }
   }
 
+  // Check if there are any invite requests
+  const hasInviteRequests = data?.userInviteRequests && Array.isArray(data.userInviteRequests) && data.userInviteRequests.length > 0
+  const filteredData = hasInviteRequests ? filterAndSortData(data.userInviteRequests) : []
+
+  const handleActionComplete = React.useCallback(async () => {
+    if (typeof onRefresh === 'function') {
+      await onRefresh()
+    }
+  }, [onRefresh])
+
   return (
     <Card>
       <CardContent>
         <Typography className={classes.cardHeader}>
           User Invitation Requests
         </Typography>
-        <TextField
-          placeholder="Search by email..."
-          variant="outlined"
-          size="small"
-          value={emailFilter}
-          onChange={(e) => setEmailFilter(e.target.value)}
-          style={{ marginBottom: 16, width: '100%', maxWidth: 300 }}
-          InputProps={{
-            startAdornment: (
-              <span style={{ marginRight: 8, color: '#666' }}>🔍</span>
-            ),
-          }}
-        />
+        {hasInviteRequests && (
+          <TextField
+            placeholder="Search by email..."
+            variant="outlined"
+            size="small"
+            value={emailFilter}
+            onChange={(e) => setEmailFilter(e.target.value)}
+            style={{ marginBottom: 16, width: '100%', maxWidth: 300 }}
+            InputProps={{
+              startAdornment: (
+                <span style={{ marginRight: 8, color: '#666' }}>🔍</span>
+              ),
+            }}
+          />
+        )}
         <TableContainer className={classes.tableContainer}>
           <Table
             className={classes.table}
@@ -421,32 +456,49 @@ const UserInvitationRequestsTab = ({ data }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.userInviteRequests && filterAndSortData(data.userInviteRequests).map((row) => (
-                <TableRow key={row._id}>
-                  <TableCell align="left">{row.email}</TableCell>
-                  <TableCell align="center">
-                    {moment(row.joined).format('MMM DD, YYYY')}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      className={cx({
-                        [classes.pendingStatus]: row.status === '1',
-                        [classes.declinedStatus]: row.status === '2',
-                        [classes.acceptedStatus]: row.status === '4',
-                      })}
-                      disableRipple
-                      disableElevation
-                    >
-                      {getStatusValue(row.status)}
-                    </Button>
-                  </TableCell>
-                  <TableCell align="center">
-                    <ActionButtons status={row.status} id={row._id} />
+              {filteredData.length > 0 ? (
+                filteredData.map((row) => (
+                  <TableRow key={row._id}>
+                    <TableCell align="left">{row.email}</TableCell>
+                    <TableCell align="center">
+                      {moment(row.joined).format('MMM DD, YYYY')}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={cx({
+                          [classes.pendingStatus]: row.status === '1',
+                          [classes.declinedStatus]: row.status === '2',
+                          [classes.acceptedStatus]: row.status === '4',
+                        })}
+                        disableRipple
+                        disableElevation
+                      >
+                        {getStatusValue(row.status)}
+                      </Button>
+                    </TableCell>
+                    <TableCell align="center">
+                       <ActionButtons
+                         status={row.status}
+                         id={row._id}
+                         onActionComplete={handleActionComplete}
+                       />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} align="center" style={{ padding: '40px 20px' }}>
+                    <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
+                      {emailFilter ? 'No invite requests match your search' : 'No pending invite requests'}
+                    </Typography>
+                    <Typography variant="body2" style={{ color: '#999' }}>
+                      {emailFilter ? 'Try a different search term' : 'New invite requests will appear here'}
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -645,7 +697,7 @@ const UserManagementTab = () => {
   )
 }
 
-const ControlPanelContainer = ({ data }) => {
+const ControlPanelContainer = ({ data, onRefresh }) => {
   const classes = useStyles()
   const [tabValue, setTabValue] = React.useState(0)
 
@@ -680,7 +732,7 @@ const ControlPanelContainer = ({ data }) => {
 
       <Grid item xs={12}>
         <TabPanel value={tabValue} index={0}>
-          <UserInvitationRequestsTab data={data} />
+          <UserInvitationRequestsTab data={data} onRefresh={onRefresh} />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
           <StatisticsTab data={data} />
@@ -697,14 +749,13 @@ const ControlPanelContainer = ({ data }) => {
 }
 
 const ControlPanel = () => {
-  const { data, loading, error } = useQuery(USER_INVITE_REQUESTS)
+  const { data, loading, error, refetch } = useQuery(USER_INVITE_REQUESTS)
   const classes = useStyles()
+  const dispatch = useDispatch()
+  const snackbar = useSelector((state) => state.ui.snackbar)
   const { admin } = useSelector((state) => state.user.data)
-  if (!admin) {
-    return <Unauthorized />
-  }
-  if (loading) {
-    return (
+
+  const renderSkeleton = () => (
       <Grid container spacing={2} className={classes.panelContainer}>
         <Grid item xs={12}>
           <Skeleton animation="wave" style={{ width: '25%' }} />
@@ -719,37 +770,59 @@ const ControlPanel = () => {
         </Grid>
       </Grid>
     )
+
+  const renderContent = () => {
+    if (!admin) {
+      return <Unauthorized />
+    }
+    if (loading) {
+      return renderSkeleton()
+    }
+    if (error) {
+      console.error('Error fetching user invite requests:', error)
+      return <div>Error loading invite requests: {error.message}</div>
+    }
+    if (data && data.userInviteRequests) {
+      return <ControlPanelContainer data={data} onRefresh={refetch} />
+    }
+    return renderSkeleton()
   }
-  if (error) {
-    console.error('Error fetching user invite requests:', error)
-    return <div>Error loading invite requests: {error.message}</div>
-  }
-  if (data && data.userInviteRequests) {
-    return <ControlPanelContainer data={data} />
-  }
+
   return (
-    <Grid container spacing={2} className={classes.panelContainer}>
-      <Grid item xs={12}>
-        <Skeleton animation="wave" style={{ width: '25%' }} />
-      </Grid>
-      <Grid container item xs={12}>
-        <Grid container item xs={6} className={classes.sectionBorder}>
-          <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
-        </Grid>
-        <Grid container item xs={6} justify="flex-end">
-          <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
-        </Grid>
-      </Grid>
-    </Grid>
+    <>
+      {renderContent()}
+      {snackbar ? (
+        <Snackbar
+          place="bc"
+          color={snackbar.type}
+          message={snackbar.message}
+          open={snackbar.open}
+          closeNotification={() =>
+            dispatch(SET_SNACKBAR({ open: false, message: '', type: '' }))
+          }
+          close
+        />
+      ) : null}
+    </>
   )
 }
 
 ControlPanelContainer.propTypes = {
   data: PropTypes.object.isRequired,
+  onRefresh: PropTypes.func,
+}
+
+ControlPanelContainer.defaultProps = {
+  onRefresh: null,
 }
 
 UserInvitationRequestsTab.propTypes = {
   data: PropTypes.object.isRequired,
+  onRefresh: PropTypes.func,
+}
+
+UserInvitationRequestsTab.defaultProps = {
+  onRefresh: null,
 }
 
 StatisticsTab.propTypes = {
@@ -759,6 +832,11 @@ StatisticsTab.propTypes = {
 ActionButtons.propTypes = {
   status: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
+  onActionComplete: PropTypes.func,
+}
+
+ActionButtons.defaultProps = {
+  onActionComplete: null,
 }
 
 export default ControlPanel
