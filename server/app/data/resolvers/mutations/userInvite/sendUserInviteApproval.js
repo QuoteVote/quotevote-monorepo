@@ -1,3 +1,4 @@
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import sendGridEmail, {
   SENGRID_TEMPLATE_IDS,
 } from '../../../utils/send-grid-mail';
@@ -5,10 +6,44 @@ import UserModel from '../../models/UserModel';
 import { addCreatorToUser } from '~/utils/authentication';
 
 export const sendUserInviteApproval = (pubsub) => {
-  return async (_, args) => {
+  return async (_, args, context) => {
+    // AUTHENTICATION CHECK: Require user to be authenticated
+    if (!context.user) {
+      throw new AuthenticationError('Authentication required to approve invites');
+    }
+
+    // AUTHORIZATION CHECK: Only admins can approve/decline invites
+    if (!context.user.admin) {
+      throw new ForbiddenError('Admin access required to approve or decline invites');
+    }
+
     const { userId } = args;
     const invitedUser = await UserModel.findById(userId);
-    invitedUser.status = args.inviteStatus;
+    
+    // VALIDATION: Check if user exists
+    if (!invitedUser) {
+      throw new Error('User not found');
+    }
+    
+    const nextStatus = parseInt(args.inviteStatus, 10);
+    const currentStatus = invitedUser.status;
+
+    // VALIDATION: Check allowed status transitions
+    if (nextStatus === 4 || nextStatus === 2) {
+      // Approve or decline only from pending
+      if (currentStatus !== 1) {
+        throw new Error('Only pending invites can be approved or declined');
+      }
+    } else if (nextStatus === 1) {
+      // Reset only from declined (or accepted if resend flow)
+      if (![2, 4].includes(currentStatus)) {
+        throw new Error('Only declined or accepted invites can be reset to pending');
+      }
+    } else {
+      throw new Error('Unsupported invite status transition');
+    }
+    
+    invitedUser.status = nextStatus;
     await UserModel.update({ _id: userId }, invitedUser, {
       upsert: true,
       new: true,
