@@ -55,7 +55,7 @@ export const sendUserInviteApproval = (pubsub) => {
       from: `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`, // sender address
     };
 
-    if (parseInt(args.inviteStatus) === 4) {
+    if (nextStatus === 4) {
       // Approved
       const expiresIn = 60 * 60 * 24; // 1 day
       const token = await addCreatorToUser(
@@ -74,7 +74,7 @@ export const sendUserInviteApproval = (pubsub) => {
       mailOptions.dynamicTemplateData = {
         create_password_url: `${clientUrl}/auth/signup?token=${token}`,
       };
-    } else if (parseInt(args.inviteStatus) === 2) {
+    } else if (nextStatus === 2) {
       // Declined
       mailOptions.subject = 'Your invitation to Quote has been declined';
       mailOptions.templateId = SENGRID_TEMPLATE_IDS.INVITATION_DECLINE;

@@ -11,6 +11,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import TablePagination from '@material-ui/core/TablePagination'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
@@ -38,12 +39,12 @@ import { dailySalesChart } from '@/variables/charts'
 import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import Snackbar from 'mui-pro/Snackbar/Snackbar'
-import controlPanelStylwa from './controlPanelStyles'
+import controlPanelStyles from './controlPanelStyles'
 import { SET_SNACKBAR } from '@/store/ui'
 import Unauthorized from '@/components/Unauthorized/Unauthorized'
 import useGuestGuard from '../../utils/useGuestGuard'
 
-const useStyles = makeStyles(controlPanelStylwa)
+const useStyles = makeStyles(controlPanelStyles)
 
 // TabPanel component for organizing content
 const TabPanel = ({ children, value, index, ...other }) => {
@@ -333,6 +334,8 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
     direction: 'desc'
   })
   const [emailFilter, setEmailFilter] = React.useState('')
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage] = React.useState(10) // rows per page
   
   const header = [
     { key: 'email', label: 'Email' },
@@ -401,6 +404,17 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
   // Check if there are any invite requests
   const hasInviteRequests = data?.userInviteRequests && Array.isArray(data.userInviteRequests) && data.userInviteRequests.length > 0
   const filteredData = hasInviteRequests ? filterAndSortData(data.userInviteRequests) : []
+  
+  // Pagination
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+  }
+  
+  // Get paginated data
+  const paginatedData = filteredData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  )
 
   const handleActionComplete = React.useCallback(async () => {
     if (typeof onRefresh === 'function') {
@@ -456,8 +470,8 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredData.length > 0 ? (
-                filteredData.map((row) => (
+              {paginatedData.length > 0 ? (
+                paginatedData.map((row) => (
                   <TableRow key={row._id}>
                     <TableCell align="left">{row.email}</TableCell>
                     <TableCell align="center">
@@ -502,6 +516,19 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        {filteredData.length > 0 && (
+          <TablePagination
+            component="div"
+            count={filteredData.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[50]}
+            labelDisplayedRows={({ from, to, count }) =>
+              `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`
+            }
+          />
+        )}
       </CardContent>
     </Card>
   )
