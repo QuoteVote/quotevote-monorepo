@@ -15,7 +15,7 @@ export const getUserInvites = () => {
       // If userId is provided, return UserInvite records (invites sent by that user)
       if (userId) {
         // AUTHORIZATION CHECK: Users can only view their own invites unless they're admin
-        if (userId !== context.user._id && !context.user.admin) {
+        if (userId !== context.user._id.toString() && !context.user.admin) {
           throw new ForbiddenError('You can only view your own invites');
         }
 
