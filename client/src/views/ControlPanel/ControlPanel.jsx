@@ -505,10 +505,10 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
                 <TableRow>
                   <TableCell colSpan={4} align="center" style={{ padding: '40px 20px' }}>
                     <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
-                      {emailFilter ? 'No invite requests match your search' : 'No pending invite requests'}
+                      {emailFilter ? 'No invite requests match your search' : 'No invite requests'}
                     </Typography>
                     <Typography variant="body2" style={{ color: '#999' }}>
-                      {emailFilter ? 'Try a different search term' : 'New invite requests will appear here'}
+                      {emailFilter ? 'Try a different search term' : 'Invite requests will appear here'}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -523,7 +523,7 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
             page={page}
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
-            rowsPerPageOptions={[50]}
+            rowsPerPageOptions={[10]}
             labelDisplayedRows={({ from, to, count }) =>
               `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`
             }
