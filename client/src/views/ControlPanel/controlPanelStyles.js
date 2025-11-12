@@ -250,6 +250,11 @@ const requestAccessStyles = (theme) => ({
       justifyContent: 'flex-start',
     },
   },
+  statusCell: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+  },
   pagination: {
     [theme.breakpoints.down('sm')]: {
       '& .MuiTablePagination-toolbar': {
