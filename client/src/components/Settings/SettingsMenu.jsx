@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: 400,
     },
-    backgroundImage: 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)',
+    backgroundImage: 'linear-gradient(224.94deg, #52b274 1.63%, #4a9e63 97.6%)',
   },
   titleStyle: {
     color: '#ffffff',
@@ -42,8 +42,8 @@ function SettingsMenu({ fontSize }) {
   const classes = useStyles()
   const isMobileDevice = useMobileDetection()
   const [open, setOpen] = React.useState(false)
-  const tipColor = '#1BB5D8'
-  const tipBackgroundImage = 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)'
+  const tipColor = '#52b274'
+  const tipBackgroundImage = 'linear-gradient(224.94deg, #52b274 1.63%, #4a9e63 97.6%)'
   const [svgIcon, setSvgIcon] = useState(SettingsSvg)
   const [viewBox, setViewBox] = useState('0 0 49 46')
 
