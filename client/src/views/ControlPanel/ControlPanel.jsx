@@ -261,75 +261,83 @@ const FeaturedPostsTable = () => {
         {isSmallScreen ? (
           filteredPosts.length > 0 ? (
             <div className={classes.responsiveList}>
-              {filteredPosts.map((post) => (
-                <Box
-                  key={post._id}
-                  className={cx(classes.responsiveCard, {
-                    [classes.featuredRow]: post.featuredSlot,
-                  })}
-                >
-                  <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>
-                      Post ID
-                    </Typography>
-                    <Typography className={classes.responsiveCardValue}>
-                      {post._id}
-                    </Typography>
-                  </div>
-                  <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>
-                      Title
-                    </Typography>
-                    <Typography className={classes.responsiveCardValue}>
-                      {post.title}
-                    </Typography>
-                  </div>
-                  <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>
-                      Summary
-                    </Typography>
-                    <Typography className={classes.responsiveCardValue}>
-                      {(post.text || '').slice(0, 140) || '—'}
-                    </Typography>
-                  </div>
-                  <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>
-                      Featured Slot
-                    </Typography>
-                    <FormControl className={cx(classes.slotSelect, classes.responsiveSelect)}>
-                      <Select
-                        value={selection[post._id] ?? post.featuredSlot ?? ''}
-                        onChange={handleSelect(post._id)}
-                        displayEmpty
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                          <MenuItem
-                            key={n}
-                            value={n}
-                            disabled={usedSlots[n] && usedSlots[n] !== post._id}
-                          >
-                            {n}
+              {filteredPosts.map((post) => {
+                const isAssigned = Boolean(post.featuredSlot)
+                const label = isAssigned ? 'Update' : 'Assign'
+                return (
+                  <Box
+                    key={post._id}
+                    className={cx(classes.responsiveCard, {
+                      [classes.featuredRow]: post.featuredSlot,
+                    })}
+                  >
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Post ID
+                      </Typography>
+                      <Typography className={classes.responsiveCardValue}>
+                        {post._id}
+                      </Typography>
+                    </div>
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Title
+                      </Typography>
+                      <Typography className={classes.responsiveCardValue}>
+                        {post.title}
+                      </Typography>
+                    </div>
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Summary
+                      </Typography>
+                      <Typography className={classes.responsiveCardValue}>
+                        {(post.text || '').slice(0, 140) || '—'}
+                      </Typography>
+                    </div>
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Featured Slot
+                      </Typography>
+                      <FormControl className={cx(classes.slotSelect, classes.responsiveSelect)}>
+                        <Select
+                          value={selection[post._id] ?? post.featuredSlot ?? ''}
+                          onChange={handleSelect(post._id)}
+                          displayEmpty
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
                           </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-                  <div className={classes.responsiveCardActions}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      className={classes.button}
-                      onClick={() => handleSave(post._id)}
-                      disabled={loading}
-                    >
-                      {post.featuredSlot ? 'Update' : 'Assign'}
-                    </Button>
-                  </div>
-                </Box>
-              ))}
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                            <MenuItem
+                              key={n}
+                              value={n}
+                              disabled={usedSlots[n] && usedSlots[n] !== post._id}
+                            >
+                              {n}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                    <div className={classes.responsiveCardActions}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        style={{
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                        }}
+                        onClick={() => handleSave(post._id)}
+                        disabled={loading}
+                      >
+                        {label}
+                      </Button>
+                    </div>
+                  </Box>
+                )
+              })}
             </div>
           ) : (
             <Box className={classes.emptyState}>
@@ -364,48 +372,56 @@ const FeaturedPostsTable = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredPosts.map((post) => (
-                  <TableRow
-                    key={post._id}
-                    className={post.featuredSlot ? classes.featuredRow : ''}
-                  >
-                    <TableCell align="center">{post._id}</TableCell>
-                    <TableCell>{post.title}</TableCell>
-                    <TableCell>{(post.text || '').slice(0, 100)}</TableCell>
-                    <TableCell align="center">
-                      <FormControl className={classes.slotSelect}>
-                        <Select
-                          value={selection[post._id] ?? post.featuredSlot ?? ''}
-                          onChange={handleSelect(post._id)}
-                          displayEmpty
-                        >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                            <MenuItem
-                              key={n}
-                              value={n}
-                              disabled={usedSlots[n] && usedSlots[n] !== post._id}
-                            >
-                              {n}
+                {filteredPosts.map((post) => {
+                  const isAssigned = Boolean(post.featuredSlot)
+                  const label = isAssigned ? 'Update' : 'Assign'
+                  return (
+                    <TableRow
+                      key={post._id}
+                      className={post.featuredSlot ? classes.featuredRow : ''}
+                    >
+                      <TableCell align="center">{post._id}</TableCell>
+                      <TableCell>{post.title}</TableCell>
+                      <TableCell>{(post.text || '').slice(0, 100)}</TableCell>
+                      <TableCell align="center">
+                        <FormControl className={classes.slotSelect}>
+                          <Select
+                            value={selection[post._id] ?? post.featuredSlot ?? ''}
+                            onChange={handleSelect(post._id)}
+                            displayEmpty
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
                             </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleSave(post._id)}
-                        disabled={loading}
-                      >
-                        {post.featuredSlot ? 'Update' : 'Assign'}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                              <MenuItem
+                                key={n}
+                                value={n}
+                                disabled={usedSlots[n] && usedSlots[n] !== post._id}
+                              >
+                                {n}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          style={{
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.primary.contrastText,
+                          }}
+                          onClick={() => handleSave(post._id)}
+                          disabled={loading}
+                        >
+                          {label}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
                 {filteredPosts.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={5} align="center" style={{ padding: '40px 20px' }}>
@@ -652,7 +668,9 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
                         <TableCell align="center">
                           {moment(row.joined).format('MMM DD, YYYY')}
                         </TableCell>
-                        <TableCell align="center">{renderStatusChip(row.status)}</TableCell>
+                        <TableCell align="center">
+                          <div className={classes.statusCell}>{renderStatusChip(row.status)}</div>
+                        </TableCell>
                         <TableCell align="center">
                           <ActionButtons
                             status={row.status}
