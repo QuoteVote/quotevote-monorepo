@@ -23,6 +23,9 @@ import Box from '@material-ui/core/Box'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Switch from '@material-ui/core/Switch'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import useTheme from '@material-ui/core/styles/useTheme'
 
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
@@ -127,10 +130,9 @@ const ActionButtons = ({ status, id, onActionComplete }) => {
   switch (Number(status)) {
     case 1: // pending
       return (
-        <div style={{ width: 200 }}>
+        <div className={classes.actionButtonGroup}>
           <Button
             variant="contained"
-            color="secondary"
             className={classes.button}
             style={{
               backgroundColor: '#f44336',
@@ -142,7 +144,6 @@ const ActionButtons = ({ status, id, onActionComplete }) => {
           </Button>
           <Button
             variant="contained"
-            color="primary"
             className={classes.button}
             style={{
               backgroundColor: '#52b274',
@@ -156,31 +157,35 @@ const ActionButtons = ({ status, id, onActionComplete }) => {
       )
     case 2: // declined
       return (
-        <Button
-          variant="contained"
-          className={classes.button}
-          style={{
-            backgroundColor: '#f44336',
-          }}
-          onClick={handleReset}
-          disabled={loading}
-        >
-          Reset
-        </Button>
+        <div className={classes.singleActionButton}>
+          <Button
+            variant="contained"
+            className={classes.button}
+            style={{
+              backgroundColor: '#f44336',
+            }}
+            onClick={handleReset}
+            disabled={loading}
+          >
+            Reset
+          </Button>
+        </div>
       )
     case 4: // active
       return (
-        <Button
-          variant="contained"
-          className={classes.button}
-          style={{
-            backgroundColor: '#52b274',
-          }}
-          onClick={handleAccept}
-          disabled={loading}
-        >
-          Resend
-        </Button>
+        <div className={classes.singleActionButton}>
+          <Button
+            variant="contained"
+            className={classes.button}
+            style={{
+              backgroundColor: '#52b274',
+            }}
+            onClick={handleAccept}
+            disabled={loading}
+          >
+            Resend
+          </Button>
+        </div>
       )
     default:
       return null
@@ -189,6 +194,8 @@ const ActionButtons = ({ status, id, onActionComplete }) => {
 
 const FeaturedPostsTable = () => {
   const classes = useStyles()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const ensureAuth = useGuestGuard()
   const queryVars = {
     limit: 50,
@@ -249,39 +256,47 @@ const FeaturedPostsTable = () => {
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className={classes.filterInput}
+          fullWidth
         />
-        <TableContainer className={classes.tableContainer}>
-          <Table stickyHeader aria-label="featured posts table">
-            <TableHead classes={{ head: classes.columnHeader }}>
-              <TableRow>
-                <TableCell align="center" className={classes.columnHeader}>
-                  Post ID
-                </TableCell>
-                <TableCell align="center" className={classes.columnHeader}>
-                  Title
-                </TableCell>
-                <TableCell align="center" className={classes.columnHeader}>
-                  Summary
-                </TableCell>
-                <TableCell align="center" className={classes.columnHeader}>
-                  Featured Slot
-                </TableCell>
-                <TableCell align="center" className={classes.columnHeader}>
-                  Action
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+        {isSmallScreen ? (
+          filteredPosts.length > 0 ? (
+            <div className={classes.responsiveList}>
               {filteredPosts.map((post) => (
-                <TableRow
+                <Box
                   key={post._id}
-                  className={post.featuredSlot ? classes.featuredRow : ''}
+                  className={cx(classes.responsiveCard, {
+                    [classes.featuredRow]: post.featuredSlot,
+                  })}
                 >
-                  <TableCell align="center">{post._id}</TableCell>
-                  <TableCell>{post.title}</TableCell>
-                  <TableCell>{(post.text || '').slice(0, 100)}</TableCell>
-                  <TableCell align="center">
-                    <FormControl className={classes.slotSelect}>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Post ID
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {post._id}
+                    </Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Title
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {post.title}
+                    </Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Summary
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {(post.text || '').slice(0, 140) || '—'}
+                    </Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Featured Slot
+                    </Typography>
+                    <FormControl className={cx(classes.slotSelect, classes.responsiveSelect)}>
                       <Select
                         value={selection[post._id] ?? post.featuredSlot ?? ''}
                         onChange={handleSelect(post._id)}
@@ -290,37 +305,123 @@ const FeaturedPostsTable = () => {
                         <MenuItem value="">
                           <em>None</em>
                         </MenuItem>
-                        {Array.from({ length: 12 }, (_, i) => i + 1).map(
-                          (n) => (
-                            <MenuItem
-                              key={n}
-                              value={n}
-                              disabled={
-                                usedSlots[n] && usedSlots[n] !== post._id
-                              }
-                            >
-                              {n}
-                            </MenuItem>
-                          ),
-                        )}
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                          <MenuItem
+                            key={n}
+                            value={n}
+                            disabled={usedSlots[n] && usedSlots[n] !== post._id}
+                          >
+                            {n}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
-                  </TableCell>
-                  <TableCell align="center">
+                  </div>
+                  <div className={classes.responsiveCardActions}>
                     <Button
                       variant="contained"
                       color="primary"
+                      className={classes.button}
                       onClick={() => handleSave(post._id)}
                       disabled={loading}
                     >
                       {post.featuredSlot ? 'Update' : 'Assign'}
                     </Button>
+                  </div>
+                </Box>
+              ))}
+            </div>
+          ) : (
+            <Box className={classes.emptyState}>
+              <Typography variant="body1" style={{ marginBottom: 8 }}>
+                No posts match the current filter
+              </Typography>
+              <Typography variant="body2">
+                Try a different search term to find posts
+              </Typography>
+            </Box>
+          )
+        ) : (
+          <TableContainer className={classes.tableContainer}>
+            <Table stickyHeader aria-label="featured posts table">
+              <TableHead classes={{ head: classes.columnHeader }}>
+                <TableRow>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Post ID
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Title
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Summary
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Featured Slot
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Action
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {filteredPosts.map((post) => (
+                  <TableRow
+                    key={post._id}
+                    className={post.featuredSlot ? classes.featuredRow : ''}
+                  >
+                    <TableCell align="center">{post._id}</TableCell>
+                    <TableCell>{post.title}</TableCell>
+                    <TableCell>{(post.text || '').slice(0, 100)}</TableCell>
+                    <TableCell align="center">
+                      <FormControl className={classes.slotSelect}>
+                        <Select
+                          value={selection[post._id] ?? post.featuredSlot ?? ''}
+                          onChange={handleSelect(post._id)}
+                          displayEmpty
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+                            <MenuItem
+                              key={n}
+                              value={n}
+                              disabled={usedSlots[n] && usedSlots[n] !== post._id}
+                            >
+                              {n}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleSave(post._id)}
+                        disabled={loading}
+                      >
+                        {post.featuredSlot ? 'Update' : 'Assign'}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {filteredPosts.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={5} align="center" style={{ padding: '40px 20px' }}>
+                      <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
+                        No posts match the current filter
+                      </Typography>
+                      <Typography variant="body2" style={{ color: '#999' }}>
+                        Try a different search term to find posts
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </CardContent>
     </Card>
   )
@@ -329,6 +430,8 @@ const FeaturedPostsTable = () => {
 // User Invitation Requests Tab Component
 const UserInvitationRequestsTab = ({ data, onRefresh }) => {
   const classes = useStyles()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const [sortConfig, setSortConfig] = React.useState({
     key: 'joined',
     direction: 'desc'
@@ -401,6 +504,32 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
     }
   }
 
+  const renderStatusChip = (status) => (
+    <Button
+      variant="contained"
+      disableRipple
+      disableElevation
+      className={cx(classes.statusButton, {
+        [classes.pendingStatus]: status === '1',
+        [classes.declinedStatus]: status === '2',
+        [classes.acceptedStatus]: status === '4',
+      })}
+    >
+      {getStatusValue(status)}
+    </Button>
+  )
+
+  const renderEmptyState = () => (
+    <Box className={classes.emptyState}>
+      <Typography variant="body1" style={{ marginBottom: 8 }}>
+        {emailFilter ? 'No invite requests match your search' : 'No invite requests'}
+      </Typography>
+      <Typography variant="body2">
+        {emailFilter ? 'Try a different search term' : 'Invite requests will appear here'}
+      </Typography>
+    </Box>
+  )
+
   // Check if there are any invite requests
   const hasInviteRequests = data?.userInviteRequests && Array.isArray(data.userInviteRequests) && data.userInviteRequests.length > 0
   const filteredData = hasInviteRequests ? filterAndSortData(data.userInviteRequests) : []
@@ -435,90 +564,128 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
             size="small"
             value={emailFilter}
             onChange={(e) => setEmailFilter(e.target.value)}
-            style={{ marginBottom: 16, width: '100%', maxWidth: 300 }}
+            className={classes.filterInput}
+            fullWidth
             InputProps={{
               startAdornment: (
-                <span style={{ marginRight: 8, color: '#666' }}>🔍</span>
+                <InputAdornment position="start">
+                  <span role="img" aria-label="search" className={classes.searchIcon}>
+                    🔍
+                  </span>
+                </InputAdornment>
               ),
             }}
           />
         )}
-        <TableContainer className={classes.tableContainer}>
-          <Table
-            className={classes.table}
-            aria-label="simple table"
-            stickyHeader
-          >
-            <TableHead classes={{ head: classes.columnHeader }}>
-              <TableRow>
-                {header.map((column) => (
-                  <TableCell
-                    key={column.key}
-                    align="center"
-                    className={classes.columnHeader}
-                    style={{ cursor: column.key !== 'action' ? 'pointer' : 'default' }}
-                    onClick={() => column.key !== 'action' && handleSort(column.key)}
-                  >
-                    {column.label}
-                    {sortConfig.key === column.key && column.key !== 'action' && (
-                      <span style={{ marginLeft: 5 }}>
-                        {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                      </span>
-                    )}
-                  </TableCell>
+        {isSmallScreen
+          ? paginatedData.length > 0
+            ? (
+              <div className={classes.responsiveList}>
+                {paginatedData.map((row) => (
+                  <Box key={row._id} className={classes.responsiveCard}>
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Email
+                      </Typography>
+                      <Typography className={classes.responsiveCardValue}>
+                        {row.email}
+                      </Typography>
+                    </div>
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Joined
+                      </Typography>
+                      <Typography className={classes.responsiveCardValue}>
+                        {moment(row.joined).format('MMM DD, YYYY')}
+                      </Typography>
+                    </div>
+                    <div className={classes.responsiveCardRow}>
+                      <Typography className={classes.responsiveCardLabel}>
+                        Status
+                      </Typography>
+                      <div className={classes.statusWrapper}>{renderStatusChip(row.status)}</div>
+                    </div>
+                    <div className={classes.responsiveCardActions}>
+                      <ActionButtons
+                        status={row.status}
+                        id={row._id}
+                        onActionComplete={handleActionComplete}
+                      />
+                    </div>
+                  </Box>
                 ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedData.length > 0 ? (
-                paginatedData.map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell align="left">{row.email}</TableCell>
-                    <TableCell align="center">
-                      {moment(row.joined).format('MMM DD, YYYY')}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className={cx({
-                          [classes.pendingStatus]: row.status === '1',
-                          [classes.declinedStatus]: row.status === '2',
-                          [classes.acceptedStatus]: row.status === '4',
-                        })}
-                        disableRipple
-                        disableElevation
+              </div>
+            )
+            : renderEmptyState()
+          : (
+            <TableContainer className={classes.tableContainer}>
+              <Table
+                className={classes.table}
+                aria-label="user invitation requests table"
+                stickyHeader
+              >
+                <TableHead classes={{ head: classes.columnHeader }}>
+                  <TableRow>
+                    {header.map((column) => (
+                      <TableCell
+                        key={column.key}
+                        align="center"
+                        className={classes.columnHeader}
+                        style={{ cursor: column.key !== 'action' ? 'pointer' : 'default' }}
+                        onClick={() => column.key !== 'action' && handleSort(column.key)}
                       >
-                        {getStatusValue(row.status)}
-                      </Button>
-                    </TableCell>
-                    <TableCell align="center">
-                       <ActionButtons
-                         status={row.status}
-                         id={row._id}
-                         onActionComplete={handleActionComplete}
-                       />
-                    </TableCell>
+                        {column.label}
+                        {sortConfig.key === column.key && column.key !== 'action' && (
+                          <span style={{ marginLeft: 5 }}>
+                            {sortConfig.direction === 'asc' ? '↑' : '↓'}
+                          </span>
+                        )}
+                      </TableCell>
+                    ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={4} align="center" style={{ padding: '40px 20px' }}>
-                    <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
-                      {emailFilter ? 'No invite requests match your search' : 'No invite requests'}
-                    </Typography>
-                    <Typography variant="body2" style={{ color: '#999' }}>
-                      {emailFilter ? 'Try a different search term' : 'Invite requests will appear here'}
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {paginatedData.length > 0 ? (
+                    paginatedData.map((row) => (
+                      <TableRow key={row._id}>
+                        <TableCell align="left">{row.email}</TableCell>
+                        <TableCell align="center">
+                          {moment(row.joined).format('MMM DD, YYYY')}
+                        </TableCell>
+                        <TableCell align="center">{renderStatusChip(row.status)}</TableCell>
+                        <TableCell align="center">
+                          <ActionButtons
+                            status={row.status}
+                            id={row._id}
+                            onActionComplete={handleActionComplete}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} align="center" style={{ padding: '40px 20px' }}>
+                        <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
+                          {emailFilter
+                            ? 'No invite requests match your search'
+                            : 'No invite requests'}
+                        </Typography>
+                        <Typography variant="body2" style={{ color: '#999' }}>
+                          {emailFilter
+                            ? 'Try a different search term'
+                            : 'Invite requests will appear here'}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         {filteredData.length > 0 && (
           <TablePagination
             component="div"
+            className={classes.pagination}
             count={filteredData.length}
             page={page}
             onPageChange={handleChangePage}
@@ -589,38 +756,35 @@ const StatisticsTab = ({ data }) => {
   return (
     <Card>
       <CardContent>
-        <Typography className={classes.cardHeader} display="inline">
-          User Invitation Statistics
-        </Typography>
-        <Typography
-          className={classes.graphText}
-          display="inline"
-          style={{ float: 'right' }}
-        >
-          Invite Requests: {inviteRequestCount || 0}
-        </Typography>
+        <Box className={classes.statsHeader}>
+          <Typography className={classes.cardHeader}>
+            User Invitation Statistics
+          </Typography>
+          <Typography className={classes.graphText}>
+            Invite Requests: {inviteRequestCount || 0}
+          </Typography>
+        </Box>
         <ChartistGraph
           className="ct-chart-white-colors"
           style={{
             backgroundColor: '#00bcd4',
             marginTop: 10,
             marginBottom: 15,
+            borderRadius: 8,
           }}
           data={chartData}
           type="Line"
           options={chartOptions}
           listener={dailySalesChart.animation}
         />
-        <Typography className={classes.graphText} display="inline">
-          Total Users: {totalUsers || 0}
-        </Typography>
-        <Typography
-          className={classes.graphText}
-          display="inline"
-          style={{ float: 'right' }}
-        >
-          Active Users Today: {activeUsersCount}
-        </Typography>
+        <Box className={classes.statsFooter}>
+          <Typography className={classes.graphText}>
+            Total Users: {totalUsers || 0}
+          </Typography>
+          <Typography className={classes.graphText}>
+            Active Users Today: {activeUsersCount}
+          </Typography>
+        </Box>
       </CardContent>
     </Card>
   )
@@ -628,6 +792,8 @@ const StatisticsTab = ({ data }) => {
 
 const UserManagementTab = () => {
   const classes = useStyles()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const ensureAuth = useGuestGuard()
   const { data, loading, error, refetch } = useQuery(GET_USERS, {
     variables: {
@@ -673,6 +839,8 @@ const UserManagementTab = () => {
 
   if (loading || !data) return <Skeleton animation="wave" height={200} />
 
+  const hasUsers = Array.isArray(data.users) && data.users.length > 0
+
   const handleToggle = async (user) => {
     if (!ensureAuth()) return
     await updateUser({
@@ -690,35 +858,86 @@ const UserManagementTab = () => {
     <Card>
       <CardContent>
         <Typography className={classes.cardHeader}>User Management</Typography>
-        <TableContainer className={classes.tableContainer}>
-          <Table stickyHeader aria-label="user management table">
-            <TableHead classes={{ head: classes.columnHeader }}>
-              <TableRow>
-                <TableCell align="center" className={classes.columnHeader}>User ID</TableCell>
-                <TableCell align="center" className={classes.columnHeader}>Username</TableCell>
-                <TableCell align="center" className={classes.columnHeader}>Name</TableCell>
-                <TableCell align="center" className={classes.columnHeader}>Contributor Badge</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
+        {isSmallScreen ? (
+          hasUsers ? (
+            <div className={classes.responsiveList}>
               {data.users.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell align="center">{user._id}</TableCell>
-                  <TableCell align="center">{user.username}</TableCell>
-                  <TableCell align="center">{user.name}</TableCell>
-                  <TableCell align="center">
-                    <Switch
-                      checked={!!user.contributorBadge}
-                      onChange={() => handleToggle(user)}
-                      color="primary"
-                      inputProps={{ 'aria-label': 'toggle contributor badge' }}
-                    />
+                <Box key={user._id} className={classes.responsiveCard}>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>User ID</Typography>
+                    <Typography className={classes.responsiveCardValue}>{user._id}</Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>Username</Typography>
+                    <Typography className={classes.responsiveCardValue}>{user.username}</Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>Name</Typography>
+                    <Typography className={classes.responsiveCardValue}>{user.name || '—'}</Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>Contributor Badge</Typography>
+                    <div className={classes.statusWrapper}>
+                      <Switch
+                        checked={!!user.contributorBadge}
+                        onChange={() => handleToggle(user)}
+                        color="primary"
+                        inputProps={{ 'aria-label': 'toggle contributor badge' }}
+                      />
+                    </div>
+                  </div>
+                </Box>
+              ))}
+            </div>
+          ) : (
+            <Box className={classes.emptyState}>
+              <Typography variant="body1" style={{ marginBottom: 8 }}>
+                No users found
+              </Typography>
+              <Typography variant="body2">Users will appear once they join.</Typography>
+            </Box>
+          )
+        ) : (
+          <TableContainer className={classes.tableContainer}>
+            <Table stickyHeader aria-label="user management table">
+              <TableHead classes={{ head: classes.columnHeader }}>
+                <TableRow>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    User ID
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Username
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Name
+                  </TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>
+                    Contributor Badge
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {data.users.map((user) => (
+                  <TableRow key={user._id}>
+                    <TableCell align="center">{user._id}</TableCell>
+                    <TableCell align="center">{user.username}</TableCell>
+                    <TableCell align="center">{user.name}</TableCell>
+                    <TableCell align="center">
+                      <div className={classes.switchWrapper}>
+                        <Switch
+                          checked={!!user.contributorBadge}
+                          onChange={() => handleToggle(user)}
+                          color="primary"
+                          inputProps={{ 'aria-label': 'toggle contributor badge' }}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </CardContent>
     </Card>
   )
@@ -726,6 +945,8 @@ const UserManagementTab = () => {
 
 const ControlPanelContainer = ({ data, onRefresh }) => {
   const classes = useStyles()
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const [tabValue, setTabValue] = React.useState(0)
 
   const handleTabChange = (event, newValue) => {
@@ -736,25 +957,42 @@ const ControlPanelContainer = ({ data, onRefresh }) => {
     <Grid container spacing={2} className={classes.panelContainer}>
       <Grid container>
         <Typography className={classes.panelHeader}>
-          Invite Control Panel
+          Control Panel
         </Typography>
       </Grid>
       
       <Grid item xs={12}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label="control panel tabs"
-          className={classes.tabsContainer}
-          indicatorColor="secondary"
-          textColor="secondary"
-          variant="fullWidth"
-        >
-          <Tab label="User Invitation Requests" />
-          <Tab label="Statistics" />
-          <Tab label="Featured Posts" />
-          <Tab label="User Management" />
-        </Tabs>
+        {isSmallScreen ? (
+          <FormControl variant="outlined" size="small" className={classes.mobileTabSelect}>
+            <Select
+              value={tabValue}
+              onChange={(event) => handleTabChange(event, event.target.value)}
+              displayEmpty
+            >
+              <MenuItem value={0}>User Invitation Requests</MenuItem>
+              <MenuItem value={1}>Statistics</MenuItem>
+              <MenuItem value={2}>Featured Posts</MenuItem>
+              <MenuItem value={3}>User Management</MenuItem>
+            </Select>
+          </FormControl>
+        ) : (
+          <Box className={classes.tabsWrapper}>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              aria-label="control panel tabs"
+              className={classes.tabsContainer}
+              indicatorColor="secondary"
+              textColor="secondary"
+              variant="fullWidth"
+            >
+              <Tab label="User Invitation Requests" classes={{ root: classes.tabRoot }} />
+              <Tab label="Statistics" classes={{ root: classes.tabRoot }} />
+              <Tab label="Featured Posts" classes={{ root: classes.tabRoot }} />
+              <Tab label="User Management" classes={{ root: classes.tabRoot }} />
+            </Tabs>
+          </Box>
+        )}
       </Grid>
 
       <Grid item xs={12}>

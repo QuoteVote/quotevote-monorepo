@@ -104,7 +104,7 @@ export default function SettingsIconButton({ fontSize }) {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                  {user.admin && <MenuItem onClick={handleInviteControlPanel}>Invite Control Panel</MenuItem>}
+                  {user.admin && <MenuItem onClick={handleInviteControlPanel}>Control Panel</MenuItem>}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>
               </ClickAwayListener>
