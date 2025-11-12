@@ -7,9 +7,6 @@ import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
   iconButton: {
     color: '#0A2342',
     transition: 'all 0.2s',
@@ -26,11 +23,11 @@ export default function AdminIconButton({ fontSize, onNavigate }) {
   const admin = useSelector((state) => state.user.data?.admin)
 
   const handleClick = () => {
-    history.push('/ControlPanel')
-    // Call onNavigate callback if provided (e.g., to close mobile drawer)
+    // Call onNavigate callback first if provided (e.g., to close mobile drawer)
     if (onNavigate) {
       onNavigate()
     }
+    history.push('/ControlPanel')
   }
 
   // Only render if user is admin
@@ -53,5 +50,10 @@ export default function AdminIconButton({ fontSize, onNavigate }) {
 AdminIconButton.propTypes = {
   fontSize: PropTypes.string,
   onNavigate: PropTypes.func,
+}
+
+AdminIconButton.defaultProps = {
+  fontSize: 'default',
+  onNavigate: null,
 }
 

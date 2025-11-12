@@ -16,10 +16,6 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginRight: theme.spacing(2),
   },
-  tipColor: {
-    backgroundColor: '',
-    backgroundImage: '',
-  },
   drawerPaperStyle: {
     width: '100%',
     maxWidth: 400,

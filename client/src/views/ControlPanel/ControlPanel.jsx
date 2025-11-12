@@ -24,8 +24,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import Switch from '@material-ui/core/Switch'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
-import useTheme from '@material-ui/core/styles/useTheme'
+import { useResponsive } from '../../hooks/useResponsive'
 
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
@@ -100,7 +99,9 @@ const ActionButtons = ({ status, id, onActionComplete }) => {
         }),
       )
     } catch (error) {
-      console.error('Error updating invite status:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error updating invite status:', error)
+      }
       const errorMessage =
         error?.graphQLErrors?.[0]?.message ||
         error?.message?.replace('GraphQL error: ', '') ||
@@ -194,8 +195,7 @@ const ActionButtons = ({ status, id, onActionComplete }) => {
 
 const FeaturedPostsTable = () => {
   const classes = useStyles()
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { theme, isSmallScreen } = useResponsive()
   const ensureAuth = useGuestGuard()
   const queryVars = {
     limit: 50,
@@ -446,8 +446,7 @@ const FeaturedPostsTable = () => {
 // User Invitation Requests Tab Component
 const UserInvitationRequestsTab = ({ data, onRefresh }) => {
   const classes = useStyles()
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { theme, isSmallScreen } = useResponsive()
   const [sortConfig, setSortConfig] = React.useState({
     key: 'joined',
     direction: 'desc'
@@ -810,8 +809,7 @@ const StatisticsTab = ({ data }) => {
 
 const UserManagementTab = () => {
   const classes = useStyles()
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { theme, isSmallScreen } = useResponsive()
   const ensureAuth = useGuestGuard()
   const { data, loading, error, refetch } = useQuery(GET_USERS, {
     variables: {
@@ -963,8 +961,7 @@ const UserManagementTab = () => {
 
 const ControlPanelContainer = ({ data, onRefresh }) => {
   const classes = useStyles()
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { isSmallScreen } = useResponsive()
   const [tabValue, setTabValue] = React.useState(0)
 
   const handleTabChange = (event, newValue) => {
@@ -1062,7 +1059,9 @@ const ControlPanel = () => {
       return renderSkeleton()
     }
     if (error) {
-      console.error('Error fetching user invite requests:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching user invite requests:', error)
+      }
       return <div>Error loading invite requests: {error.message}</div>
     }
     if (data && data.userInviteRequests) {
