@@ -24,6 +24,7 @@ import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
 import { useMobileDetection } from '../../utils/display'
+import DarkModeToggle from './DarkModeToggle'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -376,6 +377,9 @@ function SettingsContent({ setOpen }) {
                   Forgot Password?
                 </Link>
               </Grid>
+            </Grid>
+            <Grid item>
+              <DarkModeToggle />
             </Grid>
             {!loading && error && (<Typography className={classes.error}>{replaceGqlError(error.message)}</Typography>)}
             {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}

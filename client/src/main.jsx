@@ -31,8 +31,7 @@ import TokenExpired from 'layouts/TokenExpired'
 import store, { persistor } from 'store/store'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
-import customTheme from './theme'
+import { ThemeProvider } from './Context/ThemeContext'
 import 'assets/scss/material-dashboard-pro-react.scss'
 import LogoutPage from './components/LogoutPage'
 
@@ -53,14 +52,13 @@ hist.listen(() => {
   window.scrollTo(0, 0)
 })
 
-const theme = createTheme(customTheme)
 
 ReactDOM.render(
   <ErrorBoundary>
     <ApolloProvider client={client}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
+          <ThemeProvider>
             <HelmetProvider>
               <AuthModalProvider>
                 <Router history={hist}>
