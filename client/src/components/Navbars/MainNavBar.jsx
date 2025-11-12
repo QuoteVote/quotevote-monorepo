@@ -26,6 +26,7 @@ import NotificationMenu from '../Notifications/NotificationMenu'
 import SettingsMenu from '../Settings/SettingsMenu'
 import SubmitPost from '../SubmitPost/SubmitPost'
 import ChatMenu from '../Chat/ChatMenu'
+import AdminIconButton from '../CustomButtons/AdminIconButton'
 import { SET_SELECTED_PAGE } from 'store/ui'
 import { useMobileDetection } from '../../utils/display'
 
@@ -205,6 +206,14 @@ const useStyles = makeStyles((theme) => ({
       background: '#459963',
     },
   },
+  drawerIconActions: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: theme.spacing(2),
+    width: '100%',
+    padding: theme.spacing(1, 0),
+  },
 }))
 
 function MainNavBar(props) {
@@ -332,6 +341,7 @@ function MainNavBar(props) {
                 <Box className={classes.loggedInActions}>
                   <ChatMenu fontSize="large" />
                   <NotificationMenu fontSize="large" />
+                  <AdminIconButton fontSize="large" />
                   <SettingsMenu fontSize="large" />
                 </Box>
               </Box>
@@ -464,6 +474,20 @@ function MainNavBar(props) {
                 </Button>
               </NavLink>
             </ListItem>
+
+            <Divider className={classes.divider} />
+
+            <ListItem disableGutters>
+              <Box className={classes.drawerIconActions}>
+                <ChatMenu fontSize="default" />
+                <NotificationMenu fontSize="default" />
+                <AdminIconButton fontSize="default" onNavigate={closeDrawer} />
+                <SettingsMenu fontSize="default" />
+              </Box>
+            </ListItem>
+
+            <Divider className={classes.divider} />
+
             <ListItem disableGutters>
               <Button
                 className={`${classes.drawerButton} ${classes.drawerTextButton}`}

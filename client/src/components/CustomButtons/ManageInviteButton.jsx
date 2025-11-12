@@ -26,7 +26,7 @@ function ManageInviteButton(props) {
       {...props}
       className={classNames(classes.button, className)}
     >
-      Invites
+      Admin Panel
     </Button>
   )
 }
