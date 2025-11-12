@@ -125,6 +125,7 @@ const createAppTheme = (mode) => {
         styleOverrides: {
           root: {
             backgroundImage: 'none',
+            transition: 'background-color 0.3s ease-in-out, color 0.3s ease-in-out',
           },
         },
       },
@@ -132,6 +133,7 @@ const createAppTheme = (mode) => {
         styleOverrides: {
           root: {
             backgroundColor: isLight ? '#52b274' : '#1e1e1e',
+            transition: 'background-color 0.3s ease-in-out',
           },
         },
       },
@@ -139,8 +141,42 @@ const createAppTheme = (mode) => {
         styleOverrides: {
           paper: {
             backgroundColor: isLight ? '#ffffff' : '#1e1e1e',
+            transition: 'background-color 0.3s ease-in-out',
           },
         },
+      },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            transition: 'all 0.3s ease-in-out',
+          },
+        },
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '& .MuiOutlinedInput-root': {
+              transition: 'border-color 0.3s ease-in-out',
+              '& fieldset': {
+                borderColor: isLight ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)',
+              },
+              '&:hover fieldset': {
+                borderColor: isLight ? 'rgba(0, 0, 0, 0.87)' : 'rgba(255, 255, 255, 0.87)',
+              },
+            },
+          },
+        },
+      },
+    },
+    transitions: {
+      duration: {
+        shortest: 150,
+        shorter: 200,
+        short: 250,
+        standard: 300,
+        complex: 375,
+        enteringScreen: 225,
+        leavingScreen: 195,
       },
     },
   })
