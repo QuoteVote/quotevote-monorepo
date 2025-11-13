@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING } from 'store/chat'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { Grid, InputBase } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     background: '#f5f7fa',
     border: '1px solid #e1e8ed',
     minHeight: 45,
-    maxHeight: 75, 
+    maxHeight: 75,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
@@ -78,18 +78,20 @@ function PostChatSend(props) {
     onCompleted: () => {
       dispatch(CHAT_SUBMITTING(false))
     },
-    refetchQueries: [{
-      query: GET_ROOM_MESSAGES,
-      variables: {
-        messageRoomId,
+    refetchQueries: [
+      {
+        query: GET_ROOM_MESSAGES,
+        variables: {
+          messageRoomId,
+        },
       },
-    }],
+    ],
   })
 
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
-    
+
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
@@ -126,7 +128,10 @@ function PostChatSend(props) {
       // eslint-disable-next-line no-shadow
       update: (proxy, { data: { createMessage } }) => {
         // Read the data from our cache for this query.
-        const data = proxy.readQuery({ query: GET_ROOM_MESSAGES, variables: { messageRoomId } })
+        const data = proxy.readQuery({
+          query: GET_ROOM_MESSAGES,
+          variables: { messageRoomId },
+        })
         if (data) {
           // Write our data back to the cache with the new message in it
           proxy.writeQuery({
@@ -140,7 +145,7 @@ function PostChatSend(props) {
         }
       },
     })
-    
+
     // Clear the text input after successful submission
     setText('')
   }
@@ -165,7 +170,9 @@ function PostChatSend(props) {
             maxRows={4}
             inputRef={commentInputRef}
             placeholder="type a message..."
-            className={`${classes.input} ${!text.trim() ? classes.inputEmpty : ''}`}
+            className={`${classes.input} ${
+              !text.trim() ? classes.inputEmpty : ''
+            }`}
             value={text}
             onChange={(event) => setText(event.target.value)}
             onKeyDown={(event) => {

@@ -14,17 +14,15 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloProvider } from '@apollo/client'
 import { createBrowserHistory } from 'history'
 import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux'
-import {
-  Redirect, Route, Router, Switch,
-} from 'react-router-dom'
+import { Redirect, Route, Router, Switch } from 'react-router-dom'
 import AuthLayout from 'layouts/Auth'
 import client from 'config/apollo'
 import React from 'react'
-import { HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from 'react-helmet-async'
 import ReactDOM from 'react-dom'
 import Scoreboard from 'layouts/Scoreboard'
 import TokenExpired from 'layouts/TokenExpired'

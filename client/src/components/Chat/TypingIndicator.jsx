@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles, Typography } from '@material-ui/core';
-import { useSubscription } from '@apollo/react-hooks';
-import { useSelector } from 'react-redux';
-import { TYPING_SUBSCRIPTION } from '../../graphql/subscription';
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { makeStyles, Typography } from '@material-ui/core'
+import { useSubscription } from '@apollo/client'
+import { useSelector } from 'react-redux'
+import { TYPING_SUBSCRIPTION } from '../../graphql/subscription'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,12 +56,12 @@ const useStyles = makeStyles((theme) => ({
       opacity: 1,
     },
   },
-}));
+}))
 
 const TypingIndicator = ({ messageRoomId }) => {
-  const classes = useStyles();
-  const currentUser = useSelector((state) => state.user.data);
-  const [typingUsers, setTypingUsers] = useState([]);
+  const classes = useStyles()
+  const currentUser = useSelector((state) => state.user.data)
+  const [typingUsers, setTypingUsers] = useState([])
 
   // Subscribe to typing events
   const { data, error: subscriptionError } = useSubscription(
@@ -72,12 +72,12 @@ const TypingIndicator = ({ messageRoomId }) => {
           skip: !messageRoomId,
           onSubscriptionData: ({ subscriptionData }) => {
             if (subscriptionData?.data?.typing) {
-              const typingEvent = subscriptionData.data.typing;
-              const userId = typingEvent.userId;
+              const typingEvent = subscriptionData.data.typing
+              const userId = typingEvent.userId
 
               // Don't show typing indicator for current user
               if (userId === currentUser?._id) {
-                return;
+                return
               }
 
               setTypingUsers((prev) => {
@@ -91,61 +91,65 @@ const TypingIndicator = ({ messageRoomId }) => {
                         user: typingEvent.user,
                         timestamp: typingEvent.timestamp,
                       },
-                    ];
+                    ]
                   }
-                  return prev;
+                  return prev
                 } else {
                   // Remove user from list
-                  return prev.filter((u) => u.userId !== userId);
+                  return prev.filter((u) => u.userId !== userId)
                 }
-              });
+              })
             }
           },
           onError: (err) => {
-            console.error('[Typing Subscription] Error:', err);
+            console.error('[Typing Subscription] Error:', err)
           },
         }
       : { skip: true },
-  );
+  )
 
   // Log subscription errors
   useEffect(() => {
     if (subscriptionError) {
-      console.error('[Typing Subscription] Subscription error:', subscriptionError);
+      console.error(
+        '[Typing Subscription] Subscription error:',
+        subscriptionError,
+      )
     }
-  }, [subscriptionError]);
+  }, [subscriptionError])
 
   // Auto-remove typing users after 10 seconds (TTL on backend)
   useEffect(() => {
-    if (typingUsers.length === 0) return;
+    if (typingUsers.length === 0) return
 
     const interval = setInterval(() => {
-      const now = Date.now();
+      const now = Date.now()
       setTypingUsers((prev) =>
         prev.filter((user) => {
-          const timestamp = new Date(user.timestamp).getTime();
-          return now - timestamp < 10000; // 10 seconds
+          const timestamp = new Date(user.timestamp).getTime()
+          return now - timestamp < 10000 // 10 seconds
         }),
-      );
-    }, 1000);
+      )
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, [typingUsers.length]);
+    return () => clearInterval(interval)
+  }, [typingUsers.length])
 
   if (!messageRoomId || typingUsers.length === 0) {
-    return <div className={classes.root} />;
+    return <div className={classes.root} />
   }
 
   const getTypingMessage = () => {
     if (typingUsers.length === 1) {
-      const userName = typingUsers[0].user?.name || typingUsers[0].user?.username || 'Someone';
-      return `${userName} is typing...`;
+      const userName =
+        typingUsers[0].user?.name || typingUsers[0].user?.username || 'Someone'
+      return `${userName} is typing...`
     } else if (typingUsers.length === 2) {
-      return '2 people are typing...';
+      return '2 people are typing...'
     } else {
-      return `${typingUsers.length} people are typing...`;
+      return `${typingUsers.length} people are typing...`
     }
-  };
+  }
 
   return (
     <div className={classes.root}>
@@ -158,11 +162,11 @@ const TypingIndicator = ({ messageRoomId }) => {
         </span>
       </Typography>
     </div>
-  );
-};
+  )
+}
 
 TypingIndicator.propTypes = {
   messageRoomId: PropTypes.string,
-};
+}
 
-export default TypingIndicator;
+export default TypingIndicator

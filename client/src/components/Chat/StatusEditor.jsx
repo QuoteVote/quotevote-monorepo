@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   Dialog,
   DialogTitle,
@@ -12,11 +12,11 @@ import {
   FormControl,
   InputLabel,
   makeStyles,
-} from '@material-ui/core';
-import { useMutation } from '@apollo/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
-import { UPDATE_PRESENCE } from '../../graphql/mutations';
-import { SET_USER_STATUS } from '../../store/chat';
+} from '@material-ui/core'
+import { useMutation } from '@apollo/client'
+import { useDispatch, useSelector } from 'react-redux'
+import { UPDATE_PRESENCE } from '../../graphql/mutations'
+import { SET_USER_STATUS } from '../../store/chat'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -49,17 +49,17 @@ const useStyles = makeStyles((theme) => ({
       opacity: 0.6,
     },
   },
-}));
+}))
 
 const StatusEditor = ({ open, onClose }) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const currentStatus = useSelector((state) => state.chat.userStatus);
-  const currentMessage = useSelector((state) => state.chat.userStatusMessage);
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const currentStatus = useSelector((state) => state.chat.userStatus)
+  const currentMessage = useSelector((state) => state.chat.userStatusMessage)
 
-  const [status, setStatus] = useState(currentStatus || 'online');
-  const [statusMessage, setStatusMessage] = useState(currentMessage || '');
-  const [updatePresence, { loading }] = useMutation(UPDATE_PRESENCE);
+  const [status, setStatus] = useState(currentStatus || 'online')
+  const [statusMessage, setStatusMessage] = useState(currentMessage || '')
+  const [updatePresence, { loading }] = useMutation(UPDATE_PRESENCE)
 
   const handleSave = async () => {
     try {
@@ -67,20 +67,20 @@ const StatusEditor = ({ open, onClose }) => {
         variables: {
           presence: { status, statusMessage },
         },
-      });
-      dispatch(SET_USER_STATUS({ status, statusMessage }));
-      onClose();
+      })
+      dispatch(SET_USER_STATUS({ status, statusMessage }))
+      onClose()
     } catch (error) {
-      console.error('Failed to update status:', error);
+      console.error('Failed to update status:', error)
     }
-  };
+  }
 
   const statusOptions = [
     { value: 'online', label: '🟢 Online', icon: '🟢' },
     { value: 'away', label: '🟡 Away', icon: '🟡' },
     { value: 'dnd', label: '🔴 Do Not Disturb', icon: '🔴' },
     { value: 'invisible', label: '⚫ Invisible', icon: '⚫' },
-  ];
+  ]
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -112,8 +112,8 @@ const StatusEditor = ({ open, onClose }) => {
         <Button onClick={onClose} disabled={loading}>
           Cancel
         </Button>
-        <Button 
-          onClick={handleSave} 
+        <Button
+          onClick={handleSave}
           disabled={loading}
           className={classes.saveButton}
           variant="contained"
@@ -122,13 +122,12 @@ const StatusEditor = ({ open, onClose }) => {
         </Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
 StatusEditor.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-};
+}
 
-export default StatusEditor;
-
+export default StatusEditor

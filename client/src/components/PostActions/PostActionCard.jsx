@@ -1,20 +1,32 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import {
-  Card, CardActions, CardContent, IconButton, Typography,
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+  Typography,
 } from '@material-ui/core'
 import { InsertLink, Delete } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/client'
 import { get, isEmpty } from 'lodash'
 import copy from 'clipboard-copy'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import AvatarDisplay from '../Avatar'
 import { parseCommentDate } from '../../utils/momentUtils'
-import { SET_FOCUSED_COMMENT, SET_SHARED_COMMENT, SET_SNACKBAR } from '../../store/ui'
-import { DELETE_VOTE, DELETE_COMMENT, DELETE_QUOTE } from '../../graphql/mutations'
+import {
+  SET_FOCUSED_COMMENT,
+  SET_SHARED_COMMENT,
+  SET_SNACKBAR,
+} from '../../store/ui'
+import {
+  DELETE_VOTE,
+  DELETE_COMMENT,
+  DELETE_QUOTE,
+} from '../../graphql/mutations'
 import { GET_ACTION_REACTIONS } from '../../graphql/query'
 import CommentReactions from '../Comment/CommentReactions'
 import PostChatMessage from '../PostChat/PostChatMessage'
@@ -131,7 +143,8 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
         fields: {
           comments(existing = [], { readField }) {
             return existing.filter(
-              (commentRef) => readField('_id', commentRef) !== deleteComment._id,
+              (commentRef) =>
+                readField('_id', commentRef) !== deleteComment._id,
             )
           },
         },
@@ -247,8 +260,8 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
           <span
             className={classes.userName}
             onClick={(e) => {
-              e.stopPropagation();
-              handleRedirectToProfile();
+              e.stopPropagation()
+              handleRedirectToProfile()
             }}
           >
             {name}
@@ -260,7 +273,9 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
       {type === 'Vote' && (
         <CardContent className={classes.content}>
           <Typography display="inline">
-            {`❝ ${postAction.content ? postAction.content : '(no text selected)'} ❞`}
+            {`❝ ${
+              postAction.content ? postAction.content : '(no text selected)'
+            } ❞`}
           </Typography>
         </CardContent>
       )}

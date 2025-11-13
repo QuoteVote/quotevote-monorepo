@@ -5,7 +5,7 @@ import InputBase from '@material-ui/core/InputBase'
 import SearchIcon from '@material-ui/icons/Search'
 import Card from 'mui-pro/Card/Card'
 import CardHeader from 'mui-pro/Card/CardHeader'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 
 import { SEARCH } from '@/graphql/query'
 import SearchResultsView from './SearchResults'
@@ -132,13 +132,20 @@ function SidebarSearchView(props) {
   return (
     <div
       style={{
-        flex: 1, display: Display || 'block', margin: '5px', marginRight: '16px', height: '90vh',
+        flex: 1,
+        display: Display || 'block',
+        margin: '5px',
+        marginRight: '16px',
+        height: '90vh',
       }}
     >
       <Card style={{ zIndex: 10, height: 'fit-content' }}>
         <CardHeader
           style={{
-            backgroundColor: 'white', margin: '5px', paddingLeft: 0, paddingRight: 5,
+            backgroundColor: 'white',
+            margin: '5px',
+            paddingLeft: 0,
+            paddingRight: 5,
           }}
         >
           <div className={classes.search}>
@@ -156,7 +163,6 @@ function SidebarSearchView(props) {
             />
           </div>
         </CardHeader>
-
       </Card>
       {data && (
         <SearchResultsView

@@ -1,26 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
-import { Paper, Typography, List, ListItem } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import { GET_LATEST_QUOTES } from '../../graphql/query';
+import { useEffect, useState } from 'react'
+import { useQuery } from '@apollo/client'
+import { Paper, Typography, List, ListItem } from '@material-ui/core'
+import PropTypes from 'prop-types'
+import { GET_LATEST_QUOTES } from '../../graphql/query'
 
 export default function LatestQuotes({ limit = 5 }) {
-  const [quotes, setQuotes] = useState([]);
+  const [quotes, setQuotes] = useState([])
   const { data } = useQuery(GET_LATEST_QUOTES, {
     variables: { limit },
     pollInterval: 3000,
     fetchPolicy: 'network-only',
-  });
+  })
 
   useEffect(() => {
     if (data && data.latestQuotes) {
       setQuotes((prev) => {
-        const existingIds = prev.map((q) => q._id);
-        const fresh = data.latestQuotes.filter((q) => !existingIds.includes(q._id));
-        return [...fresh, ...prev];
-      });
+        const existingIds = prev.map((q) => q._id)
+        const fresh = data.latestQuotes.filter(
+          (q) => !existingIds.includes(q._id),
+        )
+        return [...fresh, ...prev]
+      })
     }
-  }, [data]);
+  }, [data])
 
   return (
     <Paper style={{ padding: 16 }}>
@@ -37,9 +39,9 @@ export default function LatestQuotes({ limit = 5 }) {
         ))}
       </List>
     </Paper>
-  );
+  )
 }
 
 LatestQuotes.propTypes = {
   limit: PropTypes.number,
-};
+}

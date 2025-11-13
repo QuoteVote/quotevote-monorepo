@@ -18,7 +18,7 @@ import withWidth from '@material-ui/core/withWidth'
 import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
 import { useState, useMemo } from 'react'
@@ -32,7 +32,6 @@ const GET_GROUP = gql`
     }
   }
 `
-
 
 const useStyles = makeStyles((theme) => ({
   cardRootStyle: {
@@ -271,7 +270,7 @@ function PostCard(props) {
   const user = useSelector((state) => state.user.data)
   const classes = useStyles(props)
   const { width } = props
-  
+
   // State for show more/less functionality
   const [isExpanded, setIsExpanded] = useState(false)
   const {
@@ -296,9 +295,10 @@ function PostCard(props) {
   const contentLimit = limitText ? 20 : 200
   const isContentTruncated = text && text.length > contentLimit
   const shouldShowButton = isContentTruncated && !limitText
-  
+
   // Determine what text to show based on expanded state
-  let postText = isExpanded || !shouldShowButton ? text : stringLimit(text, contentLimit)
+  let postText =
+    isExpanded || !shouldShowButton ? text : stringLimit(text, contentLimit)
 
   let interactions = []
 
@@ -321,7 +321,7 @@ function PostCard(props) {
 
   const cardBg = getCardBg(activityType)
   const guestGuard = useGuestGuard()
-  
+
   const handleRedirectToProfile = (username) => {
     if (guestGuard()) {
       history.push(`/Profile/${username}`)
@@ -331,19 +331,28 @@ function PostCard(props) {
   // TODO: show quote up/down
   const { upQuote, downQuote } = useMemo(() => {
     if (!votes || votes?.length === 0) {
-return {
+      return {
         upQuote: 0,
         downQuote: 0,
       }
     }
 
     return {
-      upQuote: votes.filter((vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP').length,
-      downQuote: votes.filter((vote) => vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN').length,
+      upQuote: votes.filter(
+        (vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP',
+      ).length,
+      downQuote: votes.filter(
+        (vote) =>
+          vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN',
+      ).length,
     }
   }, [votes])
 
-  const { data: groupData, loading: groupLoading, error: groupError } = useQuery(GET_GROUP, {
+  const {
+    data: groupData,
+    loading: groupLoading,
+    error: groupError,
+  } = useQuery(GET_GROUP, {
     variables: { groupId },
     skip: !groupId,
     errorPolicy: 'all', // Don't fail the entire component if group query fails
@@ -379,7 +388,9 @@ return {
               <ArrowUpwardIcon
                 className={classNames(classes.voteIcon, classes.upvoteIcon)}
               />
-              <Typography className={classes.voteNumber}>{approvedBy?.length}</Typography>
+              <Typography className={classes.voteNumber}>
+                {approvedBy?.length}
+              </Typography>
             </div>
             <div className={classes.voteItem}>
               <ArrowDownwardIcon
@@ -402,30 +413,37 @@ return {
           spacing={2}
         >
           <Grid item xs={12}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-              <Typography className={classes.postTitle}>
-                {title}
-              </Typography>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '8px',
+                flexWrap: 'wrap',
+                gap: '8px',
+              }}
+            >
+              <Typography className={classes.postTitle}>{title}</Typography>
               {groupId && (
                 <Typography className={classes.groupName}>
-                  {groupData?.group 
-                    ? groupData.group.title 
-                    : groupLoading 
-                      ? 'Loading...'
-                      : groupError 
-                        ? `#GROUP` // Show generic group indicator as fallback
-                        : ''
-                  }
+                  {groupData?.group
+                    ? groupData.group.title
+                    : groupLoading
+                    ? 'Loading...'
+                    : groupError
+                    ? `#GROUP` // Show generic group indicator as fallback
+                    : ''}
                 </Typography>
               )}
             </div>
           </Grid>
           <Grid item xs={12}>
             <div className={classes.contentSection}>
-              <Typography 
+              <Typography
                 className={classNames(
                   classes.postContent,
-                  shouldShowButton && !isExpanded && classes.postContentTruncated
+                  shouldShowButton &&
+                    !isExpanded &&
+                    classes.postContentTruncated,
                 )}
               >
                 {postText}

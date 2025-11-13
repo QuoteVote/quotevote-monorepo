@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import _ from 'lodash'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { useParams, useHistory } from 'react-router'
 import { GET_FOLLOW_INFO } from '@/graphql/query'
 import UserFollowDisplay from 'components/Profile/UserFollowDisplay'
@@ -20,10 +20,10 @@ FollowInfo.propTypes = {
 }
 /*  eslint no-underscore-dangle: ["error", { "allow": ["_followingId", "_id"] }] */
 /**
-  * Display list of followers OR following (if 0, we'll display something else)
-  * @param {string} filter - following / followers
-  * @returns {JSX.element}
-*/
+ * Display list of followers OR following (if 0, we'll display something else)
+ * @param {string} filter - following / followers
+ * @returns {JSX.element}
+ */
 
 function FollowInfo({ filter }) {
   const { username } = useParams()
@@ -44,10 +44,7 @@ function FollowInfo({ filter }) {
       return (
         <>
           <div id="component-followers-display">
-            <Grid
-              id="component-banner"
-              container
-            >
+            <Grid id="component-banner" container>
               <Grid item>
                 <IconButton
                   onClick={() => history.goBack()}
@@ -57,14 +54,18 @@ function FollowInfo({ filter }) {
                 </IconButton>
               </Grid>
               <Grid item>
-                {
-                  filter === 'followers' ? <p>{`${getUserFollowInfo.length} Followers`}</p> : <p>{`${getUserFollowInfo.length} Following`}</p>
-                }
+                {filter === 'followers' ? (
+                  <p>{`${getUserFollowInfo.length} Followers`}</p>
+                ) : (
+                  <p>{`${getUserFollowInfo.length} Following`}</p>
+                )}
               </Grid>
             </Grid>
-            {
-              filter === 'followers' ? <NoFollowers filter="followers" /> : <NoFollowers filter="following" />
-            }
+            {filter === 'followers' ? (
+              <NoFollowers filter="followers" />
+            ) : (
+              <NoFollowers filter="following" />
+            )}
           </div>
         </>
       )
@@ -79,21 +80,21 @@ function FollowInfo({ filter }) {
             >
               <KeyboardBackspaceIcon />
             </IconButton>
-            {
-              filter === 'followers' ? <p>{`${getUserFollowInfo.length} Followers`}</p> : <p>{`${getUserFollowInfo.length} Following`}</p>
-            }
+            {filter === 'followers' ? (
+              <p>{`${getUserFollowInfo.length} Followers`}</p>
+            ) : (
+              <p>{`${getUserFollowInfo.length} Following`}</p>
+            )}
             <div id="component-follows-list">
-              {
-                getUserFollowInfo.map((f) => (
-                  <UserFollowDisplay
-                    profileUserId={userData._id}
-                    username={username}
-                    isFollowing={_.includes(userData._followingId, f.id)}
-                    {...f}
-                    key={f.id}
-                  />
-                ))
-              }
+              {getUserFollowInfo.map((f) => (
+                <UserFollowDisplay
+                  profileUserId={userData._id}
+                  username={username}
+                  isFollowing={_.includes(userData._followingId, f.id)}
+                  {...f}
+                  key={f.id}
+                />
+              ))}
             </div>
           </div>
         </div>

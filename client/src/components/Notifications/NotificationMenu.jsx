@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
-import { useQuery, useSubscription } from '@apollo/react-hooks'
+import { useQuery, useSubscription } from '@apollo/client'
 import Badge from '@material-ui/core/Badge'
 import withStyles from '@material-ui/core/styles/withStyles'
 import RichTooltip from '../Chat/RichToolTip'
@@ -43,17 +43,15 @@ function NotificationMenu({ fontSize }) {
 
   const { loading, data, refetch, error } = useQuery(GET_NOTIFICATIONS)
   const userId = useSelector((state) => state.user.data._id)
-  useSubscription(
-    NEW_NOTIFICATION_SUBSCRIPTION,
-    {
-      variables: { userId },
-      onSubscriptionData: async () => {
-        await refetch()
-      },
+  useSubscription(NEW_NOTIFICATION_SUBSCRIPTION, {
+    variables: { userId },
+    onSubscriptionData: async () => {
+      await refetch()
     },
-  )
+  })
 
-  const { notifications } = loading || error || !data ? { notifications: [] } : data
+  const { notifications } =
+    loading || error || !data ? { notifications: [] } : data
 
   const handleToggle = () => {
     setOpen(!open)
@@ -66,7 +64,14 @@ function NotificationMenu({ fontSize }) {
   // Desktop popover content
   const popoverContent = (
     <RichTooltip
-      content={<NotificationContent loading={loading} notifications={notifications} refetch={refetch} setOpenPopUp={setOpen} />}
+      content={
+        <NotificationContent
+          loading={loading}
+          notifications={notifications}
+          refetch={refetch}
+          setOpenPopUp={setOpen}
+        />
+      }
       open={open}
       placement="bottom-start"
       onClose={() => setOpen(false)}
@@ -80,22 +85,25 @@ function NotificationMenu({ fontSize }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <IconButton
-          aria-label="Chat"
-          color="inherit"
-          onClick={handleToggle}
-        >
+        <IconButton aria-label="Chat" color="inherit" onClick={handleToggle}>
           {isHovered ? (
-            <img 
-              src="/assets/NotificationsActive.svg" 
-              alt="notifications active" 
-              style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+            <img
+              src="/assets/NotificationsActive.svg"
+              alt="notifications active"
+              style={{
+                width: fontSize === 'large' ? '49px' : '32px',
+                height: fontSize === 'large' ? '46px' : '30px',
+              }}
             />
           ) : (
-            <img 
-              src="/assets/Notifications.svg" 
-              alt="notifications" 
-              style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+            <img
+              src="/assets/Notifications.svg"
+              alt="notifications"
+              style={{
+                fontSize: fontSize,
+                width: fontSize === 'large' ? '49px' : '32px',
+                height: fontSize === 'large' ? '46px' : '30px',
+              }}
             />
           )}
         </IconButton>
@@ -119,16 +127,23 @@ function NotificationMenu({ fontSize }) {
               onClick={handleToggle}
             >
               {isHovered ? (
-                <img 
-                  src="/assets/NotificationsActive.svg" 
-                  alt="notifications active" 
-                  style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+                <img
+                  src="/assets/NotificationsActive.svg"
+                  alt="notifications active"
+                  style={{
+                    width: fontSize === 'large' ? '49px' : '32px',
+                    height: fontSize === 'large' ? '46px' : '30px',
+                  }}
                 />
               ) : (
-                <img 
-                  src="/assets/Notifications.svg" 
-                  alt="notifications" 
-                  style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+                <img
+                  src="/assets/Notifications.svg"
+                  alt="notifications"
+                  style={{
+                    fontSize: fontSize,
+                    width: fontSize === 'large' ? '49px' : '32px',
+                    height: fontSize === 'large' ? '46px' : '30px',
+                  }}
                 />
               )}
             </IconButton>
@@ -139,10 +154,10 @@ function NotificationMenu({ fontSize }) {
             title="Notifications"
             anchor="right"
           >
-            <NotificationContent 
-              loading={loading} 
-              notifications={notifications} 
-              refetch={refetch} 
+            <NotificationContent
+              loading={loading}
+              notifications={notifications}
+              refetch={refetch}
               setOpenPopUp={setOpen}
               pageView={true}
             />

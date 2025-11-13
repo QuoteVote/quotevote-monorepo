@@ -3,17 +3,26 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Box } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import PaginatedList from '../common/PaginatedList'
 import { GET_USER_ACTIVITY } from '../../graphql/query'
-import { createGraphQLVariables, extractPaginationData } from '../../utils/pagination'
+import {
+  createGraphQLVariables,
+  extractPaginationData,
+} from '../../utils/pagination'
 import { usePaginationWithFilters } from '../../hooks/usePagination'
 import { useWidth } from '../../utils/display'
 import { ActivityCard } from '../../ui/ActivityCard'
 import getCardBackgroundColor from '../../utils/getCardBackgroundColor'
-import { CREATE_POST_MESSAGE_ROOM, UPDATE_POST_BOOKMARK } from '../../graphql/mutations'
 import {
-    GET_CHAT_ROOMS, GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY as GET_USER_ACTIVITY_QUERY,
+  CREATE_POST_MESSAGE_ROOM,
+  UPDATE_POST_BOOKMARK,
+} from '../../graphql/mutations'
+import {
+  GET_CHAT_ROOMS,
+  GET_POST,
+  GET_TOP_POSTS,
+  GET_USER_ACTIVITY as GET_USER_ACTIVITY_QUERY,
 } from '../../graphql/query'
 import { SET_SELECTED_POST } from '../../store/ui'
 import getActivityContent from '../../utils/getActivityContent'
@@ -70,7 +79,15 @@ function LoadActivityCard({ width, activity }) {
         variables: { postId, userId: user._id },
         refetchQueries: [
           { query: GET_POST, variables: { postId } },
-          { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+          {
+            query: GET_TOP_POSTS,
+            variables: {
+              limit: 5,
+              offset: 0,
+              searchKey: '',
+              interactions: false,
+            },
+          },
         ],
       })
     } catch (error) {
@@ -111,29 +128,29 @@ function PaginatedActivityList({
   defaultPageSize = 15,
   pageParam = 'page',
   pageSizeParam = 'page_size',
-  
+
   // Filter props
   userId,
   searchKey = '',
   startDateRange,
   endDateRange,
   activityEvent = ['POSTED'],
-  
+
   // Component props
   showPageInfo = true,
   showFirstLast = true,
   maxVisiblePages = 5,
-  
+
   // Callbacks
   onPageChange,
   onPageSizeChange,
   onRefresh,
-  
+
   // Styling
   className,
   contentClassName,
   paginationClassName,
-  
+
   // Other props
   ...otherProps
 }) {
@@ -150,7 +167,7 @@ function PaginatedActivityList({
       onPageChange,
       onPageSizeChange,
     },
-    [userId, searchKey, startDateRange, endDateRange, activityEvent]
+    [userId, searchKey, startDateRange, endDateRange, activityEvent],
   )
 
   // Create GraphQL variables
@@ -191,10 +208,15 @@ function PaginatedActivityList({
   }, []) // Only run on mount
 
   // Extract and process data
-  const { entities, pagination: paginationData } = extractPaginationData(data, 'activities')
-  
+  const { entities, pagination: paginationData } = extractPaginationData(
+    data,
+    'activities',
+  )
+
   // Filter out hidden posts
-  const processedActivities = entities.filter((activity) => !hiddenPosts.includes(activity._id))
+  const processedActivities = entities.filter(
+    (activity) => !hiddenPosts.includes(activity._id),
+  )
 
   // Render individual activity
   const renderActivity = (activity) => (
@@ -214,9 +236,13 @@ function PaginatedActivityList({
   const renderEmpty = () => (
     <Box style={{ textAlign: 'center', padding: '2rem' }}>
       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📊</div>
-      <h3 style={{ color: '#666', marginBottom: '0.5rem' }}>No activities found</h3>
+      <h3 style={{ color: '#666', marginBottom: '0.5rem' }}>
+        No activities found
+      </h3>
       <p style={{ color: '#999' }}>
-        {searchKey ? `No activities match your search for "${searchKey}"` : 'No activities available at the moment'}
+        {searchKey
+          ? `No activities match your search for "${searchKey}"`
+          : 'No activities available at the moment'}
       </p>
     </Box>
   )
@@ -225,7 +251,9 @@ function PaginatedActivityList({
   const renderError = (error, onRetry) => (
     <Box style={{ textAlign: 'center', padding: '2rem' }}>
       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</div>
-      <h3 style={{ color: '#d32f2f', marginBottom: '0.5rem' }}>Something went wrong</h3>
+      <h3 style={{ color: '#d32f2f', marginBottom: '0.5rem' }}>
+        Something went wrong
+      </h3>
       <p style={{ color: '#666', marginBottom: '1rem' }}>
         {error.message || 'An error occurred while loading activities'}
       </p>
@@ -295,24 +323,24 @@ PaginatedActivityList.propTypes = {
   defaultPageSize: PropTypes.number,
   pageParam: PropTypes.string,
   pageSizeParam: PropTypes.string,
-  
+
   // Filter props
   userId: PropTypes.string,
   searchKey: PropTypes.string,
   startDateRange: PropTypes.string,
   endDateRange: PropTypes.string,
   activityEvent: PropTypes.array,
-  
+
   // Component props
   showPageInfo: PropTypes.bool,
   showFirstLast: PropTypes.bool,
   maxVisiblePages: PropTypes.number,
-  
+
   // Callbacks
   onPageChange: PropTypes.func,
   onPageSizeChange: PropTypes.func,
   onRefresh: PropTypes.func,
-  
+
   // Styling
   className: PropTypes.string,
   contentClassName: PropTypes.string,

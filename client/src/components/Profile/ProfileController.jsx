@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { GET_USER } from '@/graphql/query'
 import ProfileView from 'views/Profile/ProfileView'
 import { SET_SELECTED_PAGE } from 'store/ui'

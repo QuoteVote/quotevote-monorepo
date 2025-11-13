@@ -1,6 +1,6 @@
 import React from 'react'
 import { isEmpty } from 'lodash'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import PropTypes from 'prop-types'
 import { GET_CHAT_ROOMS } from '../../graphql/query'
 import LoadingSpinner from '../LoadingSpinner'
@@ -12,21 +12,26 @@ function BuddyList({ search }) {
   })
 
   const buddyList =
-    (!error && !loading && data && !isEmpty(data.messageRooms) &&
+    (!error &&
+      !loading &&
+      data &&
+      !isEmpty(data.messageRooms) &&
       data.messageRooms
         .slice()
         .sort((a, b) => new Date(b.created) - new Date(a.created))
         .map((item) => ({
-        room: item,
-        Text: item.title,
-        color: '#191919',
-        type: item.messageType,
-        avatar: item.avatar,
-        unreadMessages: item.unreadMessages,
+          room: item,
+          Text: item.title,
+          color: '#191919',
+          type: item.messageType,
+          avatar: item.avatar,
+          unreadMessages: item.unreadMessages,
         }))) ||
     []
 
-  const filteredBuddyList = search ? buddyList.filter((buddy) => buddy.Text.includes(search)) : buddyList
+  const filteredBuddyList = search
+    ? buddyList.filter((buddy) => buddy.Text.includes(search))
+    : buddyList
 
   if (loading) return <LoadingSpinner size={50} />
 

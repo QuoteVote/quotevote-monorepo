@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -14,47 +14,47 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from '@mui/material';
-import { useMutation } from '@apollo/react-hooks';
-import { REPORT_USER } from '@/graphql/mutations';
+} from '@mui/material'
+import { useMutation } from '@apollo/client'
+import { REPORT_USER } from '@/graphql/mutations'
 
 const ReportUserDialog = ({ open, onClose, reportedUser }) => {
-  const [reason, setReason] = useState('');
-  const [description, setDescription] = useState('');
-  const [severity, setSeverity] = useState('medium');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [reason, setReason] = useState('')
+  const [description, setDescription] = useState('')
+  const [severity, setSeverity] = useState('medium')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const [reportUser, { loading }] = useMutation(REPORT_USER, {
     onCompleted: (data) => {
       if (data.reportUser.code === 'SUCCESS') {
-        setSuccess('User report submitted successfully!');
+        setSuccess('User report submitted successfully!')
         setTimeout(() => {
-          onClose();
-          setSuccess('');
-        }, 2000);
+          onClose()
+          setSuccess('')
+        }, 2000)
       } else {
-        setError(data.reportUser.message || 'Failed to submit report');
+        setError(data.reportUser.message || 'Failed to submit report')
       }
     },
     onError: (error) => {
-      setError(error.message || 'Failed to submit report');
+      setError(error.message || 'Failed to submit report')
     },
-  });
+  })
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+    e.preventDefault()
+    setError('')
+    setSuccess('')
 
     if (!reason) {
-      setError('Please select a reason for the report');
-      return;
+      setError('Please select a reason for the report')
+      return
     }
 
     if (!description.trim()) {
-      setError('Please provide a description of the issue');
-      return;
+      setError('Please provide a description of the issue')
+      return
     }
 
     try {
@@ -67,20 +67,20 @@ const ReportUserDialog = ({ open, onClose, reportedUser }) => {
             severity,
           },
         },
-      });
+      })
     } catch (err) {
       // Error handled in onError callback
     }
-  };
+  }
 
   const handleClose = () => {
-    setReason('');
-    setDescription('');
-    setSeverity('medium');
-    setError('');
-    setSuccess('');
-    onClose();
-  };
+    setReason('')
+    setDescription('')
+    setSeverity('medium')
+    setError('')
+    setSuccess('')
+    onClose()
+  }
 
   const reportReasons = [
     { value: 'spam', label: 'Spam' },
@@ -88,14 +88,14 @@ const ReportUserDialog = ({ open, onClose, reportedUser }) => {
     { value: 'inappropriate_content', label: 'Inappropriate Content' },
     { value: 'fake_account', label: 'Fake Account' },
     { value: 'other', label: 'Other' },
-  ];
+  ]
 
   const severityLevels = [
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
     { value: 'high', label: 'High' },
     { value: 'critical', label: 'Critical' },
-  ];
+  ]
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -104,10 +104,12 @@ const ReportUserDialog = ({ open, onClose, reportedUser }) => {
         <DialogContent>
           <Box mb={2}>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              Reporting user: <strong>{reportedUser?.username || reportedUser?.name}</strong>
+              Reporting user:{' '}
+              <strong>{reportedUser?.username || reportedUser?.name}</strong>
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              Please provide details about why you're reporting this user. False reports may affect your own reputation.
+              Please provide details about why you're reporting this user. False
+              reports may affect your own reputation.
             </Typography>
           </Box>
 
@@ -170,7 +172,9 @@ const ReportUserDialog = ({ open, onClose, reportedUser }) => {
 
           <Box mt={2}>
             <Typography variant="caption" color="textSecondary">
-              <strong>Important:</strong> False or malicious reports may negatively impact your reputation score. Please only report users for legitimate violations of community guidelines.
+              <strong>Important:</strong> False or malicious reports may
+              negatively impact your reputation score. Please only report users
+              for legitimate violations of community guidelines.
             </Typography>
           </Box>
         </DialogContent>
@@ -190,7 +194,7 @@ const ReportUserDialog = ({ open, onClose, reportedUser }) => {
         </DialogActions>
       </form>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ReportUserDialog;
+export default ReportUserDialog

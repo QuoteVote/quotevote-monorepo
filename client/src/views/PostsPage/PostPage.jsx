@@ -1,19 +1,19 @@
-import { useEffect, useState, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
-import PropTypes from 'prop-types';
-import { Grid, useMediaQuery } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
-import { useSelector, useDispatch } from 'react-redux';
-import { isEmpty } from 'lodash';
-import { Redirect } from 'react-router-dom';
-import Post from '../../components/Post/Post';
-import PostActionList from '../../components/PostActions/PostActionList';
-import PostSkeleton from '../../components/Post/PostSkeleton';
-import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query';
-import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription';
-import PostChatSend from '../../components/PostChat/PostChatSend';
-import { tokenValidator } from 'store/user';
+import { useEffect, useState, useMemo } from 'react'
+import { Helmet } from 'react-helmet-async'
+import PropTypes from 'prop-types'
+import { Grid, useMediaQuery } from '@material-ui/core'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { useQuery, useSubscription } from '@apollo/client'
+import { useSelector, useDispatch } from 'react-redux'
+import { isEmpty } from 'lodash'
+import { Redirect } from 'react-router-dom'
+import Post from '../../components/Post/Post'
+import PostActionList from '../../components/PostActions/PostActionList'
+import PostSkeleton from '../../components/Post/PostSkeleton'
+import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query'
+import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription'
+import PostChatSend from '../../components/PostChat/PostChatSend'
+import { tokenValidator } from 'store/user'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -136,10 +136,14 @@ function PostPage({ postId }) {
   const { post } = (!loadingPost && postData) || {}
 
   // Open Graph/Twitter meta values
-  const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
-  const ogDescription = post?.text ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
-  const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg';
-  const ogUrl = post ? `https://quote.vote/post/${post._id}` : 'https://quote.vote/';
+  const ogTitle = post?.title || "Quote.Vote – The Internet's Quote Board"
+  const ogDescription = post?.text
+    ? post.text.substring(0, 140)
+    : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!'
+  const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg'
+  const ogUrl = post
+    ? `https://quote.vote/post/${post._id}`
+    : 'https://quote.vote/'
 
   // To reset the scroll when the selected post changes
   useEffect(() => {
@@ -174,7 +178,7 @@ function PostPage({ postId }) {
 
   // Add error logging
   if (messageError) {
-    console.error('[CLIENT] PostPage - message query error:', messageError);
+    console.error('[CLIENT] PostPage - message query error:', messageError)
   }
 
   useSubscription(NEW_MESSAGE_SUBSCRIPTION, {
@@ -216,7 +220,7 @@ function PostPage({ postId }) {
                   .substring(comment.startWordIndex, comment.endWordIndex)
                   .replace(/(\r\n|\n|\r)/gm, '')
               : null,
-        }))
+        })),
       )
     }
 
@@ -225,7 +229,7 @@ function PostPage({ postId }) {
         filteredVotes.map((vote) => ({
           ...vote,
           __typename: 'Vote',
-        }))
+        })),
       )
     }
 
@@ -234,7 +238,7 @@ function PostPage({ postId }) {
         filteredQuotes.map((quote) => ({
           ...quote,
           __typename: 'Quote',
-        }))
+        })),
       )
     }
 
@@ -245,7 +249,7 @@ function PostPage({ postId }) {
           ...message,
           __typename: 'Message',
           text: message.text, // Ensure text field is present for PostActionCard to recognize it as a message
-        }))
+        })),
       )
     }
 
@@ -295,7 +299,11 @@ function PostPage({ postId }) {
               />
             </div>
             <div className={classes.mobileChatInputContainer}>
-              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+              <PostChatSend
+                messageRoomId={messageRoomId}
+                title={title}
+                postId={currentPostId}
+              />
             </div>
           </div>
         </div>
@@ -345,7 +353,11 @@ function PostPage({ postId }) {
             />
           </div>
           <div className={classes.desktopChatInputContainer}>
-            <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+            <PostChatSend
+              messageRoomId={messageRoomId}
+              title={title}
+              postId={currentPostId}
+            />
           </div>
         </div>
       </div>

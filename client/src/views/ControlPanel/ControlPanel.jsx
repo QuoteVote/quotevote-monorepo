@@ -26,7 +26,7 @@ import Switch from '@material-ui/core/Switch'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { useResponsive } from '../../hooks/useResponsive'
 
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/client'
 import { USER_INVITE_REQUESTS, GET_TOP_POSTS, GET_USERS } from '@/graphql/query'
 import {
   UPDATE_USER_INVITE_STATUS,
@@ -51,7 +51,7 @@ const useStyles = makeStyles(controlPanelStyles)
 // TabPanel component for organizing content
 const TabPanel = ({ children, value, index, ...other }) => {
   const classes = useStyles()
-  
+
   return (
     <div
       role="tabpanel"
@@ -299,7 +299,12 @@ const FeaturedPostsTable = () => {
                       <Typography className={classes.responsiveCardLabel}>
                         Featured Slot
                       </Typography>
-                      <FormControl className={cx(classes.slotSelect, classes.responsiveSelect)}>
+                      <FormControl
+                        className={cx(
+                          classes.slotSelect,
+                          classes.responsiveSelect,
+                        )}
+                      >
                         <Select
                           value={selection[post._id] ?? post.featuredSlot ?? ''}
                           onChange={handleSelect(post._id)}
@@ -308,15 +313,19 @@ const FeaturedPostsTable = () => {
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
-                          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                            <MenuItem
-                              key={n}
-                              value={n}
-                              disabled={usedSlots[n] && usedSlots[n] !== post._id}
-                            >
-                              {n}
-                            </MenuItem>
-                          ))}
+                          {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                            (n) => (
+                              <MenuItem
+                                key={n}
+                                value={n}
+                                disabled={
+                                  usedSlots[n] && usedSlots[n] !== post._id
+                                }
+                              >
+                                {n}
+                              </MenuItem>
+                            ),
+                          )}
                         </Select>
                       </FormControl>
                     </div>
@@ -386,22 +395,28 @@ const FeaturedPostsTable = () => {
                       <TableCell align="center">
                         <FormControl className={classes.slotSelect}>
                           <Select
-                            value={selection[post._id] ?? post.featuredSlot ?? ''}
+                            value={
+                              selection[post._id] ?? post.featuredSlot ?? ''
+                            }
                             onChange={handleSelect(post._id)}
                             displayEmpty
                           >
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
-                              <MenuItem
-                                key={n}
-                                value={n}
-                                disabled={usedSlots[n] && usedSlots[n] !== post._id}
-                              >
-                                {n}
-                              </MenuItem>
-                            ))}
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                              (n) => (
+                                <MenuItem
+                                  key={n}
+                                  value={n}
+                                  disabled={
+                                    usedSlots[n] && usedSlots[n] !== post._id
+                                  }
+                                >
+                                  {n}
+                                </MenuItem>
+                              ),
+                            )}
                           </Select>
                         </FormControl>
                       </TableCell>
@@ -424,8 +439,15 @@ const FeaturedPostsTable = () => {
                 })}
                 {filteredPosts.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={5} align="center" style={{ padding: '40px 20px' }}>
-                      <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
+                    <TableCell
+                      colSpan={5}
+                      align="center"
+                      style={{ padding: '40px 20px' }}
+                    >
+                      <Typography
+                        variant="body1"
+                        style={{ color: '#666', marginBottom: 8 }}
+                      >
                         No posts match the current filter
                       </Typography>
                       <Typography variant="body2" style={{ color: '#999' }}>
@@ -449,30 +471,33 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
   const { theme, isSmallScreen } = useResponsive()
   const [sortConfig, setSortConfig] = React.useState({
     key: 'joined',
-    direction: 'desc'
+    direction: 'desc',
   })
   const [emailFilter, setEmailFilter] = React.useState('')
   const [page, setPage] = React.useState(0)
   const [rowsPerPage] = React.useState(10) // rows per page
-  
+
   const header = [
     { key: 'email', label: 'Email' },
     { key: 'joined', label: 'Joined Date' },
     { key: 'status', label: 'Status' },
-    { key: 'action', label: 'Action' }
+    { key: 'action', label: 'Action' },
   ]
-  
+
   const handleSort = (key) => {
-    setSortConfig(prevConfig => ({
+    setSortConfig((prevConfig) => ({
       key,
-      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc'
+      direction:
+        prevConfig.key === key && prevConfig.direction === 'asc'
+          ? 'desc'
+          : 'asc',
     }))
   }
-  
+
   const sortData = (data) => {
     return [...data].sort((a, b) => {
       let aValue, bValue
-      
+
       switch (sortConfig.key) {
         case 'email':
           aValue = a.email.toLowerCase()
@@ -489,23 +514,23 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
         default:
           return 0
       }
-      
+
       if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
       if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
       return 0
     })
   }
-  
+
   const filterAndSortData = (data) => {
-    const filteredData = emailFilter 
-      ? data.filter(row => 
-          row.email.toLowerCase().includes(emailFilter.toLowerCase())
+    const filteredData = emailFilter
+      ? data.filter((row) =>
+          row.email.toLowerCase().includes(emailFilter.toLowerCase()),
         )
       : data
-    
+
     return sortData(filteredData)
   }
-  
+
   const getStatusValue = (status) => {
     switch (Number(status)) {
       case 1:
@@ -537,27 +562,36 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
   const renderEmptyState = () => (
     <Box className={classes.emptyState}>
       <Typography variant="body1" style={{ marginBottom: 8 }}>
-        {emailFilter ? 'No invite requests match your search' : 'No invite requests'}
+        {emailFilter
+          ? 'No invite requests match your search'
+          : 'No invite requests'}
       </Typography>
       <Typography variant="body2">
-        {emailFilter ? 'Try a different search term' : 'Invite requests will appear here'}
+        {emailFilter
+          ? 'Try a different search term'
+          : 'Invite requests will appear here'}
       </Typography>
     </Box>
   )
 
   // Check if there are any invite requests
-  const hasInviteRequests = data?.userInviteRequests && Array.isArray(data.userInviteRequests) && data.userInviteRequests.length > 0
-  const filteredData = hasInviteRequests ? filterAndSortData(data.userInviteRequests) : []
-  
+  const hasInviteRequests =
+    data?.userInviteRequests &&
+    Array.isArray(data.userInviteRequests) &&
+    data.userInviteRequests.length > 0
+  const filteredData = hasInviteRequests
+    ? filterAndSortData(data.userInviteRequests)
+    : []
+
   // Pagination
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
   }
-  
+
   // Get paginated data
   const paginatedData = filteredData.slice(
     page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+    page * rowsPerPage + rowsPerPage,
   )
 
   const handleActionComplete = React.useCallback(async () => {
@@ -584,7 +618,11 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <span role="img" aria-label="search" className={classes.searchIcon}>
+                  <span
+                    role="img"
+                    aria-label="search"
+                    className={classes.searchIcon}
+                  >
                     🔍
                   </span>
                 </InputAdornment>
@@ -592,113 +630,129 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
             }}
           />
         )}
-        {isSmallScreen
-          ? paginatedData.length > 0
-            ? (
-              <div className={classes.responsiveList}>
-                {paginatedData.map((row) => (
-                  <Box key={row._id} className={classes.responsiveCard}>
-                    <div className={classes.responsiveCardRow}>
-                      <Typography className={classes.responsiveCardLabel}>
-                        Email
-                      </Typography>
-                      <Typography className={classes.responsiveCardValue}>
-                        {row.email}
-                      </Typography>
+        {isSmallScreen ? (
+          paginatedData.length > 0 ? (
+            <div className={classes.responsiveList}>
+              {paginatedData.map((row) => (
+                <Box key={row._id} className={classes.responsiveCard}>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Email
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {row.email}
+                    </Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Joined
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {moment(row.joined).format('MMM DD, YYYY')}
+                    </Typography>
+                  </div>
+                  <div className={classes.responsiveCardRow}>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Status
+                    </Typography>
+                    <div className={classes.statusWrapper}>
+                      {renderStatusChip(row.status)}
                     </div>
-                    <div className={classes.responsiveCardRow}>
-                      <Typography className={classes.responsiveCardLabel}>
-                        Joined
-                      </Typography>
-                      <Typography className={classes.responsiveCardValue}>
-                        {moment(row.joined).format('MMM DD, YYYY')}
-                      </Typography>
-                    </div>
-                    <div className={classes.responsiveCardRow}>
-                      <Typography className={classes.responsiveCardLabel}>
-                        Status
-                      </Typography>
-                      <div className={classes.statusWrapper}>{renderStatusChip(row.status)}</div>
-                    </div>
-                    <div className={classes.responsiveCardActions}>
-                      <ActionButtons
-                        status={row.status}
-                        id={row._id}
-                        onActionComplete={handleActionComplete}
-                      />
-                    </div>
-                  </Box>
-                ))}
-              </div>
-            )
-            : renderEmptyState()
-          : (
-            <TableContainer className={classes.tableContainer}>
-              <Table
-                className={classes.table}
-                aria-label="user invitation requests table"
-                stickyHeader
-              >
-                <TableHead classes={{ head: classes.columnHeader }}>
-                  <TableRow>
-                    {header.map((column) => (
-                      <TableCell
-                        key={column.key}
-                        align="center"
-                        className={classes.columnHeader}
-                        style={{ cursor: column.key !== 'action' ? 'pointer' : 'default' }}
-                        onClick={() => column.key !== 'action' && handleSort(column.key)}
-                      >
-                        {column.label}
-                        {sortConfig.key === column.key && column.key !== 'action' && (
+                  </div>
+                  <div className={classes.responsiveCardActions}>
+                    <ActionButtons
+                      status={row.status}
+                      id={row._id}
+                      onActionComplete={handleActionComplete}
+                    />
+                  </div>
+                </Box>
+              ))}
+            </div>
+          ) : (
+            renderEmptyState()
+          )
+        ) : (
+          <TableContainer className={classes.tableContainer}>
+            <Table
+              className={classes.table}
+              aria-label="user invitation requests table"
+              stickyHeader
+            >
+              <TableHead classes={{ head: classes.columnHeader }}>
+                <TableRow>
+                  {header.map((column) => (
+                    <TableCell
+                      key={column.key}
+                      align="center"
+                      className={classes.columnHeader}
+                      style={{
+                        cursor: column.key !== 'action' ? 'pointer' : 'default',
+                      }}
+                      onClick={() =>
+                        column.key !== 'action' && handleSort(column.key)
+                      }
+                    >
+                      {column.label}
+                      {sortConfig.key === column.key &&
+                        column.key !== 'action' && (
                           <span style={{ marginLeft: 5 }}>
                             {sortConfig.direction === 'asc' ? '↑' : '↓'}
                           </span>
                         )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((row) => (
+                    <TableRow key={row._id}>
+                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="center">
+                        {moment(row.joined).format('MMM DD, YYYY')}
                       </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {paginatedData.length > 0 ? (
-                    paginatedData.map((row) => (
-                      <TableRow key={row._id}>
-                        <TableCell align="left">{row.email}</TableCell>
-                        <TableCell align="center">
-                          {moment(row.joined).format('MMM DD, YYYY')}
-                        </TableCell>
-                        <TableCell align="center">
-                          <div className={classes.statusCell}>{renderStatusChip(row.status)}</div>
-                        </TableCell>
-                        <TableCell align="center">
-                          <ActionButtons
-                            status={row.status}
-                            id={row._id}
-                            onActionComplete={handleActionComplete}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={4} align="center" style={{ padding: '40px 20px' }}>
-                        <Typography variant="body1" style={{ color: '#666', marginBottom: 8 }}>
-                          {emailFilter
-                            ? 'No invite requests match your search'
-                            : 'No invite requests'}
-                        </Typography>
-                        <Typography variant="body2" style={{ color: '#999' }}>
-                          {emailFilter
-                            ? 'Try a different search term'
-                            : 'Invite requests will appear here'}
-                        </Typography>
+                      <TableCell align="center">
+                        <div className={classes.statusCell}>
+                          {renderStatusChip(row.status)}
+                        </div>
+                      </TableCell>
+                      <TableCell align="center">
+                        <ActionButtons
+                          status={row.status}
+                          id={row._id}
+                          onActionComplete={handleActionComplete}
+                        />
                       </TableCell>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      align="center"
+                      style={{ padding: '40px 20px' }}
+                    >
+                      <Typography
+                        variant="body1"
+                        style={{ color: '#666', marginBottom: 8 }}
+                      >
+                        {emailFilter
+                          ? 'No invite requests match your search'
+                          : 'No invite requests'}
+                      </Typography>
+                      <Typography variant="body2" style={{ color: '#999' }}>
+                        {emailFilter
+                          ? 'Try a different search term'
+                          : 'Invite requests will appear here'}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
         {filteredData.length > 0 && (
           <TablePagination
             component="div"
@@ -722,11 +776,15 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
 const StatisticsTab = ({ data }) => {
   const classes = useStyles()
   const activeUsersCount = 0
-  
-  if (!data || !data.userInviteRequests || !Array.isArray(data.userInviteRequests)) {
+
+  if (
+    !data ||
+    !data.userInviteRequests ||
+    !Array.isArray(data.userInviteRequests)
+  ) {
     return <div>No data available</div>
   }
-  
+
   const inviteRequestCount = data.userInviteRequests.filter(
     (user) => parseInt(user.status) === 1,
   ).length
@@ -819,15 +877,19 @@ const UserManagementTab = () => {
     errorPolicy: 'all', // Handle errors gracefully
     fetchPolicy: 'cache-and-network',
   })
-  
+
   // Handle errors
   if (error) {
     if (error.message && error.message.includes('Authentication required')) {
       return (
         <Card>
           <CardContent>
-            <Typography className={classes.cardHeader}>User Management</Typography>
-            <Typography color="error">Authentication required. Please log in.</Typography>
+            <Typography className={classes.cardHeader}>
+              User Management
+            </Typography>
+            <Typography color="error">
+              Authentication required. Please log in.
+            </Typography>
           </CardContent>
         </Card>
       )
@@ -836,8 +898,12 @@ const UserManagementTab = () => {
       return (
         <Card>
           <CardContent>
-            <Typography className={classes.cardHeader}>User Management</Typography>
-            <Typography color="error">Admin access required to view users.</Typography>
+            <Typography className={classes.cardHeader}>
+              User Management
+            </Typography>
+            <Typography color="error">
+              Admin access required to view users.
+            </Typography>
           </CardContent>
         </Card>
       )
@@ -845,8 +911,12 @@ const UserManagementTab = () => {
     return (
       <Card>
         <CardContent>
-          <Typography className={classes.cardHeader}>User Management</Typography>
-          <Typography color="error">Error loading users: {error.message}</Typography>
+          <Typography className={classes.cardHeader}>
+            User Management
+          </Typography>
+          <Typography color="error">
+            Error loading users: {error.message}
+          </Typography>
         </CardContent>
       </Card>
     )
@@ -880,25 +950,41 @@ const UserManagementTab = () => {
               {data.users.map((user) => (
                 <Box key={user._id} className={classes.responsiveCard}>
                   <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>User ID</Typography>
-                    <Typography className={classes.responsiveCardValue}>{user._id}</Typography>
+                    <Typography className={classes.responsiveCardLabel}>
+                      User ID
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {user._id}
+                    </Typography>
                   </div>
                   <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>Username</Typography>
-                    <Typography className={classes.responsiveCardValue}>{user.username}</Typography>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Username
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {user.username}
+                    </Typography>
                   </div>
                   <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>Name</Typography>
-                    <Typography className={classes.responsiveCardValue}>{user.name || '—'}</Typography>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Name
+                    </Typography>
+                    <Typography className={classes.responsiveCardValue}>
+                      {user.name || '—'}
+                    </Typography>
                   </div>
                   <div className={classes.responsiveCardRow}>
-                    <Typography className={classes.responsiveCardLabel}>Contributor Badge</Typography>
+                    <Typography className={classes.responsiveCardLabel}>
+                      Contributor Badge
+                    </Typography>
                     <div className={classes.statusWrapper}>
                       <Switch
                         checked={!!user.contributorBadge}
                         onChange={() => handleToggle(user)}
                         color="primary"
-                        inputProps={{ 'aria-label': 'toggle contributor badge' }}
+                        inputProps={{
+                          'aria-label': 'toggle contributor badge',
+                        }}
                       />
                     </div>
                   </div>
@@ -910,7 +996,9 @@ const UserManagementTab = () => {
               <Typography variant="body1" style={{ marginBottom: 8 }}>
                 No users found
               </Typography>
-              <Typography variant="body2">Users will appear once they join.</Typography>
+              <Typography variant="body2">
+                Users will appear once they join.
+              </Typography>
             </Box>
           )
         ) : (
@@ -944,7 +1032,9 @@ const UserManagementTab = () => {
                           checked={!!user.contributorBadge}
                           onChange={() => handleToggle(user)}
                           color="primary"
-                          inputProps={{ 'aria-label': 'toggle contributor badge' }}
+                          inputProps={{
+                            'aria-label': 'toggle contributor badge',
+                          }}
                         />
                       </div>
                     </TableCell>
@@ -971,14 +1061,16 @@ const ControlPanelContainer = ({ data, onRefresh }) => {
   return (
     <Grid container spacing={2} className={classes.panelContainer}>
       <Grid container>
-        <Typography className={classes.panelHeader}>
-          Control Panel
-        </Typography>
+        <Typography className={classes.panelHeader}>Control Panel</Typography>
       </Grid>
-      
+
       <Grid item xs={12}>
         {isSmallScreen ? (
-          <FormControl variant="outlined" size="small" className={classes.mobileTabSelect}>
+          <FormControl
+            variant="outlined"
+            size="small"
+            className={classes.mobileTabSelect}
+          >
             <Select
               value={tabValue}
               onChange={(event) => handleTabChange(event, event.target.value)}
@@ -1001,10 +1093,16 @@ const ControlPanelContainer = ({ data, onRefresh }) => {
               textColor="secondary"
               variant="fullWidth"
             >
-              <Tab label="User Invitation Requests" classes={{ root: classes.tabRoot }} />
+              <Tab
+                label="User Invitation Requests"
+                classes={{ root: classes.tabRoot }}
+              />
               <Tab label="Statistics" classes={{ root: classes.tabRoot }} />
               <Tab label="Featured Posts" classes={{ root: classes.tabRoot }} />
-              <Tab label="User Management" classes={{ root: classes.tabRoot }} />
+              <Tab
+                label="User Management"
+                classes={{ root: classes.tabRoot }}
+              />
             </Tabs>
           </Box>
         )}
@@ -1036,20 +1134,20 @@ const ControlPanel = () => {
   const { admin } = useSelector((state) => state.user.data)
 
   const renderSkeleton = () => (
-      <Grid container spacing={2} className={classes.panelContainer}>
-        <Grid item xs={12}>
-          <Skeleton animation="wave" style={{ width: '25%' }} />
+    <Grid container spacing={2} className={classes.panelContainer}>
+      <Grid item xs={12}>
+        <Skeleton animation="wave" style={{ width: '25%' }} />
+      </Grid>
+      <Grid container item xs={12}>
+        <Grid container item xs={6} className={classes.sectionBorder}>
+          <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
         </Grid>
-        <Grid container item xs={12}>
-          <Grid container item xs={6} className={classes.sectionBorder}>
-            <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
-          </Grid>
-          <Grid container item xs={6} justify="flex-end">
-            <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
-          </Grid>
+        <Grid container item xs={6} justify="flex-end">
+          <Skeleton animation="wave" height={300} style={{ width: '80%' }} />
         </Grid>
       </Grid>
-    )
+    </Grid>
+  )
 
   const renderContent = () => {
     if (!admin) {

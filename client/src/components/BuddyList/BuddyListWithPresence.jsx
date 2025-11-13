@@ -1,20 +1,31 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useQuery } from '@apollo/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, List, ListItem, ListItemText, ListItemAvatar, Button, Typography, Chip, IconButton, Avatar } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import CloseIcon from '@material-ui/icons/Close';
-import { GET_BUDDY_LIST, GET_ROSTER } from '../../graphql/query';
-import { SET_BUDDY_LIST, SET_PENDING_REQUESTS } from '../../store/chat';
-import { usePresenceSubscription } from '../../hooks/usePresenceSubscription';
-import { useRosterManagement } from '../../hooks/useRosterManagement';
-import LoadingSpinner from '../LoadingSpinner';
-import BuddyItemList from './BuddyItemList';
-import AvatarDisplay from '../Avatar';
-import PresenceIcon from '../Chat/PresenceIcon';
-import StatusMessage from '../Chat/StatusMessage';
-import { SET_SNACKBAR } from '../../store/ui';
+import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useQuery } from '@apollo/client'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  makeStyles,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Button,
+  Typography,
+  Chip,
+  IconButton,
+  Avatar,
+} from '@material-ui/core'
+import CheckIcon from '@material-ui/icons/Check'
+import CloseIcon from '@material-ui/icons/Close'
+import { GET_BUDDY_LIST, GET_ROSTER } from '../../graphql/query'
+import { SET_BUDDY_LIST, SET_PENDING_REQUESTS } from '../../store/chat'
+import { usePresenceSubscription } from '../../hooks/usePresenceSubscription'
+import { useRosterManagement } from '../../hooks/useRosterManagement'
+import LoadingSpinner from '../LoadingSpinner'
+import BuddyItemList from './BuddyItemList'
+import AvatarDisplay from '../Avatar'
+import PresenceIcon from '../Chat/PresenceIcon'
+import StatusMessage from '../Chat/StatusMessage'
+import { SET_SNACKBAR } from '../../store/ui'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -150,34 +161,41 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 700,
     marginLeft: theme.spacing(0.5),
   },
-}));
+}))
 
 const BuddyListWithPresence = ({ search }) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user?.data);
-  const { loading, data, refetch, error: buddyListError } = useQuery(GET_BUDDY_LIST, {
-    fetchPolicy: 'cache-and-network',
-    skip: !currentUser, // Skip if user is not loaded
-  });
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const currentUser = useSelector((state) => state.user?.data)
+  const { loading, data, refetch, error: buddyListError } = useQuery(
+    GET_BUDDY_LIST,
+    {
+      fetchPolicy: 'cache-and-network',
+      skip: !currentUser, // Skip if user is not loaded
+    },
+  )
 
   // Query for pending requests - get all rosters where user is involved
-  const { data: rosterData, refetch: refetchRoster, error: rosterError } = useQuery(GET_ROSTER, {
+  const {
+    data: rosterData,
+    refetch: refetchRoster,
+    error: rosterError,
+  } = useQuery(GET_ROSTER, {
     fetchPolicy: 'cache-and-network',
     skip: !currentUser, // Skip if user is not loaded
-  });
+  })
 
-  const presenceMap = useSelector((state) => state.chat?.presenceMap || {});
-  const { acceptBuddy, declineBuddy } = useRosterManagement();
+  const presenceMap = useSelector((state) => state.chat?.presenceMap || {})
+  const { acceptBuddy, declineBuddy } = useRosterManagement()
 
   // Subscribe to presence updates
-  usePresenceSubscription();
+  usePresenceSubscription()
 
   useEffect(() => {
     if (data?.getBuddyList) {
-      dispatch(SET_BUDDY_LIST(data.getBuddyList));
+      dispatch(SET_BUDDY_LIST(data.getBuddyList))
     }
-  }, [data, dispatch]);
+  }, [data, dispatch])
 
   useEffect(() => {
     if (rosterData?.getRoster && currentUser) {
@@ -187,61 +205,71 @@ const BuddyListWithPresence = ({ search }) => {
       // - current user is the buddyId (someone wants to be buddies with current user)
       // - OR current user is userId but didn't initiate (edge case)
       const pending = rosterData.getRoster.filter((r) => {
-        if (r.status !== 'pending') return false;
-        if (!currentUser || !r.initiatedBy) return false;
-        
+        if (r.status !== 'pending') return false
+        if (!currentUser || !r.initiatedBy) return false
+
         // Received request: current user is buddyId (someone sent request to current user)
-        const isReceivedRequest = r.buddyId?.toString() === currentUser._id?.toString() &&
-                                  r.initiatedBy?.toString() !== currentUser._id?.toString();
-        
+        const isReceivedRequest =
+          r.buddyId?.toString() === currentUser._id?.toString() &&
+          r.initiatedBy?.toString() !== currentUser._id?.toString()
+
         // Edge case: current user is userId but didn't initiate (shouldn't happen but handle it)
-        const isReceivedAsUserId = r.userId?.toString() === currentUser._id?.toString() &&
-                                   r.initiatedBy?.toString() !== currentUser._id?.toString();
-        
-        return isReceivedRequest || isReceivedAsUserId;
-      });
-      dispatch(SET_PENDING_REQUESTS(pending));
+        const isReceivedAsUserId =
+          r.userId?.toString() === currentUser._id?.toString() &&
+          r.initiatedBy?.toString() !== currentUser._id?.toString()
+
+        return isReceivedRequest || isReceivedAsUserId
+      })
+      dispatch(SET_PENDING_REQUESTS(pending))
     }
-  }, [rosterData, dispatch, currentUser]);
+  }, [rosterData, dispatch, currentUser])
 
   const handleAcceptBuddy = async (rosterId, buddyId) => {
     try {
-      await acceptBuddy(rosterId);
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: 'Buddy request accepted!',
-        type: 'success',
-      }));
-      refetchRoster();
-      refetch();
+      await acceptBuddy(rosterId)
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'Buddy request accepted!',
+          type: 'success',
+        }),
+      )
+      refetchRoster()
+      refetch()
     } catch (error) {
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: error.message || 'Failed to accept buddy request',
-        type: 'danger',
-      }));
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to accept buddy request',
+          type: 'danger',
+        }),
+      )
     }
-  };
+  }
 
   const handleDeclineBuddy = async (rosterId, buddyId) => {
     try {
       // Decline the request gracefully (removes pending request, doesn't block)
-      await declineBuddy(rosterId);
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: 'Buddy request declined',
-        type: 'info',
-      }));
-      refetchRoster();
-      refetch();
+      await declineBuddy(rosterId)
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'Buddy request declined',
+          type: 'info',
+        }),
+      )
+      refetchRoster()
+      refetch()
     } catch (error) {
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: error.message || 'Failed to decline buddy request',
-        type: 'danger',
-      }));
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to decline buddy request',
+          type: 'danger',
+        }),
+      )
     }
-  };
+  }
 
   // Show loading only if user exists and we're loading
   if (!currentUser) {
@@ -249,10 +277,10 @@ const BuddyListWithPresence = ({ search }) => {
       <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
         Please log in to view your buddy list
       </div>
-    );
+    )
   }
 
-  if (loading && !data) return <LoadingSpinner size={50} />;
+  if (loading && !data) return <LoadingSpinner size={50} />
 
   // Show error if there's a query error
   if (buddyListError || rosterError) {
@@ -260,24 +288,25 @@ const BuddyListWithPresence = ({ search }) => {
       <div style={{ padding: 20, textAlign: 'center', color: '#f44336' }}>
         Error loading buddy list. Please try refreshing.
       </div>
-    );
+    )
   }
 
-  const buddies = data?.getBuddyList || [];
-  const roster = rosterData?.getRoster || [];
-  
+  const buddies = data?.getBuddyList || []
+  const roster = rosterData?.getRoster || []
+
   // Filter pending requests that the user RECEIVED (not sent)
   // Received requests are where current user is the buddyId
   const pendingRequests = roster.filter((r) => {
-    if (r.status !== 'pending') return false;
-    if (!currentUser || !r.initiatedBy) return false;
-    
+    if (r.status !== 'pending') return false
+    if (!currentUser || !r.initiatedBy) return false
+
     // Received request: current user is buddyId (someone sent request to current user)
-    const isReceivedRequest = r.buddyId?.toString() === currentUser._id?.toString() &&
-                              r.initiatedBy?.toString() !== currentUser._id?.toString();
-    
-    return isReceivedRequest;
-  });
+    const isReceivedRequest =
+      r.buddyId?.toString() === currentUser._id?.toString() &&
+      r.initiatedBy?.toString() !== currentUser._id?.toString()
+
+    return isReceivedRequest
+  })
 
   // Group by presence status
   const groupedBuddies = {
@@ -285,16 +314,16 @@ const BuddyListWithPresence = ({ search }) => {
     away: [],
     dnd: [],
     offline: [],
-  };
+  }
 
   buddies.forEach((buddy) => {
-    if (!buddy || !buddy.user) return;
-    
-    const presence = presenceMap[buddy.user._id] || buddy.presence;
-    const status = presence?.status || 'offline';
+    if (!buddy || !buddy.user) return
+
+    const presence = presenceMap[buddy.user._id] || buddy.presence
+    const status = presence?.status || 'offline'
 
     // Don't show invisible users
-    if (status === 'invisible') return;
+    if (status === 'invisible') return
 
     const buddyWithPresence = {
       ...buddy,
@@ -302,33 +331,39 @@ const BuddyListWithPresence = ({ search }) => {
       Text: buddy.user?.name || buddy.user?.username || 'Unknown',
       statusMessage: presence?.statusMessage || '',
       room: null, // For compatibility with existing BuddyItemList
-    };
+    }
 
     if (groupedBuddies[status]) {
-      groupedBuddies[status].push(buddyWithPresence);
+      groupedBuddies[status].push(buddyWithPresence)
     } else {
-      groupedBuddies.offline.push(buddyWithPresence);
+      groupedBuddies.offline.push(buddyWithPresence)
     }
-  });
+  })
 
   // Filter by search
   const filterBuddies = (buddyList) => {
-    if (!buddyList || !Array.isArray(buddyList)) return [];
-    if (!search) return buddyList;
+    if (!buddyList || !Array.isArray(buddyList)) return []
+    if (!search) return buddyList
     return buddyList.filter((b) => {
-      if (!b || !b.user) return false;
-      const name = (b.user.name || b.user.username || '').toLowerCase();
-      return name.includes(search.toLowerCase());
-    });
-  };
+      if (!b || !b.user) return false
+      const name = (b.user.name || b.user.username || '').toLowerCase()
+      return name.includes(search.toLowerCase())
+    })
+  }
 
   return (
     <div className={classes.root}>
       {/* Pending Requests Section - Compact Design */}
       {pendingRequests.length > 0 && (
         <div className={classes.pendingRequestsContainer}>
-          <div className={classes.groupHeader} style={{ padding: 0, marginBottom: 8 }}>
-            <Typography variant="caption" style={{ fontWeight: 700, fontSize: '0.75rem' }}>
+          <div
+            className={classes.groupHeader}
+            style={{ padding: 0, marginBottom: 8 }}
+          >
+            <Typography
+              variant="caption"
+              style={{ fontWeight: 700, fontSize: '0.75rem' }}
+            >
               Pending Requests
             </Typography>
             <span className={classes.pendingRequestsBadge}>
@@ -336,16 +371,20 @@ const BuddyListWithPresence = ({ search }) => {
             </span>
           </div>
           {pendingRequests.map((request) => {
-            const buddy = request.buddy || {};
-            if (!buddy || !request._id) return null;
-            
+            const buddy = request.buddy || {}
+            if (!buddy || !request._id) return null
+
             // For received requests, the sender is the buddy (the one who initiated)
-            const buddyId = buddy._id || request.initiatedBy;
-            
+            const buddyId = buddy._id || request.initiatedBy
+
             return (
               <div key={request._id} className={classes.pendingRequestItem}>
                 <Avatar className={classes.pendingRequestAvatar}>
-                  <AvatarDisplay height={32} width={32} {...(buddy.avatar || {})} />
+                  <AvatarDisplay
+                    height={32}
+                    width={32}
+                    {...(buddy.avatar || {})}
+                  />
                 </Avatar>
                 <div className={classes.pendingRequestContent}>
                   <Typography className={classes.pendingRequestName}>
@@ -374,48 +413,58 @@ const BuddyListWithPresence = ({ search }) => {
                   </IconButton>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
       )}
 
       {/* Buddy List Grouped by Status */}
       {['online', 'away', 'dnd', 'offline'].map((status) => {
-        const filtered = filterBuddies(groupedBuddies[status]);
-        if (filtered.length === 0) return null;
+        const filtered = filterBuddies(groupedBuddies[status])
+        if (filtered.length === 0) return null
 
         const getStatusIndicatorClass = () => {
           switch (status) {
-            case 'online': return classes.onlineIndicator;
-            case 'away': return classes.awayIndicator;
-            case 'dnd': return classes.dndIndicator;
-            default: return classes.offlineIndicator;
+            case 'online':
+              return classes.onlineIndicator
+            case 'away':
+              return classes.awayIndicator
+            case 'dnd':
+              return classes.dndIndicator
+            default:
+              return classes.offlineIndicator
           }
-        };
+        }
 
         return (
           <div key={status}>
             <div className={classes.groupHeader}>
-              <span className={`${classes.statusIndicator} ${getStatusIndicatorClass()}`} />
+              <span
+                className={`${
+                  classes.statusIndicator
+                } ${getStatusIndicatorClass()}`}
+              />
               <Typography variant="caption" style={{ fontWeight: 700 }}>
-                {status === 'dnd' ? 'Do Not Disturb' : status.charAt(0).toUpperCase() + status.slice(1)} ({filtered.length})
+                {status === 'dnd'
+                  ? 'Do Not Disturb'
+                  : status.charAt(0).toUpperCase() + status.slice(1)}{' '}
+                ({filtered.length})
               </Typography>
             </div>
             <BuddyItemList buddyList={filtered} />
           </div>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
 BuddyListWithPresence.propTypes = {
   search: PropTypes.string,
-};
+}
 
 BuddyListWithPresence.defaultProps = {
   search: '',
-};
+}
 
-export default BuddyListWithPresence;
-
+export default BuddyListWithPresence

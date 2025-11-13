@@ -1,6 +1,6 @@
 import React from 'react'
 import { PersistGate } from 'redux-persist/integration/react'
-import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloProvider } from '@apollo/client'
 import { Provider } from 'react-redux'
 import { createTheme, ThemeProvider } from '@material-ui/core/styles'
 import { Router } from 'react-router-dom'

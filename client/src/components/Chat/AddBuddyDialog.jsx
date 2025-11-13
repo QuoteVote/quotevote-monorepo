@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   Dialog,
   DialogTitle,
@@ -14,13 +14,13 @@ import {
   CircularProgress,
   Typography,
   makeStyles,
-} from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
-import { useDispatch } from 'react-redux';
-import { SEARCH_USERNAMES } from '../../graphql/query';
-import AvatarDisplay from '../Avatar';
-import { useRosterManagement } from '../../hooks/useRosterManagement';
-import { SET_SNACKBAR } from '../../store/ui';
+} from '@material-ui/core'
+import { useQuery } from '@apollo/client'
+import { useDispatch } from 'react-redux'
+import { SEARCH_USERNAMES } from '../../graphql/query'
+import AvatarDisplay from '../Avatar'
+import { useRosterManagement } from '../../hooks/useRosterManagement'
+import { SET_SNACKBAR } from '../../store/ui'
 
 const useStyles = makeStyles((theme) => ({
   searchField: {
@@ -38,43 +38,47 @@ const useStyles = makeStyles((theme) => ({
   addButton: {
     marginLeft: 'auto',
   },
-}));
+}))
 
 const AddBuddyDialog = ({ open, onClose }) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState('');
-  const { addBuddy } = useRosterManagement();
-  const [addingUserId, setAddingUserId] = useState(null);
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const [searchQuery, setSearchQuery] = useState('')
+  const { addBuddy } = useRosterManagement()
+  const [addingUserId, setAddingUserId] = useState(null)
 
   const { data, loading } = useQuery(SEARCH_USERNAMES, {
     variables: { query: searchQuery },
     skip: !searchQuery || searchQuery.length < 2,
-  });
+  })
 
   const handleAddBuddy = async (userId) => {
     try {
-      setAddingUserId(userId);
-      await addBuddy(userId);
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: 'Buddy request sent successfully!',
-        type: 'success',
-      }));
+      setAddingUserId(userId)
+      await addBuddy(userId)
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'Buddy request sent successfully!',
+          type: 'success',
+        }),
+      )
       // Optionally close dialog after successful request
       // onClose();
     } catch (error) {
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: error.message || 'Failed to send buddy request',
-        type: 'danger',
-      }));
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to send buddy request',
+          type: 'danger',
+        }),
+      )
     } finally {
-      setAddingUserId(null);
+      setAddingUserId(null)
     }
-  };
+  }
 
-  const users = data?.searchUser || [];
+  const users = data?.searchUser || []
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -138,13 +142,12 @@ const AddBuddyDialog = ({ open, onClose }) => {
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
 AddBuddyDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-};
+}
 
-export default AddBuddyDialog;
-
+export default AddBuddyDialog

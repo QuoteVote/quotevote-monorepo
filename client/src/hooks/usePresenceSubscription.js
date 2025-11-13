@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSubscription } from '@apollo/react-hooks';
+import { useSubscription } from '@apollo/client';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRESENCE_SUBSCRIPTION } from '../graphql/subscription';
 import { UPDATE_PRESENCE } from '../store/chat';
