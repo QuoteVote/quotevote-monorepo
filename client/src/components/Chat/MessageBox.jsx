@@ -296,10 +296,14 @@ function Header() {
           </IconButton>
           
           <Avatar className={classes.avatar}>
-            {messageType === 'USER' ? (
+            {avatar && Object.keys(avatar).length > 0 ? (
               <AvatarDisplay height={40} width={40} {...avatar} />
+            ) : messageType === 'USER' && title ? (
+              title[0]?.toUpperCase() || '?'
+            ) : title ? (
+              title[0]?.toUpperCase() || '?'
             ) : (
-              title?.[0] || '?'
+              '?'
             )}
           </Avatar>
           
