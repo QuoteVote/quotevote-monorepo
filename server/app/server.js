@@ -23,14 +23,14 @@ if (process.env.NODE_ENV === 'dev') {
   dotenvConfig.config({ path: './.env' });
 }
 
-if (process.env.CLIENT_URL.endsWith('/')) {
+if (process.env.CLIENT_URL && process.env.CLIENT_URL.endsWith('/')) {
   logger.info('CLIENT_URL ends with /, removing it');
   process.env.CLIENT_URL = process.env.CLIENT_URL.slice(0, -1);
 }
 
 const GRAPHQL_PORT = process.env.PORT || 4000;
 
-logger.info('Database', process.env.DATABASE_URL);
+logger.info(`Database URL: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}`);
 
 // Set mongoose global options to prevent deprecation warnings
 mongoose.set('useNewUrlParser', true);
@@ -125,7 +125,7 @@ const server = new ApolloServer({
     if (connection) {
       authToken = connection.context.authorization || connection.context.token || connection.context.authToken;
       isSubscription = true;
-      console.log('[SUBSCRIPTION CONNECTION]');
+      logger.debug('[SUBSCRIPTION CONNECTION]');
     } else {
       authToken = req.headers.authorization || req.headers.token;
     }
@@ -138,7 +138,7 @@ const server = new ApolloServer({
           const user = await verifyToken(authToken);
           return { user, res };
         } catch (error) {
-          console.log('Invalid token, proceeding without user context:', error.message);
+          logger.debug('Invalid token, proceeding without user context:', error.message);
           return { res };
         }
       }
@@ -172,14 +172,14 @@ async function startServer() {
   // No need for installSubscriptionHandlers
 
   httpServer.listen({ port: GRAPHQL_PORT }, () => {
-    console.log(`Apollo Server on http://localhost:${GRAPHQL_PORT}/graphql`);
+    logger.info(`Apollo Server on http://localhost:${GRAPHQL_PORT}/graphql`);
     // Start presence cleanup job
     startPresenceCleanup();
   });
 }
 
 startServer().catch((error) => {
-  console.error('Failed to start server:', error);
+  logger.error('Failed to start server:', error);
   process.exit(1);
 });
 

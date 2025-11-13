@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { 
   Avatar, 
@@ -180,8 +180,17 @@ function Header() {
   const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
   
   // Get the other user's ID for USER type rooms
+  const currentUserIdForHeader = currentUser?._id?.toString()
   const otherUserId = messageType === 'USER' && users?.length === 2
-    ? users.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
+    ? users.find((id) => {
+        if (!id || !currentUserIdForHeader) return false
+        try {
+          return id.toString() !== currentUserIdForHeader
+        } catch (e) {
+          console.warn('Error comparing user IDs in header:', e)
+          return false
+        }
+      })?.toString() || null
     : null
 
   // Check if user is blocked
@@ -333,29 +342,29 @@ function Header() {
               },
             }}
           >
-            {messageType === 'USER' && otherUserId && (
-              <>
-                <MenuItem 
-                  onClick={handleBlockUser} 
-                  className={`${classes.menuItem} ${classes.menuItemDanger}`}
-                >
-                  <ListItemIcon className={classes.menuItemIcon}>
-                    <BlockIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
-                </MenuItem>
-                <MenuItem 
-                  onClick={handleRemoveBuddy} 
-                  className={`${classes.menuItem} ${classes.menuItemDanger}`}
-                >
-                  <ListItemIcon className={classes.menuItemIcon}>
-                    <RemoveCircleIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary="Remove Buddy" />
-                </MenuItem>
-                <Divider />
-              </>
-            )}
+            {messageType === 'USER' && otherUserId ? [
+              <MenuItem 
+                key="block"
+                onClick={handleBlockUser} 
+                className={`${classes.menuItem} ${classes.menuItemDanger}`}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <BlockIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
+              </MenuItem>,
+              <MenuItem 
+                key="remove"
+                onClick={handleRemoveBuddy} 
+                className={`${classes.menuItem} ${classes.menuItemDanger}`}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <RemoveCircleIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Remove Buddy" />
+              </MenuItem>,
+              <Divider key="divider" />
+            ] : null}
             <MenuItem 
               onClick={handleDeleteChat} 
               className={`${classes.menuItem} ${classes.menuItemDanger}`}
@@ -406,21 +415,90 @@ function MessageBox() {
   
   // Get the other user's ID for DM creation if room doesn't exist yet
   const currentUser = useSelector((state) => state.user?.data)
+  const currentUserId = currentUser?._id?.toString()
   const componentId = messageRoomId 
     ? null 
-    : users?.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
+    : users?.find((id) => {
+        if (!id || !currentUserId) return false
+        try {
+          return id.toString() !== currentUserId
+        } catch (e) {
+          console.warn('Error comparing user IDs:', e)
+          return false
+        }
+      })?.toString() || null
+
+  // Track error state to prevent infinite retries
+  const [errorRetryCount, setErrorRetryCount] = useState(0)
+  const [shouldPoll, setShouldPoll] = useState(true)
+  const MAX_ERROR_RETRIES = 3
 
   // Refetch chat rooms to get updated room data (especially when room doesn't exist yet)
-  const { data: roomsData, error: roomsError } = useQuery(GET_CHAT_ROOMS, {
+  // Start without polling, we'll control it manually
+  const { data: roomsData, error: roomsError, stopPolling, startPolling } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
-    pollInterval: !messageRoomId ? 2000 : 0, // Poll every 2 seconds if room doesn't exist yet
+    pollInterval: 0, // Start with no polling - we'll control it manually
+    errorPolicy: 'all', // Continue to show cached data even if there's an error
     onError: (err) => {
-      console.error('Error fetching chat rooms:', err)
+      // Only log error once per occurrence, don't log infinitely
+      if (errorRetryCount < MAX_ERROR_RETRIES) {
+        console.error('Error fetching chat rooms:', err)
+      }
+      // Increment error count and stop polling if we hit max
+      setErrorRetryCount(prev => {
+        const newCount = prev + 1
+        if (newCount >= MAX_ERROR_RETRIES) {
+          console.warn(`Max error retries (${MAX_ERROR_RETRIES}) reached. Stopping all retries.`)
+          setShouldPoll(false)
+          // Stop polling immediately
+          if (stopPolling) {
+            stopPolling()
+          }
+        }
+        return newCount
+      })
     },
   })
   
-  if (roomsError) {
-    console.error('Chat rooms query error:', roomsError)
+  // Start/stop polling based on conditions
+  useEffect(() => {
+    // Only poll if:
+    // 1. We don't have a messageRoomId yet (waiting for room to be created)
+    // 2. We haven't hit max errors
+    // 3. Polling is enabled
+    if (!messageRoomId && shouldPoll && errorRetryCount < MAX_ERROR_RETRIES) {
+      if (startPolling) {
+        startPolling(2000)
+      }
+    } else {
+      if (stopPolling) {
+        stopPolling()
+      }
+    }
+    
+    // Cleanup: stop polling when component unmounts or conditions change
+    return () => {
+      if (stopPolling) {
+        stopPolling()
+      }
+    }
+  }, [messageRoomId, shouldPoll, errorRetryCount, startPolling, stopPolling])
+  
+  // Reset error count on successful query and re-enable polling if needed
+  useEffect(() => {
+    if (roomsData && !roomsError) {
+      if (errorRetryCount > 0) {
+        setErrorRetryCount(0)
+        setShouldPoll(true)
+      }
+    }
+  }, [roomsData, roomsError]) // Removed errorRetryCount from deps to avoid loop
+
+  // Don't log errors infinitely - only log if we haven't hit max retries
+  // The error is already logged in onError callback
+  if (roomsError && errorRetryCount >= MAX_ERROR_RETRIES) {
+    // Silently handle errors after max retries to prevent infinite console spam
+    // Error state is preserved but not logged repeatedly
   }
 
   // Update selected room when a new room is found in the chat rooms list
@@ -429,13 +507,40 @@ function MessageBox() {
       // Find the room that matches our users
       const matchingRoom = roomsData.messageRooms.find((room) => {
         if (room.messageType !== 'USER' || room.users?.length !== 2) return false
-        const roomUserIds = room.users.map((id) => id?.toString()).filter(Boolean)
-        const selectedUserIds = selectedRoomData.users.map((id) => id?.toString()).filter(Boolean)
-        if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
-        return (
-          roomUserIds.includes(selectedUserIds[0]) &&
-          roomUserIds.includes(selectedUserIds[1])
-        )
+        try {
+          const roomUserIds = room.users
+            .map((id) => {
+              if (!id) return null
+              try {
+                return id.toString()
+              } catch (e) {
+                console.warn('Error converting room user ID to string:', e)
+                return null
+              }
+            })
+            .filter(Boolean)
+          
+          const selectedUserIds = selectedRoomData.users
+            .map((id) => {
+              if (!id) return null
+              try {
+                return id.toString()
+              } catch (e) {
+                console.warn('Error converting selected user ID to string:', e)
+                return null
+              }
+            })
+            .filter(Boolean)
+          
+          if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
+          return (
+            roomUserIds.includes(selectedUserIds[0]) &&
+            roomUserIds.includes(selectedUserIds[1])
+          )
+        } catch (e) {
+          console.error('Error matching room:', e)
+          return false
+        }
       })
       
       if (matchingRoom) {
@@ -444,36 +549,71 @@ function MessageBox() {
     }
   }, [roomsData, messageRoomId, selectedRoomData, dispatch])
 
+  // Track if we're currently updating to prevent infinite loops
+  const isUpdatingRef = useRef(false)
+  const intervalRef = useRef(null)
+  
   useEffect(() => {
-    if (!ensureAuth() || !messageRoomId) return
+    if (!ensureAuth() || !messageRoomId) {
+      // Clear interval if room is closed or not authenticated
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      return
+    }
+    
+    // Reset update flag when messageRoomId changes
+    isUpdatingRef.current = false
     
     // Update read receipts when room is opened
     const updateReadReceipts = async () => {
+      // Prevent concurrent calls
+      if (isUpdatingRef.current) {
+        return
+      }
+      
+      isUpdatingRef.current = true
+      
       try {
         await updateMessageReadBy({
           variables: { messageRoomId },
-          refetchQueries: [
-            { query: GET_CHAT_ROOMS },
-            { 
-              query: GET_ROOM_MESSAGES, 
-              variables: { messageRoomId } 
-            },
-          ],
+          // Remove refetchQueries to prevent infinite loops
+          // The queries will be updated via subscriptions or manual refetches
+          // refetchQueries: [
+          //   { query: GET_CHAT_ROOMS },
+          //   { 
+          //     query: GET_ROOM_MESSAGES, 
+          //     variables: { messageRoomId } 
+          //   },
+          // ],
         })
       } catch (err) {
         console.error('Error updating message read by:', err)
+      } finally {
+        isUpdatingRef.current = false
       }
     }
     
-    updateReadReceipts()
+    // Initial update after a short delay to avoid immediate loops
+    const initialTimeout = setTimeout(() => {
+      updateReadReceipts()
+    }, 100)
     
     // Also update read receipts periodically (every 5 seconds) to catch updates from other users
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       updateReadReceipts()
     }, 5000)
     
-    return () => clearInterval(interval)
-  }, [messageRoomId, updateMessageReadBy, ensureAuth])
+    return () => {
+      clearTimeout(initialTimeout)
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      isUpdatingRef.current = false
+    }
+  }, [messageRoomId, ensureAuth, updateMessageReadBy]) // Include updateMessageReadBy - Apollo mutations are stable
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
