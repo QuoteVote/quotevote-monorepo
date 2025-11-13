@@ -8,5 +8,6 @@ input UserInput {
   quotes: [String]
   avatar: String
   contributorBadge: Boolean
+  themePreference: String
 }
 `;

@@ -83,6 +83,11 @@ const schema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  themePreference: {
+    type: String,
+    default: 'light',
+    enum: ['light', 'dark'],
+  },
 });
 
 schema.index({ content: 'text' });
