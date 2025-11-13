@@ -6,7 +6,7 @@
   "dependencies": {
     "@apollo/client": "^3.13.8",
     "@apollo/react-components": "^4.0.0",
-    "@apollo/react-hooks": "^4.0.0",
+    "@apollo/client": "^4.0.0",
     "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@bugsnag/js": "^7.6.0",
     "@bugsnag/plugin-react": "^7.6.0",

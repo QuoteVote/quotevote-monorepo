@@ -2,7 +2,7 @@ import BookmarkIcon from '@material-ui/icons/Bookmark'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import { IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import useGuestGuard from 'utils/useGuestGuard'
 import {
   CREATE_POST_MESSAGE_ROOM,

@@ -6,11 +6,18 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import PropTypes from 'prop-types'
-import { Avatar, Typography, Tooltip, Badge, Chip, Fade } from '@material-ui/core'
+import {
+  Avatar,
+  Typography,
+  Tooltip,
+  Badge,
+  Chip,
+  Fade,
+} from '@material-ui/core'
 import classNames from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRef, useState, useEffect } from 'react'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
 import GroupIcon from '@material-ui/icons/Group'
 import AvatarDisplay from '../Avatar'
@@ -230,16 +237,16 @@ function BuddyItemList({ buddyList }) {
     refetchQueries: [{ query: GET_CHAT_ROOMS }],
   })
   const itemList = buddyList && buddyList.length ? buddyList : emptyData
-  
+
   const handleClickItem = async (item) => {
     if (!buddyList.length || !currentUser) return
-    
+
     // If item has a room, use it
     if (item.room) {
       dispatch(SELECTED_CHAT_ROOM({ room: item.room }))
       return
     }
-    
+
     // If item has a user (from buddy list), create a message room
     if (item.user && item.user._id) {
       try {
@@ -265,12 +272,15 @@ function BuddyItemList({ buddyList }) {
       <Fade in timeout={500}>
         <div>
           <div className={classes.hint}>
-            <ChatBubbleOutlineIcon style={{ fontSize: 64, opacity: 0.2, marginBottom: 16 }} />
+            <ChatBubbleOutlineIcon
+              style={{ fontSize: 64, opacity: 0.2, marginBottom: 16 }}
+            />
             <Typography variant="h6" gutterBottom>
               <strong>No Conversations Yet</strong>
             </Typography>
             <Typography variant="body2">
-              Start chatting by adding friends!<br />
+              Start chatting by adding friends!
+              <br />
               Follow users to see them here.
             </Typography>
           </div>
@@ -279,21 +289,40 @@ function BuddyItemList({ buddyList }) {
               <Fade in timeout={300 + index * 100} key={index}>
                 <ListItem className={classes.listItem}>
                   <ListItemAvatar>
-                <Avatar className={classes.avatar}>
-                  {item.type === 'USER' && <AvatarDisplay height={40} width={40} {...item.avatar} />}
-                  {item.type !== 'USER' && item.Text[0]}
-                </Avatar>
+                    <Avatar className={classes.avatar}>
+                      {item.type === 'USER' && (
+                        <AvatarDisplay
+                          height={40}
+                          width={40}
+                          {...item.avatar}
+                        />
+                      )}
+                      {item.type !== 'USER' && item.Text[0]}
+                    </Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     className={classes.listItemText}
                     primary={
                       <div className={classes.primaryText}>
-                        <TruncatedText text={item.Text} className={classes.textContent} />
+                        <TruncatedText
+                          text={item.Text}
+                          className={classes.textContent}
+                        />
                         <Chip
                           size="small"
-                          icon={item.type === 'USER' ? <ChatBubbleOutlineIcon /> : <GroupIcon />}
+                          icon={
+                            item.type === 'USER' ? (
+                              <ChatBubbleOutlineIcon />
+                            ) : (
+                              <GroupIcon />
+                            )
+                          }
                           label={item.type === 'USER' ? 'FRIEND' : 'POST'}
-                          className={item.type === 'USER' ? classes.friendChip : classes.postChip}
+                          className={
+                            item.type === 'USER'
+                              ? classes.friendChip
+                              : classes.postChip
+                          }
                         />
                       </div>
                     }
@@ -309,81 +338,122 @@ function BuddyItemList({ buddyList }) {
 
   return (
     <List className={classes.root}>
-      {itemList && itemList.length > 0 && itemList.map((item, index) => {
-        if (!item) return null;
-        
-        const itemText = item.Text || item.user?.name || item.user?.username || 'Unknown';
-        const itemType = item.type || (item.user ? 'USER' : 'POST');
-        const itemKey = item.room?._id || item.user?._id || item._id || index;
-        
-        return (
-          <Fade in timeout={200 + index * 50} key={itemKey}>
-            <ListItem className={classes.listItem} onClick={() => handleClickItem(item)}>
-              <ListItemAvatar>
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  variant="dot"
-                  invisible={!item.unreadMessages || item.unreadMessages === 0}
-                  sx={{
-                    '& .MuiBadge-badge': {
-                      backgroundColor: '#44b700',
-                      color: '#44b700',
-                      boxShadow: `0 0 0 2px #fff`,
-                    },
-                  }}
-                >
-                  <Avatar className={classes.avatar}>
-                    {itemType === 'USER' && item.user && (
-                      <AvatarDisplay height={40} width={40} {...(item.user.avatar || {})} />
-                    )}
-                    {itemType !== 'USER' && itemText && itemText[0]}
-                  </Avatar>
-                </Badge>
-              </ListItemAvatar>
-              <ListItemText
-                className={classes.listItemText}
-                primary={
-                  <div className={classes.primaryText}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0 }}>
-                      {item.presence && (
-                        <PresenceIcon status={item.presence.status || 'offline'} />
+      {itemList &&
+        itemList.length > 0 &&
+        itemList.map((item, index) => {
+          if (!item) return null
+
+          const itemText =
+            item.Text || item.user?.name || item.user?.username || 'Unknown'
+          const itemType = item.type || (item.user ? 'USER' : 'POST')
+          const itemKey = item.room?._id || item.user?._id || item._id || index
+
+          return (
+            <Fade in timeout={200 + index * 50} key={itemKey}>
+              <ListItem
+                className={classes.listItem}
+                onClick={() => handleClickItem(item)}
+              >
+                <ListItemAvatar>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    variant="dot"
+                    invisible={
+                      !item.unreadMessages || item.unreadMessages === 0
+                    }
+                    sx={{
+                      '& .MuiBadge-badge': {
+                        backgroundColor: '#44b700',
+                        color: '#44b700',
+                        boxShadow: `0 0 0 2px #fff`,
+                      },
+                    }}
+                  >
+                    <Avatar className={classes.avatar}>
+                      {itemType === 'USER' && item.user && (
+                        <AvatarDisplay
+                          height={40}
+                          width={40}
+                          {...(item.user.avatar || {})}
+                        />
                       )}
-                      <TruncatedText text={itemText} className={classes.textContent} />
+                      {itemType !== 'USER' && itemText && itemText[0]}
+                    </Avatar>
+                  </Badge>
+                </ListItemAvatar>
+                <ListItemText
+                  className={classes.listItemText}
+                  primary={
+                    <div className={classes.primaryText}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          flex: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        {item.presence && (
+                          <PresenceIcon
+                            status={item.presence.status || 'offline'}
+                          />
+                        )}
+                        <TruncatedText
+                          text={itemText}
+                          className={classes.textContent}
+                        />
+                      </div>
+                      <Chip
+                        size="small"
+                        icon={
+                          itemType === 'USER' ? (
+                            <ChatBubbleOutlineIcon />
+                          ) : (
+                            <GroupIcon />
+                          )
+                        }
+                        label={itemType === 'USER' ? 'FRIEND' : 'POST'}
+                        className={
+                          itemType === 'USER'
+                            ? classes.friendChip
+                            : classes.postChip
+                        }
+                      />
                     </div>
-                    <Chip
-                      size="small"
-                      icon={itemType === 'USER' ? <ChatBubbleOutlineIcon /> : <GroupIcon />}
-                      label={itemType === 'USER' ? 'FRIEND' : 'POST'}
-                      className={itemType === 'USER' ? classes.friendChip : classes.postChip}
-                    />
-                  </div>
-                }
-                secondary={
-                  item.statusMessage ? (
-                    <StatusMessage message={item.statusMessage} />
-                  ) : item.presence?.status === 'away' ? (
-                    <Typography variant="caption" style={{ fontStyle: 'italic', color: '#ffc107' }}>
-                      Away
-                    </Typography>
-                  ) : item.presence?.status === 'dnd' ? (
-                    <Typography variant="caption" style={{ fontStyle: 'italic', color: '#f44336' }}>
-                      Do Not Disturb
-                    </Typography>
-                  ) : null
-                }
-              />
-              {item.unreadMessages > 0 && (
-                <ListItemSecondaryAction>
-                  <div className={classes.unreadBadge}>
-                    {item.unreadMessages > 99 ? '99+' : item.unreadMessages}
-                  </div>
-                </ListItemSecondaryAction>
-              )}
-            </ListItem>
-          </Fade>
-        );
-      })}
+                  }
+                  secondary={
+                    item.statusMessage ? (
+                      <StatusMessage message={item.statusMessage} />
+                    ) : item.presence?.status === 'away' ? (
+                      <Typography
+                        variant="caption"
+                        style={{ fontStyle: 'italic', color: '#ffc107' }}
+                      >
+                        Away
+                      </Typography>
+                    ) : item.presence?.status === 'dnd' ? (
+                      <Typography
+                        variant="caption"
+                        style={{ fontStyle: 'italic', color: '#f44336' }}
+                      >
+                        Do Not Disturb
+                      </Typography>
+                    ) : null
+                  }
+                />
+                {item.unreadMessages > 0 && (
+                  <ListItemSecondaryAction>
+                    <div className={classes.unreadBadge}>
+                      {item.unreadMessages > 99 ? '99+' : item.unreadMessages}
+                    </div>
+                  </ListItemSecondaryAction>
+                )}
+              </ListItem>
+            </Fade>
+          )
+        })}
     </List>
   )
 }

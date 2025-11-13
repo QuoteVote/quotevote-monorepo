@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import {
   Grid,
   FormControl,
@@ -99,12 +99,22 @@ function SimpleAvatarEditor() {
                   color="secondary"
                   size="small"
                 >
-                  <Typography variant="h4" style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>🎲</Typography>
+                  <Typography
+                    variant="h4"
+                    style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}
+                  >
+                    🎲
+                  </Typography>
                 </IconButton>
               </Tooltip>
               <Tooltip title="Save" placement="top">
                 <IconButton onClick={handleSave} color="primary" size="small">
-                  <Typography variant="h4" style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}>💾</Typography>
+                  <Typography
+                    variant="h4"
+                    style={{ fontSize: isMobile ? '1.5rem' : '2rem' }}
+                  >
+                    💾
+                  </Typography>
                 </IconButton>
               </Tooltip>
             </Box>

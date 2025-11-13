@@ -7,7 +7,7 @@ import {
   IconButton,
   Button,
 } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import { useSelector } from 'react-redux'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import SearchIcon from '@material-ui/icons/Search'
@@ -423,6 +423,11 @@ export default function SearchPage() {
     errorPolicy: 'all',
   })
 
+  // Lazy query as a fallback when submitting with @username before suggestions load
+  const [runUsernameSearch] = useLazyQuery(SEARCH_USERNAMES, {
+    fetchPolicy: 'network-only',
+  })
+
   // Auto-show results for guest mode and when filters are active
   useEffect(() => {
     if (isGuestMode && !showResults) {
@@ -466,13 +471,72 @@ export default function SearchPage() {
     }
   }, [showUsernameResults])
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault()
     // Mark that user has interacted with filters (search is also a filter interaction)
     setHasEverInteractedWithFilters(true)
+    // If user typed an @username and pressed Enter without selecting,
+    // try to resolve it to a specific user and apply the userId filter
+    const value = (searchKey || '').trim()
+    if (value.startsWith('@')) {
+      const query = value.substring(1)
+      if (query) {
+        let candidates = usernameData?.searchUser || []
+        if (candidates.length === 0) {
+          try {
+            const { data } = await runUsernameSearch({ variables: { query } })
+            candidates = data?.searchUser || []
+          } catch (err) {
+            // ignore
+          }
+        }
+        const exact = candidates.find(
+          (u) => u.username && u.username.toLowerCase() === query.toLowerCase(),
+        )
+        const single = candidates.length === 1 ? candidates[0] : null
+        const chosen = exact || single
+        if (chosen) {
+          setSelectedUserId(chosen._id)
+          setIsUsernameSearch(false)
+          setShowUsernameResults(false)
+        }
+      }
+    }
 
     setShowResults(true)
   }
+
+  // Auto-select a near-matching user while typing @username to preview posts
+  useEffect(() => {
+    if (!isUsernameSearch) {
+      return
+    }
+    const q = (usernameQuery || '').trim()
+    if (q.length < 2) {
+      setSelectedUserId(null)
+      return
+    }
+    const list = usernameData?.searchUser || []
+    if (!list.length) {
+      setSelectedUserId(null)
+      return
+    }
+    const lower = q.toLowerCase()
+    const starts = list.find((u) =>
+      (u.username || '').toLowerCase().startsWith(lower),
+    )
+    const contains = list.find((u) =>
+      (u.username || '').toLowerCase().includes(lower),
+    )
+    const chosen = starts || contains || null
+    const timer = setTimeout(() => {
+      setSelectedUserId(chosen ? chosen._id : null)
+      // Ensure results area is visible when previewing
+      if (chosen) setShowResults(true)
+    }, 200)
+    return () => clearTimeout(timer)
+    // We intentionally depend on usernameData to respond to live results
+  }, [isUsernameSearch, usernameQuery, usernameData])
 
   // New handler for search input changes to detect @ symbol
   const handleSearchInputChange = (e) => {
@@ -580,12 +644,17 @@ export default function SearchPage() {
   // Helper function to determine if we should show the landing page for guest users
   const shouldShowGuestLandingPage = () => {
     if (!isGuestMode) return false
-    
+
     const { page } = extractUrlParams({ search: window.location.search })
     const hasPageParam = Boolean(page)
-    
+
     // Show landing page only when no search, no filters, no interactions, and no page params
-    return !searchKey.trim() && !hasActiveFilters() && !hasEverInteractedWithFilters && !hasPageParam
+    return (
+      !searchKey.trim() &&
+      !hasActiveFilters() &&
+      !hasEverInteractedWithFilters &&
+      !hasPageParam
+    )
   }
 
   // Helper function to check if any filters are active
@@ -1200,7 +1269,10 @@ export default function SearchPage() {
 
               <Grid item xs={12} className={classes.list}>
                 <PaginatedPostsList
-                  searchKey={searchKey}
+                  // When filtering by a selected user, ignore text search on the server
+                  // so results are not constrained to posts containing the literal "@username"
+                  searchKey={selectedUserId ? '' : searchKey}
+                  displaySearch={searchKey}
                   startDateRange={
                     dateRangeFilter.startDate
                       ? format(dateRangeFilter.startDate, 'yyyy-MM-dd')

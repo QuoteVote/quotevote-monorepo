@@ -12,7 +12,7 @@ import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 import TextField from '@material-ui/core/TextField'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import { useApolloClient, useMutation } from '@apollo/client'
 import Backdrop from '@material-ui/core/Backdrop'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Link from '@material-ui/core/Link'
@@ -168,29 +168,31 @@ function SettingsContent({ setOpen }) {
   const history = useHistory()
   const dispatch = useDispatch()
   const client = useApolloClient()
-  const {
-    username, email, name, avatar, _id, ...otherUserData
-  } = useSelector((state) => {
-    console.log(state)
-    return state.user.data
-  })
+  const { username, email, name, avatar, _id, ...otherUserData } = useSelector(
+    (state) => {
+      console.log(state)
+      return state.user.data
+    },
+  )
   console.log(otherUserData)
   const handleChangeAvatar = () => {
     setOpen(false)
     history.push(`/Profile/${username}/avatar`)
   }
-  
+
   const defaultValues = {
-    username, password: username, name,
+    username,
+    password: username,
+    name,
   }
-  
-  const {
-    register, handleSubmit, errors, formState, reset,
-  } = useForm({ defaultValues })
-  
+
+  const { register, handleSubmit, errors, formState, reset } = useForm({
+    defaultValues,
+  })
+
   const isPasswordTouched = 'password' in Object.keys(formState.dirtyFields)
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
-  
+
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
     const otherVariables = values.password === password ? otherValues : values
@@ -204,11 +206,13 @@ function SettingsContent({ setOpen }) {
         },
       })
       if (result.data) {
-        dispatch(SET_USER_DATA({
-          _id,
-          ...otherUserData,
-          ...otherValues,
-        }))
+        dispatch(
+          SET_USER_DATA({
+            _id,
+            ...otherUserData,
+            ...otherValues,
+          }),
+        )
       }
     } catch (e) {
       reset()
@@ -227,9 +231,9 @@ function SettingsContent({ setOpen }) {
     history.push('/ControlPanel')
     setOpen(false)
   }
-  
+
   const hasChange = Object.keys(formState.dirtyFields).length
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid
@@ -250,9 +254,7 @@ function SettingsContent({ setOpen }) {
           >
             <Grid item>
               {!isMobileDevice && (
-                 <Typography className={classes.title}>
-                    Settings
-                  </Typography>
+                <Typography className={classes.title}>Settings</Typography>
               )}
             </Grid>
             <Grid item>
@@ -273,7 +275,9 @@ function SettingsContent({ setOpen }) {
                   </IconButton>
                 </Grid>
                 <Grid item className={classes.paperName}>
-                  <Paper className={classNames(classes.paperName, classes.paper)}>
+                  <Paper
+                    className={classNames(classes.paperName, classes.paper)}
+                  >
                     <InputLabel>Name</InputLabel>
                     <TextField
                       inputRef={register({
@@ -350,13 +354,16 @@ function SettingsContent({ setOpen }) {
                       },
                       maxLength: {
                         value: 50,
-                        message: 'Password should be less than twenty characters',
-                      },
-                      pattern: isPasswordTouched ? {
-                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
                         message:
-                          'Password should contain a number, an uppercase, and lowercase letter',
-                      } : null,
+                          'Password should be less than twenty characters',
+                      },
+                      pattern: isPasswordTouched
+                        ? {
+                            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                            message:
+                              'Password should contain a number, an uppercase, and lowercase letter',
+                          }
+                        : null,
                     })}
                     defaultValue={username}
                     fullWidth
@@ -377,11 +384,19 @@ function SettingsContent({ setOpen }) {
                 </Link>
               </Grid>
             </Grid>
-            {!loading && error && (<Typography className={classes.error}>{replaceGqlError(error.message)}</Typography>)}
-            {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
+            {!loading && error && (
+              <Typography className={classes.error}>
+                {replaceGqlError(error.message)}
+              </Typography>
+            )}
+            {!loading && data && (
+              <Typography className={classes.success}>
+                Successfully saved!
+              </Typography>
+            )}
           </Grid>
         </Grid>
-        
+
         <Grid item className={classes.buttonContainer}>
           <Grid
             container

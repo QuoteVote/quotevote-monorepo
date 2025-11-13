@@ -2,9 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import { useApolloClient, useMutation } from '@apollo/client'
 import {
-  Avatar, Badge, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Typography,
+  Avatar,
+  Badge,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemSecondaryAction,
+  ListItemText,
+  Typography,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { makeStyles } from '@material-ui/core/styles'
@@ -83,7 +92,9 @@ function NotificationLists({ notifications, pageView }) {
 
   const handleDelete = async (notificationId) => {
     if (!ensureAuth()) return
-    const newNotifications = notifications.filter((notification) => notification._id !== notificationId)
+    const newNotifications = notifications.filter(
+      (notification) => notification._id !== notificationId,
+    )
 
     client.writeQuery({
       query: GET_NOTIFICATIONS,
@@ -94,9 +105,11 @@ function NotificationLists({ notifications, pageView }) {
       variables: {
         notificationId,
       },
-      refetchQueries: [{
-        query: GET_NOTIFICATIONS,
-      }],
+      refetchQueries: [
+        {
+          query: GET_NOTIFICATIONS,
+        },
+      ],
     })
   }
 
@@ -110,7 +123,7 @@ function NotificationLists({ notifications, pageView }) {
         history.push('/search')
         return
       }
-      
+
       // For authenticated users, proceed with normal post navigation
       dispatch(SET_SELECTED_POST(post._id))
       history.push(post.url.replace(/\?/g, ''))
@@ -130,10 +143,7 @@ function NotificationLists({ notifications, pageView }) {
           <img src="/assets/ZeroNotificationsBG.png" alt="" />
         </Grid>
         <Grid item>
-          <Typography
-            component="span"
-            variant="body2"
-          >
+          <Typography component="span" variant="body2">
             Relax, you don't have any alerts right now.
           </Typography>
         </Grid>
@@ -143,72 +153,74 @@ function NotificationLists({ notifications, pageView }) {
 
   return (
     <List className={notifications.length < 5 ? classes.rootMin : classes.root}>
-      {notifications.map(({
-        notificationType, label, created, userBy, _id, post,
-      }) => (
-        <>
-          <ListItem
-            button
-            alignItems="flex-start"
-            onClick={() => handleNotificationClick(notificationType, userBy, post)}
-          >
-            <ListItemAvatar>
-              <NotificationBadge
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                badgeContent={<img src={getBadgeIcon(notificationType)} alt="Commented" />}
-              >
+      {notifications.map(
+        ({ notificationType, label, created, userBy, _id, post }) => (
+          <>
+            <ListItem
+              button
+              alignItems="flex-start"
+              onClick={() =>
+                handleNotificationClick(notificationType, userBy, post)
+              }
+            >
+              <ListItemAvatar>
+                <NotificationBadge
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  badgeContent={
+                    <img src={getBadgeIcon(notificationType)} alt="Commented" />
+                  }
+                >
+                  <IconButton size="small">
+                    <Avatar alt={userBy.name}>
+                      <DisplayAvatar
+                        height={75}
+                        width={75}
+                        {...userBy.avatar}
+                      />
+                    </Avatar>
+                  </IconButton>
+                </NotificationBadge>
+              </ListItemAvatar>
+              <ListItemText
+                primary={
+                  <>
+                    <b>{notificationType}.</b>{' '}
+                    {`"${stringLimit(label, pageView ? 1000 : 50)}"`}
+                  </>
+                }
+                secondary={
+                  <>
+                    {moment(created).calendar(null, {
+                      sameDay: '[Today]',
+                      nextDay: '[Tomorrow]',
+                      nextWeek: 'dddd',
+                      lastDay: '[Yesterday]',
+                      lastWeek: '[Last] dddd',
+                      sameElse: 'MMM DD, YYYY',
+                    })}
+                    {` @ ${moment(created).format('h:mm A')}`}
+                  </>
+                }
+              />
+              <ListItemSecondaryAction className={classes.close}>
                 <IconButton
                   size="small"
+                  onClick={() => {
+                    handleDelete(_id)
+                  }}
                 >
-                  <Avatar alt={userBy.name}>
-                    <DisplayAvatar height={75} width={75} {...userBy.avatar} />
-                  </Avatar>
+                  <CloseIcon />
                 </IconButton>
-              </NotificationBadge>
-            </ListItemAvatar>
-            <ListItemText
-              primary={(
-                <>
-                  <b>
-                    {notificationType}
-                    .
-                  </b>
-                  {' '}
-                  {`"${stringLimit(label, pageView ? 1000 : 50)}"`}
-                </>
-              )}
-              secondary={(
-                <>
-                  {moment(created).calendar(null, {
-                    sameDay: '[Today]',
-                    nextDay: '[Tomorrow]',
-                    nextWeek: 'dddd',
-                    lastDay: '[Yesterday]',
-                    lastWeek: '[Last] dddd',
-                    sameElse: 'MMM DD, YYYY',
-                  })}
-                  {` @ ${moment(created).format('h:mm A')}`}
-                </>
-              )}
-            />
-            <ListItemSecondaryAction className={classes.close}>
-              <IconButton
-                size="small"
-                onClick={() => {
-                  handleDelete(_id)
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-        </>
-      ))}
+              </ListItemSecondaryAction>
+            </ListItem>
+          </>
+        ),
+      )}
     </List>
-  );
+  )
 }
 
 NotificationLists.propTypes = {

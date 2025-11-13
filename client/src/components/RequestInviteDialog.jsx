@@ -11,7 +11,7 @@ import {
   Button,
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import { useApolloClient, useMutation } from '@apollo/client'
 import { useLocation } from 'react-router-dom'
 import { REQUEST_USER_ACCESS_MUTATION } from '@/graphql/mutations'
 import { GET_CHECK_DUPLICATE_EMAIL } from '@/graphql/query'

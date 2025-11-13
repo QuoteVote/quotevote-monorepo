@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import GridContainer from 'mui-pro/Grid/GridContainer'
 import styles from 'assets/jss/material-dashboard-pro-react/views/loginPageStyle'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import ForgotPassword from '../../components/ForgotPassword/ForgotPassword'
 import EmailSent from '../../components/EmailSent/EmailSent'
 import { SEND_PASSWORD_RESET_EMAIL } from '../../graphql/mutations'
@@ -30,7 +30,13 @@ export default function ForgotPasswordPage() {
   return (
     <div className={classes.container}>
       <GridContainer justify="center" style={{ marginRight: 24 }}>
-        {!emailSent && <ForgotPassword onSubmit={handleSubmit} loading={loading} error={error} />}
+        {!emailSent && (
+          <ForgotPassword
+            onSubmit={handleSubmit}
+            loading={loading}
+            error={error}
+          />
+        )}
         {emailSent && <EmailSent />}
       </GridContainer>
     </div>

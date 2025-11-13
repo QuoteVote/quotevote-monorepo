@@ -1,14 +1,18 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react'
 import {
-  Card, CardActions, CardContent, CardHeader, IconButton,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  IconButton,
 } from '@material-ui/core'
 import { InsertEmoticon, InsertLink, Delete } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import copy from 'clipboard-copy'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import AvatarDisplay from '../Avatar'
@@ -47,9 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Comment({ comment, postUrl, selected }) {
-  const {
-    user: commentUser, content, created, _id,
-  } = comment
+  const { user: commentUser, content, created, _id } = comment
   const { username, avatar } = commentUser
   const classes = useStyles()
   const history = useHistory()
@@ -73,7 +75,8 @@ function Comment({ comment, postUrl, selected }) {
         fields: {
           comments(existing = [], { readField }) {
             return existing.filter(
-              (commentRef) => readField('_id', commentRef) !== deleteComment._id,
+              (commentRef) =>
+                readField('_id', commentRef) !== deleteComment._id,
             )
           },
         },
@@ -111,24 +114,26 @@ function Comment({ comment, postUrl, selected }) {
   return (
     <Card
       onMouseEnter={() => dispatch(SET_FOCUSED_COMMENT(comment))}
-      onMouseLeave={() => dispatch(SET_FOCUSED_COMMENT(selected ? comment : null))}
+      onMouseLeave={() =>
+        dispatch(SET_FOCUSED_COMMENT(selected ? comment : null))
+      }
       className={selected ? classes.selectedRoot : classes.root}
     >
       <CardHeader
-        avatar={(
+        avatar={
           <IconButton
             size="small"
             onClick={() => history.push(`/Profile/${username}`)}
           >
             <AvatarDisplay height={40} width={40} {...avatar} />
           </IconButton>
-        )}
+        }
         subheader={`@${username}`}
-        action={(
+        action={
           <div className={classes.created}>
             <span>{parsedDate}</span>
           </div>
-        )}
+        }
       />
       <CardContent className={classes.content}>
         <p>{content}</p>

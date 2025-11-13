@@ -3,13 +3,16 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import { Grid, Box } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import { SET_HIDDEN_POSTS } from 'store/ui'
 import PostCard from './PostCard'
 import PostSkeleton from './PostSkeleton'
 import PaginatedList from '../common/PaginatedList'
 import { GET_TOP_POSTS } from '../../graphql/query'
-import { createGraphQLVariables, extractPaginationData } from '../../utils/pagination'
+import {
+  createGraphQLVariables,
+  extractPaginationData,
+} from '../../utils/pagination'
 import { usePaginationWithFilters } from '../../hooks/usePagination'
 
 const useStyles = makeStyles((theme) => ({
@@ -33,7 +36,7 @@ function PaginatedPostsList({
   defaultPageSize = 20,
   pageParam = 'page',
   pageSizeParam = 'page_size',
-  
+
   // Filter props
   searchKey = '',
   startDateRange,
@@ -44,24 +47,26 @@ function PaginatedPostsList({
   sortOrder,
   groupId,
   approved,
-  
+
   // Component props
   cols = 1,
   showPageInfo = true,
   showFirstLast = true,
   maxVisiblePages = 5,
-  
+  // Optional display label for empty state (e.g., '@lou')
+  displaySearch,
+
   // Callbacks
   onPageChange,
   onPageSizeChange,
   onRefresh,
   onTotalCountChange,
-  
+
   // Styling
   className,
   contentClassName,
   paginationClassName,
-  
+
   // Other props
   ...otherProps
 }) {
@@ -79,7 +84,17 @@ function PaginatedPostsList({
       onPageChange,
       onPageSizeChange,
     },
-    [searchKey, startDateRange, endDateRange, friendsOnly, interactions, userId, sortOrder, groupId, approved]
+    [
+      searchKey,
+      startDateRange,
+      endDateRange,
+      friendsOnly,
+      interactions,
+      userId,
+      sortOrder,
+      groupId,
+      approved,
+    ],
   )
 
   // Create GraphQL variables
@@ -129,7 +144,10 @@ function PaginatedPostsList({
   }
 
   // Extract and process data
-  const { entities, pagination: paginationData } = extractPaginationData(data, 'posts')
+  const { entities, pagination: paginationData } = extractPaginationData(
+    data,
+    'posts',
+  )
 
   // Notify parent of total count changes
   useEffect(() => {
@@ -138,7 +156,6 @@ function PaginatedPostsList({
     }
   }, [paginationData.total_count, onTotalCountChange])
 
-  
   // Filter out hidden posts and add rank
   const processedPosts = entities
     .map((post, index) => ({ ...post, rank: index + 1 }))
@@ -146,31 +163,46 @@ function PaginatedPostsList({
 
   // Render individual post
   const renderPost = (post) => (
-    <Grid item key={post._id} className={classes.postCard} style={{ width: '100%', maxWidth: '100%' }}>
-      <PostCard
-        {...post}
-        onHidePost={handleHidePost}
-        user={user}
-      />
+    <Grid
+      item
+      key={post._id}
+      className={classes.postCard}
+      style={{ width: '100%', maxWidth: '100%' }}
+    >
+      <PostCard {...post} onHidePost={handleHidePost} user={user} />
     </Grid>
   )
 
   // Render empty state
-  const renderEmpty = () => (
-    <Box style={{ textAlign: 'center', padding: '2rem' }}>
-      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📝</div>
-      <h3 style={{ color: '#666', marginBottom: '0.5rem' }}>No posts found</h3>
-      <p style={{ color: '#999' }}>
-        {searchKey ? `No posts match your search for "${searchKey}"` : 'No posts available at the moment'}
-      </p>
-    </Box>
-  )
+  const renderEmpty = () => {
+    const label = displaySearch ?? searchKey
+    const isUserFilter = !!userId
+    const message = isUserFilter
+      ? label && label.startsWith('@')
+        ? `No posts from ${label} yet`
+        : 'No posts from this user yet'
+      : label
+      ? `No posts match your search for "${label}"`
+      : 'No posts available at the moment'
+
+    return (
+      <Box style={{ textAlign: 'center', padding: '2rem' }}>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📝</div>
+        <h3 style={{ color: '#666', marginBottom: '0.5rem' }}>
+          No posts found
+        </h3>
+        <p style={{ color: '#999' }}>{message}</p>
+      </Box>
+    )
+  }
 
   // Render error state
   const renderError = (error, onRetry) => (
     <Box style={{ textAlign: 'center', padding: '2rem' }}>
       <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</div>
-      <h3 style={{ color: '#d32f2f', marginBottom: '0.5rem' }}>Something went wrong</h3>
+      <h3 style={{ color: '#d32f2f', marginBottom: '0.5rem' }}>
+        Something went wrong
+      </h3>
       <p style={{ color: '#666', marginBottom: '1rem' }}>
         {error.message || 'An error occurred while loading posts'}
       </p>
@@ -201,7 +233,11 @@ function PaginatedPostsList({
       alignItems="stretch"
       spacing={2}
     >
-      <Grid item className={classes.postCard} style={{ width: '100%', maxWidth: '100%' }}>
+      <Grid
+        item
+        className={classes.postCard}
+        style={{ width: '100%', maxWidth: '100%' }}
+      >
         <PostSkeleton />
       </Grid>
     </Grid>
@@ -247,7 +283,7 @@ PaginatedPostsList.propTypes = {
   defaultPageSize: PropTypes.number,
   pageParam: PropTypes.string,
   pageSizeParam: PropTypes.string,
-  
+
   // Filter props
   searchKey: PropTypes.string,
   startDateRange: PropTypes.string,
@@ -258,19 +294,20 @@ PaginatedPostsList.propTypes = {
   sortOrder: PropTypes.string,
   groupId: PropTypes.string,
   approved: PropTypes.number,
-  
+
   // Component props
   cols: PropTypes.number,
   showPageInfo: PropTypes.bool,
   showFirstLast: PropTypes.bool,
   maxVisiblePages: PropTypes.number,
-  
+  displaySearch: PropTypes.string,
+
   // Callbacks
   onPageChange: PropTypes.func,
   onPageSizeChange: PropTypes.func,
   onRefresh: PropTypes.func,
   onTotalCountChange: PropTypes.func,
-  
+
   // Styling
   className: PropTypes.string,
   contentClassName: PropTypes.string,

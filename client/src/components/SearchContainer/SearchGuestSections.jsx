@@ -1,6 +1,6 @@
 import { Button, Grid, Typography } from '@material-ui/core'
 import { useState } from 'react'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { REQUEST_USER_ACCESS_MUTATION } from '../../graphql/mutations'
 import { useMobileDetection } from '../../utils/display'
 
@@ -457,7 +457,7 @@ export default function SearchGuestSections() {
       </section>
 
       <section style={{ margin: '3rem 1rem 0 1rem' }}>
-        <Grid container spacing={4} alignItems="center" justifyContent="center" >
+        <Grid container spacing={4} alignItems="center" justifyContent="center">
           <Grid item xs={12}>
             <Grid
               container

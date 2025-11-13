@@ -1,7 +1,17 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { makeStyles, List, ListItem, ListItemAvatar, ListItemText, Button, Typography, CircularProgress, Avatar } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import {
+  makeStyles,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Button,
+  Typography,
+  CircularProgress,
+  Avatar,
+} from '@material-ui/core'
+import { useQuery } from '@apollo/client'
 import { SEARCH_USERNAMES } from '../../graphql/query'
 import AvatarDisplay from '../Avatar'
 import { useRosterManagement } from '../../hooks/useRosterManagement'
@@ -37,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
     transition: 'all 0.2s ease',
     '&:hover': {
       backgroundColor: '#f8fafc',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
+      boxShadow:
+        '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
       transform: 'translateX(2px)',
     },
   },
@@ -103,21 +114,25 @@ const UserSearchResults = ({ searchQuery }) => {
 
   const handleAddBuddy = async (userId) => {
     if (!currentUser || userId === currentUser._id) return
-    
+
     try {
       setAddingUserId(userId)
       await addBuddy(userId)
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: 'Buddy request sent successfully!',
-        type: 'success',
-      }))
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'Buddy request sent successfully!',
+          type: 'success',
+        }),
+      )
     } catch (error) {
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message: error.message || 'Failed to send buddy request',
-        type: 'danger',
-      }))
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to send buddy request',
+          type: 'danger',
+        }),
+      )
     } finally {
       setAddingUserId(null)
     }
@@ -199,4 +214,3 @@ UserSearchResults.propTypes = {
 }
 
 export default UserSearchResults
-

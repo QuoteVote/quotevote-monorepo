@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { tokenValidator } from 'store/user'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useApolloClient, useMutation } from '@apollo/react-hooks'
+import { useApolloClient, useMutation } from '@apollo/client'
 import PersonalForm from 'components/RequestAccess/PersonalForm/PersonalForm'
 import styles from 'assets/jss/material-dashboard-pro-react/views/landingPageStyle'
 

@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-    Grid, Paper, Typography, Avatar, IconButton,
-} from '@material-ui/core'
+import { Grid, Paper, Typography, Avatar, IconButton } from '@material-ui/core'
 import { Delete } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/client'
 import AvatarDisplay from '../Avatar'
 import PostChatReactions from './PostChatReactions'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
@@ -101,7 +99,8 @@ function PostChatMessage(props) {
         fields: {
           messages(existing = [], { readField }) {
             return existing.filter(
-              (messageRef) => readField('_id', messageRef) !== deleteMessage._id,
+              (messageRef) =>
+                readField('_id', messageRef) !== deleteMessage._id,
             )
           },
         },
@@ -151,22 +150,25 @@ function PostChatMessage(props) {
         </Avatar>
       </Grid>
       <Grid item xs={10} className={classes.messageContainer}>
-        <Paper elevation={0} className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}>
-          <Typography className={classes.text}>
-            {message.text}
-          </Typography>
-          <PostChatReactions 
-            created={message.created} 
-            messageId={message._id} 
-            reactions={messageReactions} 
+        <Paper
+          elevation={0}
+          className={
+            isDefaultDirection ? classes.bubble : classes.bubbleReverse
+          }
+        >
+          <Typography className={classes.text}>{message.text}</Typography>
+          <PostChatReactions
+            created={message.created}
+            messageId={message._id}
+            reactions={messageReactions}
             isDefaultDirection={isDefaultDirection}
             userName={name}
             username={username}
           />
         </Paper>
         {(user._id === message.userId || user.admin) && (
-          <IconButton 
-            onClick={handleDelete} 
+          <IconButton
+            onClick={handleDelete}
             className={classes.deleteButton}
             size="small"
           >

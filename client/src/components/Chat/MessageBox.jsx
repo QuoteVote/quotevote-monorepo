@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { 
-  Avatar, 
-  IconButton, 
-  Typography, 
-  Fade, 
-  Menu, 
-  MenuItem, 
-  ListItemIcon, 
-  ListItemText, 
-  Divider 
+import {
+  Avatar,
+  IconButton,
+  Typography,
+  Fade,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
 } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import SettingsIcon from '@material-ui/icons/Settings'
@@ -17,14 +17,18 @@ import BlockIcon from '@material-ui/icons/Block'
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/client'
 import MessageSend from './MessageSend'
 import MessageItemList from './MessageItemList'
 import TypingIndicator from './TypingIndicator'
 import { SELECTED_CHAT_ROOM } from '../../store/chat'
 import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
-import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES, GET_ROSTER } from '../../graphql/query'
+import {
+  GET_CHAT_ROOMS,
+  GET_ROOM_MESSAGES,
+  GET_ROSTER,
+} from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useRosterManagement } from '../../hooks/useRosterManagement'
 import { SET_SNACKBAR as SET_UI_SNACKBAR } from '../../store/ui'
@@ -132,8 +136,10 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    background: 'linear-gradient(to bottom, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)',
-    backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)',
+    background:
+      'linear-gradient(to bottom, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)',
+    backgroundImage:
+      'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)',
     position: 'relative',
   },
   messagesContainer: {
@@ -163,7 +169,8 @@ const useStyles = makeStyles((theme) => ({
     background: 'linear-gradient(to top, #ffffff 0%, #fafbfc 100%)',
     borderTop: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(1.75, 2),
-    boxShadow: '0 -2px 12px rgba(0, 0, 0, 0.06), 0 -1px 4px rgba(0, 0, 0, 0.04)',
+    boxShadow:
+      '0 -2px 12px rgba(0, 0, 0, 0.06), 0 -1px 4px rgba(0, 0, 0, 0.04)',
   },
 }))
 
@@ -176,24 +183,36 @@ function Header() {
   const { blockBuddy, unblockBuddy, removeBuddy } = useRosterManagement()
   const { refetch: refetchChatRooms } = useQuery(GET_CHAT_ROOMS, { skip: true })
   const { data: rosterData } = useQuery(GET_ROSTER, { skip: !currentUser })
-  
-  const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
-  
+
+  const { title, avatar, messageType, users, _id: messageRoomId } =
+    selectedRoom || {}
+
   // Get the other user's ID for USER type rooms
-  const otherUserId = messageType === 'USER' && users?.length === 2
-    ? users.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
-    : null
+  const otherUserId =
+    messageType === 'USER' && users?.length === 2
+      ? users
+          .find((id) => id?.toString() !== currentUser?._id?.toString())
+          ?.toString()
+      : null
 
   // Check if user is blocked
-  const isBlocked = otherUserId && rosterData?.getRoster?.some((r) => {
-    const rUserId = r.userId?.toString()
-    const rBuddyId = r.buddyId?.toString()
-    const currentUserId = currentUser?._id?.toString()
-    const otherId = otherUserId.toString()
-    
-    return (rUserId === currentUserId && rBuddyId === otherId && r.status === 'blocked') ||
-           (rUserId === otherId && rBuddyId === currentUserId && r.status === 'blocked')
-  })
+  const isBlocked =
+    otherUserId &&
+    rosterData?.getRoster?.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      const currentUserId = currentUser?._id?.toString()
+      const otherId = otherUserId.toString()
+
+      return (
+        (rUserId === currentUserId &&
+          rBuddyId === otherId &&
+          r.status === 'blocked') ||
+        (rUserId === otherId &&
+          rBuddyId === currentUserId &&
+          r.status === 'blocked')
+      )
+    })
 
   const handleBack = () => {
     dispatch(SELECTED_CHAT_ROOM(null))
@@ -209,58 +228,71 @@ function Header() {
 
   const handleBlockUser = async () => {
     if (!otherUserId) return
-    
+
     try {
       if (isBlocked) {
         await unblockBuddy(otherUserId)
         // Refetch chat rooms to update the list (chat will reappear after unblocking)
         await refetchChatRooms()
-        dispatch(SET_UI_SNACKBAR({
-          open: true,
-          message: 'User unblocked successfully',
-          type: 'success',
-        }))
+        dispatch(
+          SET_UI_SNACKBAR({
+            open: true,
+            message: 'User unblocked successfully',
+            type: 'success',
+          }),
+        )
       } else {
         await blockBuddy(otherUserId)
         // Refetch chat rooms to update the list (chat remains visible for both users)
         await refetchChatRooms()
-        dispatch(SET_UI_SNACKBAR({
-          open: true,
-          message: 'User blocked successfully. Chat history is preserved, but they cannot send new messages.',
-          type: 'success',
-        }))
+        dispatch(
+          SET_UI_SNACKBAR({
+            open: true,
+            message:
+              'User blocked successfully. Chat history is preserved, but they cannot send new messages.',
+            type: 'success',
+          }),
+        )
         // Keep chat open so both users can see their chat history
         // Only close the menu
       }
       handleMenuClose()
     } catch (error) {
-      dispatch(SET_UI_SNACKBAR({
-        open: true,
-        message: error.message || `Failed to ${isBlocked ? 'unblock' : 'block'} user`,
-        type: 'danger',
-      }))
+      dispatch(
+        SET_UI_SNACKBAR({
+          open: true,
+          message:
+            error.message ||
+            `Failed to ${isBlocked ? 'unblock' : 'block'} user`,
+          type: 'danger',
+        }),
+      )
     }
   }
 
   const handleRemoveBuddy = async () => {
     if (!otherUserId) return
-    
+
     try {
       await removeBuddy(otherUserId)
       // Refetch chat rooms to update the list
       await refetchChatRooms()
-      dispatch(SET_UI_SNACKBAR({
-        open: true,
-        message: 'Buddy removed successfully',
-        type: 'success',
-      }))
+      dispatch(
+        SET_UI_SNACKBAR({
+          open: true,
+          message: 'Buddy removed successfully',
+          type: 'success',
+        }),
+      )
       handleMenuClose()
     } catch (error) {
-      dispatch(SET_UI_SNACKBAR({
-        open: true,
-        message: error.message || 'Failed to remove buddy',
-        type: 'danger',
-      }))
+      dispatch(
+        SET_UI_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to remove buddy',
+          type: 'danger',
+        }),
+      )
     }
   }
 
@@ -268,11 +300,13 @@ function Header() {
     // For now, just close the chat
     // In the future, this could archive or delete the chat room
     dispatch(SELECTED_CHAT_ROOM(null))
-    dispatch(SET_UI_SNACKBAR({
-      open: true,
-      message: 'Chat closed',
-      type: 'info',
-    }))
+    dispatch(
+      SET_UI_SNACKBAR({
+        open: true,
+        message: 'Chat closed',
+        type: 'info',
+      }),
+    )
     handleMenuClose()
   }
 
@@ -282,10 +316,14 @@ function Header() {
     <Fade in timeout={300}>
       <div className={classes.header}>
         <div className={classes.headerContent}>
-          <IconButton onClick={handleBack} className={classes.backButton} size="small">
+          <IconButton
+            onClick={handleBack}
+            className={classes.backButton}
+            size="small"
+          >
             <ArrowBackIcon fontSize="small" />
           </IconButton>
-          
+
           <Avatar className={classes.avatar}>
             {messageType === 'USER' ? (
               <AvatarDisplay height={40} width={40} {...avatar} />
@@ -293,19 +331,17 @@ function Header() {
               title?.[0] || '?'
             )}
           </Avatar>
-          
+
           <div className={classes.headerText}>
-            <Typography className={classes.title}>
-              {title || 'Chat'}
-            </Typography>
+            <Typography className={classes.title}>{title || 'Chat'}</Typography>
             <Typography className={classes.subtitle}>
               {messageType === 'USER' ? 'Direct Message' : 'Group Chat'}
             </Typography>
           </div>
 
-          <IconButton 
-            onClick={handleSettingsClick} 
-            className={classes.settingsButton} 
+          <IconButton
+            onClick={handleSettingsClick}
+            className={classes.settingsButton}
             size="small"
             aria-label="Chat settings"
           >
@@ -335,17 +371,19 @@ function Header() {
           >
             {messageType === 'USER' && otherUserId && (
               <>
-                <MenuItem 
-                  onClick={handleBlockUser} 
+                <MenuItem
+                  onClick={handleBlockUser}
                   className={`${classes.menuItem} ${classes.menuItemDanger}`}
                 >
                   <ListItemIcon className={classes.menuItemIcon}>
                     <BlockIcon fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
+                  <ListItemText
+                    primary={isBlocked ? 'Unblock User' : 'Block User'}
+                  />
                 </MenuItem>
-                <MenuItem 
-                  onClick={handleRemoveBuddy} 
+                <MenuItem
+                  onClick={handleRemoveBuddy}
                   className={`${classes.menuItem} ${classes.menuItemDanger}`}
                 >
                   <ListItemIcon className={classes.menuItemIcon}>
@@ -356,8 +394,8 @@ function Header() {
                 <Divider />
               </>
             )}
-            <MenuItem 
-              onClick={handleDeleteChat} 
+            <MenuItem
+              onClick={handleDeleteChat}
               className={`${classes.menuItem} ${classes.menuItemDanger}`}
             >
               <ListItemIcon className={classes.menuItemIcon}>
@@ -393,7 +431,7 @@ function MessageBox() {
   const selectedRoomData = useSelector(
     (state) => state.chat?.selectedRoom?.room || {},
   )
-  
+
   if (!selectedRoomData) {
     return (
       <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
@@ -401,14 +439,17 @@ function MessageBox() {
       </div>
     )
   }
-  
-  const { _id: messageRoomId, title, messageType, users } = selectedRoomData || {}
-  
+
+  const { _id: messageRoomId, title, messageType, users } =
+    selectedRoomData || {}
+
   // Get the other user's ID for DM creation if room doesn't exist yet
   const currentUser = useSelector((state) => state.user?.data)
-  const componentId = messageRoomId 
-    ? null 
-    : users?.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
+  const componentId = messageRoomId
+    ? null
+    : users
+        ?.find((id) => id?.toString() !== currentUser?._id?.toString())
+        ?.toString()
 
   // Refetch chat rooms to get updated room data (especially when room doesn't exist yet)
   const { data: roomsData, error: roomsError } = useQuery(GET_CHAT_ROOMS, {
@@ -418,7 +459,7 @@ function MessageBox() {
       console.error('Error fetching chat rooms:', err)
     },
   })
-  
+
   if (roomsError) {
     console.error('Chat rooms query error:', roomsError)
   }
@@ -428,16 +469,22 @@ function MessageBox() {
     if (!messageRoomId && roomsData?.messageRooms && selectedRoomData?.users) {
       // Find the room that matches our users
       const matchingRoom = roomsData.messageRooms.find((room) => {
-        if (room.messageType !== 'USER' || room.users?.length !== 2) return false
-        const roomUserIds = room.users.map((id) => id?.toString()).filter(Boolean)
-        const selectedUserIds = selectedRoomData.users.map((id) => id?.toString()).filter(Boolean)
-        if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
+        if (room.messageType !== 'USER' || room.users?.length !== 2)
+          return false
+        const roomUserIds = room.users
+          .map((id) => id?.toString())
+          .filter(Boolean)
+        const selectedUserIds = selectedRoomData.users
+          .map((id) => id?.toString())
+          .filter(Boolean)
+        if (roomUserIds.length !== 2 || selectedUserIds.length !== 2)
+          return false
         return (
           roomUserIds.includes(selectedUserIds[0]) &&
           roomUserIds.includes(selectedUserIds[1])
         )
       })
-      
+
       if (matchingRoom) {
         dispatch(SELECTED_CHAT_ROOM({ room: matchingRoom }))
       }
@@ -446,7 +493,7 @@ function MessageBox() {
 
   useEffect(() => {
     if (!ensureAuth() || !messageRoomId) return
-    
+
     // Update read receipts when room is opened
     const updateReadReceipts = async () => {
       try {
@@ -454,9 +501,9 @@ function MessageBox() {
           variables: { messageRoomId },
           refetchQueries: [
             { query: GET_CHAT_ROOMS },
-            { 
-              query: GET_ROOM_MESSAGES, 
-              variables: { messageRoomId } 
+            {
+              query: GET_ROOM_MESSAGES,
+              variables: { messageRoomId },
             },
           ],
         })
@@ -464,14 +511,14 @@ function MessageBox() {
         console.error('Error updating message read by:', err)
       }
     }
-    
+
     updateReadReceipts()
-    
+
     // Also update read receipts periodically (every 5 seconds) to catch updates from other users
     const interval = setInterval(() => {
       updateReadReceipts()
     }, 5000)
-    
+
     return () => clearInterval(interval)
   }, [messageRoomId, updateMessageReadBy, ensureAuth])
 

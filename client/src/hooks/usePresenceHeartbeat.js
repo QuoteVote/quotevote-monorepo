@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { HEARTBEAT } from '../graphql/mutations';
 
 /**
@@ -25,7 +25,7 @@ export const usePresenceHeartbeat = (interval = 45000) => {
         retryCountRef.current = 0;
       } catch (err) {
         console.error('Heartbeat failed:', err);
-        
+
         // Retry with exponential backoff
         if (retryCountRef.current < maxRetries) {
           retryCountRef.current += 1;

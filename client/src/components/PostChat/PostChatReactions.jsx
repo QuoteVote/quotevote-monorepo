@@ -1,20 +1,21 @@
 /* eslint-disable no-console */
 import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Grid, Typography, IconButton, Popover,
-} from '@material-ui/core'
+import { Grid, Typography, IconButton, Popover } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { InsertEmoticon } from '@material-ui/icons'
 import { useSelector } from 'react-redux'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import { Picker } from 'emoji-mart'
 import Emoji from 'a11y-react-emoji'
 import _ from 'lodash'
 import 'emoji-mart/css/emoji-mart.css'
 import { parseCommentDate } from '../../utils/momentUtils'
-import { ADD_MESSAGE_REACTION, UPDATE_MESSAGE_REACTION } from '../../graphql/mutations'
+import {
+  ADD_MESSAGE_REACTION,
+  UPDATE_MESSAGE_REACTION,
+} from '../../graphql/mutations'
 import { GET_MESSAGE_REACTIONS } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
 
@@ -76,7 +77,12 @@ function PostChatReactions(props) {
   const [open, setOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const {
-    created, messageId, reactions, isDefaultDirection, userName, username,
+    created,
+    messageId,
+    reactions,
+    isDefaultDirection,
+    userName,
+    username,
   } = props
   const parsedTime = parseCommentDate(created)
   const ensureAuth = useGuestGuard()
@@ -85,12 +91,14 @@ function PostChatReactions(props) {
       // eslint-disable-next-line no-console
       console.log(err)
     },
-    refetchQueries: [{
-      query: GET_MESSAGE_REACTIONS,
-      variables: {
-        messageId,
+    refetchQueries: [
+      {
+        query: GET_MESSAGE_REACTIONS,
+        variables: {
+          messageId,
+        },
       },
-    }],
+    ],
   })
 
   const [updateReaction] = useMutation(UPDATE_MESSAGE_REACTION, {
@@ -98,49 +106,57 @@ function PostChatReactions(props) {
       // eslint-disable-next-line no-console
       console.log(err)
     },
-    refetchQueries: [{
-      query: GET_MESSAGE_REACTIONS,
-      variables: {
-        messageId,
+    refetchQueries: [
+      {
+        query: GET_MESSAGE_REACTIONS,
+        variables: {
+          messageId,
+        },
       },
-    }],
+    ],
   })
 
   const userReaction = _.find(reactions, { userId }) || null
 
   const groupedReactions = _.groupBy(reactions, 'emoji')
 
-  const handleClick = useCallback((event) => {
-    if (!ensureAuth()) return
-    setAnchorEl(event.target)
-    setOpen(true)
-  }, [ensureAuth])
+  const handleClick = useCallback(
+    (event) => {
+      if (!ensureAuth()) return
+      setAnchorEl(event.target)
+      setOpen(true)
+    },
+    [ensureAuth],
+  )
 
   const handleClose = useCallback(() => {
     setOpen(false)
   }, [])
 
-  const handleEmojiSelect = useCallback(async (emoji) => {
-    if (!ensureAuth()) return
-    const newEmoji = emoji.native
-    const reaction = {
-      userId,
-      messageId,
-      emoji: newEmoji,
-    }
+  const handleEmojiSelect = useCallback(
+    async (emoji) => {
+      if (!ensureAuth()) return
+      const newEmoji = emoji.native
+      const reaction = {
+        userId,
+        messageId,
+        emoji: newEmoji,
+      }
 
-    if (userReaction !== null) {
-      await updateReaction({
-        variables: { _id: userReaction._id, emoji: reaction.emoji },
-      })
-    } else {
-      await addReaction({
-        variables: { reaction },
-      })
-    }
+      if (userReaction !== null) {
+        await updateReaction({
+          variables: { _id: userReaction._id, emoji: reaction.emoji },
+        })
+      } else {
+        await addReaction({
+          variables: { reaction },
+        })
+      }
 
-    setOpen(false)
-  }, [userId, messageId, userReaction, updateReaction, addReaction, ensureAuth])
+      setOpen(false)
+    },
+    [userId, messageId, userReaction, updateReaction, addReaction, ensureAuth],
+  )
 
   const handleRedirectToProfile = () => {
     history.push(`/Profile/${username}`)
@@ -148,23 +164,25 @@ function PostChatReactions(props) {
 
   const emojiElements = []
 
-  Object.keys(groupedReactions).map((emoji, _id) => emojiElements.push(
-    <div key={_id} className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}>
-      <Emoji symbol={emoji} />
-      <span>{groupedReactions[emoji].length}</span>
-    </div>
-  ))
+  Object.keys(groupedReactions).map((emoji, _id) =>
+    emojiElements.push(
+      <div
+        key={_id}
+        className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}
+      >
+        <Emoji symbol={emoji} />
+        <span>{groupedReactions[emoji].length}</span>
+      </div>,
+    ),
+  )
 
   return (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-    >
+    <Grid container direction="row" justify="space-between" alignItems="center">
       <Grid item className={classes.time}>
         <Typography
-          className={isDefaultDirection ? classes.userName : classes.userNameReverse}
+          className={
+            isDefaultDirection ? classes.userName : classes.userNameReverse
+          }
           onClick={handleRedirectToProfile}
         >
           {userName}
@@ -172,9 +190,7 @@ function PostChatReactions(props) {
         <Typography>{parsedTime}</Typography>
       </Grid>
       <Grid item className={classes.container}>
-        <div className={classes.emoji}>
-          {emojiElements}
-        </div>
+        <div className={classes.emoji}>{emojiElements}</div>
         <IconButton onClick={handleClick}>
           <InsertEmoticon />
         </IconButton>
@@ -192,7 +208,11 @@ function PostChatReactions(props) {
           onClose={handleClose}
         >
           <div className="reactions">
-            <Picker showPreview={false} showSkinTones={false} onSelect={handleEmojiSelect} />
+            <Picker
+              showPreview={false}
+              showSkinTones={false}
+              onSelect={handleEmojiSelect}
+            />
           </div>
         </Popover>
       </Grid>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING, SELECTED_CHAT_ROOM } from '../../store/chat'
 import { SET_SNACKBAR } from '../../store/ui'
@@ -9,9 +9,13 @@ import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
 import SendIcon from '@material-ui/icons/Send'
 import { Typography } from '@material-ui/core'
-import { GET_ROOM_MESSAGES, GET_CHAT_ROOMS, GET_ROSTER } from '../../graphql/query'
+import {
+  GET_ROOM_MESSAGES,
+  GET_CHAT_ROOMS,
+  GET_ROSTER,
+} from '../../graphql/query'
 import { SEND_MESSAGE } from '../../graphql/mutations'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useTypingIndicator } from '../../hooks/useTypingIndicator'
 
@@ -85,7 +89,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // eslint-disable-next-line react/prop-types
-export default function MessageSend({ messageRoomId, type, title, componentId }) {
+export default function MessageSend({
+  messageRoomId,
+  type,
+  title,
+  componentId,
+}) {
   const dispatch = useDispatch()
   const classes = useStyles()
   const [text, setText] = React.useState('')
@@ -93,7 +102,7 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
   const user = useSelector((state) => state.user?.data)
   const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
   const ensureAuth = useGuestGuard()
-  
+
   // Check if current user is blocked (only for USER type rooms)
   const { data: rosterData } = useQuery(GET_ROSTER, {
     skip: !user || type !== 'USER' || !selectedRoom,
@@ -102,36 +111,44 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
   // Determine blocking status: who blocked whom
   const blockingStatus = React.useMemo(() => {
     if (type !== 'USER' || !selectedRoom || !rosterData?.getRoster) return null
-    
-    const otherUserId = selectedRoom.users?.find(
-      (id) => id?.toString() !== user?._id?.toString()
-    )?.toString()
-    
+
+    const otherUserId = selectedRoom.users
+      ?.find((id) => id?.toString() !== user?._id?.toString())
+      ?.toString()
+
     if (!otherUserId) return null
-    
+
     const currentUserId = user?._id?.toString()
-    
+
     // Check if current user blocked the other user
     const currentUserBlockedOther = rosterData.getRoster.some((r) => {
       const rUserId = r.userId?.toString()
       const rBuddyId = r.buddyId?.toString()
-      return rUserId === currentUserId && rBuddyId === otherUserId && r.status === 'blocked'
+      return (
+        rUserId === currentUserId &&
+        rBuddyId === otherUserId &&
+        r.status === 'blocked'
+      )
     })
-    
+
     // Check if the other user blocked the current user
     const otherUserBlockedCurrent = rosterData.getRoster.some((r) => {
       const rUserId = r.userId?.toString()
       const rBuddyId = r.buddyId?.toString()
-      return rUserId === otherUserId && rBuddyId === currentUserId && r.status === 'blocked'
+      return (
+        rUserId === otherUserId &&
+        rBuddyId === currentUserId &&
+        r.status === 'blocked'
+      )
     })
-    
+
     if (currentUserBlockedOther) return 'blocker' // Current user is the blocker
     if (otherUserBlockedCurrent) return 'blocked' // Current user is blocked
     return null
   }, [type, selectedRoom, rosterData, user])
-  
+
   const isBlocked = blockingStatus !== null
-  
+
   // Typing indicator - only if room exists
   const { handleTyping, stopTyping } = useTypingIndicator(messageRoomId)
   const [createMessage, { loading }] = useMutation(SEND_MESSAGE, {
@@ -139,31 +156,38 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
       console.error('Error sending message:', err)
       // Check if error is due to blocking
       const errorMessage = err.message || 'Failed to send message'
-      if (errorMessage.includes('blocked') || errorMessage.includes('Cannot send message')) {
+      if (
+        errorMessage.includes('blocked') ||
+        errorMessage.includes('Cannot send message')
+      ) {
         // Determine who blocked whom for error message
         const isBlocker = blockingStatus === 'blocker'
         const message = isBlocker
           ? 'You have blocked this user. You cannot send messages to them.'
           : 'You have been blocked by this user. You cannot send messages.'
-        
-        dispatch(SET_SNACKBAR({
-          open: true,
-          message,
-          type: 'warning',
-        }))
+
+        dispatch(
+          SET_SNACKBAR({
+            open: true,
+            message,
+            type: 'warning',
+          }),
+        )
       } else {
-        dispatch(SET_SNACKBAR({
-          open: true,
-          message: errorMessage,
-          type: 'danger',
-        }))
+        dispatch(
+          SET_SNACKBAR({
+            open: true,
+            message: errorMessage,
+            type: 'danger',
+          }),
+        )
       }
       dispatch(CHAT_SUBMITTING(false))
     },
     onCompleted: (data) => {
       dispatch(CHAT_SUBMITTING(false))
       setError(null) // Clear any previous errors
-      
+
       // If room was just created, update the selected room with the new room ID
       if (!messageRoomId && data?.createMessage?.messageRoomId) {
         const newRoomId = data.createMessage.messageRoomId
@@ -175,37 +199,43 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
       {
         query: GET_CHAT_ROOMS,
       },
-      ...(messageRoomId ? [{
-        query: GET_ROOM_MESSAGES,
-        variables: {
-          messageRoomId,
-        },
-      }] : []),
+      ...(messageRoomId
+        ? [
+            {
+              query: GET_ROOM_MESSAGES,
+              variables: {
+                messageRoomId,
+              },
+            },
+          ]
+        : []),
     ],
   })
 
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
-    
+
     // Check if user is blocked
     if (isBlocked) {
       const isBlocker = blockingStatus === 'blocker'
       const message = isBlocker
         ? 'You have blocked this user. You cannot send messages to them.'
         : 'You have been blocked by this user. You cannot send messages.'
-      
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message,
-        type: 'warning',
-      }))
+
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message,
+          type: 'warning',
+        }),
+      )
       return
     }
-    
+
     // Stop typing indicator when sending
     stopTyping()
-    
+
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
@@ -245,9 +275,9 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
         // If room was just created, the refetchQueries will handle it
         if (messageRoomId && createMessage?.messageRoomId) {
           try {
-            const data = proxy.readQuery({ 
-              query: GET_ROOM_MESSAGES, 
-              variables: { messageRoomId: createMessage.messageRoomId } 
+            const data = proxy.readQuery({
+              query: GET_ROOM_MESSAGES,
+              variables: { messageRoomId: createMessage.messageRoomId },
             })
             if (data) {
               proxy.writeQuery({
@@ -266,14 +296,18 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
         }
       },
     })
-    
+
     // Clear the text input after successful submission
     setText('')
   }
   return (
     <Paper className={classes.root} elevation={0}>
       {error && (
-        <Typography variant="caption" color="error" style={{ marginBottom: 8, display: 'block', width: '100%' }}>
+        <Typography
+          variant="caption"
+          color="error"
+          style={{ marginBottom: 8, display: 'block', width: '100%' }}
+        >
           {error}
         </Typography>
       )}

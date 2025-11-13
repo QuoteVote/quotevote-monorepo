@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { useQuery, useSubscription } from '@apollo/react-hooks'
+import { useQuery, useSubscription } from '@apollo/client'
 import { useSelector } from 'react-redux'
 import ScrollableFeed from 'react-scrollable-feed'
 import MessageItem from './MessageItem'
@@ -36,9 +36,7 @@ export default function MessageItemList() {
   const postDetails = selectedRoom?.room?.postDetails
   const postId = postDetails?._id
 
-  const {
-    loading, error, data, refetch,
-  } = useQuery(GET_ROOM_MESSAGES, {
+  const { loading, error, data, refetch } = useQuery(GET_ROOM_MESSAGES, {
     variables: { messageRoomId },
     skip: !messageRoomId,
     // Poll every 3 seconds to update read receipts in real-time
@@ -54,28 +52,33 @@ export default function MessageItemList() {
 
   const { data: subscriptionData, error: subscriptionError } = useSubscription(
     NEW_MESSAGE_SUBSCRIPTION,
-    messageRoomId ? {
-      variables: { messageRoomId },
-      onSubscriptionData: async ({ subscriptionData: subData }) => {
-        if (subData?.data?.message) {
-          // Refetch messages to get the latest list
-          await refetch()
+    messageRoomId
+      ? {
+          variables: { messageRoomId },
+          onSubscriptionData: async ({ subscriptionData: subData }) => {
+            if (subData?.data?.message) {
+              // Refetch messages to get the latest list
+              await refetch()
+            }
+          },
+          onError: (err) => {
+            console.error('[Message Subscription] Error:', err)
+            // Try to refetch on error to ensure we have the latest messages
+            refetch().catch((refetchErr) => {
+              console.error('[Message Subscription] Refetch error:', refetchErr)
+            })
+          },
         }
-      },
-      onError: (err) => {
-        console.error('[Message Subscription] Error:', err)
-        // Try to refetch on error to ensure we have the latest messages
-        refetch().catch((refetchErr) => {
-          console.error('[Message Subscription] Refetch error:', refetchErr)
-        })
-      },
-    } : { skip: true },
+      : { skip: true },
   )
 
   // Log subscription status for debugging
   React.useEffect(() => {
     if (subscriptionError) {
-      console.error('[Message Subscription] Subscription error:', subscriptionError)
+      console.error(
+        '[Message Subscription] Subscription error:',
+        subscriptionError,
+      )
     }
   }, [subscriptionError])
 
@@ -115,8 +118,8 @@ export default function MessageItemList() {
         <div className={classes.messageList}>
           {loading && <LoadingSpinner size={50} />}
           {showQuoteHeader && (
-            <QuoteHeaderMessage 
-              postDetails={quoteData} 
+            <QuoteHeaderMessage
+              postDetails={quoteData}
               postCreator={postCreator}
             />
           )}

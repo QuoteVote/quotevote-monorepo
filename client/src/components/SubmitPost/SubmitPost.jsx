@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { GROUPS_QUERY } from '../../graphql/query'
@@ -32,7 +32,9 @@ function SubmitPost(props) {
       })) ||
     []
 
-  return <SubmitPostForm options={groupsOptions} user={user} setOpen={setOpen} />
+  return (
+    <SubmitPostForm options={groupsOptions} user={user} setOpen={setOpen} />
+  )
 }
 
 SubmitPost.propTypes = {

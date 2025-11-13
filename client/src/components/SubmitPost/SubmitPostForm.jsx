@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core'
 import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { useDispatch } from 'react-redux'
 import { isEmpty } from 'lodash'
 import Button from '../../mui-pro/CustomButtons/Button'
@@ -118,7 +118,8 @@ const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
     '& .MuiAutocomplete-paper': {
       margin: '2px 0',
-      boxShadow: '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)',
+      boxShadow:
+        '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)',
       borderRadius: '4px',
     },
   },
@@ -155,34 +156,36 @@ function SubmitPostForm({ options = [], user, setOpen }) {
 
   const onSubmit = async (values) => {
     const { title, text, group } = values
-    
+
     // Handle case where group might be a string (typed value)
     const groupData = typeof group === 'string' ? { title: group } : group
-    
+
     try {
       let newGroup
       const isNewGroup = groupData && !('_id' in groupData)
-      
-              if (isNewGroup) {
-          setIsCreatingGroup(true)
-          setNewGroupName(groupData.title)
-          
-          newGroup = await createGroup({
-            variables: {
-              group: {
-                creatorId: user._id,
-                title: groupData.title,
-                description: `Description for: ${groupData.title} group`,
-                privacy: 'public',
-              },
+
+      if (isNewGroup) {
+        setIsCreatingGroup(true)
+        setNewGroupName(groupData.title)
+
+        newGroup = await createGroup({
+          variables: {
+            group: {
+              creatorId: user._id,
+              title: groupData.title,
+              description: `Description for: ${groupData.title} group`,
+              privacy: 'public',
             },
-          })
-        
+          },
+        })
+
         setIsCreatingGroup(false)
         setNewGroupName('')
       }
-      
-              const postGroupId = isNewGroup ? newGroup.data.createGroup._id : groupData._id
+
+      const postGroupId = isNewGroup
+        ? newGroup.data.createGroup._id
+        : groupData._id
       const submitResult = await submitPost({
         variables: {
           post: {
@@ -293,14 +296,14 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             </Typography>
           }
           action={
-              <IconButton className={classes.exit} onClick={() => setOpen(false)}>
-                x
-              </IconButton>
+            <IconButton className={classes.exit} onClick={() => setOpen(false)}>
+              x
+            </IconButton>
           }
-                     style={{ 
-             padding: isMobile ? "16px" : "20px", 
-             margin: 0 
-           }}
+          style={{
+            padding: isMobile ? '16px' : '20px',
+            margin: 0,
+          }}
         />
         <Box className={classes.cardBody}>
           <InputBase
@@ -344,28 +347,30 @@ function SubmitPostForm({ options = [], user, setOpen }) {
         <CardActions className={classes.cardActions}>
           <Grid
             container
-            direction={isMobile ? "column" : "row"}
+            direction={isMobile ? 'column' : 'row'}
             justify="flex-start"
-            alignItems={isMobile ? "flex-start" : "center"}
+            alignItems={isMobile ? 'flex-start' : 'center'}
             spacing={isMobile ? 2 : 0}
             style={{ width: '100%' }}
           >
-            <Typography style={{ 
-              marginRight: isMobile ? '0px' : '10px',
-              marginBottom: isMobile ? '12px' : '0px',
-              fontWeight: 500
-            }}>
+            <Typography
+              style={{
+                marginRight: isMobile ? '0px' : '10px',
+                marginBottom: isMobile ? '12px' : '0px',
+                fontWeight: 500,
+              }}
+            >
               Who can see your post
             </Typography>
-            
+
             {isCreatingGroup && (
-              <Typography 
-                variant="caption" 
-                style={{ 
-                  color: '#52b274', 
+              <Typography
+                variant="caption"
+                style={{
+                  color: '#52b274',
                   marginLeft: isMobile ? '0px' : '10px',
                   marginBottom: isMobile ? '8px' : '0px',
-                  fontStyle: 'italic'
+                  fontStyle: 'italic',
                 }}
               >
                 Creating group "{newGroupName}"...
@@ -374,18 +379,16 @@ function SubmitPostForm({ options = [], user, setOpen }) {
 
             <Controller
               render={({ onChange, ...props }) => (
-                                 <Autocomplete
-                   {...props}
-                   variant="outlined"
-                   size="small"
-                   className={classes.groupInput}
-                   freeSolo
-                   classes={{
-                     popper: classes.autocompletePopper,
-                     listbox: classes.autocompleteListbox,
-                   }}
-
-                  
+                <Autocomplete
+                  {...props}
+                  variant="outlined"
+                  size="small"
+                  className={classes.groupInput}
+                  freeSolo
+                  classes={{
+                    popper: classes.autocompletePopper,
+                    listbox: classes.autocompleteListbox,
+                  }}
                   onChange={(event, newValue) => {
                     let data
                     if (typeof newValue === 'string') {
@@ -408,25 +411,28 @@ function SubmitPostForm({ options = [], user, setOpen }) {
                   filterOptions={(groupOptions, params) => {
                     // Use Material-UI's built-in filtering first
                     const filtered = filter(groupOptions, params)
-                    
+
                     // Add "Create new group" option if input doesn't match any existing option
-                    if (params.inputValue !== '' && 
-                        !groupOptions.some(option => 
-                          option.title.toLowerCase() === params.inputValue.toLowerCase()
-                        )) {
+                    if (
+                      params.inputValue !== '' &&
+                      !groupOptions.some(
+                        (option) =>
+                          option.title.toLowerCase() ===
+                          params.inputValue.toLowerCase(),
+                      )
+                    ) {
                       filtered.push({
                         inputValue: params.inputValue,
                         title: `Create new group: "${params.inputValue}"`,
                       })
                     }
-                    
+
                     return filtered
                   }}
                   selectOnFocus
                   handleHomeEndKeys
                   id="group-selector"
                   options={options}
-
                   getOptionLabel={(option) => {
                     // Value selected with enter, right from the input
                     if (typeof option === 'string') {
@@ -439,11 +445,7 @@ function SubmitPostForm({ options = [], user, setOpen }) {
                     // Regular option
                     return option.title
                   }}
-                  renderOption={(option) => (
-                    <span>
-                      {option.title}
-                    </span>
-                  )}
+                  renderOption={(option) => <span>{option.title}</span>}
                   renderInput={(params) => (
                     <TextField
                       variant="outlined"
@@ -462,26 +464,28 @@ function SubmitPostForm({ options = [], user, setOpen }) {
               name="group"
               control={control}
               defaultValue=""
-              rules={{ 
+              rules={{
                 required: 'Group selection is required',
                 validate: (value) => {
                   // Allow both selected groups and typed values
                   if (!value) return 'Group selection is required'
-                  if (typeof value === 'string' && value.trim() === '') return 'Group selection is required'
-                  if (value && value.title && value.title.trim() === '') return 'Group selection is required'
+                  if (typeof value === 'string' && value.trim() === '')
+                    return 'Group selection is required'
+                  if (value && value.title && value.title.trim() === '')
+                    return 'Group selection is required'
                   return true
-                }
+                },
               }}
-                         />
-           </Grid>
-           
-           <Grid
-             container
-             direction="row"
-             justify="flex-end"
-             alignItems="flex-end"
-             style={{ marginTop: isMobile ? '16px' : '20px' }}
-           >
+            />
+          </Grid>
+
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="flex-end"
+            style={{ marginTop: isMobile ? '16px' : '20px' }}
+          >
             <Button
               id="submit-button"
               type="submit"

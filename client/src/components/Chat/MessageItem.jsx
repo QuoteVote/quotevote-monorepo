@@ -1,9 +1,15 @@
-import { Avatar, Paper, IconButton, Tooltip, Typography } from '@material-ui/core'
+import {
+  Avatar,
+  Paper,
+  IconButton,
+  Tooltip,
+  Typography,
+} from '@material-ui/core'
 import { Delete, Done, DoneAll } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import AvatarDisplay from '../Avatar'
 import { DELETE_MESSAGE } from '../../graphql/mutations'
 import { SET_SNACKBAR } from '../../store/ui'
@@ -68,7 +74,8 @@ const useStyles = makeStyles((theme) => ({
     background: 'linear-gradient(135deg, #52b274 0%, #4a9e63 100%)',
     borderRadius: '20px 20px 6px 20px',
     padding: theme.spacing(1.25, 1.75),
-    boxShadow: '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
+    boxShadow:
+      '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
     wordWrap: 'break-word',
     fontSize: '0.9375rem',
     lineHeight: 1.5,
@@ -76,7 +83,8 @@ const useStyles = makeStyles((theme) => ({
     border: 'none',
     transition: 'all 0.2s ease',
     '&:hover': {
-      boxShadow: '0 6px 16px rgba(82, 178, 116, 0.4), 0 3px 6px rgba(82, 178, 116, 0.25)',
+      boxShadow:
+        '0 6px 16px rgba(82, 178, 116, 0.4), 0 3px 6px rgba(82, 178, 116, 0.25)',
     },
   },
   deleteIcon: {
@@ -174,9 +182,9 @@ function MessageItem({ message }) {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user?.data)
   const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
-  
+
   if (!user || !message) return null
-  
+
   const userId = user._id
   const isDefaultDirection = message.userId !== userId
   const isOwnMessage = user._id === message.userId
@@ -184,7 +192,9 @@ function MessageItem({ message }) {
   // Get other user ID for DM read receipt check
   const getOtherUserId = () => {
     if (!selectedRoom || !selectedRoom.users) return null
-    const otherUser = selectedRoom.users.find((id) => id.toString() !== userId.toString())
+    const otherUser = selectedRoom.users.find(
+      (id) => id.toString() !== userId.toString(),
+    )
     return otherUser?.toString()
   }
 
@@ -194,7 +204,8 @@ function MessageItem({ message }) {
         fields: {
           messages(existing = [], { readField }) {
             return existing.filter(
-              (messageRef) => readField('_id', messageRef) !== deleteMessage._id,
+              (messageRef) =>
+                readField('_id', messageRef) !== deleteMessage._id,
             )
           },
         },
@@ -226,21 +237,22 @@ function MessageItem({ message }) {
   // Check if message is read - for DMs, check if the other user has read it
   const readBy = message.readBy || []
   const otherUserId = getOtherUserId()
-  
+
   // Normalize IDs to strings for comparison
   const normalizeId = (id) => {
     if (!id) return null
     return id.toString ? id.toString() : String(id)
   }
-  
+
   const normalizedReadBy = readBy.map(normalizeId).filter(Boolean)
   const normalizedOtherUserId = normalizeId(otherUserId)
-  
+
   // For DMs: check if the recipient (other user) has read it
   // For groups: check if anyone has read it
-  const isRead = selectedRoom?.messageType === 'USER' && normalizedOtherUserId
-    ? normalizedReadBy.includes(normalizedOtherUserId)
-    : normalizedReadBy.length > 0
+  const isRead =
+    selectedRoom?.messageType === 'USER' && normalizedOtherUserId
+      ? normalizedReadBy.includes(normalizedOtherUserId)
+      : normalizedReadBy.length > 0
 
   // Format timestamp
   const formatTime = (date) => {
@@ -249,23 +261,28 @@ function MessageItem({ message }) {
     const now = new Date()
     const diff = now - d
     const minutes = Math.floor(diff / 60000)
-    
+
     if (minutes < 1) return 'Just now'
     if (minutes < 60) return `${minutes}m ago`
     if (d.toDateString() === now.toDateString()) {
       return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
-    return d.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    return d.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   }
 
   // Get read receipt icon with better styling
   const getReadReceiptIcon = () => {
     if (!isOwnMessage) return null
-    
+
     if (isRead) {
       return (
         <Tooltip title="Read" placement="top" arrow>
-          <DoneAll 
+          <DoneAll
             className={`${classes.receiptIcon} ${classes.receiptIconRead}`}
             style={{ fontSize: '1.15rem' }}
           />
@@ -274,7 +291,7 @@ function MessageItem({ message }) {
     }
     return (
       <Tooltip title="Sent" placement="top" arrow>
-        <Done 
+        <Done
           className={`${classes.receiptIcon} ${classes.receiptIconSent}`}
           style={{ fontSize: '1rem' }}
         />
@@ -283,7 +300,13 @@ function MessageItem({ message }) {
   }
 
   return (
-    <div className={`${classes.messageWrapper} ${isDefaultDirection ? classes.messageWrapperOther : classes.messageWrapperOwn}`}>
+    <div
+      className={`${classes.messageWrapper} ${
+        isDefaultDirection
+          ? classes.messageWrapperOther
+          : classes.messageWrapperOwn
+      }`}
+    >
       {isDefaultDirection && (
         <Avatar className={classes.avatar}>
           <AvatarDisplay height={40} width={40} {...message.user.avatar} />
@@ -298,11 +321,13 @@ function MessageItem({ message }) {
         <div className={classes.messageContainer}>
           <Paper
             elevation={0}
-            className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}
+            className={
+              isDefaultDirection ? classes.bubble : classes.bubbleReverse
+            }
           >
-            <Typography 
-              variant="body2" 
-              style={{ 
+            <Typography
+              variant="body2"
+              style={{
                 color: isDefaultDirection ? 'inherit' : '#ffffff',
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-word',
@@ -314,8 +339,8 @@ function MessageItem({ message }) {
             </Typography>
           </Paper>
           {(user._id === message.userId || user.admin) && (
-            <IconButton 
-              onClick={handleDelete} 
+            <IconButton
+              onClick={handleDelete}
               className={classes.deleteButton}
               size="small"
             >
@@ -323,11 +348,18 @@ function MessageItem({ message }) {
             </IconButton>
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: isOwnMessage ? 'flex-end' : 'flex-start', gap: 6 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: isOwnMessage ? 'flex-end' : 'flex-start',
+            gap: 6,
+          }}
+        >
           {isOwnMessage && getReadReceiptIcon()}
-          <Typography 
+          <Typography
             className={isOwnMessage ? classes.timestampOwn : classes.timestamp}
-            style={{ 
+            style={{
               color: 'rgba(0, 0, 0, 0.65)',
             }}
           >
@@ -351,7 +383,10 @@ MessageItem.propTypes = {
     userId: PropTypes.string.isRequired,
     user: PropTypes.object,
     readBy: PropTypes.array,
-    created: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+    created: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.instanceOf(Date),
+    ]),
   }).isRequired,
 }
 

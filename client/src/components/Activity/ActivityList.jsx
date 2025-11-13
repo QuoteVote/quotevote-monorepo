@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroller'
 import { Box } from '@material-ui/core'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import AlertSkeletonLoader from '../AlertSkeletonLoader'
@@ -12,9 +12,15 @@ import LoadingSpinner from '../LoadingSpinner'
 import { useWidth } from '../../utils/display'
 import { ActivityCard } from '../../ui/ActivityCard'
 import getCardBackgroundColor from '../../utils/getCardBackgroundColor'
-import { CREATE_POST_MESSAGE_ROOM, UPDATE_POST_BOOKMARK } from '../../graphql/mutations'
 import {
-    GET_CHAT_ROOMS, GET_POST, GET_TOP_POSTS, GET_USER_ACTIVITY,
+  CREATE_POST_MESSAGE_ROOM,
+  UPDATE_POST_BOOKMARK,
+} from '../../graphql/mutations'
+import {
+  GET_CHAT_ROOMS,
+  GET_POST,
+  GET_TOP_POSTS,
+  GET_USER_ACTIVITY,
 } from '../../graphql/query'
 import { SET_SELECTED_POST } from '../../store/ui'
 import getActivityContent from '../../utils/getActivityContent'
@@ -22,17 +28,22 @@ import { tokenValidator } from 'store/user'
 import useGuestGuard from '../../utils/useGuestGuard'
 
 function LoadActivityCard({ width, activity }) {
-  const {
-    post, user, quote, comment, vote, created, activityType,
-  } = activity
-  
+  const { post, user, quote, comment, vote, created, activityType } = activity
+
   // Add null check for post before destructuring
   if (!post) {
     return null // or return a placeholder component
   }
-  
+
   const {
-    url, bookmarkedBy, upvotes, downvotes, comments, votes, quotes, messageRoom,
+    url,
+    bookmarkedBy,
+    upvotes,
+    downvotes,
+    comments,
+    votes,
+    quotes,
+    messageRoom,
   } = post
   const { messages } = messageRoom
   const postId = post._id
@@ -42,7 +53,10 @@ function LoadActivityCard({ width, activity }) {
   const [updatePostBookmark] = useMutation(UPDATE_POST_BOOKMARK)
   const ensureAuth = useGuestGuard()
   const limit = 5
-  const type = activityType === 'VOTED' ? `${vote.type}${activity.activityType}` : activity.activityType
+  const type =
+    activityType === 'VOTED'
+      ? `${vote.type}${activity.activityType}`
+      : activity.activityType
   const content = getActivityContent(type, post, quote, vote, comment)
   const handleLike = async () => {
     if (!ensureAuth()) return
@@ -92,7 +106,7 @@ function LoadActivityCard({ width, activity }) {
       history.push('/search')
       return
     }
-    
+
     // For authenticated users, proceed with normal post navigation
     dispatch(SET_SELECTED_POST(postId))
     history.push(url.replace(/\?/g, ''))
@@ -132,20 +146,23 @@ function LoadActivityList({ data, onLoadMore }) {
   const width = useWidth()
 
   if (!data || !data.activities.pagination.total_count) {
-    return (
-      <ActivityEmptyList />
-    )
+    return <ActivityEmptyList />
   }
 
-  const activities = data.activities.entities
-    .filter((activity) => !hiddenPosts.includes(activity._id))
+  const activities = data.activities.entities.filter(
+    (activity) => !hiddenPosts.includes(activity._id),
+  )
   const hasMore = data.activities.pagination.total_count > activities.length
   return (
     <InfiniteScroll
       pageStart={0}
       loadMore={onLoadMore}
       hasMore={hasMore}
-      loader={<div className="loader" key={0}><LoadingSpinner size={30} /></div>}
+      loader={
+        <div className="loader" key={0}>
+          <LoadingSpinner size={30} />
+        </div>
+      }
     >
       <Grid
         container
@@ -176,34 +193,34 @@ LoadActivityList.propTypes = {
   onLoadMore: PropTypes.func,
 }
 
-function ActivityList({
-  data, loading, fetchMore, variables,
-}) {
+function ActivityList({ data, loading, fetchMore, variables }) {
   if (loading) return <AlertSkeletonLoader cols={1} />
   const newOffset = data && data.activities.entities.length
 
   return (
     <LoadActivityList
       data={data}
-      onLoadMore={() => fetchMore({
-        variables: {
-          ...variables,
-          offset: newOffset,
-        },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prev
-          return {
-            ...prev,
-            activities: {
-              ...fetchMoreResult.activities,
-              entities: [
-                ...prev.activities.entities,
-                ...fetchMoreResult.activities.entities,
-              ],
-            },
-          }
-        },
-      })}
+      onLoadMore={() =>
+        fetchMore({
+          variables: {
+            ...variables,
+            offset: newOffset,
+          },
+          updateQuery: (prev, { fetchMoreResult }) => {
+            if (!fetchMoreResult) return prev
+            return {
+              ...prev,
+              activities: {
+                ...fetchMoreResult.activities,
+                entities: [
+                  ...prev.activities.entities,
+                  ...fetchMoreResult.activities.entities,
+                ],
+              },
+            }
+          },
+        })
+      }
     />
   )
 }

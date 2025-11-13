@@ -15,7 +15,7 @@ import LinkIcon from '@material-ui/icons/Link'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import { includes } from 'lodash'
 import copy from 'clipboard-copy'
@@ -130,9 +130,13 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
 
   // Get admin status from user state
   const { admin } = useSelector((state) => state.user.data || {})
-  
+
   // Query to get user details for tooltips (admin only - skip for non-admin users)
-  const { loading: usersLoading, data: usersData, error: usersError } = useQuery(GET_USERS, {
+  const {
+    loading: usersLoading,
+    data: usersData,
+    error: usersError,
+  } = useQuery(GET_USERS, {
     skip: !admin, // Only query if user is admin
     errorPolicy: 'all', // Don't throw error, handle gracefully
   })

@@ -1,14 +1,15 @@
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { useSelector, useDispatch } from 'react-redux'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 
 // MUI
-import { MuiThemeProvider as ThemeProvider, makeStyles } from '@material-ui/core/styles'
 import {
-  Avatar, Typography, Grid, Button,
-} from '@material-ui/core'
+  MuiThemeProvider as ThemeProvider,
+  makeStyles,
+} from '@material-ui/core/styles'
+import { Avatar, Typography, Grid, Button } from '@material-ui/core'
 
 // Local
 import { updateAvatar } from 'store/user'
@@ -74,20 +75,31 @@ function AvatarIconButton(props) {
   const history = useHistory()
 
   const onSubmit = async (avatar) => {
-    const newAvatar = await updateUserAvatar({ variables: { user_id: user._id, avatarQualities: avatar } })
+    const newAvatar = await updateUserAvatar({
+      variables: { user_id: user._id, avatarQualities: avatar },
+    })
     await updateAvatar(dispatch, newAvatar.data.updateUserAvatar.avatar)
-    dispatch(SET_SNACKBAR({
-      type: 'danger',
-      message: 'Avatar has been updated',
-      open: true,
-    }))
+    dispatch(
+      SET_SNACKBAR({
+        type: 'danger',
+        message: 'Avatar has been updated',
+        open: true,
+      }),
+    )
     history.push('/search')
   }
 
   const groupedAvatarOptions = _.groupBy(avatarOptions, 'name')
 
   const {
-    topType, accessoriesType, facialHairType, clotheType, mouthType, eyebrowType, eyeType, skinColor,
+    topType,
+    accessoriesType,
+    facialHairType,
+    clotheType,
+    mouthType,
+    eyebrowType,
+    eyeType,
+    skinColor,
   } = groupedAvatarOptions
 
   topType.icon = '/assets/Hat.svg'
@@ -101,26 +113,59 @@ function AvatarIconButton(props) {
 
   const buttonOptions = []
 
-  buttonOptions.push(eyebrowType, topType, accessoriesType, facialHairType, clotheType, skinColor, mouthType, eyeType)
+  buttonOptions.push(
+    eyebrowType,
+    topType,
+    accessoriesType,
+    facialHairType,
+    clotheType,
+    skinColor,
+    mouthType,
+    eyeType,
+  )
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container display="flex" direction="column" alignItems="center" justify="center">
+      <Grid
+        container
+        display="flex"
+        direction="column"
+        alignItems="center"
+        justify="center"
+      >
         <Grid item className={classes.card} xs={6}>
           <Grid item>
             <Typography className={classes.heading}>
               choose a feature to customize
             </Typography>
           </Grid>
-          <Grid item className={classes.avatarRow} container display="flex" direction="row" justify="space-evenly">
+          <Grid
+            item
+            className={classes.avatarRow}
+            container
+            display="flex"
+            direction="row"
+            justify="space-evenly"
+          >
             {buttonOptions.map((category) => (
-              <Button className={classes.svgButton} hover onClick={() => handleIconClick(category[0])}>
+              <Button
+                className={classes.svgButton}
+                hover
+                onClick={() => handleIconClick(category[0])}
+              >
                 <img src={category.icon} alt={category.name} />
               </Button>
             ))}
           </Grid>
         </Grid>
-        <Grid item container display="flex" direction="column" alignItems="center" justify="center">
+        <Grid
+          item
+          container
+          display="flex"
+          direction="column"
+          alignItems="center"
+          justify="center"
+        >
           <Avatar className={classes.avatar}>
             <AvatarPreview {...defaultAvatar} />
           </Avatar>

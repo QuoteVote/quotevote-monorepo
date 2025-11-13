@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useApolloClient } from '@apollo/react-hooks'
+import { useApolloClient } from '@apollo/client'
 
 function LogoutPage() {
   const client = useApolloClient()

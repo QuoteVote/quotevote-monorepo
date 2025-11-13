@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { Fade, Slide, Typography, Paper, Box, Divider } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import ChatSearchInput from './ChatSearchInput'
 import MessageBox from './MessageBox'
 import ChatTabs from './ChatTabs'
@@ -45,7 +45,8 @@ const useStyles = makeStyles((theme) => ({
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'linear-gradient(135deg, rgba(82, 178, 116, 0.1) 0%, rgba(74, 158, 99, 0.1) 100%)',
+      background:
+        'linear-gradient(135deg, rgba(82, 178, 116, 0.1) 0%, rgba(74, 158, 99, 0.1) 100%)',
       opacity: 0.5,
     },
     '&::after': {
@@ -124,7 +125,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    background: 'linear-gradient(to bottom, #fafbfc 0%, #ffffff 50%, #f5f7fa 100%)',
+    background:
+      'linear-gradient(to bottom, #fafbfc 0%, #ffffff 50%, #f5f7fa 100%)',
     position: 'relative',
   },
   addBuddyContainer: {
@@ -141,10 +143,12 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     background: 'linear-gradient(135deg, #52b274 0%, #4a9e63 100%)',
     color: '#ffffff',
-    boxShadow: '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
+    boxShadow:
+      '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
-      boxShadow: '0 6px 20px rgba(82, 178, 116, 0.45), 0 4px 8px rgba(82, 178, 116, 0.3)',
+      boxShadow:
+        '0 6px 20px rgba(82, 178, 116, 0.45), 0 4px 8px rgba(82, 178, 116, 0.3)',
       transform: 'translateY(-2px)',
       background: 'linear-gradient(135deg, #5fc085 0%, #52b274 100%)',
     },
@@ -180,18 +184,31 @@ const useStyles = makeStyles((theme) => ({
 function UserStatusDisplay() {
   const classes = useStyles()
   const userStatus = useSelector((state) => state.chat?.userStatus || 'online')
-  const userStatusMessage = useSelector((state) => state.chat?.userStatusMessage || '')
+  const userStatusMessage = useSelector(
+    (state) => state.chat?.userStatusMessage || '',
+  )
 
   return (
     <div className={classes.userStatusCard}>
       <PresenceIcon status={userStatus} />
       {userStatusMessage ? (
-        <Typography variant="caption" className={classes.userStatusText} style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Typography
+          variant="caption"
+          className={classes.userStatusText}
+          style={{
+            maxWidth: 200,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
           {userStatusMessage}
         </Typography>
       ) : (
         <Typography variant="caption" className={classes.userStatusText}>
-          {userStatus === 'dnd' ? 'Do Not Disturb' : userStatus.charAt(0).toUpperCase() + userStatus.slice(1)}
+          {userStatus === 'dnd'
+            ? 'Do Not Disturb'
+            : userStatus.charAt(0).toUpperCase() + userStatus.slice(1)}
         </Typography>
       )}
     </div>
@@ -202,7 +219,9 @@ function ChatContent() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const selectedRoom = useSelector((state) => state.chat?.selectedRoom)
-  const statusEditorOpen = useSelector((state) => state.chat?.statusEditorOpen || false)
+  const statusEditorOpen = useSelector(
+    (state) => state.chat?.statusEditorOpen || false,
+  )
   const buddyList = useSelector((state) => state.chat?.buddyList || [])
   const [search, setSearch] = useState('')
   const [addBuddyMode, setAddBuddyMode] = useState(false)
@@ -220,20 +239,30 @@ function ChatContent() {
     : 0
 
   // Get DM and Group counts
-  const { data: roomsData, loading: roomsLoading, error: roomsError } = useQuery(GET_CHAT_ROOMS, {
+  const {
+    data: roomsData,
+    loading: roomsLoading,
+    error: roomsError,
+  } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
     onError: (err) => {
       console.error('Error fetching chat rooms:', err)
     },
   })
-  
+
   if (roomsError) {
     console.error('Chat rooms query error:', roomsError)
   }
-  
+
   const rooms = roomsData?.messageRooms || []
-  const dmCount = rooms.filter((r) => r?.messageType === 'USER' && r?.users?.length === 2).length
-  const groupCount = rooms.filter((r) => r?.messageType === 'POST' || (r?.messageType === 'USER' && r?.users?.length > 2)).length
+  const dmCount = rooms.filter(
+    (r) => r?.messageType === 'USER' && r?.users?.length === 2,
+  ).length
+  const groupCount = rooms.filter(
+    (r) =>
+      r?.messageType === 'POST' ||
+      (r?.messageType === 'USER' && r?.users?.length > 2),
+  ).length
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue)
@@ -260,7 +289,9 @@ function ChatContent() {
     setAddBuddyMode(true)
     // Focus the search input
     setTimeout(() => {
-      const input = document.querySelector('input[aria-label="search users to add"]')
+      const input = document.querySelector(
+        'input[aria-label="search users to add"]',
+      )
       if (input) input.focus()
     }, 100)
   }
@@ -274,7 +305,9 @@ function ChatContent() {
           <div className={classes.sidebarHeader}>
             <div className={classes.headerContent}>
               <div className={classes.headerLeft}>
-                <Typography className={classes.sidebarTitle}>Messages</Typography>
+                <Typography className={classes.sidebarTitle}>
+                  Messages
+                </Typography>
                 <UserStatusDisplay />
               </div>
               <Tooltip title="Set Status" arrow>
@@ -288,11 +321,11 @@ function ChatContent() {
               </Tooltip>
             </div>
           </div>
-          
+
           {/* Search Bar */}
           <div className={classes.searchContainer}>
-            <ChatSearchInput 
-              setSearch={setSearch} 
+            <ChatSearchInput
+              setSearch={setSearch}
               addBuddyMode={addBuddyMode}
               onAddBuddyModeChange={handleAddBuddyModeChange}
             />
@@ -330,17 +363,23 @@ function ChatContent() {
               <UserSearchResults searchQuery={search} />
             ) : (
               <>
-                {activeTab === 'chats' && <ChatList search={search} filterType="chats" />}
-                {activeTab === 'groups' && <ChatList search={search} filterType="groups" />}
-                {activeTab === 'buddies' && <BuddyListWithPresence search={search} />}
+                {activeTab === 'chats' && (
+                  <ChatList search={search} filterType="chats" />
+                )}
+                {activeTab === 'groups' && (
+                  <ChatList search={search} filterType="groups" />
+                )}
+                {activeTab === 'buddies' && (
+                  <BuddyListWithPresence search={search} />
+                )}
               </>
             )}
           </div>
 
           {/* Dialogs */}
-          <StatusEditor 
-            open={statusEditorOpen} 
-            onClose={() => dispatch(SET_STATUS_EDITOR_OPEN(false))} 
+          <StatusEditor
+            open={statusEditorOpen}
+            onClose={() => dispatch(SET_STATUS_EDITOR_OPEN(false))}
           />
         </div>
       </Fade>

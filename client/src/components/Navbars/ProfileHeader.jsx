@@ -17,7 +17,7 @@ import ChatIcon from '@material-ui/icons/Chat'
 //  Local
 import FollowButton from 'components/CustomButtons/FollowButton'
 import { Avatar } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'
 import { GET_CHAT_ROOM, GET_ROSTER } from '../../graphql/query'
@@ -95,29 +95,37 @@ export default function ProfileHeader(props) {
 
   const blockingStatus = React.useMemo(() => {
     if (!rosterData?.getRoster || sameUser) return null
-    
+
     const profileUserId = profileUser._id?.toString()
     const currentUserId = loggedInUserId?.toString()
-    
+
     // Check if current user blocked the profile user
     const currentUserBlockedProfile = rosterData.getRoster.some((r) => {
       const rUserId = r.userId?.toString()
       const rBuddyId = r.buddyId?.toString()
-      return rUserId === currentUserId && rBuddyId === profileUserId && r.status === 'blocked'
+      return (
+        rUserId === currentUserId &&
+        rBuddyId === profileUserId &&
+        r.status === 'blocked'
+      )
     })
-    
+
     // Check if profile user blocked the current user
     const profileUserBlockedCurrent = rosterData.getRoster.some((r) => {
       const rUserId = r.userId?.toString()
       const rBuddyId = r.buddyId?.toString()
-      return rUserId === profileUserId && rBuddyId === currentUserId && r.status === 'blocked'
+      return (
+        rUserId === profileUserId &&
+        rBuddyId === currentUserId &&
+        r.status === 'blocked'
+      )
     })
-    
+
     if (currentUserBlockedProfile) return 'blocker' // Current user is the blocker
     if (profileUserBlockedCurrent) return 'blocked' // Current user is blocked
     return null
   }, [rosterData, profileUser._id, loggedInUserId, sameUser])
-  
+
   const isBlocked = blockingStatus !== null
 
   const room = !loading && data && data.messageRoom
@@ -128,12 +136,14 @@ export default function ProfileHeader(props) {
       const message = isBlocker
         ? 'You have blocked this user. You cannot send messages to them.'
         : 'You have been blocked by this user. You cannot send messages.'
-      
-      dispatch(SET_SNACKBAR({
-        open: true,
-        message,
-        type: 'warning',
-      }))
+
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message,
+          type: 'warning',
+        }),
+      )
       return
     }
 
@@ -149,7 +159,13 @@ export default function ProfileHeader(props) {
   }
   return (
     <ThemeProvider theme={mainTheme}>
-      <Grid container direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        justifyContent="flex-start"
+        spacing={2}
+      >
         <Grid item>
           <Avatar className={classes.avatar}>
             <AvatarDisplay height={75} width={75} {...avatar} />
@@ -194,7 +210,12 @@ export default function ProfileHeader(props) {
           </div>
         </Grid>
       </Grid>
-      <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
+      <Grid
+        container
+        direction="row"
+        justifyContent="flex-start"
+        alignItems="flex-start"
+      >
         <Grid item>
           <Grid
             container
@@ -219,7 +240,13 @@ export default function ProfileHeader(props) {
                     spacing={2}
                   >
                     <Grid item>
-                      <Grid container direction="row" justify="flex-start" alignItems="flex-start" spacing={2}>
+                      <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="flex-start"
+                        spacing={2}
+                      >
                         <Grid item>
                           {//  Are we viewing our own profile?
                           //  If viewing another user, do we follow them already?

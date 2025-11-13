@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory, useLocation } from 'react-router-dom'
 import styles from 'assets/jss/material-dashboard-pro-react/views/loginPageStyle'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/client'
 import SignupForm from '../../components/SignupForm/SignupForm'
 import { VERIFY_PASSWORD_RESET_TOKEN } from '../../graphql/query'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -14,9 +14,12 @@ export default function SignupPage() {
   const { search } = useLocation()
   const params = Object.fromEntries(new URLSearchParams(search))
   const { token } = params || {}
-  const { data, loading: loadingData, error: queryError } = useQuery(VERIFY_PASSWORD_RESET_TOKEN, {
-    variables: { token },
-  })
+  const { data, loading: loadingData, error: queryError } = useQuery(
+    VERIFY_PASSWORD_RESET_TOKEN,
+    {
+      variables: { token },
+    },
+  )
   const user = (data && data.verifyUserPasswordResetToken) || false
   const classes = useStyles()
 

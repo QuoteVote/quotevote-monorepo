@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -10,66 +10,66 @@ import {
   Box,
   Alert,
   CircularProgress,
-} from '@mui/material';
-import { useMutation } from '@apollo/react-hooks';
-import { SEND_USER_INVITE } from '@/graphql/mutations';
+} from '@mui/material'
+import { useMutation } from '@apollo/client'
+import { SEND_USER_INVITE } from '@/graphql/mutations'
 
 const SendInviteDialog = ({ open, onClose, onSuccess }) => {
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const [sendInvite, { loading }] = useMutation(SEND_USER_INVITE, {
     onCompleted: (data) => {
       if (data.sendUserInvite.code === 'SUCCESS') {
-        setSuccess('Invitation sent successfully!');
-        setEmail('');
-        if (onSuccess) onSuccess();
+        setSuccess('Invitation sent successfully!')
+        setEmail('')
+        if (onSuccess) onSuccess()
         setTimeout(() => {
-          onClose();
-          setSuccess('');
-        }, 2000);
+          onClose()
+          setSuccess('')
+        }, 2000)
       } else {
-        setError(data.sendUserInvite.message || 'Failed to send invitation');
+        setError(data.sendUserInvite.message || 'Failed to send invitation')
       }
     },
     onError: (error) => {
-      setError(error.message || 'Failed to send invitation');
+      setError(error.message || 'Failed to send invitation')
     },
-  });
+  })
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+    e.preventDefault()
+    setError('')
+    setSuccess('')
 
     if (!email) {
-      setError('Please enter an email address');
-      return;
+      setError('Please enter an email address')
+      return
     }
 
     // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address');
-      return;
+      setError('Please enter a valid email address')
+      return
     }
 
     try {
       await sendInvite({
         variables: { email },
-      });
+      })
     } catch (err) {
       // Error handled in onError callback
     }
-  };
+  }
 
   const handleClose = () => {
-    setEmail('');
-    setError('');
-    setSuccess('');
-    onClose();
-  };
+    setEmail('')
+    setError('')
+    setSuccess('')
+    onClose()
+  }
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -78,7 +78,8 @@ const SendInviteDialog = ({ open, onClose, onSuccess }) => {
         <DialogContent>
           <Box mb={2}>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              Invite someone to join Quote.Vote. Your reputation score may be affected by the quality of users you invite.
+              Invite someone to join Quote.Vote. Your reputation score may be
+              affected by the quality of users you invite.
             </Typography>
           </Box>
 
@@ -109,7 +110,10 @@ const SendInviteDialog = ({ open, onClose, onSuccess }) => {
 
           <Box mt={2}>
             <Typography variant="caption" color="textSecondary">
-              <strong>Note:</strong> Inviting high-quality users who contribute positively to the platform will improve your reputation score. Conversely, inviting users who receive reports or behave poorly may negatively impact your reputation.
+              <strong>Note:</strong> Inviting high-quality users who contribute
+              positively to the platform will improve your reputation score.
+              Conversely, inviting users who receive reports or behave poorly
+              may negatively impact your reputation.
             </Typography>
           </Box>
         </DialogContent>
@@ -128,7 +132,7 @@ const SendInviteDialog = ({ open, onClose, onSuccess }) => {
         </DialogActions>
       </form>
     </Dialog>
-  );
-};
+  )
+}
 
-export default SendInviteDialog;
+export default SendInviteDialog

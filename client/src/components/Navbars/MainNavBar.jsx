@@ -19,7 +19,7 @@ import GitHubIcon from '@material-ui/icons/GitHub'
 import Dialog from '@material-ui/core/Dialog'
 import Avatar from '@material-ui/core/Avatar'
 import { NavLink, useHistory } from 'react-router-dom'
-import { useApolloClient } from '@apollo/react-hooks'
+import { useApolloClient } from '@apollo/client'
 
 import AvatarPreview from '../Avatar'
 import NotificationMenu from '../Notifications/NotificationMenu'

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { useHistory } from 'react-router-dom'
 import { isMobile } from 'react-device-detect'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation } from '@apollo/client'
 import { useForm } from 'react-hook-form'
 import Carousel from 'react-material-ui-carousel'
 import Grid from '@material-ui/core/Grid'
@@ -52,13 +52,12 @@ function InvestorCarouselFirstContent({ classes, setContentIndex, width }) {
       <GridItem xs={12} sm={12} md={6}>
         <Typography>
           <div className={opinionsText}>
-            We created Quote Vote with promoting
-            {' '}
+            We created Quote Vote with promoting{' '}
             <b>democracy and community as our pillar.</b>
             <br />
             <br />
-            This is why we reject investment from VC firms, and encourage users to invest and become a part of the
-            change.
+            This is why we reject investment from VC firms, and encourage users
+            to invest and become a part of the change.
             <b>Invest up to $2000 to grow with us. </b>
             <br />
             <br />
@@ -80,8 +79,7 @@ function InvestorCarouselFirstContent({ classes, setContentIndex, width }) {
                 setContentIndex(2)
               }}
             />
-          </Hidden>
-          {' '}
+          </Hidden>{' '}
           What is
           <span className={greenText}> the deal </span>
           <DoubleArrowIconButton onClick={() => setContentIndex(1)} />
@@ -126,13 +124,14 @@ function InvestorCarouselSecondContent({ classes, setContentIndex, width }) {
       <Grid item xs={12} sm={12} md={5} lg={6}>
         <Typography>
           <div className={opinionsText}>
-            By capping individual investments at $2000,
-            {' '}
-            <b>we ensure shareholders have an equal voice, and provide a more inclusive opportunity to invest. </b>
+            By capping individual investments at $2000,{' '}
+            <b>
+              we ensure shareholders have an equal voice, and provide a more
+              inclusive opportunity to invest.{' '}
+            </b>
             <br />
             <br />
-            We keep growth organized and open through Quote Vote and
-            {' '}
+            We keep growth organized and open through Quote Vote and{' '}
             <b>all shareholder opinions hold the same weight. </b>
             <br />
             <br />
@@ -155,10 +154,7 @@ function InvestorCarouselSecondContent({ classes, setContentIndex, width }) {
               }}
             />
           </Hidden>
-          {'  '}
-          I want to
-          {' '}
-          <span className={greenText}> to know details</span>
+          {'  '}I want to <span className={greenText}> to know details</span>
           <DoubleArrowIconButton onClick={() => setContentIndex(2)} />
         </Typography>
       </Grid>
@@ -173,10 +169,10 @@ InvestorCarouselThirdContent.propTypes = {
 
 function InvestorCarouselThirdContent({ classes, width }) {
   const history = useHistory()
-  const [sendInvestorMail, { data, error, loading }] = useMutation(SEND_INVESTOR_EMAIL)
-  const {
-    register, errors, handleSubmit, getValues,
-  } = useForm()
+  const [sendInvestorMail, { data, error, loading }] = useMutation(
+    SEND_INVESTOR_EMAIL,
+  )
+  const { register, errors, handleSubmit, getValues } = useForm()
 
   const handleSendEmail = async () => {
     const { email } = getValues()
@@ -217,8 +213,8 @@ function InvestorCarouselThirdContent({ classes, width }) {
             <div className={classes.opinionsText}>
               <b>There are 10,000,000 shares of stock</b>
               <br />
-              Join us in creating a truly open and equal community
-              where civil conversation is the main objective.
+              Join us in creating a truly open and equal community where civil
+              conversation is the main objective.
               <br />
               <br />
               <br />
@@ -251,7 +247,12 @@ function InvestorCarouselThirdContent({ classes, width }) {
                       disabled={loading || error || errors.email}
                     >
                       Send
-                      {loading && (<CircularProgress size={20} className={classes.loadingProgress} />)}
+                      {loading && (
+                        <CircularProgress
+                          size={20}
+                          className={classes.loadingProgress}
+                        />
+                      )}
                     </Button>
                   </InputAdornment>
                 ),
@@ -261,7 +262,7 @@ function InvestorCarouselThirdContent({ classes, width }) {
         </Grid>
       </Grid>
     </form>
-  );
+  )
 }
 
 function InvestorPlanCarousel(props) {
@@ -281,8 +282,14 @@ function InvestorPlanCarousel(props) {
         className: classes.inactiveIndicator,
       }}
     >
-      <InvestorCarouselFirstContent {...props} setContentIndex={setContentIndex} />
-      <InvestorCarouselSecondContent {...props} setContentIndex={setContentIndex} />
+      <InvestorCarouselFirstContent
+        {...props}
+        setContentIndex={setContentIndex}
+      />
+      <InvestorCarouselSecondContent
+        {...props}
+        setContentIndex={setContentIndex}
+      />
       <InvestorCarouselThirdContent {...props} />
     </Carousel>
   )
