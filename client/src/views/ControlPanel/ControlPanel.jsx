@@ -1108,7 +1108,7 @@ const ControlPanel = () => {
       {snackbar ? (
         <Snackbar
           place="bc"
-          color={snackbar.type}
+          color={snackbar.type || 'info'}
           message={snackbar.message}
           open={snackbar.open}
           closeNotification={() =>

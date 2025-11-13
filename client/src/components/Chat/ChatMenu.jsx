@@ -75,6 +75,7 @@ function ChatMenu({ fontSize }) {
       <StyledBadge
         color="error"
         badgeContent={0}
+        overlap="rectangular"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

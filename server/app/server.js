@@ -4,6 +4,8 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { createServer } from 'http';
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { WebSocketServer } from 'ws';
 import dotenvConfig from 'dotenv';
 import { logger } from './data/utils/logger';
 
@@ -51,7 +53,7 @@ const connectDB = async () => {
     });
     logger.info('MongoDB Connected...');
   } catch (err) {
-    console.error('MongoDB connection error:', err.stack);
+    logger.error('MongoDB connection error:', err.stack);
     process.exit(1);
   }
 };
@@ -168,11 +170,55 @@ async function startServer() {
 
   const httpServer = createServer(app);
 
-  // Apollo Server v3 handles subscriptions automatically when using applyMiddleware
-  // No need for installSubscriptionHandlers
+  // Create WebSocket server for graphql-ws protocol
+  // This is needed because the client uses graphql-ws, not subscriptions-transport-ws
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+
+  // Set up graphql-ws server
+  // Don't pass execute/subscribe explicitly - let graphql-ws use its own
+  // This prevents "schema from another module" errors
+  useServer(
+    {
+      schema,
+      context: async (ctx) => {
+        // Extract auth token from connection params
+        const authToken = ctx.connectionParams?.authToken || 
+                         ctx.connectionParams?.authorization ||
+                         ctx.connectionParams?.token;
+        
+        if (authToken) {
+          try {
+            // Remove 'Bearer ' prefix if present
+            const token = authToken.replace(/^Bearer\s+/, '');
+            const user = await verifyToken(token);
+            return { user };
+          } catch (error) {
+            logger.debug('Invalid WebSocket token, proceeding without user context:', error.message);
+            return {};
+          }
+        }
+        return {};
+      },
+      onConnect: (ctx) => {
+        logger.debug('[graphql-ws] Client connected');
+        return true; // Allow connection
+      },
+      onDisconnect: (ctx, code, reason) => {
+        logger.debug(`[graphql-ws] Client disconnected: ${code} ${reason}`);
+      },
+      onError: (ctx, msg, errors) => {
+        logger.error('[graphql-ws] Error:', msg, errors);
+      },
+    },
+    wsServer,
+  );
 
   httpServer.listen({ port: GRAPHQL_PORT }, () => {
     logger.info(`Apollo Server on http://localhost:${GRAPHQL_PORT}/graphql`);
+    logger.info(`WebSocket server ready at ws://localhost:${GRAPHQL_PORT}/graphql`);
     // Start presence cleanup job
     startPresenceCleanup();
   });

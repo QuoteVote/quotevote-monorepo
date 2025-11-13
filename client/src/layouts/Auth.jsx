@@ -66,7 +66,7 @@ export default function Pages(props) {
         return getRoutes(prop.views)
       }
       if (prop.layout === '/auth') {
-        console.log('Creating route:', prop.layout + prop.path, 'for component:', prop.component.name)
+        // console.log('Creating route:', prop.layout + prop.path, 'for component:', prop.component.name)
         return (
           <Route
             path={prop.layout + prop.path}
