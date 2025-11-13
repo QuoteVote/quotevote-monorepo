@@ -1,12 +1,16 @@
 [build]
   base = "client"
-  command = "rm -rf node_modules && npm ci --legacy-peer-deps && npm run build"
+  command = "rm -rf node_modules && npm ci --legacy-peer-deps && npm run build:ci"
   publish = "build"
 
 [build.environment]
   NODE_VERSION = "22"
   ROLLUP_SKIP_NATIVE = "true"
   NODE_ENV = "production"
+  # Add Railway backend URL for production deployment
+  REACT_APP_SERVER = "https://quotevote-backend.railway.app/graphql"
+  REACT_APP_SERVER_WS = "wss://quotevote-backend.railway.app/graphql"
+  REACT_APP_DOMAIN = "https://quotevote.netlify.app"
 
 [[redirects]]
   from = "/*"

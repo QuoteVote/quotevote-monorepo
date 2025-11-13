@@ -74,14 +74,18 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       // Handle any global variables that need to be defined
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || mode),
       'process.env.PUBLIC_URL': JSON.stringify(''),
-      // Map REACT_APP_ environment variables
-      'process.env.REACT_APP_SERVER': JSON.stringify(env.REACT_APP_SERVER),
-      'process.env.REACT_APP_SERVER_WS': JSON.stringify(
-        env.REACT_APP_SERVER_WS,
+      // Map REACT_APP_ environment variables with fallbacks
+      'process.env.REACT_APP_SERVER': JSON.stringify(
+        env.REACT_APP_SERVER || process.env.REACT_APP_SERVER || 'http://localhost:4000/graphql'
       ),
-      'process.env.REACT_APP_DOMAIN': JSON.stringify(env.REACT_APP_DOMAIN),
+      'process.env.REACT_APP_SERVER_WS': JSON.stringify(
+        env.REACT_APP_SERVER_WS || process.env.REACT_APP_SERVER_WS || 'ws://localhost:4000/graphql'
+      ),
+      'process.env.REACT_APP_DOMAIN': JSON.stringify(
+        env.REACT_APP_DOMAIN || process.env.REACT_APP_DOMAIN || 'http://localhost:3000'
+      ),
       'process.env.DEPLOY_PRIME_URL': JSON.stringify(env.DEPLOY_PRIME_URL),
       global: 'window',
     },
