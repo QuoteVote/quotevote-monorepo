@@ -48,6 +48,9 @@ export default defineConfig(({ mode }) => {
       preprocessorOptions: {
         scss: {
           // Add any global SCSS variables or imports
+          // Note: Sass deprecation warnings from Material Dashboard Pro React are expected
+          // These come from the third-party library and don't affect functionality
+          // They will be addressed when the library is updated or migrated
         },
       },
     },
