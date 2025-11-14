@@ -1,6 +1,7 @@
 import UserModel from '../../models/UserModel';
 import MessageRoomModel from '../../models/MessageRoomModel';
 import RosterModel from '../../models/RosterModel';
+import { logger } from '../../../utils/logger';
 
 // eslint-disable-next-line import/prefer-default-export
 export const createUserMessageRoom = async (args, context) => {
@@ -28,7 +29,7 @@ export const createUserMessageRoom = async (args, context) => {
     const users = [userId, componentId];
     let userMessageRoom = await MessageRoomModel.findOne({ users: { $all: users }, messageType: type });
     if (!userMessageRoom) {
-      console.log('Creating user chatroom...');
+      logger.debug('Creating user chatroom', { userId, recipientId: componentId, type });
       const messageRoomData = { 
         users, 
         messageType: type,
