@@ -3,6 +3,7 @@ import Promise from 'promise';
 import VotesModel from '../models/VoteModel';
 import ArtistsModel from '../models/Artists';
 import UsersModel from '../models/UserModel';
+import { logger } from '../../utils/logger';
 
 const filters = (args) => {
   const filter = {};
@@ -33,7 +34,7 @@ export const voteTypeUtil = async (args) => {
 
 export const scoreBySong = (pubsub) => {
   return async (_, args) => {
-    console.log(chalk.bgYellow(chalk.black('Function: scoreBySong')));
+    logger.debug('Function: scoreBySong', { songId: args.song_id });
 
     const songs = await VotesModel.find({ _songId: args.song_id });
 
@@ -47,7 +48,7 @@ export const scoreBySong = (pubsub) => {
 
 export const score = (pubsub) => {
   return async (_, args) => {
-    console.log(chalk.bgYellow(chalk.black('Function: scoreBySong')));
+    logger.debug('Function: score', { args });
 
     const songs = await VotesModel.find({ ...filters(args) });
     const reducer = (bucket, currentValue) => {
@@ -60,7 +61,7 @@ export const score = (pubsub) => {
 
 export const upvotes = (pubsub) => {
   return async (_, args) => {
-    console.log(chalk.bgYellow(chalk.black('Function: upvotes')));
+    logger.debug('Function: upvotes', { args });
 
     const votes = await VotesModel.find({ ...filters(args), isUpvote: true });
     return votes.length;
@@ -69,7 +70,7 @@ export const upvotes = (pubsub) => {
 
 export const downvotes = (pubsub) => {
   return async (_, args) => {
-    console.log(chalk.bgYellow(chalk.black('Function: downvotes')));
+    logger.debug('Function: downvotes', { args });
 
     const votes = await VotesModel.find({ ...filters(args), isUpvote: false });
     return votes.length;

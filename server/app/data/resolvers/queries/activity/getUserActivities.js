@@ -1,9 +1,10 @@
 import ActivityModel from '../../models/ActivityModel';
 import UserModel from '~/resolvers/models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const getUserActivities = (pubsub) => {
   return async (_, args, context) => {
-    console.log('Function: activities', args);
+    logger.debug('Function: activities', { args, userId: context.user?._id });
     let {
       limit, offset, searchKey, startDateRange, endDateRange, activityEvent, user_id,
     } = args;
@@ -20,7 +21,7 @@ export const getUserActivities = (pubsub) => {
         const parsedActivityEvent = typeof activityEvent === 'string' ? JSON.parse(activityEvent) : activityEvent;
         searchArgs.activityType = { $in: parsedActivityEvent };
       } catch (error) {
-        console.error('Error parsing activityEvent:', error);
+        logger.error('Error parsing activityEvent', { error: error.message, stack: error.stack, activityEvent });
       }
     }
 
@@ -29,7 +30,7 @@ export const getUserActivities = (pubsub) => {
     } else {
       const userDetails = await UserModel.findById(context.user._id);
       const followingIds = userDetails._followingId;
-      console.log({ followingIds });
+      logger.debug('getUserActivities followingIds', { followingIds, userId: context.user._id });
       searchArgs.userId = {
         $in: followingIds,
       };

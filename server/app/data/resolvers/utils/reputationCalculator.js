@@ -5,6 +5,7 @@ import UserModel from '../models/UserModel';
 import PostModel from '../models/PostModel';
 import CommentModel from '../models/CommentModel';
 import VoteModel from '../models/VoteModel';
+import { logger } from '../../utils/logger';
 
 /**
  * Reputation Calculator Service
@@ -54,7 +55,11 @@ export class ReputationCalculator {
 
       return reputationData;
     } catch (error) {
-      console.error('Error calculating user reputation:', error);
+      logger.error('Error calculating user reputation', {
+        error: error.message,
+        stack: error.stack,
+        userId,
+      });
       throw error;
     }
   }

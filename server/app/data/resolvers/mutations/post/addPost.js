@@ -7,8 +7,7 @@ import MessageRoomModel from '../../models/MessageRoomModel';
 
 export const addPost = (pubsub) => {
   return async (_, args) => {
-    console.log('ARGS:   ', args);
-    logger.info('Function: add post');
+    logger.info('Function: add post', { args });
     let newPost = {};
     const group = await GroupModel.findById(args.post.groupId);
     const title = args.post.title.replace(/ /g, '-').toLowerCase();

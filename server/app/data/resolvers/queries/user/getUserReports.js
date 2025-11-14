@@ -1,4 +1,5 @@
 import UserReportModel from '../../models/UserReportModel';
+import { logger } from '../../../utils/logger';
 
 export const getUserReports = () => {
   return async (_, args) => {
@@ -17,7 +18,7 @@ export const getUserReports = () => {
       
       return reports;
     } catch (error) {
-      console.error('Error getting user reports:', error);
+      logger.error('Error getting user reports', { error: error.message, stack: error.stack, userId, status });
       throw new Error('Failed to get user reports');
     }
   };

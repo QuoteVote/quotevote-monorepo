@@ -1,15 +1,16 @@
 import { UserInputError } from 'apollo-server-express';
 import sendGridEmail, { SENGRID_TEMPLATE_IDS } from '../../../utils/send-grid-mail';
 import UserModel from '../../models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const requestUserAccess = (pubsub) => {
   return async (_, args) => {
     const { requestUserAccessInput } = args;
     const { email } = requestUserAccessInput;
-    console.log('checking mail for', email);
+    logger.debug('checking mail for', { email });
 
     const existingUser = await UserModel.findOne({ email });
-    console.log('Existing user', existingUser);
+    logger.debug('Existing user', { email, hasUser: !!existingUser, status: existingUser?.status });
     let user;
     if (existingUser) {
       if (existingUser.status !== 1) {

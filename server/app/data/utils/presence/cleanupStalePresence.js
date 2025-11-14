@@ -1,5 +1,6 @@
 import Presence from '../../resolvers/models/PresenceModel';
 import { pubsub } from '../../resolvers/subscriptions';
+import { logger } from '../../utils/logger';
 
 /**
  * Cleanup stale presence records
@@ -33,10 +34,12 @@ export const cleanupStalePresence = async () => {
     }
 
     if (stalePresences.length > 0) {
-      console.log(`[Presence Cleanup] Marked ${stalePresences.length} users as offline`);
+      logger.info(`[Presence Cleanup] Marked ${stalePresences.length} users as offline`, {
+        count: stalePresences.length,
+      });
     }
   } catch (error) {
-    console.error('[Presence Cleanup] Error:', error);
+    logger.error('[Presence Cleanup] Error:', { error: error.message, stack: error.stack });
   }
 };
 
@@ -51,7 +54,7 @@ export const startPresenceCleanup = () => {
   // Run initial cleanup
   cleanupStalePresence();
   
-  console.log('[Presence Cleanup] Started presence cleanup job');
+  logger.info('[Presence Cleanup] Started presence cleanup job');
 };
 
 export default { cleanupStalePresence, startPresenceCleanup };

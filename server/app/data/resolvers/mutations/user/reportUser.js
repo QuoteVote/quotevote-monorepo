@@ -2,6 +2,7 @@ import { UserInputError } from 'apollo-server-express';
 import UserReportModel from '../../models/UserReportModel';
 import UserModel from '../../models/UserModel';
 import ReputationCalculator from '../../utils/reputationCalculator';
+import { logger } from '../../../utils/logger';
 
 export default (pubsub) => {
   return async (_, args, context) => {
@@ -58,7 +59,12 @@ export default (pubsub) => {
         try {
           await ReputationCalculator.calculateUserReputation(_reportedUserId);
         } catch (error) {
-          console.error('Error recalculating reputation after report:', error);
+          logger.error('Error recalculating reputation after report', {
+            error: error.message,
+            stack: error.stack,
+            reportedUserId: _reportedUserId,
+            reporterId: user._id,
+          });
         }
       }, 1000);
 
@@ -68,7 +74,12 @@ export default (pubsub) => {
         report,
       };
     } catch (error) {
-      console.error('Error reporting user:', error);
+      logger.error('Error reporting user', {
+        error: error.message,
+        stack: error.stack,
+        reportedUserId: _reportedUserId,
+        reporterId: user?._id,
+      });
       throw error;
     }
   };

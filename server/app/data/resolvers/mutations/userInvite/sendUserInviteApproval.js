@@ -4,6 +4,7 @@ import sendGridEmail, {
 } from '../../../utils/send-grid-mail';
 import UserModel from '../../models/UserModel';
 import { addCreatorToUser } from '~/utils/authentication';
+import { logger } from '../../../utils/logger';
 
 export const sendUserInviteApproval = (pubsub) => {
   return async (_, args, context) => {
@@ -93,7 +94,7 @@ export const sendUserInviteApproval = (pubsub) => {
         message: `User sign-up invite sent successfully to ${mailTo}.`,
       };
     }
-    console.log('no email returned');
+    logger.warn('no email returned', { mailTo });
     return {
       code: 'FAILURE',
       message: 'Mail transporter failed to return a response',
