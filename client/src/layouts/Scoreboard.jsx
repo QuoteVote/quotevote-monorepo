@@ -158,7 +158,7 @@ function Scoreboard(props) {
             snackbar ? (
               <Snackbar
                 place="bc"
-                color={snackbar.type}
+                color={snackbar.type || 'info'}
                 message={snackbar.message}
                 open={snackbar.open}
                 closeNotification={() => dispatch(SET_SNACKBAR({ open: false, message: '', type: '' }))}

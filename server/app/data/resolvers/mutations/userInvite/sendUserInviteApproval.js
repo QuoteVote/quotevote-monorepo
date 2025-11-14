@@ -1,3 +1,4 @@
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import sendGridEmail, {
   SENGRID_TEMPLATE_IDS,
 } from '../../../utils/send-grid-mail';
@@ -5,10 +6,44 @@ import UserModel from '../../models/UserModel';
 import { addCreatorToUser } from '~/utils/authentication';
 
 export const sendUserInviteApproval = (pubsub) => {
-  return async (_, args) => {
+  return async (_, args, context) => {
+    // AUTHENTICATION CHECK: Require user to be authenticated
+    if (!context.user) {
+      throw new AuthenticationError('Authentication required to approve invites');
+    }
+
+    // AUTHORIZATION CHECK: Only admins can approve/decline invites
+    if (!context.user.admin) {
+      throw new ForbiddenError('Admin access required to approve or decline invites');
+    }
+
     const { userId } = args;
     const invitedUser = await UserModel.findById(userId);
-    invitedUser.status = args.inviteStatus;
+    
+    // VALIDATION: Check if user exists
+    if (!invitedUser) {
+      throw new Error('User not found');
+    }
+    
+    const nextStatus = parseInt(args.inviteStatus, 10);
+    const currentStatus = invitedUser.status;
+
+    // VALIDATION: Check allowed status transitions
+    if (nextStatus === 4 || nextStatus === 2) {
+      // Approve or decline only from pending
+      if (currentStatus !== 1) {
+        throw new Error('Only pending invites can be approved or declined');
+      }
+    } else if (nextStatus === 1) {
+      // Reset only from declined (or accepted if resend flow)
+      if (![2, 4].includes(currentStatus)) {
+        throw new Error('Only declined or accepted invites can be reset to pending');
+      }
+    } else {
+      throw new Error('Unsupported invite status transition');
+    }
+    
+    invitedUser.status = nextStatus;
     await UserModel.update({ _id: userId }, invitedUser, {
       upsert: true,
       new: true,
@@ -20,7 +55,7 @@ export const sendUserInviteApproval = (pubsub) => {
       from: `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`, // sender address
     };
 
-    if (parseInt(args.inviteStatus) === 4) {
+    if (nextStatus === 4) {
       // Approved
       const expiresIn = 60 * 60 * 24; // 1 day
       const token = await addCreatorToUser(
@@ -39,7 +74,7 @@ export const sendUserInviteApproval = (pubsub) => {
       mailOptions.dynamicTemplateData = {
         create_password_url: `${clientUrl}/auth/signup?token=${token}`,
       };
-    } else if (parseInt(args.inviteStatus) === 2) {
+    } else if (nextStatus === 2) {
       // Declined
       mailOptions.subject = 'Your invitation to Quote has been declined';
       mailOptions.templateId = SENGRID_TEMPLATE_IDS.INVITATION_DECLINE;

@@ -24,7 +24,7 @@ export function LoadPostsList({
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="stretch"
         spacing={2}
       >
@@ -61,7 +61,7 @@ export function LoadPostsList({
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="stretch"
         spacing={0}
       >
@@ -94,7 +94,7 @@ export default function PostList({
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="stretch"
         spacing={2}
       >

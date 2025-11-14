@@ -245,11 +245,12 @@ function startServers() {
   }
   
   // Start both servers using npm run dev
+  // Note: shell: true removed to fix Node.js DEP0190 deprecation warning
+  // We don't need shell: true when using the npm executable directly
   const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
   const devProcess = spawn(npmCmd, ['run', 'dev'], {
     cwd: rootDir,
     stdio: 'inherit',
-    shell: true
   });
   
   // Handle process exit

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { Avatar, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -170,30 +170,46 @@ function SettingsContent({ setOpen }) {
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
-  } = useSelector((state) => {
-    console.log(state)
-    return state.user.data
-  })
-  console.log(otherUserData)
-  const handleChangeAvatar = () => {
-    setOpen(false)
-    history.push(`/Profile/${username}/avatar`)
-  }
+  } = useSelector((state) => state.user.data)
   
-  const defaultValues = {
-    username, password: username, name,
-  }
+  // Memoize defaultValues to prevent recreation on every render
+  const defaultValues = useMemo(() => ({
+    username: username || '',
+    password: username || '',
+    name: name || '',
+    email: email || '',
+  }), [username, name, email])
   
   const {
     register, handleSubmit, errors, formState, reset,
   } = useForm({ defaultValues })
   
-  const isPasswordTouched = 'password' in Object.keys(formState.dirtyFields)
+  // Reset form when user data changes (but only if form hasn't been modified)
+  useEffect(() => {
+    const hasDirtyFields = Object.keys(formState.dirtyFields).length > 0
+    if (username && name && email && !hasDirtyFields) {
+      reset({
+        username,
+        password: username,
+        name,
+        email,
+      }, { keepDirty: false })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username, name, email])
+  
+  const isPasswordTouched = 'password' in formState.dirtyFields
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
+  
+  const handleChangeAvatar = () => {
+    setOpen(false)
+    history.push(`/Profile/${username}/avatar`)
+  }
   
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
-    const otherVariables = values.password === password ? otherValues : values
+    // Only include password if it was actually changed (not equal to username)
+    const otherVariables = values.password === username ? otherValues : values
     try {
       const result = await updateUser({
         variables: {
@@ -208,7 +224,15 @@ function SettingsContent({ setOpen }) {
           _id,
           ...otherUserData,
           ...otherValues,
+          email: values.email || email,
         }))
+        // Reset form after successful update
+        reset({
+          username: otherValues.username || username,
+          password: otherValues.username || username,
+          name: otherValues.name || name,
+          email: values.email || email,
+        })
       }
     } catch (e) {
       reset()
@@ -235,7 +259,7 @@ function SettingsContent({ setOpen }) {
       <Grid
         container
         direction="column"
-        justify="space-between"
+        justifyContent="space-between"
         alignItems="stretch"
         className={classes.root}
         spacing={2}
@@ -244,7 +268,7 @@ function SettingsContent({ setOpen }) {
           <Grid
             container
             direction="column"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="stretch"
             spacing={2}
           >
@@ -259,7 +283,7 @@ function SettingsContent({ setOpen }) {
               <Grid
                 container
                 direction="row"
-                justify="flex-start"
+                justifyContent="flex-start"
                 alignItems="center"
                 className={classes.nameContainer}
                 spacing={0}
@@ -386,7 +410,7 @@ function SettingsContent({ setOpen }) {
           <Grid
             container
             direction="row"
-            justify="space-between"
+            justifyContent="space-between"
             alignItems="flex-end"
           >
             <Grid item>

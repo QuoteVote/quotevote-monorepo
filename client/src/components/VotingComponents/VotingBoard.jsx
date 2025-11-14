@@ -30,12 +30,12 @@ const VotingBoard = ({
   const { startWordIndex, endWordIndex } = focusedComment || { startWordIndex: 0, endWordIndex: 0 }
   const highlightedText = content.substring(startWordIndex, endWordIndex).replace(/(\r\n|\n|\r)/gm, '')
 
-  console.log({
-    startWordIndex,
-    endWordIndex,
-    highlightedText,
-    focusedComment,
-  })
+  // console.log({
+  //   startWordIndex,
+  //   endWordIndex,
+  //   highlightedText,
+  //   focusedComment,
+  // })
   
   const handleSelect = (select) => {
     const text = select.toString()

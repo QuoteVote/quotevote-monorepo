@@ -180,7 +180,7 @@ function PostPage({ postId }) {
   useSubscription(NEW_MESSAGE_SUBSCRIPTION, {
     skip: !messageRoomId,
     variables: { messageRoomId },
-    onSubscriptionData: async () => {
+    onData: async () => {
       await refetchMessages()
     },
   })
