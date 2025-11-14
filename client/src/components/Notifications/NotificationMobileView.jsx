@@ -20,7 +20,7 @@ function NotificationMobileView() {
     NEW_NOTIFICATION_SUBSCRIPTION,
     {
       variables: { userId },
-      onSubscriptionData: async () => {
+      onData: async () => {
         await refetch()
       },
     },

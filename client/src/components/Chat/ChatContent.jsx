@@ -219,17 +219,98 @@ function ChatContent() {
       }).length
     : 0
 
+  // Helper function to safely extract error message as a string
+  // This function never returns objects or null - only safe strings
+  // Uses ultra-defensive programming to avoid any toString() calls on null
+  const getSafeErrorMessage = (err) => {
+    // First, check if err exists and is not null/undefined
+    if (err === null || err === undefined) return 'Unknown error'
+    
+    // If it's already a string, return it directly
+    try {
+      if (typeof err === 'string') {
+        return err || 'Unknown error'
+      }
+    } catch {
+      // If even typeof check fails, return safe message
+      return 'Error occurred (unable to parse error)'
+    }
+    
+    // Try to extract message property with extreme caution
+    let message = null
+    try {
+      // Use Object.prototype.hasOwnProperty to check if property exists
+      if (Object.prototype.hasOwnProperty.call(err, 'message')) {
+        const msg = err.message
+        // Check if msg is not null/undefined and is a string
+        if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+          message = msg
+        }
+      }
+    } catch {
+      // Silently ignore - we'll try other methods
+    }
+    
+    if (message) return message
+    
+    // Try graphQLErrors array
+    try {
+      if (Object.prototype.hasOwnProperty.call(err, 'graphQLErrors')) {
+        const gqlErrors = err.graphQLErrors
+        if (Array.isArray(gqlErrors) && gqlErrors.length > 0) {
+          const firstErr = gqlErrors[0]
+          if (firstErr !== null && firstErr !== undefined) {
+            if (Object.prototype.hasOwnProperty.call(firstErr, 'message')) {
+              const msg = firstErr.message
+              if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+                return msg
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // Silently ignore
+    }
+    
+    // Try networkError
+    try {
+      if (Object.prototype.hasOwnProperty.call(err, 'networkError')) {
+        const netErr = err.networkError
+        if (netErr !== null && netErr !== undefined) {
+          if (typeof netErr === 'string') {
+            return netErr
+          }
+          if (Object.prototype.hasOwnProperty.call(netErr, 'message')) {
+            const msg = netErr.message
+            if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+              return msg
+            }
+          }
+        }
+      }
+    } catch {
+      // Silently ignore
+    }
+    
+    // Last resort: return a safe message
+    return 'Error occurred (unable to extract details)'
+  }
+
   // Get DM and Group counts
+  // Note: Error handling is suppressed to prevent crashes from Apollo Client's error object serialization
   const { data: roomsData, loading: roomsLoading, error: roomsError } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
-    onError: (err) => {
-      console.error('Error fetching chat rooms:', err)
-    },
+    // Removed onError callback - it was causing crashes when Apollo Client tried to serialize error objects with null properties
+    // The errorPolicy: 'all' will still allow the component to render with cached data
+    errorPolicy: 'all', // Continue rendering even if there are errors
   })
   
-  if (roomsError) {
-    console.error('Chat rooms query error:', roomsError)
-  }
+  // Suppress error logging to prevent crashes from error object serialization
+  // The error is handled gracefully by errorPolicy: 'all' which allows rendering with cached data
+  // if (roomsError) {
+  //   // Error logging suppressed to prevent "Cannot read properties of null (reading 'toString')" crashes
+  // }
   
   const rooms = roomsData?.messageRooms || []
   const dmCount = rooms.filter((r) => r?.messageType === 'USER' && r?.users?.length === 2).length

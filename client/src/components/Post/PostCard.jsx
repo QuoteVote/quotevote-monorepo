@@ -292,7 +292,8 @@ function PostCard(props) {
     messageRoom,
     groupId,
   } = props
-  const { messages } = messageRoom
+  // Safely extract messages from messageRoom (handle case where it might be undefined or null)
+  const { messages = [] } = messageRoom || {}
   const contentLimit = limitText ? 20 : 200
   const isContentTruncated = text && text.length > contentLimit
   const shouldShowButton = isContentTruncated && !limitText
@@ -491,7 +492,9 @@ PostCard.propTypes = {
   votes: PropTypes.array.isRequired,
   comments: PropTypes.array.isRequired,
   quotes: PropTypes.array.isRequired,
-  messageRoom: PropTypes.array.isRequired,
+  messageRoom: PropTypes.shape({
+    messages: PropTypes.array,
+  }).isRequired,
   url: PropTypes.string.isRequired,
   bookmarkedBy: PropTypes.array.isRequired,
   created: PropTypes.string.isRequired,

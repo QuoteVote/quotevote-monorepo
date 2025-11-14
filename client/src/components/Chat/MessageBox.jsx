@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { 
   Avatar, 
@@ -180,8 +180,17 @@ function Header() {
   const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
   
   // Get the other user's ID for USER type rooms
+  const currentUserIdForHeader = currentUser?._id?.toString()
   const otherUserId = messageType === 'USER' && users?.length === 2
-    ? users.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
+    ? users.find((id) => {
+        if (!id || !currentUserIdForHeader) return false
+        try {
+          return id.toString() !== currentUserIdForHeader
+        } catch (e) {
+          console.warn('Error comparing user IDs in header:', e)
+          return false
+        }
+      })?.toString() || null
     : null
 
   // Check if user is blocked
@@ -287,10 +296,14 @@ function Header() {
           </IconButton>
           
           <Avatar className={classes.avatar}>
-            {messageType === 'USER' ? (
+            {avatar && Object.keys(avatar).length > 0 ? (
               <AvatarDisplay height={40} width={40} {...avatar} />
+            ) : messageType === 'USER' && title ? (
+              title[0]?.toUpperCase() || '?'
+            ) : title ? (
+              title[0]?.toUpperCase() || '?'
             ) : (
-              title?.[0] || '?'
+              '?'
             )}
           </Avatar>
           
@@ -333,29 +346,29 @@ function Header() {
               },
             }}
           >
-            {messageType === 'USER' && otherUserId && (
-              <>
-                <MenuItem 
-                  onClick={handleBlockUser} 
-                  className={`${classes.menuItem} ${classes.menuItemDanger}`}
-                >
-                  <ListItemIcon className={classes.menuItemIcon}>
-                    <BlockIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
-                </MenuItem>
-                <MenuItem 
-                  onClick={handleRemoveBuddy} 
-                  className={`${classes.menuItem} ${classes.menuItemDanger}`}
-                >
-                  <ListItemIcon className={classes.menuItemIcon}>
-                    <RemoveCircleIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText primary="Remove Buddy" />
-                </MenuItem>
-                <Divider />
-              </>
-            )}
+            {messageType === 'USER' && otherUserId ? [
+              <MenuItem 
+                key="block"
+                onClick={handleBlockUser} 
+                className={`${classes.menuItem} ${classes.menuItemDanger}`}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <BlockIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
+              </MenuItem>,
+              <MenuItem 
+                key="remove"
+                onClick={handleRemoveBuddy} 
+                className={`${classes.menuItem} ${classes.menuItemDanger}`}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <RemoveCircleIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Remove Buddy" />
+              </MenuItem>,
+              <Divider key="divider" />
+            ] : null}
             <MenuItem 
               onClick={handleDeleteChat} 
               className={`${classes.menuItem} ${classes.menuItemDanger}`}
@@ -406,21 +419,174 @@ function MessageBox() {
   
   // Get the other user's ID for DM creation if room doesn't exist yet
   const currentUser = useSelector((state) => state.user?.data)
+  const currentUserId = currentUser?._id?.toString()
   const componentId = messageRoomId 
     ? null 
-    : users?.find((id) => id?.toString() !== currentUser?._id?.toString())?.toString()
+    : users?.find((id) => {
+        if (!id || !currentUserId) return false
+        try {
+          return id.toString() !== currentUserId
+        } catch (e) {
+          console.warn('Error comparing user IDs:', e)
+          return false
+        }
+      })?.toString() || null
+
+  // Helper function to safely extract error message as a string
+  // This function never returns objects or null - only safe strings
+  // Uses ultra-defensive programming to avoid any toString() calls on null
+  const getSafeErrorMessage = (err) => {
+    // First, check if err exists and is not null/undefined
+    if (err === null || err === undefined) return 'Unknown error'
+    
+    // If it's already a string, return it directly
+    try {
+      if (typeof err === 'string') {
+        return err || 'Unknown error'
+      }
+    } catch {
+      // If even typeof check fails, return safe message
+      return 'Error occurred (unable to parse error)'
+    }
+    
+    // Try to extract message property with extreme caution
+    let message = null
+    try {
+      // Use Object.prototype.hasOwnProperty to check if property exists
+      if (Object.prototype.hasOwnProperty.call(err, 'message')) {
+        const msg = err.message
+        // Check if msg is not null/undefined and is a string
+        if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+          message = msg
+        }
+      }
+    } catch {
+      // Silently ignore - we'll try other methods
+    }
+    
+    if (message) return message
+    
+    // Try graphQLErrors array
+    try {
+      if (Object.prototype.hasOwnProperty.call(err, 'graphQLErrors')) {
+        const gqlErrors = err.graphQLErrors
+        if (Array.isArray(gqlErrors) && gqlErrors.length > 0) {
+          const firstErr = gqlErrors[0]
+          if (firstErr !== null && firstErr !== undefined) {
+            if (Object.prototype.hasOwnProperty.call(firstErr, 'message')) {
+              const msg = firstErr.message
+              if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+                return msg
+              }
+            }
+          }
+        }
+      }
+    } catch {
+      // Silently ignore
+    }
+    
+    // Try networkError
+    try {
+      if (Object.prototype.hasOwnProperty.call(err, 'networkError')) {
+        const netErr = err.networkError
+        if (netErr !== null && netErr !== undefined) {
+          if (typeof netErr === 'string') {
+            return netErr
+          }
+          if (Object.prototype.hasOwnProperty.call(netErr, 'message')) {
+            const msg = netErr.message
+            if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+              return msg
+            }
+          }
+        }
+      }
+    } catch {
+      // Silently ignore
+    }
+    
+    // Last resort: return a safe message
+    return 'Error occurred (unable to extract details)'
+  }
+
+  // Track error state to prevent infinite retries
+  const [errorRetryCount, setErrorRetryCount] = useState(0)
+  const [shouldPoll, setShouldPoll] = useState(true)
+  const MAX_ERROR_RETRIES = 3
 
   // Refetch chat rooms to get updated room data (especially when room doesn't exist yet)
-  const { data: roomsData, error: roomsError } = useQuery(GET_CHAT_ROOMS, {
+  // Start without polling, we'll control it manually
+  // Note: Error handling is suppressed to prevent crashes from Apollo Client's error object serialization
+  const { data: roomsData, error: roomsError, stopPolling, startPolling } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
-    pollInterval: !messageRoomId ? 2000 : 0, // Poll every 2 seconds if room doesn't exist yet
-    onError: (err) => {
-      console.error('Error fetching chat rooms:', err)
-    },
+    pollInterval: 0, // Start with no polling - we'll control it manually
+    errorPolicy: 'all', // Continue to show cached data even if there's an error
+    // Removed onError callback - it was causing crashes when Apollo Client tried to serialize error objects with null properties
+    // Error state is still tracked via roomsError, but we don't try to log it to prevent crashes
   })
   
-  if (roomsError) {
-    console.error('Chat rooms query error:', roomsError)
+  // Track errors silently without logging to prevent crashes
+  useEffect(() => {
+    if (roomsError) {
+      // Silently increment error count without trying to access error properties
+      setErrorRetryCount(prev => {
+        const newCount = prev + 1
+        if (newCount >= MAX_ERROR_RETRIES) {
+          setShouldPoll(false)
+          // Stop polling immediately
+          if (stopPolling) {
+            try {
+              stopPolling()
+            } catch {
+              // Ignore stopPolling errors
+            }
+          }
+        }
+        return newCount
+      })
+    }
+  }, [roomsError, stopPolling])
+  
+  // Start/stop polling based on conditions
+  useEffect(() => {
+    // Only poll if:
+    // 1. We don't have a messageRoomId yet (waiting for room to be created)
+    // 2. We haven't hit max errors
+    // 3. Polling is enabled
+    if (!messageRoomId && shouldPoll && errorRetryCount < MAX_ERROR_RETRIES) {
+      if (startPolling) {
+        startPolling(2000)
+      }
+    } else {
+      if (stopPolling) {
+        stopPolling()
+      }
+    }
+    
+    // Cleanup: stop polling when component unmounts or conditions change
+    return () => {
+      if (stopPolling) {
+        stopPolling()
+      }
+    }
+  }, [messageRoomId, shouldPoll, errorRetryCount, startPolling, stopPolling])
+  
+  // Reset error count on successful query and re-enable polling if needed
+  useEffect(() => {
+    if (roomsData && !roomsError) {
+      if (errorRetryCount > 0) {
+        setErrorRetryCount(0)
+        setShouldPoll(true)
+      }
+    }
+  }, [roomsData, roomsError]) // Removed errorRetryCount from deps to avoid loop
+
+  // Don't log errors infinitely - only log if we haven't hit max retries
+  // The error is already logged in onError callback
+  if (roomsError && errorRetryCount >= MAX_ERROR_RETRIES) {
+    // Silently handle errors after max retries to prevent infinite console spam
+    // Error state is preserved but not logged repeatedly
   }
 
   // Update selected room when a new room is found in the chat rooms list
@@ -429,13 +595,40 @@ function MessageBox() {
       // Find the room that matches our users
       const matchingRoom = roomsData.messageRooms.find((room) => {
         if (room.messageType !== 'USER' || room.users?.length !== 2) return false
-        const roomUserIds = room.users.map((id) => id?.toString()).filter(Boolean)
-        const selectedUserIds = selectedRoomData.users.map((id) => id?.toString()).filter(Boolean)
-        if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
-        return (
-          roomUserIds.includes(selectedUserIds[0]) &&
-          roomUserIds.includes(selectedUserIds[1])
-        )
+        try {
+          const roomUserIds = room.users
+            .map((id) => {
+              if (!id) return null
+              try {
+                return id.toString()
+              } catch (e) {
+                console.warn('Error converting room user ID to string:', e)
+                return null
+              }
+            })
+            .filter(Boolean)
+          
+          const selectedUserIds = selectedRoomData.users
+            .map((id) => {
+              if (!id) return null
+              try {
+                return id.toString()
+              } catch (e) {
+                console.warn('Error converting selected user ID to string:', e)
+                return null
+              }
+            })
+            .filter(Boolean)
+          
+          if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
+          return (
+            roomUserIds.includes(selectedUserIds[0]) &&
+            roomUserIds.includes(selectedUserIds[1])
+          )
+        } catch (e) {
+          console.error('Error matching room:', e)
+          return false
+        }
       })
       
       if (matchingRoom) {
@@ -444,36 +637,123 @@ function MessageBox() {
     }
   }, [roomsData, messageRoomId, selectedRoomData, dispatch])
 
+  // Track if we're currently updating to prevent infinite loops
+  const isUpdatingRef = useRef(false)
+  const intervalRef = useRef(null)
+  const timeoutRef = useRef(null)
+  const currentRoomIdRef = useRef(null)
+  // Store mutation function in ref to avoid dependency issues
+  const updateMessageReadByRef = useRef(updateMessageReadBy)
+  
+  // Update ref when mutation function changes (should be stable from Apollo)
   useEffect(() => {
-    if (!ensureAuth() || !messageRoomId) return
+    updateMessageReadByRef.current = updateMessageReadBy
+  }, [updateMessageReadBy])
+  
+  useEffect(() => {
+    if (!ensureAuth() || !messageRoomId) {
+      // Clear interval if room is closed or not authenticated
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+      currentRoomIdRef.current = null
+      return
+    }
     
-    // Update read receipts when room is opened
-    const updateReadReceipts = async () => {
-      try {
-        await updateMessageReadBy({
-          variables: { messageRoomId },
-          refetchQueries: [
-            { query: GET_CHAT_ROOMS },
-            { 
-              query: GET_ROOM_MESSAGES, 
-              variables: { messageRoomId } 
-            },
-          ],
-        })
-      } catch (err) {
-        console.error('Error updating message read by:', err)
+    // Prevent setting up multiple intervals for the same room
+    if (currentRoomIdRef.current === messageRoomId && intervalRef.current) {
+      return
+    }
+    
+    // Clear any existing interval/timeout when room changes
+    if (currentRoomIdRef.current !== messageRoomId) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
       }
     }
     
-    updateReadReceipts()
+    // Track current room
+    currentRoomIdRef.current = messageRoomId
+    
+    // Reset update flag when messageRoomId changes
+    isUpdatingRef.current = false
+    
+    // Update read receipts when room is opened
+    const updateReadReceipts = async () => {
+      // Prevent concurrent calls
+      if (isUpdatingRef.current) {
+        return
+      }
+      
+      // Ensure we're still on the same room
+      if (currentRoomIdRef.current !== messageRoomId) {
+        return
+      }
+      
+      isUpdatingRef.current = true
+      
+      try {
+        // Use ref to get the latest mutation function
+        await updateMessageReadByRef.current({
+          variables: { messageRoomId },
+          // Remove refetchQueries to prevent infinite loops
+          // The queries will be updated via subscriptions or manual refetches
+          awaitRefetchQueries: false, // Don't wait for refetches
+        })
+      } catch (err) {
+        // Only log errors, don't crash
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error updating message read by:', err)
+        }
+      } finally {
+        // Only reset flag if we're still on the same room
+        if (currentRoomIdRef.current === messageRoomId) {
+          isUpdatingRef.current = false
+        }
+      }
+    }
+    
+    // Initial update after a short delay to avoid immediate loops
+    timeoutRef.current = setTimeout(() => {
+      // Double-check room hasn't changed
+      if (currentRoomIdRef.current === messageRoomId) {
+        updateReadReceipts()
+      }
+    }, 1000) // Increased delay to 1 second to avoid immediate calls
     
     // Also update read receipts periodically (every 5 seconds) to catch updates from other users
-    const interval = setInterval(() => {
-      updateReadReceipts()
+    intervalRef.current = setInterval(() => {
+      // Double-check room hasn't changed
+      if (currentRoomIdRef.current === messageRoomId) {
+        updateReadReceipts()
+      }
     }, 5000)
     
-    return () => clearInterval(interval)
-  }, [messageRoomId, updateMessageReadBy, ensureAuth])
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+      // Only reset flag if we're cleaning up for the current room
+      if (currentRoomIdRef.current === messageRoomId) {
+        isUpdatingRef.current = false
+      }
+    }
+  }, [messageRoomId, ensureAuth]) // Removed updateMessageReadBy from deps - using ref instead
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>

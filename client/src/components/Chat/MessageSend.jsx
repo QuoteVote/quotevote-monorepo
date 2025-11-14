@@ -217,55 +217,63 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
     }
 
     const dateSubmitted = new Date()
-    await createMessage({
-      variables: { message },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        createMessage: {
-          __typename: 'Message',
-          _id: dateSubmitted, // dummy
-          messageRoomId,
-          userName: user.name,
-          userId: user._id,
-          title,
-          text: text.trim(),
-          type,
-          created: dateSubmitted,
-          user: {
-            __typename: 'User',
-            name: user.name,
-            username: user.username,
-            avatar: user.avatar,
+    try {
+      await createMessage({
+        variables: { message },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          createMessage: {
+            __typename: 'Message',
+            _id: dateSubmitted, // dummy
+            messageRoomId,
+            userName: user.name,
+            userId: user._id,
+            title,
+            text: text.trim(),
+            type,
+            created: dateSubmitted,
+            user: {
+              __typename: 'User',
+              name: user.name,
+              username: user.username,
+              avatar: user.avatar,
+            },
           },
         },
-      },
-      // eslint-disable-next-line no-shadow
-      update: (proxy, { data: { createMessage } }) => {
-        // Only update cache if we have a messageRoomId
-        // If room was just created, the refetchQueries will handle it
-        if (messageRoomId && createMessage?.messageRoomId) {
-          try {
-            const data = proxy.readQuery({ 
-              query: GET_ROOM_MESSAGES, 
-              variables: { messageRoomId: createMessage.messageRoomId } 
-            })
-            if (data) {
-              proxy.writeQuery({
-                query: GET_ROOM_MESSAGES,
-                variables: { messageRoomId: createMessage.messageRoomId },
-                data: {
-                  ...data,
-                  messages: [...(data.messages || []), createMessage],
-                },
+        // eslint-disable-next-line no-shadow
+        update: (proxy, { data: { createMessage } }) => {
+          // Only update cache if we have a messageRoomId
+          // If room was just created, the refetchQueries will handle it
+          if (messageRoomId && createMessage?.messageRoomId) {
+            try {
+              const data = proxy.readQuery({ 
+                query: GET_ROOM_MESSAGES, 
+                variables: { messageRoomId: createMessage.messageRoomId } 
               })
+              if (data) {
+                proxy.writeQuery({
+                  query: GET_ROOM_MESSAGES,
+                  variables: { messageRoomId: createMessage.messageRoomId },
+                  data: {
+                    ...data,
+                    messages: [...(data.messages || []), createMessage],
+                  },
+                })
+              }
+            } catch (error) {
+              // Cache might not exist yet for new rooms, that's okay
+              console.log('Cache update skipped for new room:', error)
             }
-          } catch (error) {
-            // Cache might not exist yet for new rooms, that's okay
-            console.log('Cache update skipped for new room:', error)
           }
-        }
-      },
-    })
+        },
+      })
+    } catch (error) {
+      // Log the full error for debugging
+      console.error('Error creating message:', error)
+      // The error state is already handled by the useMutation hook
+      // This catch is just for additional logging
+      return
+    }
     
     // Clear the text input after successful submission
     setText('')
@@ -289,8 +297,8 @@ export default function MessageSend({ messageRoomId, type, title, componentId })
         inputProps={{ 'aria-label': 'message input' }}
         fullWidth
         multiline
-        rowsMin={1}
-        rowsMax={5}
+        minRows={1}
+        maxRows={5}
         value={text}
         disabled={isBlocked}
         onChange={(event) => {
