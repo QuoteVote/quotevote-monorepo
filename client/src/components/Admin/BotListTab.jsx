@@ -25,19 +25,19 @@ import { DISABLE_USER, ENABLE_USER } from '@/graphql/mutations'
 import Skeleton from '@material-ui/lab/Skeleton'
 import moment from 'moment'
 import AvatarDisplay from '../Avatar'
+import { useResponsive } from '@/hooks/useResponsive'
+import controlPanelStyles from '@/views/ControlPanel/controlPanelStyles'
+import cx from 'classnames'
 
 const useStyles = makeStyles((theme) => ({
-  cardHeader: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    marginBottom: theme.spacing(2),
-  },
+  ...controlPanelStyles(theme),
   sortControl: {
     marginBottom: theme.spacing(2),
     minWidth: 200,
-  },
-  table: {
-    minWidth: 650,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: '100%',
+      marginBottom: theme.spacing(1),
+    },
   },
   avatar: {
     width: theme.spacing(5),
@@ -48,14 +48,31 @@ const useStyles = makeStyles((theme) => ({
   },
   actionButton: {
     marginRight: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      marginRight: 0,
+    },
   },
   disabledRow: {
     backgroundColor: theme.palette.grey[100],
+  },
+  headerContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing(2),
+    flexWrap: 'wrap',
+    gap: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
   },
 }))
 
 const BotListTab = () => {
   const classes = useStyles()
+  const { isSmallScreen } = useResponsive()
   const [sortBy, setSortBy] = useState('botReports')
   
   const { data, loading, error, refetch } = useQuery(GET_BOT_REPORTED_USERS, {
@@ -135,19 +152,31 @@ const BotListTab = () => {
 
   const reportedUsers = data.getBotReportedUsers || []
 
+  const renderEmptyState = () => (
+    <Box className={classes.emptyState}>
+      <Typography variant="body1" style={{ marginBottom: 8 }}>
+        No bot reports found
+      </Typography>
+      <Typography variant="body2">
+        Bot reports will appear here when users are reported
+      </Typography>
+    </Box>
+  )
+
   return (
     <Card>
       <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box className={classes.headerContainer}>
           <Typography className={classes.cardHeader}>
             Bot Reports ({reportedUsers.length})
           </Typography>
-          <FormControl className={classes.sortControl}>
+          <FormControl className={classes.sortControl} variant="outlined" size="small">
             <InputLabel id="sort-by-label">Sort By</InputLabel>
             <Select
               labelId="sort-by-label"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
+              label="Sort By"
             >
               <MenuItem value="botReports">Most Reports</MenuItem>
               <MenuItem value="lastReportDate">Most Recent Report</MenuItem>
@@ -156,20 +185,113 @@ const BotListTab = () => {
         </Box>
 
         {reportedUsers.length === 0 ? (
-          <Typography variant="body1" color="textSecondary">
-            No bot reports found.
-          </Typography>
+          renderEmptyState()
+        ) : isSmallScreen ? (
+          <div className={classes.responsiveList}>
+            {reportedUsers.map((user) => (
+              <Box
+                key={user._id}
+                className={cx(classes.responsiveCard, {
+                  [classes.disabledRow]: user.accountStatus === 'disabled',
+                })}
+              >
+                <div className={classes.responsiveCardRow}>
+                  <Typography className={classes.responsiveCardLabel}>User</Typography>
+                  <Box display="flex" alignItems="center" style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <Avatar className={classes.avatar}>
+                      <AvatarDisplay height={40} width={40} {...user.avatar} />
+                    </Avatar>
+                    <Box ml={1} style={{ textAlign: 'right' }}>
+                      <Typography variant="body2" style={{ fontWeight: 500, margin: 0 }}>
+                        {user.username}
+                      </Typography>
+                      {user.name && (
+                        <Typography variant="caption" color="textSecondary">
+                          {user.name}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Box>
+                </div>
+                <div className={classes.responsiveCardRow}>
+                  <Typography className={classes.responsiveCardLabel}>Email</Typography>
+                  <Typography className={classes.responsiveCardValue}>{user.email}</Typography>
+                </div>
+                <div className={classes.responsiveCardRow}>
+                  <Typography className={classes.responsiveCardLabel}>Reports</Typography>
+                  <div className={classes.statusWrapper}>
+                    <Chip
+                      label={user.botReports}
+                      color={user.botReports >= 5 ? 'secondary' : 'default'}
+                      size="small"
+                    />
+                  </div>
+                </div>
+                <div className={classes.responsiveCardRow}>
+                  <Typography className={classes.responsiveCardLabel}>Last Report</Typography>
+                  <Box style={{ textAlign: 'right' }}>
+                    <Typography variant="body2" style={{ margin: 0 }}>
+                      {user.lastBotReportDate
+                        ? moment(user.lastBotReportDate).format('MMM D, YYYY')
+                        : 'N/A'}
+                    </Typography>
+                    {user.lastBotReportDate && (
+                      <Typography variant="caption" color="textSecondary">
+                        {moment(user.lastBotReportDate).fromNow()}
+                      </Typography>
+                    )}
+                  </Box>
+                </div>
+                <div className={classes.responsiveCardRow}>
+                  <Typography className={classes.responsiveCardLabel}>Status</Typography>
+                  <div className={classes.statusWrapper}>
+                    <Chip
+                      label={user.accountStatus === 'active' ? 'Active' : 'Disabled'}
+                      color={user.accountStatus === 'active' ? 'primary' : 'default'}
+                      size="small"
+                      className={classes.statusChip}
+                    />
+                  </div>
+                </div>
+                <div className={classes.responsiveCardActions}>
+                  {user.accountStatus === 'active' ? (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      className={classes.actionButton}
+                      onClick={() => handleDisableUser(user._id)}
+                      disabled={disableLoading}
+                    >
+                      Disable
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      className={classes.actionButton}
+                      onClick={() => handleEnableUser(user._id)}
+                      disabled={enableLoading}
+                    >
+                      Enable
+                    </Button>
+                  )}
+                </div>
+              </Box>
+            ))}
+          </div>
         ) : (
-          <TableContainer>
-            <Table className={classes.table}>
-              <TableHead>
+          <TableContainer className={classes.tableContainer}>
+            <Table className={classes.table} stickyHeader aria-label="bot reports table">
+              <TableHead classes={{ head: classes.columnHeader }}>
                 <TableRow>
-                  <TableCell>User</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell align="center">Reports</TableCell>
-                  <TableCell>Last Report</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell align="right">Actions</TableCell>
+                  <TableCell className={classes.columnHeader}>User</TableCell>
+                  <TableCell className={classes.columnHeader}>Email</TableCell>
+                  <TableCell align="center" className={classes.columnHeader}>Reports</TableCell>
+                  <TableCell className={classes.columnHeader}>Last Report</TableCell>
+                  <TableCell className={classes.columnHeader}>Status</TableCell>
+                  <TableCell align="right" className={classes.columnHeader}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
