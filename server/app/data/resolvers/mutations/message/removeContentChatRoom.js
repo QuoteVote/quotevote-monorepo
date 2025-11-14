@@ -1,8 +1,9 @@
 import MessageRoomModel from '../../models/MessageRoomModel';
+import { logger } from '../../../utils/logger';
 
 export const removeContentChatRoom = (pubsub) => {
   return async (_, args, context) => {
-    console.log('[MUTATION] removeContentChatRoom');
+    logger.debug('[MUTATION] removeContentChatRoom', { contentId: args.contentId, userId: context.user?._id });
     const messageType = 'CONTENT';
     try {
       const userId = context.user._id;

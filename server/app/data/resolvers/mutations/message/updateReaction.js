@@ -1,8 +1,9 @@
 import ReactionModel from '../../models/ReactionModel';
+import { logger } from '../../../utils/logger';
 
 export const updateReaction = () => {
   return async (_, args, context) => {
-    console.log('[MUTATION] updateReaction');
+    logger.debug('[MUTATION] updateReaction', { reactionId: args._id, userId: context.user?._id });
     try {
       const { _id } = args;
       const userReaction = await ReactionModel.findByIdAndUpdate(_id, { emoji: args.emoji });

@@ -1,4 +1,5 @@
 import UserModel from '../../models/UserModel';
+import { logger } from '../../../utils/logger';
 
 /**
  * Find users by email with duplicate detection
@@ -28,13 +29,13 @@ export const findUserByEmail = () => {
         email: { $regex: new RegExp(`^${email}$`, 'i') },
       });
 
-      console.log(`Found ${duplicateUsers.length} users with email: ${email}`, duplicateUsers);
+      logger.debug('Found users with email', { email, count: duplicateUsers.length });
 
       // Check if any users have status 1 (prospect/not yet invited)
       const hasProspectUser = duplicateUsers.some((user) => Number(user.status) === 1);
 
       if (hasProspectUser) {
-        console.log('Found prospect user - not yet invited');
+        logger.debug('Found prospect user - not yet invited', { email });
         return [];
       }
 
@@ -48,7 +49,7 @@ export const findUserByEmail = () => {
         lastLogin: user.lastLogin || null,
       }));
     } catch (err) {
-      console.error('Error in findUserByEmail:', err);
+      logger.error('Error in findUserByEmail', { error: err.message, stack: err.stack, email });
       throw new Error(`Failed to find users by email: ${err.message}`);
     }
   };
@@ -89,7 +90,7 @@ export const getDuplicateUserInfo = async (email) => {
 
     return duplicateInfo;
   } catch (err) {
-    console.error('Error in getDuplicateUserInfo:', err);
+    logger.error('Error in getDuplicateUserInfo', { error: err.message, stack: err.stack, email });
     throw new Error(`Failed to get duplicate user info: ${err.message}`);
   }
 };

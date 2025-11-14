@@ -1,4 +1,5 @@
 import UserModel from '../../models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const searchUser = () => {
   return async (_, args, context) => {
@@ -32,7 +33,7 @@ export const searchUser = () => {
 
       return users;
     } catch (error) {
-      console.error('Error in searchUser:', error);
+      logger.error('Error in searchUser', { error: error.message, stack: error.stack, queryName: args.queryName });
       return [];
     }
   };
