@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
   },
   postCard: {
-    marginBottom: theme.spacing(-3.125), 
+    marginBottom: theme.spacing(-3.125),  
     width: '100%',
     maxWidth: '100%',
     overflowX: 'hidden',
@@ -229,7 +229,7 @@ function PaginatedPostsList({
     <Grid
       container
       direction="column"
-      justify="center"
+      justifyContent="center"
       alignItems="stretch"
       spacing={2}
     >
@@ -268,7 +268,7 @@ function PaginatedPostsList({
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="stretch"
         spacing={0}
       >
