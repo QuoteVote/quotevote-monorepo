@@ -788,6 +788,23 @@ export const SEARCH_USERNAMES = gql`
   }
 `
 
+export const GET_BOT_REPORTED_USERS = gql`
+  query getBotReportedUsers($sortBy: String, $limit: Int) {
+    getBotReportedUsers(sortBy: $sortBy, limit: $limit) {
+      _id
+      name
+      username
+      email
+      botReports
+      accountStatus
+      lastBotReportDate
+      joined
+      avatar
+      contributorBadge
+    }
+  }
+`
+
 // ===== Presence Queries =====
 export const GET_PRESENCE = gql`
   query getPresence($userId: String!) {

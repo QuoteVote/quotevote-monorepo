@@ -10,5 +10,8 @@ export * from './updateUserAvatar';
 import sendUserInvite from './sendUserInvite';
 import reportUser from './reportUser';
 import recalculateReputation from './recalculateReputation';
+import reportBot from './reportBot';
+import disableUser from './disableUser';
+import enableUser from './enableUser';
 
-export { sendUserInvite, reportUser, recalculateReputation };
+export { sendUserInvite, reportUser, recalculateReputation, reportBot, disableUser, enableUser };
