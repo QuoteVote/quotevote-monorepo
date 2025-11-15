@@ -143,7 +143,7 @@ const ChatList = ({ search, filterType }) => {
   const dispatch = useDispatch()
   const currentUser = useSelector((state) => state.user.data)
   const selectedRoom = useSelector((state) => state.chat.selectedRoom)
-  const [userCache, setUserCache] = useState({})
+  // const [userCache, setUserCache] = useState({})
 
   const { loading, data, refetch } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
   },
   postCard: {
-    marginBottom: theme.spacing(-3.125),  
+    marginBottom: theme.spacing(-3.125), // -25px to match original spacing  
     width: '100%',
     maxWidth: '100%',
     overflowX: 'hidden',
