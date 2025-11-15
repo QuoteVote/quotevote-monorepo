@@ -48,9 +48,8 @@ export default function UserPosts({ userId }) {
   const loggedIn = useSelector((state) => !!state.user.data._id)
   const currentUser = useSelector((state) => state.user.data)
 
-  // console.log('UserPosts - userId:', userId)
-  // console.log('UserPosts - currentUser._id:', currentUser?._id)
-  // console.log('UserPosts - isOwnProfile:', userId === currentUser?._id)
+  // Check if viewing own profile
+  const isOwnProfile = userId === currentUser?._id
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -67,16 +66,18 @@ export default function UserPosts({ userId }) {
   return (
     <ErrorBoundary>
       <div className={classes.root}>
-        <div className={classes.header}>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{ backgroundColor: '#2ecc71', color: 'white' }}
-            onClick={handleCreateQuote}
-          >
-            Create Quote
-          </Button>
-        </div>
+        {isOwnProfile && (
+          <div className={classes.header}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ backgroundColor: '#2ecc71', color: 'white' }}
+              onClick={handleCreateQuote}
+            >
+              Create Quote
+            </Button>
+          </div>
+        )}
         <div className={classes.list}>
           <PaginatedPostsList
             userId={userId}
