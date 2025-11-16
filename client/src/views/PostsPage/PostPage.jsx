@@ -136,10 +136,23 @@ function PostPage({ postId }) {
   const { post } = (!loadingPost && postData) || {}
 
   // Open Graph/Twitter meta values
-  const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
-  const ogDescription = post?.text ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
-  const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg';
-  const ogUrl = post ? `https://quote.vote/post/${post._id}` : 'https://quote.vote/';
+  const origin =
+    process.env.REACT_APP_DOMAIN ||
+    (typeof window !== 'undefined' ? window.location.origin : '')
+
+  const currentPath =
+    typeof window !== 'undefined'
+      ? window.location.pathname
+      : post
+        ? `/post/${post._id}`
+        : '/'
+
+  const ogTitle = post?.title || "Quote.Vote – The Internet's Quote Board"
+  const ogDescription = post?.text
+    ? post.text.substring(0, 140)
+    : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!'
+  const ogImage = post?.imageUrl || `${origin}/assets/search-quote-vote.png`
+  const ogUrl = `${origin}${currentPath}`
 
   // To reset the scroll when the selected post changes
   useEffect(() => {
@@ -260,6 +273,7 @@ function PostPage({ postId }) {
       <>
         <Helmet>
           <title>{ogTitle}</title>
+          <link rel="canonical" href={ogUrl} />
           <meta property="og:title" content={ogTitle} />
           <meta property="og:description" content={ogDescription} />
           <meta property="og:image" content={ogImage} />
@@ -308,6 +322,7 @@ function PostPage({ postId }) {
     <>
       <Helmet>
         <title>{ogTitle}</title>
+        <link rel="canonical" href={ogUrl} />
         <meta property="og:title" content={ogTitle} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={ogImage} />

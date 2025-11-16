@@ -637,6 +637,7 @@ export default function SearchPage() {
   // Generate SEO meta tags
   const urlParams = extractUrlParams({ search: window.location.search })
   const baseUrl = window.location.origin + window.location.pathname
+  const origin = window.location.origin
   const canonicalUrl = generateCanonicalUrl(baseUrl, {
     ...urlParams,
     searchKey,
@@ -674,7 +675,7 @@ export default function SearchPage() {
         description={pageDescription}
         canonicalUrl={canonicalUrl}
         keywords="search, posts, quotes, conversations, discussions, social media"
-        ogImage="/assets/search-quote-vote.png"
+        ogImage={`${origin}/assets/search-quote-vote.png`}
         ogType="website"
       />
       <div className={classes.root}>
