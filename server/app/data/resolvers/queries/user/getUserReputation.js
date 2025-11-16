@@ -1,5 +1,6 @@
 import UserReputationModel from '../../models/UserReputationModel';
 import ReputationCalculator from '../../utils/reputationCalculator';
+import { logger } from '../../../utils/logger';
 
 export const getUserReputation = () => {
   return async (_, args) => {
@@ -19,7 +20,7 @@ export const getUserReputation = () => {
       
       return reputation;
     } catch (error) {
-      console.error('Error getting user reputation:', error);
+      logger.error('Error getting user reputation', { error: error.message, stack: error.stack, userId });
       throw new Error('Failed to get user reputation');
     }
   };

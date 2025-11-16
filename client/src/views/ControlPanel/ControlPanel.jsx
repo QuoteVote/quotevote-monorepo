@@ -721,17 +721,38 @@ const UserInvitationRequestsTab = ({ data, onRefresh }) => {
 // Statistics Tab Component
 const StatisticsTab = ({ data }) => {
   const classes = useStyles()
-  const activeUsersCount = 0
+  const { data: usersData, loading: usersLoading } = useQuery(GET_USERS, {
+    variables: {
+      limit: 1000, // Get a large number to count all users
+      offset: 0,
+    },
+    errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
+  })
   
   if (!data || !data.userInviteRequests || !Array.isArray(data.userInviteRequests)) {
     return <div>No data available</div>
   }
   
-  const inviteRequestCount = data.userInviteRequests.filter(
+  // Calculate invitation statistics based on status
+  const pendingInvitations = data.userInviteRequests.filter(
     (user) => parseInt(user.status) === 1,
   ).length
-  const totalUsers = data.userInviteRequests.length
+  const declinedUsers = data.userInviteRequests.filter(
+    (user) => parseInt(user.status) === 2,
+  ).length
+  const totalInvitations = data.userInviteRequests.length // All invitation requests
+  
+  // Get total active users from GET_USERS query
+  const totalActiveUsers = usersData?.users && Array.isArray(usersData.users) 
+    ? usersData.users.length 
+    : 0
+  
+  // Chart data for active users over time - use all users from GET_USERS
+  // Since we don't have joined date in GET_USERS, we'll use invitation data for the chart
+  // but only show it if we have data
   const result = data.userInviteRequests.reduce((_r, { joined }) => {
+    if (!joined) return _r
     const dateObj = moment(joined).format('yyyy-MM-01')
     const objectKey = dateObj.toLocaleString('en-us', {
       year: 'numeric',
@@ -756,12 +777,13 @@ const StatisticsTab = ({ data }) => {
     labels: formatLabels,
     series: [lineSeries],
   }
+  const maxChartValue = Math.max(...lineSeries, totalActiveUsers) || totalActiveUsers || 1
   const chartOptions = {
     lineSmooth: Chartist.Interpolation.cardinal({
       tension: 0,
     }),
     low: 0,
-    high: totalUsers + 5,
+    high: maxChartValue + 5,
     chartPadding: {
       top: 0,
       right: 0,
@@ -770,15 +792,25 @@ const StatisticsTab = ({ data }) => {
     },
   }
 
+  if (usersLoading) {
+    return (
+      <Card>
+        <CardContent>
+          <Skeleton animation="wave" height={200} />
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardContent>
         <Box className={classes.statsHeader}>
           <Typography className={classes.cardHeader}>
-            User Invitation Statistics
+            User Statistics
           </Typography>
           <Typography className={classes.graphText}>
-            Invite Requests: {inviteRequestCount || 0}
+            Total Users: {totalActiveUsers || 0}
           </Typography>
         </Box>
         <ChartistGraph
@@ -796,10 +828,10 @@ const StatisticsTab = ({ data }) => {
         />
         <Box className={classes.statsFooter}>
           <Typography className={classes.graphText}>
-            Total Users: {totalUsers || 0}
+            Pending Invitations: {pendingInvitations || 0}
           </Typography>
           <Typography className={classes.graphText}>
-            Active Users Today: {activeUsersCount}
+            Declined Invitations: {declinedUsers || 0}
           </Typography>
         </Box>
       </CardContent>
@@ -1076,7 +1108,7 @@ const ControlPanel = () => {
       {snackbar ? (
         <Snackbar
           place="bc"
-          color={snackbar.type}
+          color={snackbar.type || 'info'}
           message={snackbar.message}
           open={snackbar.open}
           closeNotification={() =>

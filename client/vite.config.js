@@ -48,6 +48,9 @@ export default defineConfig(({ mode }) => {
       preprocessorOptions: {
         scss: {
           // Add any global SCSS variables or imports
+          // Note: Sass deprecation warnings from Material Dashboard Pro React are expected
+          // These come from the third-party library and don't affect functionality
+          // They will be addressed when the library is updated or migrated
         },
       },
     },
@@ -74,18 +77,14 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       // Handle any global variables that need to be defined
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || mode),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.PUBLIC_URL': JSON.stringify(''),
-      // Map REACT_APP_ environment variables with fallbacks
-      'process.env.REACT_APP_SERVER': JSON.stringify(
-        env.REACT_APP_SERVER || process.env.REACT_APP_SERVER || 'http://localhost:4000/graphql'
-      ),
+      // Map REACT_APP_ environment variables
+      'process.env.REACT_APP_SERVER': JSON.stringify(env.REACT_APP_SERVER),
       'process.env.REACT_APP_SERVER_WS': JSON.stringify(
-        env.REACT_APP_SERVER_WS || process.env.REACT_APP_SERVER_WS || 'ws://localhost:4000/graphql'
+        env.REACT_APP_SERVER_WS,
       ),
-      'process.env.REACT_APP_DOMAIN': JSON.stringify(
-        env.REACT_APP_DOMAIN || process.env.REACT_APP_DOMAIN || 'http://localhost:3000'
-      ),
+      'process.env.REACT_APP_DOMAIN': JSON.stringify(env.REACT_APP_DOMAIN),
       'process.env.DEPLOY_PRIME_URL': JSON.stringify(env.DEPLOY_PRIME_URL),
       global: 'window',
     },

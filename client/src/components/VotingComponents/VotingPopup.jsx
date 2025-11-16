@@ -128,10 +128,18 @@ const VotingPopup = ({
 
   useEffect(() => {
     const selectionPopover = document.querySelector('#popButtons')
-    selectionPopover.addEventListener('mousedown', (e) => {
-      e.preventDefault()
-    })
-  })
+    if (selectionPopover) {
+      const handleMouseDown = (e) => {
+        e.preventDefault()
+      }
+      selectionPopover.addEventListener('mousedown', handleMouseDown)
+      return () => {
+        if (selectionPopover) {
+          selectionPopover.removeEventListener('mousedown', handleMouseDown)
+        }
+      }
+    }
+  }, [])
 
   let inputValue = comment
 

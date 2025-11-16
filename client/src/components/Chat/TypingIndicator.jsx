@@ -70,9 +70,9 @@ const TypingIndicator = ({ messageRoomId }) => {
       ? {
           variables: { messageRoomId },
           skip: !messageRoomId,
-          onSubscriptionData: ({ subscriptionData }) => {
-            if (subscriptionData?.data?.typing) {
-              const typingEvent = subscriptionData.data.typing;
+          onData: ({ data }) => {
+            if (data?.typing) {
+              const typingEvent = data.typing;
               const userId = typingEvent.userId;
 
               // Don't show typing indicator for current user

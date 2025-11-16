@@ -5,10 +5,11 @@ import CommentsModel from '../../models/CommentModel';
 import QuotesModel from '../../models/QuoteModel';
 import PostModel from '../../models/PostModel';
 import UserModel from '../../models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const getActivities = (pubsub) => {
   return async (_, args) => {
-    console.log('Function: activities', args);
+    logger.debug('Function: activities', { args });
     const {
       limit, offset, searchKey, startDateRange, endDateRange, activityEvent, user_id,
     } = args;
@@ -31,7 +32,7 @@ export const getActivities = (pubsub) => {
       // Deal with Date Range Here
     }
 
-    console.log('searchArgs', {
+    logger.debug('searchArgs', {
       searchArgs, limit, offset, activityEvent,
     });
     const total = await ActivityModel.find(searchArgs).count();

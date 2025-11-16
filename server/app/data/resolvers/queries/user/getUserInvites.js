@@ -1,6 +1,7 @@
 import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import UserInviteModel from '../../models/UserInviteModel';
 import UserModel from '../../models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const getUserInvites = () => {
   return async (_, args, context) => {
@@ -24,13 +25,13 @@ export const getUserInvites = () => {
           query.status = status;
         }
 
-        console.log('getUserInvites query (with userId):', query);
+        logger.debug('getUserInvites query (with userId)', { query, userId });
         const invites = await UserInviteModel.find(query)
           .populate('_inviterId', 'username name')
           .populate('_invitedUserId', 'username name')
           .sort({ createdAt: -1 });
 
-        console.log('getUserInvites found invites:', invites?.length || 0);
+        logger.debug('getUserInvites found invites', { count: invites?.length || 0, userId });
         return invites || [];
       }
 
@@ -41,11 +42,11 @@ export const getUserInvites = () => {
         throw new ForbiddenError('Admin access required to view all invite requests');
       }
 
-      console.log('getUserInvites: fetching invite requests (status 1 and 2)');
+      logger.debug('getUserInvites: fetching invite requests (status 1 and 2)');
       const prospectUsers = await UserModel.find({ status: { $in: [1, 2] } })
         .sort({ createdAt: -1 });
 
-      console.log('getUserInvites found prospect users:', prospectUsers?.length || 0);
+      logger.debug('getUserInvites found prospect users', { count: prospectUsers?.length || 0 });
 
       // Convert prospect users to UserInvite format
       const invites = prospectUsers.map((user) => ({
@@ -59,7 +60,7 @@ export const getUserInvites = () => {
 
       return invites || [];
     } catch (error) {
-      console.error('Error getting user invites:', error);
+      logger.error('Error getting user invites', { error: error.message, stack: error.stack });
       // Re-throw authentication/authorization errors as-is
       if (error instanceof AuthenticationError || error instanceof ForbiddenError) {
         throw error;

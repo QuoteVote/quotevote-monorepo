@@ -1,8 +1,9 @@
 import createStripeCustomer from '~/resolvers/utils/stripe/createStripeCustomer';
+import { logger } from '~/utils/logger';
 
 export const addStripeCustomer = (pubsub) => {
   return async (_, args, context) => {
-    console.log('[MUTATION] addStripeCustomer');
+    logger.debug('[MUTATION] addStripeCustomer', { userId: context.user?._id });
     try {
       const stripeCustomer = await createStripeCustomer(args);
       return stripeCustomer;
