@@ -12,7 +12,7 @@ function PostSkeleton() {
           <Grid
             container
             direction="row"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="center"
           >
             <Grid item>
@@ -30,7 +30,7 @@ function PostSkeleton() {
           <Grid
             container
             direction="row"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="center"
             style={{ marginTop: 15 }}
           >

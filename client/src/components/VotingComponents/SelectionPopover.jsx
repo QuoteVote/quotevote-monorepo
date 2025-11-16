@@ -50,16 +50,20 @@ class SelectionPopover extends Component {
 
   componentDidMount() {
     const target = document.querySelector('[data-selectable]')
-    target.addEventListener('selectstart', this.handleMobileSelection)
-    target.addEventListener('pointerup', this.handleRemoveInterval)
-    target.addEventListener('pointermove', this.selectionChange)
+    if (target) {
+      target.addEventListener('selectstart', this.handleMobileSelection)
+      target.addEventListener('pointerup', this.handleRemoveInterval)
+      target.addEventListener('pointermove', this.selectionChange)
+    }
   }
 
   componentWillUnmount() {
     const target = document.querySelector('[data-selectable]')
-    target.removeEventListener('selectstart', this.handleMobileSelection)
-    target.removeEventListener('pointerup', this.handleRemoveInterval)
-    target.removeEventListener('pointermove', this.selectionChange)
+    if (target) {
+      target.removeEventListener('selectstart', this.handleMobileSelection)
+      target.removeEventListener('pointerup', this.handleRemoveInterval)
+      target.removeEventListener('pointermove', this.selectionChange)
+    }
   }
 
   // eslint-disable-next-line react/sort-comp
@@ -120,11 +124,14 @@ class SelectionPopover extends Component {
     }
     const selectionBox = selection.getRangeAt(0).getBoundingClientRect()
     // eslint-disable-next-line react/no-string-refs
-    const popoverBox = this.refs.selectionPopover.getBoundingClientRect()
+    const popoverBox = this.refs.selectionPopover?.getBoundingClientRect()
+    if (!popoverBox) return
+    
     const halfWindowWidth = window.innerWidth / 2
-    const targetBox = document
-      .querySelector('[data-selectable]')
-      .getBoundingClientRect()
+    const targetElement = document.querySelector('[data-selectable]')
+    if (!targetElement) return
+    
+    const targetBox = targetElement.getBoundingClientRect()
 
     if (window.innerWidth > 960) {
       this.setState({

@@ -122,7 +122,7 @@ function NotificationLists({ notifications, pageView }) {
       <Grid
         container
         direction="column"
-        justify="center"
+        justifyContent="center"
         alignItems="center"
         className={classes.rootNoNotification}
       >
@@ -146,12 +146,12 @@ function NotificationLists({ notifications, pageView }) {
       {notifications.map(({
         notificationType, label, created, userBy, _id, post,
       }) => (
-        <>
-          <ListItem
-            button
-            alignItems="flex-start"
-            onClick={() => handleNotificationClick(notificationType, userBy, post)}
-          >
+        <ListItem
+          key={_id}
+          button
+          alignItems="flex-start"
+          onClick={() => handleNotificationClick(notificationType, userBy, post)}
+        >
             <ListItemAvatar>
               <NotificationBadge
                 anchorOrigin={{
@@ -205,7 +205,6 @@ function NotificationLists({ notifications, pageView }) {
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
-        </>
       ))}
     </List>
   );

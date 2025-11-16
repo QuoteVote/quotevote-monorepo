@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logger } from '../../../utils/logger';
 
 export const popPrediction = (pubsub) => {
   return async (_, args) => {
@@ -26,7 +27,7 @@ export const popPrediction = (pubsub) => {
       };
 
       const { data } = await axios(config);
-      console.log({ data });
+      logger.debug('popPrediction response', { hasData: !!data, hasDataData: !!data?.data });
 
       return data && data.data;
     } catch (err) {

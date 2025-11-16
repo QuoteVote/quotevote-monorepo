@@ -40,8 +40,10 @@ function PostActionList({
       dispatch(SET_SHARED_COMMENT(null))
     }
     if (!loading && postActions.length && hash) {
-      const element = document.getElementById(hash)
-      element.scrollIntoView({ behavior: 'smooth' })
+      const element = document.getElementById(hash.replace('#', ''))
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   }, [hash, loading, postActions, dispatch])
 

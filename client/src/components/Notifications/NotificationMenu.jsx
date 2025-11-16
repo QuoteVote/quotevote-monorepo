@@ -47,7 +47,7 @@ function NotificationMenu({ fontSize }) {
     NEW_NOTIFICATION_SUBSCRIPTION,
     {
       variables: { userId },
-      onSubscriptionData: async () => {
+      onData: async () => {
         await refetch()
       },
     },
@@ -77,6 +77,7 @@ function NotificationMenu({ fontSize }) {
       <StyledBadge
         color="error"
         badgeContent={notifications.length}
+        overlap="rectangular"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -110,6 +111,7 @@ function NotificationMenu({ fontSize }) {
           <StyledBadge
             color="error"
             badgeContent={notifications.length}
+            overlap="rectangular"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >

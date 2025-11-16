@@ -1,10 +1,11 @@
 import { getUnreadMessages } from '~/resolvers/utils/message/getUnreadMessages';
 import MessageModel from '~/resolvers/models/MessageModel';
 import MessageRoomModel from '~/resolvers/models/MessageRoomModel';
+import { logger } from '../../../utils/logger';
 
 export const updateMessageReadBy = (pubsub) => {
   return async (_, args, context) => {
-    console.log('[MUTATION] updateMessageReadBy');
+    // Removed console.log spam - use logger.debug() if detailed logging is needed
     try {
       const { messageRoomId } = args;
       const userId = context.user._id;

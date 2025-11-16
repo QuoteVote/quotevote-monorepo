@@ -1,5 +1,6 @@
 import { UserInputError } from 'apollo-server-express';
 import { ReputationCalculator } from '../../utils/reputationCalculator';
+import { logger } from '../../../utils/logger';
 
 export default (pubsub) => {
   return async (_, args, context) => {
@@ -24,7 +25,11 @@ export default (pubsub) => {
         reputation,
       };
     } catch (error) {
-      console.error('Error recalculating reputation:', error);
+      logger.error('Error recalculating reputation', {
+        error: error.message,
+        stack: error.stack,
+        userId,
+      });
       throw new Error('Failed to recalculate reputation');
     }
   };

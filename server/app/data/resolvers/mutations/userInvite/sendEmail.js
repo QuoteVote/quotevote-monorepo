@@ -1,8 +1,14 @@
 const nodemailer = require('nodemailer');
+import { logger } from '../../../utils/logger';
 
 export const sendEmail = async function (options) {
-  console.log(options);
-  console.log('Sending email: host %s smtp %s', process.env.SMTP_HOST, process.env.SMTP_USER);
+  logger.debug('sendEmail', {
+    to: options.to,
+    from: options.from,
+    subject: options.subject,
+    smtpHost: process.env.SMTP_HOST,
+    smtpUser: process.env.SMTP_USER,
+  });
 
   const smtpConfig = {
     from: process.env.FROM_EMAIL,
@@ -16,11 +22,15 @@ export const sendEmail = async function (options) {
     },
   };
 
-  console.log(smtpConfig.host);
+  logger.debug('SMTP config', { host: smtpConfig.host, port: smtpConfig.port });
 
   const transporter = nodemailer.createTransport(smtpConfig);
   const transportResponse = await transporter.sendMail(options);
 
-  console.log('Transporter returned with', transportResponse);
+  logger.debug('Transporter response', {
+    messageId: transportResponse?.messageId,
+    accepted: transportResponse?.accepted,
+    rejected: transportResponse?.rejected,
+  });
   return transportResponse;
 };

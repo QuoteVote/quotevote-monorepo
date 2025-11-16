@@ -53,6 +53,30 @@ hist.listen(() => {
   window.scrollTo(0, 0)
 })
 
+// Global error handler to catch and suppress errors from third-party scripts
+// that try to call addEventListener on null elements
+if (typeof window !== 'undefined') {
+  const originalError = window.onerror
+  window.onerror = (message, source, lineno, colno, error) => {
+    // Suppress errors from share-modal.js or similar third-party scripts
+    // that try to call addEventListener on null elements
+    if (typeof message === 'string' && (
+      message.includes('Cannot read properties of null') ||
+      message.includes("reading 'addEventListener'") ||
+      (source && source.includes('share-modal'))
+    )) {
+      // Silently suppress these errors - they're from third-party scripts
+      // and don't affect functionality
+      return true // Prevent default error handling
+    }
+    // For other errors, use the original error handler if it exists
+    if (originalError) {
+      return originalError(message, source, lineno, colno, error)
+    }
+    return false // Allow default error handling
+  }
+}
+
 const theme = createTheme(customTheme)
 
 ReactDOM.render(

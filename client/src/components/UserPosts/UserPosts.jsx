@@ -48,9 +48,9 @@ export default function UserPosts({ userId }) {
   const loggedIn = useSelector((state) => !!state.user.data._id)
   const currentUser = useSelector((state) => state.user.data)
 
-  console.log('UserPosts - userId:', userId)
-  console.log('UserPosts - currentUser._id:', currentUser?._id)
-  console.log('UserPosts - isOwnProfile:', userId === currentUser?._id)
+  // console.log('UserPosts - userId:', userId)
+  // console.log('UserPosts - currentUser._id:', currentUser?._id)
+  // console.log('UserPosts - isOwnProfile:', userId === currentUser?._id)
 
   useEffect(() => {
     window.scrollTo(0, 0)

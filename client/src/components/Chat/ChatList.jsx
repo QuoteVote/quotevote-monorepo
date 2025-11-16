@@ -182,11 +182,10 @@ const ChatList = ({ search, filterType }) => {
 
   const getRoomDisplayInfo = (room) => {
     if (room.messageType === 'USER' && room.users?.length === 2) {
-      // Direct message - show title or "Chat"
-      const otherUserId = room.users?.find((id) => id.toString() !== currentUser?._id.toString());
+      // Direct message - use avatar from GraphQL response (resolved by server)
       return {
         name: room.title || 'Direct Message',
-        avatar: null,
+        avatar: room.avatar || null, // Use avatar from room (resolved by messageRoomRelationship)
         subtitle: `${room.users?.length || 0} participants`,
       };
     } else if (room.messageType === 'POST') {
@@ -196,15 +195,17 @@ const ChatList = ({ search, filterType }) => {
       const preview = postText.length > 50 ? `${postText.substring(0, 50)}...` : postText;
       return {
         name: postTitle,
-        avatar: null,
+        avatar: room.avatar || null, // Use avatar from room (will be set by server resolver for group chats)
         subtitle: preview || `${room.users?.length || 0} participants`,
+        isGroup: true, // Flag to show group icon if no avatar
       };
     } else {
       // Other group chat - show title or default
       return {
         name: room.title || `Group Chat`,
-        avatar: null,
+        avatar: room.avatar || null, // Use avatar from room
         subtitle: `${room.users?.length || 0} members`,
+        isGroup: true, // Flag to show group icon if no avatar
       };
     }
   };
@@ -243,10 +244,14 @@ const ChatList = ({ search, filterType }) => {
           >
             <ListItemAvatar>
               <Avatar className={classes.avatar}>
-                {displayInfo.avatar ? (
-                  <AvatarDisplay user={displayInfo.avatar} size={40} />
+                {displayInfo.avatar && Object.keys(displayInfo.avatar).length > 0 ? (
+                  <AvatarDisplay height={40} width={40} {...displayInfo.avatar} />
+                ) : displayInfo.isGroup ? (
+                  <GroupIcon style={{ fontSize: 24, color: '#666' }} />
+                ) : displayInfo.name ? (
+                  displayInfo.name[0]?.toUpperCase() || '?'
                 ) : (
-                  <AvatarDisplay user={{ name: displayInfo.name }} size={40} />
+                  '?'
                 )}
               </Avatar>
             </ListItemAvatar>

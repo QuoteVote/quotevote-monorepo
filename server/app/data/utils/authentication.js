@@ -187,8 +187,7 @@ export const login = async (req, res) => {
 };
 
 export const authenticate = async (req, res) => {
-  console.log('authenticate', req.body);
-  logger.info(req.body);
+  logger.info('authenticate', { body: req.body });
   let errorMessage = '';
   if (!('username' in req.body)) {
     errorMessage = 'Username is required.';

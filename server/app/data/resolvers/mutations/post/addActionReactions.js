@@ -1,8 +1,9 @@
 import ReactionModel from '../../models/ReactionModel';
+import { logger } from '../../../utils/logger';
 
 export const addActionReactions = () => {
   return async (_, args, context) => {
-    console.log('[MUTATION] addReaction', args);
+    logger.debug('[MUTATION] addReaction', { actionId: args.reaction?.actionId, userId: context.user?._id });
     try {
       const { user } = context;
       const addReaction = await new ReactionModel({

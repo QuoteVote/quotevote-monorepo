@@ -16,8 +16,10 @@ function CommentList({ comments, loading, postUrl }) {
   const { hash } = location
   React.useEffect(() => {
     if (!loading && comments.length && hash) {
-      const element = document.getElementById(hash)
-      element.scrollIntoView({ behavior: 'smooth' })
+      const element = document.getElementById(hash.replace('#', ''))
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   }, [hash, loading, comments])
   return (
