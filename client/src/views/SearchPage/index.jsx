@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import SearchIcon from '@material-ui/icons/Search'
 import DatePicker from 'react-datepicker'
+import { useHistory } from 'react-router-dom'
 import 'react-datepicker/dist/react-datepicker.css'
 import format from 'date-fns/format'
 import { jwtDecode } from 'jwt-decode'
@@ -318,6 +319,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchPage() {
   const classes = useStyles()
+  const history = useHistory()
   const [showResults, setShowResults] = useState(true)
   const [searchKey, setSearchKey] = useState('')
   const user = useSelector((state) => state.user.data)
@@ -456,7 +458,7 @@ export default function SearchPage() {
       setSelectedUser(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolvedUserData, resolvingUser])
+  }, [resolvedUserData, resolvingUser, shouldResolveUserFromSearch])
 
   // Auto-show results for guest mode and when filters are active
   useEffect(() => {
@@ -1220,48 +1222,61 @@ export default function SearchPage() {
           })() && (
             <>
               {/* Selected/Searched User Header */}
-              {(selectedUser || resolvedUserData?.user) && (
-                <Grid
-                  item
-                  style={{ width: '100%', maxWidth: 600, marginTop: 8 }}
-                >
-                  <Paper
-                    onClick={() =>
-                      (window.location.href = `/Profile/${
-                        (selectedUser || resolvedUserData.user).username
-                      }/`)
-                    }
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 12,
-                      padding: 12,
-                      cursor: 'pointer',
-                      border: '1px solid #e0e0e0',
-                      borderRadius: 8,
-                    }}
-                  >
-                    <div style={{ width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <AvatarDisplay height={48} width={48} {...((selectedUser || resolvedUserData.user).avatar || {})} />
-                    </div>
-                    <div style={{ textAlign: 'left' }}>
-                      <Typography
-                        variant="subtitle1"
-                        style={{ lineHeight: 1.1, fontWeight: 600 }}
+              {(selectedUser || resolvedUserData?.user) &&
+                (() => {
+                  const displayUser = selectedUser || resolvedUserData.user
+                  return (
+                    <Grid
+                      item
+                      style={{ width: '100%', maxWidth: 600, marginTop: 8 }}
+                    >
+                      <Paper
+                        onClick={() =>
+                          history.push(`/Profile/${displayUser.username}/`)
+                        }
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 12,
+                          padding: 12,
+                          cursor: 'pointer',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: 8,
+                        }}
                       >
-                        {(selectedUser || resolvedUserData.user).name ||
-                          (selectedUser || resolvedUserData.user).username}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        style={{ color: '#666', marginTop: 2 }}
-                      >
-                        @{(selectedUser || resolvedUserData.user).username}
-                      </Typography>
-                    </div>
-                  </Paper>
-                </Grid>
-              )}
+                        <div
+                          style={{
+                            width: 48,
+                            height: 48,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <AvatarDisplay
+                            height={48}
+                            width={48}
+                            {...(displayUser.avatar || {})}
+                          />
+                        </div>
+                        <div style={{ textAlign: 'left' }}>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ lineHeight: 1.1, fontWeight: 600 }}
+                          >
+                            {displayUser.name || displayUser.username}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            style={{ color: '#666', marginTop: 2 }}
+                          >
+                            @{displayUser.username}
+                          </Typography>
+                        </div>
+                      </Paper>
+                    </Grid>
+                  )
+                })()}
 
               {/* Total Count Display */}
               {totalCount > 0 && (
