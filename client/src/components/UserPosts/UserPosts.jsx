@@ -55,29 +55,9 @@ export default function UserPosts({ userId }) {
     window.scrollTo(0, 0)
   }, [])
 
-  const handleCreateQuote = () => {
-    if (loggedIn) {
-      setOpen(true)
-    } else {
-      history.push('/auth/request-access')
-    }
-  }
-
   return (
     <ErrorBoundary>
       <div className={classes.root}>
-        {isOwnProfile && (
-          <div className={classes.header}>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ backgroundColor: '#2ecc71', color: 'white' }}
-              onClick={handleCreateQuote}
-            >
-              Create Quote
-            </Button>
-          </div>
-        )}
         <div className={classes.list}>
           <PaginatedPostsList
             userId={userId}
