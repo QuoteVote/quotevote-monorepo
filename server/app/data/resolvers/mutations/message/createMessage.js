@@ -11,11 +11,12 @@ import MessageRoomModel from '~/resolvers/models/MessageRoomModel';
 import TypingModel from '~/resolvers/models/TypingModel';
 import RosterModel from '~/resolvers/models/RosterModel';
 import { checkRateLimit } from '~/utils/rateLimiter';
+import { logger } from '~/utils/logger';
 
 // eslint-disable-next-line import/prefer-default-export
 export const createMessage = () => {
   return async (_, args, context) => {
-    console.log('[MUTATION] createMessage');
+    logger.debug('[MUTATION] createMessage', { userId: context.user?._id });
 
     let {
       type, text, title, messageRoomId, componentId,
@@ -65,7 +66,7 @@ export const createMessage = () => {
           if (postId) {
             // Create POST room if it doesn't exist
             messageRoom = await addUserToPostRoom(postId, user._id);
-            console.log(`Created post message room for post ${postId} and user ${user._id}`);
+            logger.info('Created post message room', { postId, userId: user._id });
           } else {
             throw new UserInputError('Cannot create POST message room: post ID not found', {
               invalidArgs: Object.keys(args),
@@ -89,9 +90,17 @@ export const createMessage = () => {
             // User is not in the room, add them
             try {
               messageRoom = await addUserToPostRoom(messageRoom.postId, user._id);
-              console.log(`Added user ${user._id} to post ${messageRoom.postId} message room`);
+              logger.info('Added user to post message room', {
+                userId: user._id,
+                postId: messageRoom.postId,
+              });
             } catch (roomError) {
-              console.error(`Error adding user to post message room: ${roomError.message}`);
+              logger.error('Error adding user to post message room', {
+                error: roomError.message,
+                userId: user._id,
+                postId: messageRoom.postId,
+                stack: roomError.stack,
+              });
               // Continue anyway - the message can still be sent
             }
           }

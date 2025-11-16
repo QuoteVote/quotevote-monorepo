@@ -2,6 +2,7 @@ import { UserInputError } from 'apollo-server-express';
 import UserInviteModel from '../../models/UserInviteModel';
 import UserModel from '../../models/UserModel';
 import sendGridEmail, { SENGRID_TEMPLATE_IDS } from '../../../utils/send-grid-mail';
+import { logger } from '../../../utils/logger';
 
 export default (pubsub) => {
   return async (_, args, context) => {
@@ -58,7 +59,12 @@ export default (pubsub) => {
         invite,
       };
     } catch (error) {
-      console.error('Error sending user invite:', error);
+      logger.error('Error sending user invite', {
+        error: error.message,
+        stack: error.stack,
+        email,
+        inviterId: user?._id,
+      });
       throw error;
     }
   };

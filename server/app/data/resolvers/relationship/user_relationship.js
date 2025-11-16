@@ -1,5 +1,6 @@
 import UserReputationModel from '../models/UserReputationModel';
 import ReputationCalculator from '../utils/reputationCalculator';
+import { logger } from '../../utils/logger';
 
 export const user_relationship = {
   User: {
@@ -18,7 +19,11 @@ export const user_relationship = {
         
         return reputation;
       } catch (error) {
-        console.error('Error getting user reputation in relationship:', error);
+        logger.error('Error getting user reputation in relationship', {
+          error: error.message,
+          stack: error.stack,
+          userId: parent._id,
+        });
         return null;
       }
     },

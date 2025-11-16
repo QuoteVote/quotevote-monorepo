@@ -135,8 +135,16 @@
       "no-use-before-define": 0,
       "arrow-body-style": 0,
       "dot-notation": 0,
-      "no-console": 0
+      "no-console": ["error", { "allow": ["warn", "error"] }]
     },
+    "overrides": [
+      {
+        "files": ["**/test*.js", "**/*.test.js", "**/test-sendgrid.js"],
+        "rules": {
+          "no-console": "off"
+        }
+      }
+    ],
     "env": {
       "mocha": true
     }
