@@ -615,11 +615,16 @@ export default function SearchPage() {
         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0, 0)
         break
       case 'month': {
-        const targetMonth = now.getMonth() - 1
-        const targetYear = now.getFullYear()
+        let targetMonth = now.getMonth() - 1
+        let targetYear = now.getFullYear()
+        if (targetMonth < 0) {
+          targetMonth = 11
+          targetYear -= 1
+        }
         startDate = new Date(targetYear, targetMonth, now.getDate(), 0, 0, 0, 0)
 
-        if (startDate.getMonth() !== (targetMonth < 0 ? 11 : targetMonth)) {
+        // If the target month doesn't have the current day (e.g., Feb 30), fallback to last day of target month
+        if (startDate.getMonth() !== targetMonth) {
           startDate = new Date(targetYear, targetMonth + 1, 0, 0, 0, 0, 0)
         }
         break
