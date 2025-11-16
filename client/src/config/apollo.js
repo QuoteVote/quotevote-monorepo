@@ -10,6 +10,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 import { serializeObjectIds } from '../utils/objectIdSerializer'
 import { getGraphqlServerUrl, getGraphqlWsServerUrl } from '../utils/getServerUrl'
+import { runStartupConnectionTest } from '../utils/connectionTest'
 
 // Determine if we're using a local server
 const isLocalServer = process.env.REACT_APP_SERVER && process.env.REACT_APP_SERVER.includes('localhost');
@@ -132,5 +133,16 @@ const client = new ApolloClient({
     },
   },
 })
+
+// Run connection test on startup for debugging
+if (typeof window !== 'undefined') {
+  runStartupConnectionTest().then(result => {
+    if (result.backend && result.loginWorks) {
+      console.log('🎉 PR #255: Backend and login ready for review!')
+    } else {
+      console.error('🚨 PR #255: Backend connection issues detected')
+    }
+  })
+}
 
 export default client

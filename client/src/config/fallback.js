@@ -1,7 +1,7 @@
 // Fallback configuration for when backend is not available
 export const FALLBACK_CONFIG = {
   // Main production backend
-  PRODUCTION_BACKEND: 'https://api.quote.vote',
+  PRODUCTION_BACKEND: 'https://quotevote-backend.railway.app',
   
   // Railway backend patterns for PR deployments
   RAILWAY_PATTERNS: [
