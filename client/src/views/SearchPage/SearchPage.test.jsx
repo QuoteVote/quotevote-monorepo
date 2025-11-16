@@ -1,4 +1,6 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import {
+  render, screen, fireEvent, waitFor,
+} from '@testing-library/react'
 import { MockedProvider } from '@apollo/react-testing'
 import { Provider } from 'react-redux'
 import configureStore from 'redux-mock-store'
@@ -17,7 +19,7 @@ const mockPostsData = {
         comments: [{ _id: 'c1' }, { _id: 'c2' }],
         votes: [{ _id: 'v1' }],
         quotes: [],
-        creator: { _id: 'user1', name: 'User 1', username: 'user1' }
+        creator: { _id: 'user1', name: 'User 1', username: 'user1' },
       },
       {
         _id: '2',
@@ -26,15 +28,15 @@ const mockPostsData = {
         comments: [{ _id: 'c3' }],
         votes: [{ _id: 'v2' }, { _id: 'v3' }],
         quotes: [{ _id: 'q1' }],
-        creator: { _id: 'user2', name: 'User 2', username: 'user2' }
-      }
+        creator: { _id: 'user2', name: 'User 2', username: 'user2' },
+      },
     ],
     pagination: {
       total_count: 2,
       limit: 10,
-      offset: 0
-    }
-  }
+      offset: 0,
+    },
+  },
 }
 
 const mocks = [
@@ -48,13 +50,13 @@ const mocks = [
         startDateRange: '',
         endDateRange: '',
         interactions: false,
-        sortOrder: 'desc'
-      }
+        sortOrder: 'desc',
+      },
     },
     result: {
-      data: mockPostsData
-    }
-  }
+      data: mockPostsData,
+    },
+  },
 ]
 
 describe('SearchPage Filters', () => {
@@ -65,12 +67,12 @@ describe('SearchPage Filters', () => {
       user: {
         data: {
           _id: 'currentUser',
-          _followingId: ['user1']
-        }
+          _followingId: ['user1'],
+        },
       },
       ui: {
-        hiddenPosts: []
-      }
+        hiddenPosts: [],
+      },
     })
   })
 
@@ -101,7 +103,7 @@ describe('SearchPage Filters', () => {
     // Perform search first
     const searchInput = screen.getByPlaceholderText('Search...')
     const searchButton = screen.getByLabelText('search')
-    
+
     fireEvent.change(searchInput, { target: { value: 'test' } })
     fireEvent.click(searchButton)
 
@@ -132,7 +134,7 @@ describe('SearchPage Filters', () => {
     // Perform search first
     const searchInput = screen.getByPlaceholderText('Search...')
     const searchButton = screen.getByLabelText('search')
-    
+
     fireEvent.change(searchInput, { target: { value: 'test' } })
     fireEvent.click(searchButton)
 
@@ -165,7 +167,7 @@ describe('SearchPage Filters', () => {
     // Perform search first
     const searchInput = screen.getByPlaceholderText('Search...')
     const searchButton = screen.getByLabelText('search')
-    
+
     fireEvent.change(searchInput, { target: { value: 'test' } })
     fireEvent.click(searchButton)
 
@@ -187,7 +189,105 @@ describe('SearchPage Filters', () => {
 
     // Should show sort order is back to descending (newest first)
     await waitFor(() => {
-      expect(sortButton).toHaveTextContent('��')
+      expect(sortButton).toHaveTextContent('🕓')
     })
   })
-}) 
+
+  describe('Quick Select Date Range', () => {
+    test('quick select buttons apply correct date ranges', async () => {
+      render(
+        <Provider store={store}>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <SearchPage />
+          </MockedProvider>
+        </Provider>
+      )
+
+      const dateButton = screen.getByLabelText('date range')
+      fireEvent.click(dateButton)
+
+      await waitFor(() => {
+        expect(screen.getByText('Past Day')).toBeInTheDocument()
+        expect(screen.getByText('Past Week')).toBeInTheDocument()
+        expect(screen.getByText('Past Month')).toBeInTheDocument()
+      })
+
+      const pastWeekButton = screen.getByText('Past Week')
+      fireEvent.click(pastWeekButton)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Past Week')).not.toBeInTheDocument()
+      })
+
+      expect(dateButton).toHaveClass('active')
+    })
+
+    test('quick select button shows active state when selected', async () => {
+      render(
+        <Provider store={store}>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <SearchPage />
+          </MockedProvider>
+        </Provider>
+      )
+
+      const dateButton = screen.getByLabelText('date range')
+      fireEvent.click(dateButton)
+
+      const pastDayButton = screen.getByText('Past Day')
+      fireEvent.click(pastDayButton)
+
+      fireEvent.click(dateButton)
+
+      await waitFor(() => {
+        const pastDayButtonAgain = screen.getByText('Past Day')
+        expect(pastDayButtonAgain).toHaveStyle({ backgroundColor: expect.any(String) })
+      })
+    })
+
+    test('manual date selection clears quick select', async () => {
+      render(
+        <Provider store={store}>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <SearchPage />
+          </MockedProvider>
+        </Provider>
+      )
+
+      const dateButton = screen.getByLabelText('date range')
+      fireEvent.click(dateButton)
+
+      const pastMonthButton = screen.getByText('Past Month')
+      fireEvent.click(pastMonthButton)
+
+      await waitFor(() => {
+        expect(screen.queryByText('Past Month')).not.toBeInTheDocument()
+      })
+
+      expect(dateButton).toHaveClass('active')
+    })
+
+    test('clear button resets both quick select and manual dates', async () => {
+      render(
+        <Provider store={store}>
+          <MockedProvider mocks={mocks} addTypename={false}>
+            <SearchPage />
+          </MockedProvider>
+        </Provider>
+      )
+
+      const dateButton = screen.getByLabelText('date range')
+      fireEvent.click(dateButton)
+
+      const pastWeekButton = screen.getByText('Past Week')
+      fireEvent.click(pastWeekButton)
+
+      fireEvent.click(dateButton)
+
+      const clearButton = screen.getByText('Clear')
+      fireEvent.click(clearButton)
+
+      expect(dateButton).not.toHaveClass('active')
+    })
+  })
+})

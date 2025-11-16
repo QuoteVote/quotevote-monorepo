@@ -9,12 +9,15 @@ import {
 } from '@material-ui/core'
 import { useQuery } from '@apollo/react-hooks'
 import { useSelector } from 'react-redux'
-import { useState, useEffect, useMemo, useRef } from 'react'
+import {
+  useState, useEffect, useMemo, useRef, useCallback,
+} from 'react'
 import SearchIcon from '@material-ui/icons/Search'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import format from 'date-fns/format'
 import { jwtDecode } from 'jwt-decode'
+import Tooltip from '@material-ui/core/Tooltip'
 import {
   GET_TOP_POSTS,
   GET_FEATURED_POSTS,
@@ -26,7 +29,6 @@ import ErrorBoundary from '../../components/ErrorBoundary'
 import Carousel from '../../components/Carousel/Carousel'
 import PostCard from '../../components/Post/PostCard'
 import LoadingSpinner from '../../components/LoadingSpinner'
-import Tooltip from '@material-ui/core/Tooltip'
 import SearchGuestSections from '../../components/SearchContainer/SearchGuestSections'
 import UsernameResults from '../../components/SearchContainer/UsernameResults'
 import GuestFooter from '../../components/GuestFooter'
@@ -312,6 +314,38 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '50%',
     },
   },
+  quickSelectButton: {
+    padding: '8px 16px',
+    margin: '4px',
+    fontSize: '14px',
+    fontWeight: 500,
+    textTransform: 'none',
+    borderRadius: '20px',
+    border: '1px solid rgba(0, 0, 0, 0.12)',
+    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    color: theme.palette.text.primary,
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.08)',
+      border: '1px solid rgba(0, 0, 0, 0.24)',
+      transform: 'scale(1.02)',
+      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '12px',
+      padding: '6px 12px',
+      margin: '2px',
+    },
+  },
+  quickSelectActive: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    border: `1px solid ${theme.palette.primary.main}`,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.dark,
+      border: `1px solid ${theme.palette.primary.dark}`,
+    },
+  },
 }))
 
 export default function SearchPage() {
@@ -323,6 +357,7 @@ export default function SearchPage() {
     startDate: null,
     endDate: null,
   })
+  const [selectedQuickRange, setSelectedQuickRange] = useState(null)
 
   // New state for multiple filter modes - now each filter can be active independently
   const [activeFilters, setActiveFilters] = useState({
@@ -330,7 +365,6 @@ export default function SearchPage() {
     interactions: false,
   })
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
-  const [focusedInput, setFocusedInput] = useState(null)
 
   // Guest mode state
   const [isGuestMode, setIsGuestMode] = useState(false)
@@ -391,13 +425,13 @@ export default function SearchPage() {
     variables: {
       limit: 10,
       offset: 0,
-      searchKey: searchKey,
-      startDateRange: dateRangeFilter.startDate
-        ? format(dateRangeFilter.startDate, 'yyyy-MM-dd')
-        : '',
-      endDateRange: dateRangeFilter.endDate
-        ? format(dateRangeFilter.endDate, 'yyyy-MM-dd')
-        : '',
+      searchKey,
+      startDateRange: dateRangeFilter.startDate ?
+        format(dateRangeFilter.startDate, 'yyyy-MM-dd') :
+        '',
+      endDateRange: dateRangeFilter.endDate ?
+        format(dateRangeFilter.endDate, 'yyyy-MM-dd') :
+        '',
       friendsOnly: false,
       interactions: activeFilters.interactions,
       ...(sortOrder === 'asc' ? { sortOrder } : {}), // Only include sortOrder if it's 'asc' (non-default)
@@ -432,7 +466,14 @@ export default function SearchPage() {
 
   // Show results when any filter is active
   useEffect(() => {
-    if (hasActiveFilters()) {
+    const anyActive =
+      activeFilters.friends ||
+      activeFilters.interactions ||
+      dateRangeFilter.startDate ||
+      dateRangeFilter.endDate ||
+      sortOrder === 'asc'
+
+    if (anyActive) {
       setShowResults(true)
     }
   }, [activeFilters, sortOrder, dateRangeFilter])
@@ -476,7 +517,7 @@ export default function SearchPage() {
 
   // New handler for search input changes to detect @ symbol
   const handleSearchInputChange = (e) => {
-    const value = e.target.value
+    const { value } = e.target
     setSearchKey(value)
 
     // Check if user is typing @ for username search
@@ -497,13 +538,10 @@ export default function SearchPage() {
   }
 
   const handleFriendsFilter = () => {
-    console.log('Friends filter clicked, current state:', activeFilters.friends)
-
     // Mark that user has interacted with filters
     setHasEverInteractedWithFilters(true)
 
     if (!user || !user._id) {
-      console.log('User not logged in, friends filter will show all posts')
       // Allow unauthenticated users to toggle the filter, but it will show all posts
       setActiveFilters((prev) => ({
         ...prev,
@@ -521,10 +559,6 @@ export default function SearchPage() {
   }
 
   const handleInteractionsFilter = () => {
-    console.log(
-      'Interactions filter clicked, current state:',
-      activeFilters.interactions,
-    )
     // Mark that user has interacted with filters
     setHasEverInteractedWithFilters(true)
 
@@ -536,74 +570,101 @@ export default function SearchPage() {
   }
 
   const handleSortOrderToggle = () => {
-    console.log('Sort order toggle clicked, current state:', sortOrder)
     // Mark that user has interacted with filters
     setHasEverInteractedWithFilters(true)
 
     setSortOrder((prev) => {
       const newSortOrder = prev === 'desc' ? 'asc' : 'desc'
-      console.log('Sort order changing from', prev, 'to', newSortOrder)
       return newSortOrder
     })
     setShowResults(true)
   }
 
-  const handleDateFilterToggle = (event) => {
+  const handleDateFilterToggle = () => {
     const willBeVisible = !isCalendarVisible
     setIsCalendarVisible(willBeVisible)
-    setFocusedInput(willBeVisible ? 'startDate' : null)
   }
 
-  const handleDateChange = (dateRange) => {
+  const handleDateChange = useCallback((dateRange) => {
     const [startDate, endDate] = dateRange
     // Mark that user has interacted with filters
     setHasEverInteractedWithFilters(true)
 
     setDateRangeFilter({ startDate, endDate })
+    // Clear quick range selection when manually selecting dates
+    setSelectedQuickRange(null)
     if (startDate && endDate) {
       setIsCalendarVisible(false)
-      setFocusedInput(null)
     }
     setShowResults(true)
-  }
+  }, [])
 
-  const clearDateFilter = () => {
+  const handleQuickRangeSelect = useCallback((range) => {
+    // Mark that user has interacted with filters
+    setHasEverInteractedWithFilters(true)
+
+    const now = new Date()
+    const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+    let startDate
+
+    switch (range) {
+      case 'day':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0, 0, 0, 0)
+        break
+      case 'week':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0, 0)
+        break
+      case 'month': {
+        const targetMonth = now.getMonth() - 1
+        const targetYear = now.getFullYear()
+        startDate = new Date(targetYear, targetMonth, now.getDate(), 0, 0, 0, 0)
+
+        if (startDate.getMonth() !== (targetMonth < 0 ? 11 : targetMonth)) {
+          startDate = new Date(targetYear, targetMonth + 1, 0, 0, 0, 0, 0)
+        }
+        break
+      }
+      default:
+        return
+    }
+
+    setSelectedQuickRange(range)
+    setDateRangeFilter({ startDate, endDate })
+    setIsCalendarVisible(false)
+    setShowResults(true)
+  }, [])
+
+  const clearDateFilter = useCallback(() => {
     setDateRangeFilter({ startDate: null, endDate: null })
-  }
+    setSelectedQuickRange(null)
+  }, [])
 
-  const clearDateFilterAndClose = () => {
+  const clearDateFilterAndClose = useCallback(() => {
     clearDateFilter()
     setIsCalendarVisible(false)
-    setFocusedInput(null)
-  }
+  }, [clearDateFilter])
 
   // Helper function to determine if we should show the landing page for guest users
   const shouldShowGuestLandingPage = () => {
     if (!isGuestMode) return false
-    
+
     const { page } = extractUrlParams({ search: window.location.search })
     const hasPageParam = Boolean(page)
-    
+
     // Show landing page only when no search, no filters, no interactions, and no page params
     return !searchKey.trim() && !hasActiveFilters() && !hasEverInteractedWithFilters && !hasPageParam
   }
 
   // Helper function to check if any filters are active
-  const hasActiveFilters = () => {
-    return (
-      activeFilters.friends ||
+  const hasActiveFilters = () => (
+    activeFilters.friends ||
       activeFilters.interactions ||
       dateRangeFilter.startDate ||
       dateRangeFilter.endDate ||
       sortOrder === 'asc' // Consider 'asc' (oldest first) as an active filter since 'desc' is default
-    )
-  }
+  )
 
-  const featuredPosts = useMemo(() => {
-    return (featuredData?.featuredPosts?.entities || []).map((post) =>
-      serializePost(post),
-    )
-  }, [featuredData?.featuredPosts?.entities])
+  const featuredPosts = useMemo(() => (featuredData?.featuredPosts?.entities || []).map((post) => serializePost(post),), [featuredData?.featuredPosts?.entities])
 
   // Create carousel items from posts for guest mode
   const createCarouselItems = useMemo(() => {
@@ -643,12 +704,12 @@ export default function SearchPage() {
     sortOrder,
     friendsOnly: activeFilters.friends,
     interactions: activeFilters.interactions,
-    startDateRange: dateRangeFilter.startDate
-      ? format(dateRangeFilter.startDate, 'yyyy-MM-dd')
-      : '',
-    endDateRange: dateRangeFilter.endDate
-      ? format(dateRangeFilter.endDate, 'yyyy-MM-dd')
-      : '',
+    startDateRange: dateRangeFilter.startDate ?
+      format(dateRangeFilter.startDate, 'yyyy-MM-dd') :
+      '',
+    endDateRange: dateRangeFilter.endDate ?
+      format(dateRangeFilter.endDate, 'yyyy-MM-dd') :
+      '',
   })
 
   const pageTitle = generatePageTitle(
@@ -666,6 +727,19 @@ export default function SearchPage() {
     0, // We don't have total count here
     urlParams.pageSize,
   )
+
+  // Summary text for selected date range (for lint: avoided nested ternaries)
+  let dateRangeSummary = ''
+  if (dateRangeFilter.startDate && dateRangeFilter.endDate) {
+    dateRangeSummary = `${format(dateRangeFilter.startDate, 'MMM d')} - ${format(
+      dateRangeFilter.endDate,
+      'MMM d, yyyy',
+    )}`
+  } else if (dateRangeFilter.startDate) {
+    dateRangeSummary = `From ${format(dateRangeFilter.startDate, 'MMM d, yyyy')}`
+  } else if (dateRangeFilter.endDate) {
+    dateRangeSummary = `Until ${format(dateRangeFilter.endDate, 'MMM d, yyyy')}`
+  }
 
   return (
     <ErrorBoundary>
@@ -760,9 +834,9 @@ export default function SearchPage() {
           >
             <Tooltip
               title={
-                user && user._id
-                  ? 'Following: Show posts from people you follow only'
-                  : 'Following: Show all posts (login to filter by people you follow)'
+                user && user._id ?
+                  'Following: Show posts from people you follow only' :
+                  'Following: Show all posts (login to filter by people you follow)'
               }
               placement="bottom"
               arrow
@@ -796,11 +870,11 @@ export default function SearchPage() {
             </Tooltip>
             <Tooltip
               title={
-                sortOrder === null
-                  ? 'Sort: Default order (click to sort by oldest first)'
-                  : sortOrder === 'asc'
-                  ? 'Sort: Oldest first (click to sort by newest first)'
-                  : 'Sort: Newest first (click to clear sort)'
+                sortOrder === null ?
+                  'Sort: Default order (click to sort by oldest first)' :
+                  sortOrder === 'asc' ?
+                    'Sort: Oldest first (click to sort by newest first)' :
+                    'Sort: Newest first (click to clear sort)'
               }
               placement="bottom"
               arrow
@@ -837,11 +911,11 @@ export default function SearchPage() {
                 className={`${classes.icon} ${
                   dateRangeFilter.startDate ||
                   dateRangeFilter.endDate ||
-                  isCalendarVisible
-                    ? classes.activeFilter
-                    : ''
+                  isCalendarVisible ?
+                    classes.activeFilter :
+                    ''
                 }`}
-                onClick={(e) => handleDateFilterToggle(e)}
+                onClick={handleDateFilterToggle}
               >
                 📅
               </IconButton>
@@ -862,6 +936,63 @@ export default function SearchPage() {
                 maxWidth: 600,
               }}
             >
+              <div style={{ marginBottom: 16, textAlign: 'center' }}>
+                <Typography
+                  variant="subtitle2"
+                  style={{ marginBottom: 8, fontWeight: 600, color: '#555' }}
+                >
+                  Quick Select
+                </Typography>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap',
+                    gap: 8,
+                  }}
+                >
+                  <Button
+                    className={`${classes.quickSelectButton} ${selectedQuickRange === 'day' ? classes.quickSelectActive : ''}`}
+                    onClick={() => handleQuickRangeSelect('day')}
+                    size="small"
+                  >
+                    Past Day
+                  </Button>
+                  <Button
+                    className={`${classes.quickSelectButton} ${selectedQuickRange === 'week' ? classes.quickSelectActive : ''}`}
+                    onClick={() => handleQuickRangeSelect('week')}
+                    size="small"
+                  >
+                    Past Week
+                  </Button>
+                  <Button
+                    className={`${classes.quickSelectButton} ${selectedQuickRange === 'month' ? classes.quickSelectActive : ''}`}
+                    onClick={() => handleQuickRangeSelect('month')}
+                    size="small"
+                  >
+                    Past Month
+                  </Button>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  height: 1,
+                  backgroundColor: '#e0e0e0',
+                  margin: '16px 0',
+                }}
+              />
+              <Typography
+                variant="subtitle2"
+                style={{
+                  marginBottom: 12,
+                  textAlign: 'center',
+                  fontWeight: 600,
+                  color: '#555',
+                }}
+              >
+                Or Select Custom Range
+              </Typography>
               <div
                 style={{ display: 'flex', justifyContent: 'center', gap: 16 }}
               >
@@ -875,9 +1006,7 @@ export default function SearchPage() {
                   <div className={classes.datePickerInput}>
                     <DatePicker
                       selected={dateRangeFilter.startDate}
-                      onChange={(date) =>
-                        handleDateChange([date, dateRangeFilter.endDate])
-                      }
+                      onChange={(date) => handleDateChange([date, dateRangeFilter.endDate])}
                       selectsStart
                       startDate={dateRangeFilter.startDate}
                       endDate={dateRangeFilter.endDate}
@@ -897,9 +1026,7 @@ export default function SearchPage() {
                   <div className={classes.datePickerInput}>
                     <DatePicker
                       selected={dateRangeFilter.endDate}
-                      onChange={(date) =>
-                        handleDateChange([dateRangeFilter.startDate, date])
-                      }
+                      onChange={(date) => handleDateChange([dateRangeFilter.startDate, date])}
                       selectsEnd
                       startDate={dateRangeFilter.startDate}
                       endDate={dateRangeFilter.endDate}
@@ -957,13 +1084,9 @@ export default function SearchPage() {
                       display: 'flex',
                       alignItems: 'center',
                       padding: '8px 12px',
-                      backgroundColor: activeFilters.friends
-                        ? '#e3f2fd'
-                        : '#f5f5f5',
+                      backgroundColor: activeFilters.friends ? '#e3f2fd' : '#f5f5f5',
                       borderRadius: '20px',
-                      border: activeFilters.friends
-                        ? '1px solid #2196f3'
-                        : '1px solid #e0e0e0',
+                      border: activeFilters.friends ? '1px solid #2196f3' : '1px solid #e0e0e0',
                     }}
                   >
                     <span style={{ marginRight: '6px' }}>👥</span>
@@ -984,13 +1107,9 @@ export default function SearchPage() {
                       display: 'flex',
                       alignItems: 'center',
                       padding: '8px 12px',
-                      backgroundColor: activeFilters.interactions
-                        ? '#e3f2fd'
-                        : '#f5f5f5',
+                      backgroundColor: activeFilters.interactions ? '#e3f2fd' : '#f5f5f5',
                       borderRadius: '20px',
-                      border: activeFilters.interactions
-                        ? '1px solid #2196f3'
-                        : '1px solid #e0e0e0',
+                      border: activeFilters.interactions ? '1px solid #2196f3' : '1px solid #e0e0e0',
                     }}
                   >
                     <span style={{ marginRight: '6px' }}>🧲</span>
@@ -1001,9 +1120,7 @@ export default function SearchPage() {
                         fontWeight: activeFilters.interactions ? 600 : 400,
                       }}
                     >
-                      {activeFilters.interactions
-                        ? 'By Interactions'
-                        : 'By Date'}
+                      {activeFilters.interactions ? 'By Interactions' : 'By Date'}
                     </Typography>
                   </div>
 
@@ -1017,10 +1134,7 @@ export default function SearchPage() {
                       backgroundColor:
                         sortOrder === 'asc' ? '#e3f2fd' : '#f5f5f5',
                       borderRadius: '20px',
-                      border:
-                        sortOrder === 'asc'
-                          ? '1px solid #2196f3'
-                          : '1px solid #e0e0e0',
+                      border: sortOrder === 'asc' ? '1px solid #2196f3' : '1px solid #e0e0e0',
                       minWidth: '120px',
                     }}
                   >
@@ -1059,23 +1173,7 @@ export default function SearchPage() {
                           fontWeight: 600,
                         }}
                       >
-                        {dateRangeFilter.startDate && dateRangeFilter.endDate
-                          ? `${format(
-                              dateRangeFilter.startDate,
-                              'MMM d',
-                            )} - ${format(
-                              dateRangeFilter.endDate,
-                              'MMM d, yyyy',
-                            )}`
-                          : dateRangeFilter.startDate
-                          ? `From ${format(
-                              dateRangeFilter.startDate,
-                              'MMM d, yyyy',
-                            )}`
-                          : `Until ${format(
-                              dateRangeFilter.endDate,
-                              'MMM d, yyyy',
-                            )}`}
+                        {dateRangeSummary}
                       </Typography>
                     </div>
                   )}
@@ -1116,55 +1214,55 @@ export default function SearchPage() {
             !searchKey.trim() &&
             !hasActiveFilters() &&
             !hasEverInteractedWithFilters && (
-              <>
-                {featuredData?.featuredPosts ? (
-                  featuredPosts.length > 0 ? (
-                    <Grid item style={{ width: '100%', maxWidth: '800px' }}>
-                      <Typography
-                        variant="h6"
-                        style={{ marginBottom: '1rem', textAlign: 'center' }}
-                      >
-                        Featured Posts
-                      </Typography>
-                      <Carousel navButtonsAlwaysVisible autoplay={false}>
-                        {createCarouselItems}
-                      </Carousel>
-                    </Grid>
-                  ) : (
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>
-                      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
-                        ⭐
-                      </div>
-                      <Typography variant="h6" style={{ color: '#666' }}>
-                        No featured posts found
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        style={{ color: '#999', marginTop: '0.5rem' }}
-                      >
-                        Check back later for featured content
-                      </Typography>
-                    </div>
-                  )
-                ) : featuredLoading ? (
-                  <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <LoadingSpinner size={60} />
+            <>
+              {featuredData?.featuredPosts ? (
+                featuredPosts.length > 0 ? (
+                  <Grid item style={{ width: '100%', maxWidth: '800px' }}>
                     <Typography
                       variant="h6"
-                      style={{ marginTop: '1rem', color: '#666' }}
+                      style={{ marginBottom: '1rem', textAlign: 'center' }}
                     >
-                      Loading featured posts...
+                      Featured Posts
+                    </Typography>
+                    <Carousel navButtonsAlwaysVisible autoplay={false}>
+                      {createCarouselItems}
+                    </Carousel>
+                  </Grid>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '2rem' }}>
+                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
+                      ⭐
+                    </div>
+                    <Typography variant="h6" style={{ color: '#666' }}>
+                      No featured posts found
                     </Typography>
                     <Typography
                       variant="body2"
-                      style={{ marginTop: '0.5rem', color: '#999' }}
+                      style={{ color: '#999', marginTop: '0.5rem' }}
                     >
-                      Please wait while we fetch featured content
+                      Check back later for featured content
                     </Typography>
                   </div>
-                ) : null}
-              </>
-            )}
+                )
+              ) : featuredLoading ? (
+                <div style={{ textAlign: 'center', padding: '2rem' }}>
+                  <LoadingSpinner size={60} />
+                  <Typography
+                    variant="h6"
+                    style={{ marginTop: '1rem', color: '#666' }}
+                  >
+                    Loading featured posts...
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{ marginTop: '0.5rem', color: '#999' }}
+                  >
+                    Please wait while we fetch featured content
+                  </Typography>
+                </div>
+              ) : null}
+            </>
+          )}
 
           {/* Show database results when authenticated, searching, any filter is active, user has ever interacted with filters, */}
           {/* OR when the URL contains a page parameter. This ensures back-navigation with ?page works. */}
@@ -1192,8 +1290,11 @@ export default function SearchPage() {
                     variant="h6"
                     style={{ color: '#666', fontWeight: 500 }}
                   >
-                    {totalCount.toLocaleString()}{' '}
-                    {totalCount === 1 ? 'result' : 'results'} found
+                    {totalCount.toLocaleString()}
+                    {' '}
+                    {totalCount === 1 ? 'result' : 'results'}
+                    {' '}
+                    found
                   </Typography>
                 </Grid>
               )}
@@ -1202,14 +1303,14 @@ export default function SearchPage() {
                 <PaginatedPostsList
                   searchKey={searchKey}
                   startDateRange={
-                    dateRangeFilter.startDate
-                      ? format(dateRangeFilter.startDate, 'yyyy-MM-dd')
-                      : ''
+                    dateRangeFilter.startDate ?
+                      format(dateRangeFilter.startDate, 'yyyy-MM-dd') :
+                      ''
                   }
                   endDateRange={
-                    dateRangeFilter.endDate
-                      ? format(dateRangeFilter.endDate, 'yyyy-MM-dd')
-                      : ''
+                    dateRangeFilter.endDate ?
+                      format(dateRangeFilter.endDate, 'yyyy-MM-dd') :
+                      ''
                   }
                   friendsOnly={user && user._id ? activeFilters.friends : false}
                   interactions={activeFilters.interactions}
@@ -1219,8 +1320,8 @@ export default function SearchPage() {
                   pageParam="page"
                   pageSizeParam="page_size"
                   cols={1}
-                  showPageInfo={true}
-                  showFirstLast={true}
+                  showPageInfo
+                  showFirstLast
                   maxVisiblePages={5}
                   onTotalCountChange={setTotalCount}
                 />
