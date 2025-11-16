@@ -10,7 +10,6 @@ import {
   CircularProgress,
   Box,
 } from '@material-ui/core'
-import PersonIcon from '@material-ui/icons/Person'
 import AvatarDisplay from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({
