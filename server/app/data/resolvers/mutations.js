@@ -79,6 +79,11 @@ export const resolver_mutations = function () {
     reportUser: userMutations.reportUser(),
     recalculateReputation: userMutations.recalculateReputation(),
 
+    // Bot reporting and account management
+    reportBot: userMutations.reportBot(),
+    disableUser: userMutations.disableUser(),
+    enableUser: userMutations.enableUser(),
+
     // Presence mutations
     updatePresence: presenceMutations.updatePresence,
     heartbeat: presenceMutations.heartbeat,

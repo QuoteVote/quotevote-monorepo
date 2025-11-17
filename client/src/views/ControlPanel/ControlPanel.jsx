@@ -33,6 +33,7 @@ import {
   UPDATE_FEATURED_SLOT,
   UPDATE_USER,
 } from '@/graphql/mutations'
+import BotListTab from '@/components/Admin/BotListTab'
 
 // react plugin for creating charts
 import ChartistGraph from 'react-chartist'
@@ -1020,6 +1021,7 @@ const ControlPanelContainer = ({ data, onRefresh }) => {
               <MenuItem value={1}>Statistics</MenuItem>
               <MenuItem value={2}>Featured Posts</MenuItem>
               <MenuItem value={3}>User Management</MenuItem>
+              <MenuItem value={4}>Bot Reports</MenuItem>
             </Select>
           </FormControl>
         ) : (
@@ -1037,6 +1039,7 @@ const ControlPanelContainer = ({ data, onRefresh }) => {
               <Tab label="Statistics" classes={{ root: classes.tabRoot }} />
               <Tab label="Featured Posts" classes={{ root: classes.tabRoot }} />
               <Tab label="User Management" classes={{ root: classes.tabRoot }} />
+              <Tab label="Bot Reports" classes={{ root: classes.tabRoot }} />
             </Tabs>
           </Box>
         )}
@@ -1054,6 +1057,9 @@ const ControlPanelContainer = ({ data, onRefresh }) => {
         </TabPanel>
         <TabPanel value={tabValue} index={3}>
           <UserManagementTab />
+        </TabPanel>
+        <TabPanel value={tabValue} index={4}>
+          <BotListTab />
         </TabPanel>
       </Grid>
     </Grid>
