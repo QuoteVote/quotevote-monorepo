@@ -1,6 +1,6 @@
 [build]
   base = "client"
-  command = "rm -rf node_modules && npm ci --legacy-peer-deps && npm run build:ci"
+  command = "npm ci --legacy-peer-deps && npm run build:ci"
   publish = "build"
   ignore = "false"  # Force build on all changes
 
