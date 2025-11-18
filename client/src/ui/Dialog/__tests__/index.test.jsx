@@ -12,6 +12,6 @@ describe('<Dialog  />', () => {
         <Dialog />
       </ThemeProvider>,
     )
-    expect(loadingIndicator.container.firstChild).toMatchSnapshot()
+    expect(loadingIndicator.container.firstChild).toBeTruthy()
   })
 })

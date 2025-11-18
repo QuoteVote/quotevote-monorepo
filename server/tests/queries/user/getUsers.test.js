@@ -41,15 +41,45 @@ describe('Queries > user > getUsers', () => {
     usersModelStub.restore();
   });
 
-  it('should return all users', async () => {
-    // Mock the UserModel.find to return data with _doc property like Mongoose does
+  it('should return all users when admin user is authenticated', async () => {
+    // Mock the UserModel.find to return a chainable query object like Mongoose does
     const mockUsers = usersData.map((user) => ({
       _id: user._id,
       _doc: user,
     }));
-    usersModelStub.resolves(mockUsers);
-    const result = await getUsers()(undefined, {}, undefined);
+    
+    const mockQuery = {
+      limit: sinon.stub().returnsThis(),
+      skip: sinon.stub().returnsThis(),
+      select: sinon.stub().returnsThis(),
+      sort: sinon.stub().resolves(mockUsers),
+    };
+    usersModelStub.returns(mockQuery);
+    
+    const context = { user: { _id: 'admin', admin: true } };
+    const result = await getUsers()(undefined, {}, context);
     expect(result).to.deep.equal(expectedUsersData);
     sinon.assert.called(usersModelStub);
+  });
+
+  it('should throw error when user is not authenticated', async () => {
+    try {
+      await getUsers()(undefined, {}, {});
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect(error.message).to.equal('Authentication required to access user data');
+    }
+    sinon.assert.notCalled(usersModelStub);
+  });
+
+  it('should throw error when user is not an admin', async () => {
+    try {
+      const context = { user: { _id: 'user1', admin: false } };
+      await getUsers()(undefined, {}, context);
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect(error.message).to.equal('Admin access required to query all users');
+    }
+    sinon.assert.notCalled(usersModelStub);
   });
 });
