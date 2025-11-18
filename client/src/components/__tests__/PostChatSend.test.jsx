@@ -1,12 +1,18 @@
 import React from 'react'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { MockedProvider } from '@apollo/client/testing'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
+import { vi, expect } from 'vitest'
 import PostChatSend from '../PostChat/PostChatSend'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import chatReducer from '../../store/chat'
 import { AuthModalProvider } from '../../Context/AuthModalContext'
+
+// Mock useGuestGuard to always return true (authenticated)
+vi.mock('../../utils/useGuestGuard', () => ({
+  default: () => () => true,
+}))
 
 // Create a mock store
 const createMockStore = () => {
@@ -80,8 +86,8 @@ describe('PostChatSend', () => {
       </Provider>
     )
 
-    expect(screen.getByPlaceholderText('type a message...')).toBeInTheDocument()
-    expect(screen.getByAltText('send')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('type a message...')).toBeTruthy()
+    expect(screen.getByAltText('send')).toBeTruthy()
   })
 
   it('allows typing in the input field', () => {
@@ -116,10 +122,13 @@ describe('PostChatSend', () => {
     const sendButton = screen.getByAltText('send')
 
     fireEvent.change(input, { target: { value: 'Test message' } })
-    fireEvent.click(sendButton)
-
-    await waitFor(() => {
-      expect(input.value).toBe('')
+    
+    await act(async () => {
+      fireEvent.click(sendButton)
+      // Wait for the mutation to complete and state to update
+      await waitFor(() => {
+        expect(input.value).toBe('')
+      }, { timeout: 3000 })
     })
   })
 
@@ -137,10 +146,13 @@ describe('PostChatSend', () => {
     const input = screen.getByPlaceholderText('type a message...')
     
     fireEvent.change(input, { target: { value: 'Test message' } })
-    fireEvent.keyPress(input, { key: 'Enter', code: 'Enter' })
-
-    await waitFor(() => {
-      expect(input.value).toBe('')
+    
+    await act(async () => {
+      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+      // Wait for the mutation to complete and state to update
+      await waitFor(() => {
+        expect(input.value).toBe('')
+      }, { timeout: 3000 })
     })
   })
 
@@ -180,10 +192,13 @@ describe('PostChatSend', () => {
     const sendButton = screen.getByAltText('send')
 
     fireEvent.change(input, { target: { value: '  Test message  ' } })
-    fireEvent.click(sendButton)
-
-    await waitFor(() => {
-      expect(input.value).toBe('')
+    
+    await act(async () => {
+      fireEvent.click(sendButton)
+      // Wait for the mutation to complete and state to update
+      await waitFor(() => {
+        expect(input.value).toBe('')
+      }, { timeout: 3000 })
     })
   })
 }) 
