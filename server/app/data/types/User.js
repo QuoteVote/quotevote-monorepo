@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 export const User = `
 type User {
   _id: String!
@@ -21,7 +20,6 @@ type User {
   reputation: UserReputation
   themePreference: String
 }`;
-=======
 export const User = `
 type User {
   _id: String!
@@ -41,7 +39,8 @@ type User {
   upvotes: Int
   downvotes: Int
   contributorBadge: Boolean
-  themePreference: String
   reputation: UserReputation
+  botReports: Int
+  accountStatus: String
+  lastBotReportDate: String
 }`;
->>>>>>> Stashed changes

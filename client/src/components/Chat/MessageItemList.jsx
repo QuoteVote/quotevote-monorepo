@@ -56,8 +56,8 @@ export default function MessageItemList() {
     NEW_MESSAGE_SUBSCRIPTION,
     messageRoomId ? {
       variables: { messageRoomId },
-      onSubscriptionData: async ({ subscriptionData: subData }) => {
-        if (subData?.data?.message) {
+      onData: async ({ data: subData }) => {
+        if (subData?.message) {
           // Refetch messages to get the latest list
           await refetch()
         }

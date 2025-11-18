@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import PostModel from '../../models/PostModel';
 import UserModel from '../../models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const topPosts = () => {
   return async (_, args, context) => {
     try {
-      console.log('topPosts - Starting query with args:', args);
-      console.log('topPosts - Context user:', context.user ? 'Authenticated' : 'Not authenticated');
+      logger.debug('topPosts - Starting query', { args, authenticated: !!context.user });
       
       const {
         limit,
@@ -24,16 +24,16 @@ export const topPosts = () => {
 
       // Validate required parameters
       if (limit === undefined || limit === null) {
-        console.error('topPosts - limit is required but not provided');
+        logger.error('topPosts - limit is required but not provided');
         throw new Error('limit parameter is required');
       }
       
       if (offset === undefined || offset === null) {
-        console.error('topPosts - offset is required but not provided');
+        logger.error('topPosts - offset is required but not provided');
         throw new Error('offset parameter is required');
       }
 
-      console.log('topPosts - Validated parameters:', { limit, offset, searchKey, friendsOnly, interactions, sortOrder });
+      logger.debug('topPosts - Validated parameters', { limit, offset, searchKey, friendsOnly, interactions, sortOrder });
 
       // Build search arguments
       const searchArgs = {
@@ -73,8 +73,7 @@ export const topPosts = () => {
 
       // Handle userId filter - if userId is provided, only return posts for that user
       if (userId) {
-        console.log('topPosts - userId filter applied:', userId);
-        console.log('topPosts - userId type:', typeof userId);
+        logger.debug('topPosts - userId filter applied', { userId, userIdType: typeof userId });
 
         // Convert userId to ObjectId if it's a string to ensure proper matching
         const userIdToFilter = mongoose.Types.ObjectId.isValid(userId)
@@ -85,7 +84,7 @@ export const topPosts = () => {
 
         // When filtering by specific userId, ignore friendsOnly filter
         // This ensures we get all posts for the specified user
-        console.log('topPosts - searchArgs with userId:', searchArgs);
+        logger.debug('topPosts - searchArgs with userId', { searchArgs, userId });
       } else if (friendsOnly) {
         // Handle friendsOnly filter - only apply when no specific userId is requested
         if (!context.user || !context.user._id) {
@@ -208,7 +207,7 @@ export const topPosts = () => {
           created: sortOrder === 'asc' ? 'asc' : 'desc', // Use sortOrder parameter
         };
 
-        console.log('Search query details:', {
+        logger.debug('Search query details', {
           searchKey,
           searchKeyTrimmed: searchKey ? searchKey.trim() : null,
           searchArgs,
@@ -226,19 +225,17 @@ export const topPosts = () => {
           },
         });
 
-        console.log('topPosts - Final searchArgs:', searchArgs);
-        console.log('topPosts - userId being filtered:', userId);
+        logger.debug('topPosts - Final searchArgs', { searchArgs, userId });
 
         trendingPosts = await PostModel.find(searchArgs)
           .sort(sortCriteria)
           .skip(offset)
           .limit(limit);
 
-        console.log('topPosts - Posts found:', trendingPosts.length);
-        console.log(
-          'topPosts - First few posts userIds:',
-          trendingPosts.slice(0, 3).map((p) => p.userId),
-        );
+        logger.debug('topPosts - Posts found', {
+          count: trendingPosts.length,
+          firstFewUserIds: trendingPosts.slice(0, 3).map((p) => p.userId),
+        });
       }
 
       // Populate creator information
@@ -273,7 +270,10 @@ export const topPosts = () => {
         },
       };
     } catch (error) {
-      console.error('topPosts - Error fetching posts:', error);
+      logger.error('topPosts - Error fetching posts', {
+        error: error.message,
+        stack: error.stack,
+      });
       throw new Error(`Failed to fetch posts: ${error.message}`);
     }
   };

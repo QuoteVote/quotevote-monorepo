@@ -1,4 +1,5 @@
 import ActivitiesModel from '../models/ActivityModel';
+import { logger } from '../../utils/logger';
 
 /**
  * Activity Type Lists
@@ -16,5 +17,5 @@ export const logActivity = async (activityType, ids, content) => {
     created: new Date(),
   };
   await new ActivitiesModel(newActivity).save();
-  console.log(`Added new activty of type: ${activityType}`);
+  logger.debug('Added new activity', { activityType, ids, content });
 };

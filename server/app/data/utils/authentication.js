@@ -131,6 +131,14 @@ export const addCreatorToUser = async ({ username, password, requirePassword }, 
     return invalidUserPassword(res);
   }
 
+  // Check if account is disabled
+  if (user.accountStatus === 'disabled') {
+    return res.status(403).json({
+      message: 'Your account has been flagged as a bot and temporarily disabled. If you believe this is a mistake, please email admin@quote.vote to appeal.',
+      accountDisabled: true,
+    });
+  }
+
   if (requirePassword) {
     const { hash_password } = user;
     const comparePassword = await bcrypt.compare(password, hash_password);
@@ -187,8 +195,7 @@ export const login = async (req, res) => {
 };
 
 export const authenticate = async (req, res) => {
-  console.log('authenticate', req.body);
-  logger.info(req.body);
+  logger.info('authenticate', { body: req.body });
   let errorMessage = '';
   if (!('username' in req.body)) {
     errorMessage = 'Username is required.';

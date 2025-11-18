@@ -6,12 +6,11 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  Avatar,
   Typography,
   CircularProgress,
   Box,
 } from '@material-ui/core'
-import PersonIcon from '@material-ui/icons/Person'
+import AvatarDisplay from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -134,13 +133,10 @@ export default function UsernameResults({
             button
           >
             <ListItemAvatar>
-              <Avatar
-                src={user.avatar}
-                className={classes.avatar}
-                alt={user.name}
-              >
-                {!user.avatar && <PersonIcon />}
-              </Avatar>
+              <div style={{ width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Use AvatarDisplay (avataaars) which is how profiles render site-wide */}
+                <AvatarDisplay height={40} width={40} {...(user.avatar || {})} />
+              </div>
             </ListItemAvatar>
             <ListItemText
               primary={

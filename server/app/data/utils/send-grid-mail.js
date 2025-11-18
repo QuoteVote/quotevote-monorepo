@@ -1,4 +1,5 @@
 import sgMail from '@sendgrid/mail';
+import { logger } from './logger';
 
 export const SENGRID_TEMPLATE_IDS = {
   INVITE_REQUEST_RECEIVED_CONFIRMATION: 'd-a7c556d6bf014115a764033690e11a01.e6d8c539-e40e-4724-a169-d4912f489afe',
@@ -21,11 +22,9 @@ export const SENGRID_TEMPLATE_IDS = {
  */
 const sendGridEmail = async (emailData) => {
   const apiKey = process.env.SENDGRID_API_KEY;
-  console.log('API', apiKey);
-
-  console.log({ apiKey });
+  
   if (!apiKey) {
-    console.error('SENDGRID_API_KEY environment variable is not set');
+    logger.error('SENDGRID_API_KEY environment variable is not set');
     throw new Error('SENDGRID_API_KEY environment variable is not set');
   }
 
@@ -60,28 +59,38 @@ const sendGridEmail = async (emailData) => {
     ],
   };
 
-  console.log('sendGridEmail', {
-    msg,
+  logger.debug('sendGridEmail', {
+    to: emailData.to,
+    from: emailData.from || `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`,
+    subject: emailData.subject,
+    hasTemplateId: !!emailData.templateId,
   });
 
   try {
     await sgMail.send(msg);
-    console.log('Email sent successfully');
+    logger.info('Email sent successfully', { to: emailData.to, subject: emailData.subject });
     return { success: true, message: 'Email sent successfully' };
   } catch (error) {
-    console.error('Error sending email:', error);
+    logger.error('Error sending email', {
+      error: error.message,
+      to: emailData.to,
+      stack: error.stack,
+    });
 
     if (error.response) {
-      console.error('SendGrid API Error:', error.response.body);
+      logger.error('SendGrid API Error', {
+        error: error.response.body,
+        to: emailData.to,
+      });
 
       // Handle specific SendGrid errors
       if (error.response.body && error.response.body.errors) {
         const { errors } = error.response.body;
         errors.forEach((err) => {
           if (err.message.includes('authorization grant is invalid')) {
-            console.error(
-              'SendGrid API Key Error: Please check your SENDGRID_API_KEY environment variable',
-            );
+            logger.error('SendGrid API Key Error: Please check your SENDGRID_API_KEY environment variable', {
+              error: err.message,
+            });
           }
         });
       }

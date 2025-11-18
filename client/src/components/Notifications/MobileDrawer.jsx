@@ -68,16 +68,6 @@ function MobileDrawer({
 }) {
   const classes = useStyles()
 
-  const mergedAppBarStyle = {
-    ...classes.appBar,
-    ...appBarStyle,
-  }
-
-  const mergedBackButtonStyle = {
-    ...classes.backButton,
-    ...backButtonStyle,
-  }
-
   return (
     <Drawer
       anchor={anchor}
@@ -94,7 +84,7 @@ function MobileDrawer({
       <div className={classes.drawer}>
         <AppBar 
           position="static" 
-          className={mergedAppBarStyle} 
+          className={classes.appBar} 
           elevation={1}
           style={appBarStyle}
         >
@@ -104,14 +94,15 @@ function MobileDrawer({
               color="inherit"
               onClick={onClose}
               aria-label="back"
-              className={mergedBackButtonStyle}
+              className={classes.backButton}
               style={backButtonStyle}
             >
               <ArrowBackIcon />
             </IconButton>
             <Typography 
               variant="h6" 
-              className={titleStyle ? titleStyle : classes.title}
+              className={typeof titleStyle === 'string' ? titleStyle : classes.title}
+              style={typeof titleStyle === 'object' ? titleStyle : undefined}
             >
               {title}
             </Typography>
@@ -131,9 +122,9 @@ MobileDrawer.propTypes = {
   title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
   anchor: PropTypes.oneOf(['left', 'right', 'top', 'bottom']),
-  drawerPaperStyle: PropTypes.object,
+  drawerPaperStyle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   appBarStyle: PropTypes.object,
-  titleStyle: PropTypes.object,
+  titleStyle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   backButtonStyle: PropTypes.object,
 }
 

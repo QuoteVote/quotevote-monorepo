@@ -73,8 +73,8 @@ function Notification({
       <Grid item className={classes.content}>
         {loading && (
           <List className={classes.skeleton}>
-            {Array.from(Array(3).keys()).map(() => (
-              <ListItem>
+            {Array.from(Array(3).keys()).map((index) => (
+              <ListItem key={`skeleton-${index}`}>
                 <ListItemAvatar>
                   <Skeleton animation="wave" variant="circle" width={40} height={40} />
                 </ListItemAvatar>

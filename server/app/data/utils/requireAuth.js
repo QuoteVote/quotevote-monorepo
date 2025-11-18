@@ -1,3 +1,5 @@
+import { logger } from './logger';
+
 const PUBLIC_QUERIES = [
   'addStripeCustomer',
   'requestUserAccess',
@@ -31,7 +33,7 @@ const requireAuth = (query) => {
       break;
     }
   }
-  console.log({ requireAuth });
+  logger.debug('requireAuth check', { requireAuth, query });
   return requireAuth;
 };
 

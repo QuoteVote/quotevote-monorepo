@@ -13,17 +13,23 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button'
 import ChatIcon from '@material-ui/icons/Chat'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogActions from '@material-ui/core/DialogActions'
 
 //  Local
 import FollowButton from 'components/CustomButtons/FollowButton'
 import { Avatar } from '@material-ui/core'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import mainTheme from '../../themes/MainTheme'
 import AvatarDisplay from '../Avatar'
 import { GET_CHAT_ROOM, GET_ROSTER } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
 import { SET_SNACKBAR } from '../../store/ui'
 import ProfileBadge, { ProfileBadgeContainer } from '../Profile/ProfileBadge'
+import { REPORT_BOT } from '../../graphql/mutations'
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -67,6 +73,8 @@ export default function ProfileHeader(props) {
   const { profileUser } = props
   const loggedInUserId = useSelector((state) => state.user.data._id)
   const dispatch = useDispatch()
+  const [reportDialogOpen, setReportDialogOpen] = React.useState(false)
+  const [reportBot, { loading: reportLoading }] = useMutation(REPORT_BOT)
 
   const {
     username,
@@ -147,6 +155,38 @@ export default function ProfileHeader(props) {
     )
     dispatch(SET_CHAT_OPEN(true))
   }
+
+  const handleReportBot = async () => {
+    try {
+      console.log('Reporting bot - userId:', _id, 'reporterId:', loggedInUserId)
+      const result = await reportBot({
+        variables: {
+          userId: _id,
+          reporterId: loggedInUserId,
+        },
+      })
+      console.log('Report bot result:', result)
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'User reported successfully. Thank you for helping keep our platform safe.',
+          type: 'success',
+        }),
+      )
+      setReportDialogOpen(false)
+    } catch (error) {
+      console.error('Report bot error:', error)
+      console.error('Error details:', error.message, error.graphQLErrors, error.networkError)
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to report user',
+          type: 'error',
+        }),
+      )
+    }
+  }
+
   return (
     <ThemeProvider theme={mainTheme}>
       <Grid container direction="row" alignItems="center" justifyContent="flex-start" spacing={2}>
@@ -258,6 +298,17 @@ export default function ProfileHeader(props) {
                                   Message
                                 </Button>
                               </Grid>
+                              <Grid item xs={12} sm={3} md={3}>
+                                <Button
+                                  variant="outlined"
+                                  color="secondary"
+                                  size="medium"
+                                  className={classes.button}
+                                  onClick={() => setReportDialogOpen(true)}
+                                >
+                                  Report Bot
+                                </Button>
+                              </Grid>
                             </>
                           )}
                         </Grid>
@@ -270,6 +321,34 @@ export default function ProfileHeader(props) {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Report Bot Confirmation Dialog */}
+      <Dialog
+        open={reportDialogOpen}
+        onClose={() => setReportDialogOpen(false)}
+        aria-labelledby="report-dialog-title"
+      >
+        <DialogTitle id="report-dialog-title">Report Suspected Bot</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to report @{username} as a suspected bot?
+            This action helps keep the platform safe. False reports may affect your reputation.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setReportDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleReportBot}
+            color="secondary"
+            variant="contained"
+            disabled={reportLoading}
+          >
+            {reportLoading ? 'Reporting...' : 'Report Bot'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </ThemeProvider>
   )
 }

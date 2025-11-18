@@ -1,13 +1,14 @@
 import { sendEmail } from './sendEmail';
 import UserModel from '~/resolvers/models/UserModel';
+import { logger } from '../../../utils/logger';
 
 export const sendInvestorMail = (pubsub) => {
   return async (_, args) => {
     const { email } = args;
-    console.log('checking mail for', email);
+    logger.debug('checking mail for', { email });
 
     const existingUser = await UserModel.findOne({ email });
-    console.log('Existing user', existingUser);
+    logger.debug('Existing user', { email, hasUser: !!existingUser });
     let user;
     if (!existingUser) {
       const tempName = (email.split('@'))[0];
@@ -32,9 +33,9 @@ export const sendInvestorMail = (pubsub) => {
 
     const sendMailResult = await sendEmail(mailOptions);
     if (sendMailResult) {
-      console.log(`SUCCESS: User invite sent successfully to ${email}.`);
+      logger.info('User invite sent successfully', { email, toInvestorEmail: process.env.TO_INVESTOR_EMAIL });
     } else {
-      console.log('FAILURE: Mail transporter failed to return a response');
+      logger.warn('Mail transporter failed to return a response', { email });
     }
 
     return user || existingUser;
