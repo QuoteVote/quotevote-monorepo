@@ -2,8 +2,6 @@
   base = "client"
   command = "npm ci --legacy-peer-deps && npm run build:ci"
   publish = "build"
-  ignore = "false"  # Force build on all changes
-
 [build.environment]
   NODE_VERSION = "22"
   ROLLUP_SKIP_NATIVE = "true"
