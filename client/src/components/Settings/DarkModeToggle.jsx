@@ -118,7 +118,7 @@ const DarkModeToggle = () => {
             <Typography className={classes.title}>
               {isDarkMode ? 'Dark Mode' : 'Light Mode'}
               <span className={classes.badge}>
-                {isDarkMode ? 'Active' : 'Active'}
+                Active
               </span>
             </Typography>
             <Typography className={classes.description}>
