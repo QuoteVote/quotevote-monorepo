@@ -49,6 +49,9 @@ type Query {
   " Get user reports "
   getUserReports(userId: String!, status: String): [UserReport]
 
+  " Get users reported as bots (admin only) "
+  getBotReportedUsers(sortBy: String, limit: Int): [User]
+
   " This will query the user messages by Message Room ID"
   messages(messageRoomId: String!): [Message]
 
