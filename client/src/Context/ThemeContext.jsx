@@ -203,7 +203,7 @@ export const ThemeProvider = ({ children }) => {
     if (isLoggedIn && user?.themePreference && user.themePreference !== themeMode) {
       setThemeMode(user.themePreference)
     }
-  }, [user?.themePreference, isLoggedIn, themeMode])
+  }, [user?.themePreference, isLoggedIn])
   
   const toggleTheme = async () => {
     const newMode = themeMode === 'light' ? 'dark' : 'light'
