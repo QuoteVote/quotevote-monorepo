@@ -73,6 +73,7 @@
     "promise": "^8.0.1",
     "prop-types": "^15.6.2",
     "request": "^2.81.0",
+    "rimraf": "^3.0.2",
     "sinon": "^9.0.2",
     "stripe": "^8.89.0",
     "subscriptions-transport-ws": "^0.9.4",
@@ -114,8 +115,7 @@
     "eslint-config-airbnb": "^18.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-react": "^7.19.0",
-    "nodemon": "^2.0.3",
-    "rimraf": "^3.0.2"
+    "nodemon": "^2.0.3"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.6.1"
