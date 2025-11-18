@@ -92,4 +92,4 @@ const schema = mongoose.Schema({
 
 schema.index({ content: 'text' });
 
-export default mongoose.model('users', schema);
+export default schema;
