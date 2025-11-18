@@ -6,11 +6,18 @@
   NODE_VERSION = "22"
   ROLLUP_SKIP_NATIVE = "true"
   NODE_ENV = "production"
-  # Add Railway backend URL for production deployment
+
+[context.production.environment]
+  # Production backend URLs
   REACT_APP_SERVER = "https://quotevote-backend.railway.app/graphql"
   REACT_APP_SERVER_WS = "wss://quotevote-backend.railway.app/graphql"
   REACT_APP_DOMAIN = "https://quotevote.netlify.app"
 
+[context.deploy-preview.environment]
+  # Example: Use a staging or preview backend, or leave unset for frontend defaults
+  # REACT_APP_SERVER = "https://quotevote-backend-preview.railway.app/graphql"
+  # REACT_APP_SERVER_WS = "wss://quotevote-backend-preview.railway.app/graphql"
+  # REACT_APP_DOMAIN = "https://deploy-preview--quotevote.netlify.app"
 [[redirects]]
   from = "/*"
   to = "/index.html"
