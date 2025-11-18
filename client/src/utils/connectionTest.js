@@ -100,7 +100,7 @@ export const testLoginEndpoint = async (backendUrl) => {
 
 // Run comprehensive connection test on app startup
 export const runStartupConnectionTest = async () => {
-  console.log('🚀 Running startup connection test for PR #255...')
+  console.log('🚀 Running startup connection test...')
   
   const workingBackend = await performConnectionTest()
   
