@@ -328,6 +328,30 @@ export const RECALCULATE_REPUTATION = gql`
   }
 `
 
+export const REPORT_BOT = gql`
+  mutation reportBot($userId: String!, $reporterId: String!) {
+    reportBot(userId: $userId, reporterId: $reporterId)
+  }
+`
+
+export const DISABLE_USER = gql`
+  mutation disableUser($userId: String!) {
+    disableUser(userId: $userId) {
+      _id
+      accountStatus
+    }
+  }
+`
+
+export const ENABLE_USER = gql`
+  mutation enableUser($userId: String!) {
+    enableUser(userId: $userId) {
+      _id
+      accountStatus
+    }
+  }
+`
+
 // ===== Presence Mutations =====
 export const UPDATE_PRESENCE = gql`
   mutation updatePresence($presence: PresenceInput!) {

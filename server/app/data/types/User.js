@@ -18,4 +18,7 @@ type User {
   downvotes: Int
   contributorBadge: Boolean
   reputation: UserReputation
+  botReports: Int
+  accountStatus: String
+  lastBotReportDate: String
 }`;

@@ -14,6 +14,7 @@ import {
 } from 'react'
 import SearchIcon from '@material-ui/icons/Search'
 import DatePicker from 'react-datepicker'
+import { useHistory } from 'react-router-dom'
 import 'react-datepicker/dist/react-datepicker.css'
 import format from 'date-fns/format'
 import { jwtDecode } from 'jwt-decode'
@@ -21,6 +22,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import {
   GET_TOP_POSTS,
   GET_FEATURED_POSTS,
+  GET_USER,
   SEARCH_USERNAMES,
 } from '../../graphql/query'
 import { serializePost } from '../../utils/objectIdSerializer'
@@ -33,6 +35,7 @@ import SearchGuestSections from '../../components/SearchContainer/SearchGuestSec
 import UsernameResults from '../../components/SearchContainer/UsernameResults'
 import GuestFooter from '../../components/GuestFooter'
 import SEOHead from '../../components/common/SEOHead'
+import AvatarDisplay from '../../components/Avatar'
 import {
   generateCanonicalUrl,
   generatePaginationUrls,
@@ -350,6 +353,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SearchPage() {
   const classes = useStyles()
+  const history = useHistory()
   const [showResults, setShowResults] = useState(true)
   const [searchKey, setSearchKey] = useState('')
   const user = useSelector((state) => state.user.data)
@@ -386,6 +390,7 @@ export default function SearchPage() {
   const [usernameQuery, setUsernameQuery] = useState('')
   const [showUsernameResults, setShowUsernameResults] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState(null)
+  const [selectedUser, setSelectedUser] = useState(null)
 
   // Ref for the search container to handle click outside
   const searchContainerRef = useRef(null)
@@ -457,6 +462,38 @@ export default function SearchPage() {
     errorPolicy: 'all',
   })
 
+  // If user typed @username and pressed enter without selecting from dropdown,
+  // resolve that username to a userId so posts can be filtered correctly.
+  const usernameFromSearch =
+    searchKey && searchKey.startsWith('@') ? searchKey.slice(1).trim() : ''
+  const shouldResolveUserFromSearch =
+    !!usernameFromSearch &&
+    !selectedUserId &&
+    !isUsernameSearch &&
+    showResults
+
+  const {
+    data: resolvedUserData,
+    loading: resolvingUser,
+  } = useQuery(GET_USER, {
+    variables: { username: usernameFromSearch },
+    skip: !shouldResolveUserFromSearch,
+    fetchPolicy: 'cache-first',
+    errorPolicy: 'all',
+  })
+
+  useEffect(() => {
+    if (resolvedUserData?.user) {
+      setSelectedUserId(resolvedUserData.user._id)
+      setSelectedUser(resolvedUserData.user)
+    } else if (shouldResolveUserFromSearch && !resolvingUser) {
+      // Clear any previously selected user if resolution failed
+      setSelectedUserId(null)
+      setSelectedUser(null)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedUserData, resolvingUser, shouldResolveUserFromSearch])
+
   // Auto-show results for guest mode and when filters are active
   useEffect(() => {
     if (isGuestMode && !showResults) {
@@ -485,6 +522,7 @@ export default function SearchPage() {
       setUsernameQuery('')
       setShowUsernameResults(false)
       setSelectedUserId(null)
+      setSelectedUser(null)
     }
   }, [searchKey])
 
@@ -824,6 +862,7 @@ export default function SearchPage() {
                   // Set search to show posts from selected user
                   setSearchKey(`@${user.username}`)
                   setSelectedUserId(user._id)
+                  setSelectedUser(user)
                   setIsUsernameSearch(false)
                   setShowUsernameResults(false)
                   setShowResults(true)
@@ -1285,6 +1324,63 @@ export default function SearchPage() {
             return shouldShowDbResults
           })() && (
             <>
+              {/* Selected/Searched User Header */}
+              {(selectedUser || resolvedUserData?.user) &&
+                (() => {
+                  const displayUser = selectedUser || resolvedUserData.user
+                  return (
+                    <Grid
+                      item
+                      style={{ width: '100%', maxWidth: 600, marginTop: 8 }}
+                    >
+                      <Paper
+                        onClick={() =>
+                          history.push(`/Profile/${displayUser.username}/`)
+                        }
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 12,
+                          padding: 12,
+                          cursor: 'pointer',
+                          border: '1px solid #e0e0e0',
+                          borderRadius: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 48,
+                            height: 48,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <AvatarDisplay
+                            height={48}
+                            width={48}
+                            {...(displayUser.avatar || {})}
+                          />
+                        </div>
+                        <div style={{ textAlign: 'left' }}>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ lineHeight: 1.1, fontWeight: 600 }}
+                          >
+                            {displayUser.name || displayUser.username}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            style={{ color: '#666', marginTop: 2 }}
+                          >
+                            @{displayUser.username}
+                          </Typography>
+                        </div>
+                      </Paper>
+                    </Grid>
+                  )
+                })()}
+
               {/* Total Count Display */}
               {totalCount > 0 && (
                 <Grid
@@ -1306,7 +1402,7 @@ export default function SearchPage() {
 
               <Grid item xs={12} className={classes.list}>
                 <PaginatedPostsList
-                  searchKey={searchKey}
+                  searchKey={selectedUserId ? '' : searchKey}
                   startDateRange={
                     dateRangeFilter.startDate ?
                       format(dateRangeFilter.startDate, 'yyyy-MM-dd') :

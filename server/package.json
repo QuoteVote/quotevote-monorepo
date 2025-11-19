@@ -13,7 +13,7 @@
     "dev-mac": "cross-env NODE_ENV=dev nodemon app/server.js --exec babel-node --presets=@babel/preset-env",
     "build": "rimraf dist/ && babel ./app/ --out-dir dist/ --ignore ./node_modules,./app/tests,./.babelrc,./npm-debug.log",
     "build-deploy": "npm run build && pm2 delete all && pm2 start app/ecosystem.config.js",
-    "unittest": "env-cmd ./.env mocha --exit app/tests --recursive --require @babel/register --require @babel/polyfill --check-leaks",
+    "unittest": "env-cmd -f ./.env mocha --exit app/tests --recursive --require @babel/register --require @babel/polyfill --check-leaks",
     "test": "jest",
     "lint": "eslint .",
     "dev-db-start": "./dev-db start",

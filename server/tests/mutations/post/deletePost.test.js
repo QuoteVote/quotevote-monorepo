@@ -33,6 +33,28 @@ describe('Mutations > post > deletePost', () => {
     expect(result).to.deep.equal({ _id: '2' });
     sinon.assert.called(updateStub);
   });
+
+  it('should throw error when user is not provided', async () => {
+    findStub.resolves({ _id: '1', userId: 'user1' });
+    try {
+      await deletePost()(undefined, { postId: '1' }, {});
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect(error.message).to.equal('Not authorized to delete this post');
+    }
+    sinon.assert.notCalled(updateStub);
+  });
+
+  it('should throw error when user is not the creator and not an admin', async () => {
+    findStub.resolves({ _id: '1', userId: 'user1' });
+    try {
+      await deletePost()(undefined, { postId: '1' }, { user: { _id: 'user2' } });
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect(error.message).to.equal('Not authorized to delete this post');
+    }
+    sinon.assert.notCalled(updateStub);
+  });
 });
 
 describe('Queries > post > getPost with deleted post', () => {

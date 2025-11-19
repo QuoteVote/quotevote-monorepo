@@ -83,8 +83,21 @@ const schema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  botReports: {
+    type: Number,
+    default: 0,
+  },
+  accountStatus: {
+    type: String,
+    enum: ['active', 'disabled'],
+    default: 'active',
+  },
+  lastBotReportDate: {
+    type: Date,
+  },
 });
 
 schema.index({ content: 'text' });
+schema.index({ botReports: -1, lastBotReportDate: -1 });
 
 export default mongoose.model('users', schema);
