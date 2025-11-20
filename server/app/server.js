@@ -34,17 +34,12 @@ const GRAPHQL_PORT = process.env.PORT || 4000;
 
 logger.info(`Database URL: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}`);
 
-// Set mongoose global options to prevent deprecation warnings
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useUnifiedTopology', true);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useFindAndModify', false);
+// Set mongoose global options
+// Mongoose 6 defaults these to true/false correctly, so we don't need to set them manually
 
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       writeConcern: {
         w: 'majority',
         j: true,
@@ -76,8 +71,8 @@ app.use(cors({
 
     // Check if origin matches allowed origins or patterns
     if (allowedOrigins.includes(origin)
-        || /\.netlify\.app$/.test(origin)
-        || /\.quote\.vote$/.test(origin)) {
+      || /\.netlify\.app$/.test(origin)
+      || /\.quote\.vote$/.test(origin)) {
       return callback(null, true);
     }
 
@@ -185,10 +180,10 @@ async function startServer() {
       schema,
       context: async (ctx) => {
         // Extract auth token from connection params
-        const authToken = ctx.connectionParams?.authToken || 
-                         ctx.connectionParams?.authorization ||
-                         ctx.connectionParams?.token;
-        
+        const authToken = ctx.connectionParams?.authToken ||
+          ctx.connectionParams?.authorization ||
+          ctx.connectionParams?.token;
+
         if (authToken) {
           try {
             // Remove 'Bearer ' prefix if present
