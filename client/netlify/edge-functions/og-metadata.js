@@ -36,6 +36,9 @@ export default async (request, context) => {
             title
             text
             url
+            creator {
+              avatar
+            }
           }
         }
       `,
@@ -56,6 +59,13 @@ export default async (request, context) => {
     }
 
     const graphqlData = await graphqlResponse.json();
+
+    // Check for GraphQL errors in response body
+    if (graphqlData.errors && graphqlData.errors.length > 0) {
+      console.error('[Edge Function] GraphQL errors:', graphqlData.errors);
+      return context.next();
+    }
+
     const post = graphqlData?.data?.post;
 
     // If post not found or deleted, serve default metadata
@@ -70,10 +80,12 @@ export default async (request, context) => {
 
     // Generate dynamic OG metadata
     const ogTitle = post.title || "Quote.Vote – The Internet's Quote Board";
-    const ogDescription = post.text 
+    const ogDescription = post.text
       ? post.text.substring(0, 140).replace(/\n/g, ' ').trim() + (post.text.length > 140 ? '...' : '')
       : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
-    const ogImage = post.url || 'https://quote.vote/assets/og-default.jpg';
+
+    // Use creator's avatar as OG image, fallback to default
+    const ogImage = post.creator?.avatar || 'https://quote.vote/assets/og-default.jpg';
     const ogUrl = `https://quote.vote${pathname}`;
 
     // Replace default OG tags with dynamic values
