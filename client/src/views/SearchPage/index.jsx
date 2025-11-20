@@ -750,63 +750,16 @@ export default function SearchPage() {
           <Grid item>
             <div className={classes.logoContainer}>
               {theme.palette.mode === 'dark' ? (
-                <svg
-                  viewBox="0 0 1200 240"
-                  xmlns="http://www.w3.org/2000/svg"
-                  preserveAspectRatio="xMidYMid meet"
+                <img
+                  src="/assets/search-quote-vote-dark.webp"
+                  alt="Quote.Vote Dark Logo"
                   className={classes.logoImage}
-                >
-                  <defs>
-                    <linearGradient id="globeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#00D9FF', stopOpacity: 1 }} />
-                      <stop offset="50%" style={{ stopColor: '#00B8E6', stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: '#0099FF', stopOpacity: 1 }} />
-                    </linearGradient>
-                    <filter id="glow">
-                      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                      <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                  </defs>
-                  
-                  {/* QUOTE text */}
-                  <text x="40" y="160" fontFamily="Arial, Helvetica, sans-serif" fontSize="140" fontWeight="900" fill="#FFFFFF" letterSpacing="-2">QUOTE</text>
-                  
-                  {/* Dot separator */}
-                  <circle cx="580" cy="120" r="12" fill="#FFFFFF"/>
-                  
-                  {/* Globe icon */}
-                  <g filter="url(#glow)">
-                    {/* Globe sphere */}
-                    <circle cx="700" cy="120" r="80" fill="url(#globeGradient)" opacity="0.95"/>
-                    
-                    {/* Globe outline */}
-                    <circle cx="700" cy="120" r="80" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.4"/>
-                    
-                    {/* Latitude lines */}
-                    <ellipse cx="700" cy="80" rx="80" ry="15" fill="none" stroke="#FFFFFF" strokeWidth="1" opacity="0.25"/>
-                    <ellipse cx="700" cy="120" rx="80" ry="20" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.3"/>
-                    <ellipse cx="700" cy="160" rx="80" ry="15" fill="none" stroke="#FFFFFF" strokeWidth="1" opacity="0.25"/>
-                    
-                    {/* Longitude lines */}
-                    <line x1="700" y1="40" x2="700" y2="200" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.3"/>
-                    <line x1="660" y1="50" x2="660" y2="190" stroke="#FFFFFF" strokeWidth="1" opacity="0.2"/>
-                    <line x1="740" y1="50" x2="740" y2="190" stroke="#FFFFFF" strokeWidth="1" opacity="0.2"/>
-                    
-                    {/* Curved meridians */}
-                    <path d="M 630 60 Q 650 120 630 180" fill="none" stroke="#FFFFFF" strokeWidth="1" opacity="0.2"/>
-                    <path d="M 770 60 Q 750 120 770 180" fill="none" stroke="#FFFFFF" strokeWidth="1" opacity="0.2"/>
-                  </g>
-                  
-                  {/* VOTE text */}
-                  <text x="820" y="160" fontFamily="Arial, Helvetica, sans-serif" fontSize="140" fontWeight="900" fill="#FFFFFF" letterSpacing="-2">VOTE</text>
-                </svg>
+                  style={{ maxWidth: '100%', height: 'auto' }}
+                />
               ) : (
                 <img
                   src="/assets/search-quote-vote.png"
-                  alt="logo"
+                  alt="Quote.Vote Logo"
                   className={classes.logoImage}
                 />
               )}
