@@ -33,7 +33,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1.25),
     flexShrink: 0,
     border: `2px solid ${theme.palette.background.paper}`,
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 2px 8px rgba(0, 0, 0, 0.3)'
+      : '0 2px 8px rgba(0, 0, 0, 0.1)',
   },
   avatarOwn: {
     order: 2,
@@ -49,18 +51,24 @@ const useStyles = makeStyles((theme) => ({
   },
   bubble: {
     position: 'relative',
-    background: '#ffffff',
+    background: theme.palette.mode === 'dark' ? '#2A2A2A' : '#ffffff',
     borderRadius: '20px 20px 20px 6px',
     padding: theme.spacing(1.25, 1.75),
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2)'
+      : '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
     wordWrap: 'break-word',
     fontSize: '0.9375rem',
     lineHeight: 1.5,
     color: theme.palette.text.primary,
-    border: `1px solid ${theme.palette.grey[200]}`,
+    border: theme.palette.mode === 'dark'
+      ? `1px solid ${theme.palette.divider}`
+      : `1px solid ${theme.palette.grey[200]}`,
     transition: 'all 0.2s ease',
     '&:hover': {
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.1)',
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2)'
+        : '0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.1)',
     },
   },
   bubbleReverse: {
@@ -93,17 +101,21 @@ const useStyles = makeStyles((theme) => ({
     top: '-8px',
     right: '-8px',
     zIndex: 10,
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.palette.mode === 'dark' ? '#3A3A3A' : '#ffffff',
     borderRadius: '50%',
     padding: '6px',
-    boxShadow: '0 3px 10px rgba(0,0,0,0.2)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 3px 10px rgba(0,0,0,0.4)'
+      : '0 3px 10px rgba(0,0,0,0.2)',
     width: 28,
     height: 28,
     opacity: 0,
     transition: 'opacity 0.2s ease',
     '&:hover': {
-      backgroundColor: '#f5f5f5',
-      boxShadow: '0 4px 14px rgba(0,0,0,0.25)',
+      backgroundColor: theme.palette.mode === 'dark' ? '#4A4A4A' : '#f5f5f5',
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 4px 14px rgba(0,0,0,0.5)'
+        : '0 4px 14px rgba(0,0,0,0.25)',
       transform: 'scale(1.1)',
     },
   },
@@ -137,24 +149,24 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
   },
   receiptIconSent: {
-    color: 'rgba(0, 0, 0, 0.6)',
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
     opacity: 1,
     fontSize: '1rem',
   },
   receiptIconSentOther: {
-    color: 'rgba(0, 0, 0, 0.5)',
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
     opacity: 1,
   },
   timestamp: {
     fontSize: '0.6875rem',
-    color: 'rgba(0, 0, 0, 0.65)',
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.65)',
     marginTop: theme.spacing(0.25),
     paddingLeft: theme.spacing(0.5),
     fontWeight: 500,
   },
   timestampOwn: {
     fontSize: '0.6875rem',
-    color: 'rgba(0, 0, 0, 0.65)',
+    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.65)',
     marginTop: theme.spacing(0.25),
     paddingRight: theme.spacing(0.5),
     textAlign: 'right',
