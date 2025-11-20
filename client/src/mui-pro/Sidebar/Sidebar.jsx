@@ -127,7 +127,7 @@ const MenuSidebar = (props) => {
       </ListItem>,
       <ListItem key="donate" style={{ padding: '4px 8px' }}>
         <a
-                          href="mailto:admin@quote.vote"
+          href="mailto:admin@quote.vote"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -183,7 +183,7 @@ const MenuSidebar = (props) => {
       </ListItem>,
       <ListItem key="request-invite" style={{ padding: '4px 8px' }}>
         <NavLink
-          to="/auth/request-access"
+          to="/invite"
           onClick={() => handleDrawerToggle(false)}
           style={{
             color: 'inherit',
@@ -222,139 +222,139 @@ const MenuSidebar = (props) => {
     const guestLinks = !loggedIn ? createGuestLinks() : []
     const routeLinks = loggedIn
       ? [
-          // Profile Section
-          <ListItem key="profile" style={{ padding: '8px 12px' }}>
-            <NavLink
-              to="/Profile"
-              onClick={() => handleDrawerToggle(false)}
-              style={{
-                color: 'inherit',
-                textDecoration: 'none',
-                width: '100%',
-                display: 'block',
-              }}
-            >
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item>
-                  <Avatar style={{ height: 32, width: 32 }}>
-                    <AvatarPreview height="32" width="32" {...avatar} />
-                  </Avatar>
-                </Grid>
-                <Grid item xs>
-                  <Typography
-                    variant="body2"
-                    style={{ margin: 0, fontSize: '14px' }}
-                  >
-                    {name || 'Profile'}
-                  </Typography>
-                </Grid>
+        // Profile Section
+        <ListItem key="profile" style={{ padding: '8px 12px' }}>
+          <NavLink
+            to="/Profile"
+            onClick={() => handleDrawerToggle(false)}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              width: '100%',
+              display: 'block',
+            }}
+          >
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item>
+                <Avatar style={{ height: 32, width: 32 }}>
+                  <AvatarPreview height="32" width="32" {...avatar} />
+                </Avatar>
               </Grid>
-            </NavLink>
-          </ListItem>,
-          // Divider
-          <ListItem key="divider" style={{ padding: '4px 12px' }}>
-            <hr
-              style={{
-                width: '100%',
-                border: 'none',
-                borderTop: '1px solid #e0e0e0',
-              }}
-            />
-          </ListItem>,
-          // Search
-          <ListItem key="search" style={{ padding: '4px 8px' }}>
-            <NavLink
-              to="/search"
-              onClick={() => handleDrawerToggle(false)}
-              style={{
-                color: 'inherit',
-                textDecoration: 'none',
-                width: '100%',
-                display: 'block',
-                padding: '8px 12px',
-                fontSize: '14px',
-              }}
-            >
-              <span style={{ fontSize: '16px', marginRight: '8px' }}>🔍</span>
-              <span>Search</span>
-            </NavLink>
-          </ListItem>,
+              <Grid item xs>
+                <Typography
+                  variant="body2"
+                  style={{ margin: 0, fontSize: '14px' }}
+                >
+                  {name || 'Profile'}
+                </Typography>
+              </Grid>
+            </Grid>
+          </NavLink>
+        </ListItem>,
+        // Divider
+        <ListItem key="divider" style={{ padding: '4px 12px' }}>
+          <hr
+            style={{
+              width: '100%',
+              border: 'none',
+              borderTop: '1px solid #e0e0e0',
+            }}
+          />
+        </ListItem>,
+        // Search
+        <ListItem key="search" style={{ padding: '4px 8px' }}>
+          <NavLink
+            to="/search"
+            onClick={() => handleDrawerToggle(false)}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              width: '100%',
+              display: 'block',
+              padding: '8px 12px',
+              fontSize: '14px',
+            }}
+          >
+            <span style={{ fontSize: '16px', marginRight: '8px' }}>🔍</span>
+            <span>Search</span>
+          </NavLink>
+        </ListItem>,
 
-          // Profile (simplified)
-          <ListItem key="profile-simple" style={{ padding: '4px 8px' }}>
-            <NavLink
-              to="/Profile"
-              onClick={() => handleDrawerToggle(false)}
-              style={{
-                color: 'inherit',
-                textDecoration: 'none',
-                width: '100%',
-                display: 'block',
-                padding: '8px 12px',
-                fontSize: '14px',
-              }}
-            >
-              <span style={{ fontSize: '16px', marginRight: '8px' }}>👤</span>
-              <span>Profile</span>
-            </NavLink>
-          </ListItem>,
+        // Profile (simplified)
+        <ListItem key="profile-simple" style={{ padding: '4px 8px' }}>
+          <NavLink
+            to="/Profile"
+            onClick={() => handleDrawerToggle(false)}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              width: '100%',
+              display: 'block',
+              padding: '8px 12px',
+              fontSize: '14px',
+            }}
+          >
+            <span style={{ fontSize: '16px', marginRight: '8px' }}>👤</span>
+            <span>Profile</span>
+          </NavLink>
+        </ListItem>,
 
-          // GitHub
-          <ListItem key="github" style={{ padding: '4px 8px' }}>
-            <a
-              href="https://github.com/QuoteVote/quotevote-monorepo"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              style={{
-                color: 'inherit',
-                textDecoration: 'none',
-                width: '100%',
-                display: 'block',
-                padding: '8px 12px',
-                fontSize: '14px',
-              }}
-            >
-              <i
-                className="fab fa-github"
-                style={{ fontSize: 16, marginRight: '8px' }}
-              />
-              <span>GitHub</span>
-            </a>
-          </ListItem>,
-          // Divider before sign out
-          <ListItem key="signout-divider" style={{ padding: '4px 12px' }}>
-            <hr
-              style={{
-                width: '100%',
-                border: 'none',
-                borderTop: '1px solid #e0e0e0',
-              }}
+        // GitHub
+        <ListItem key="github" style={{ padding: '4px 8px' }}>
+          <a
+            href="https://github.com/QuoteVote/quotevote-monorepo"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              width: '100%',
+              display: 'block',
+              padding: '8px 12px',
+              fontSize: '14px',
+            }}
+          >
+            <i
+              className="fab fa-github"
+              style={{ fontSize: 16, marginRight: '8px' }}
             />
-          </ListItem>,
-          // Sign Out
-          <ListItem key="signout" style={{ padding: '4px 8px' }}>
-            <Button
-              onClick={() => {
-                localStorage.removeItem('token')
-                window.location.reload()
-                handleDrawerToggle(false)
-              }}
-              fullWidth
-              style={{
-                justifyContent: 'flex-start',
-                padding: '8px 12px',
-                fontSize: '14px',
-                minHeight: 'auto',
-                color: '#f44336',
-                textTransform: 'none',
-              }}
-            >
-              <span style={{ fontSize: '16px', marginRight: '8px' }}>🚪</span>
-              Sign Out
-            </Button>
-          </ListItem>,
-        ]
+            <span>GitHub</span>
+          </a>
+        </ListItem>,
+        // Divider before sign out
+        <ListItem key="signout-divider" style={{ padding: '4px 12px' }}>
+          <hr
+            style={{
+              width: '100%',
+              border: 'none',
+              borderTop: '1px solid #e0e0e0',
+            }}
+          />
+        </ListItem>,
+        // Sign Out
+        <ListItem key="signout" style={{ padding: '4px 8px' }}>
+          <Button
+            onClick={() => {
+              localStorage.removeItem('token')
+              window.location.reload()
+              handleDrawerToggle(false)
+            }}
+            fullWidth
+            style={{
+              justifyContent: 'flex-start',
+              padding: '8px 12px',
+              fontSize: '14px',
+              minHeight: 'auto',
+              color: '#f44336',
+              textTransform: 'none',
+            }}
+          >
+            <span style={{ fontSize: '16px', marginRight: '8px' }}>🚪</span>
+            Sign Out
+          </Button>
+        </ListItem>,
+      ]
       : []
     return [...guestLinks, ...routeLinks]
   }
@@ -376,14 +376,14 @@ const MenuSidebar = (props) => {
   const handleDrawerOpen = () => {
     handleDrawerToggle(true)
   }
-  
+
   const handleLogoClick = (e) => {
     if (isMobile) {
       e.preventDefault()
       handleDrawerOpen()
     }
   }
-  
+
   const handleVoxPop = () => {
     dispatch(SET_SELECTED_PAGE(0))
     history.push('/search')
@@ -421,12 +421,12 @@ const MenuSidebar = (props) => {
               </NavLink>
             </Grid>
 
-            {!loggedIn && (
+            {!loggedIn && !window.location.pathname.includes('/invite') && (
               <Grid item style={{ display: 'flex', gap: 8 }}>
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => history.push('/auth/request-access')}
+                  onClick={() => history.push('/invite')}
                   className={classes.rightMenuButton}
                   size="small"
                 >

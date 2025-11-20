@@ -74,6 +74,12 @@ const dashRoutes = [
         layout: '/auth',
       },
       {
+        path: '/invite',
+        name: 'Request Invite',
+        component: RequestAccessPage,
+        layout: '/',
+      },
+      {
         path: '/learn-more',
         name: 'Learn More Page',
         component: PlanPage,
