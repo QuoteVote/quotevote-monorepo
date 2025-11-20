@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+    useMemo,
+} from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { createTheme } from '@material-ui/core/styles'
@@ -18,27 +24,50 @@ export function ThemeContextProvider({ children }) {
     const user = useSelector((state) => state.user.data)
     const isLoggedIn = !!user?._id
 
-    // Initialize theme mode from user preference or localStorage
+    // Initialize theme mode from localStorage (fast, before Redux finishes hydrating)
     const getInitialThemeMode = () => {
-        if (isLoggedIn && user.themePreference) {
-            return user.themePreference
+        if (typeof window !== 'undefined') {
+            try {
+                const savedTheme = localStorage.getItem('themeMode')
+                if (savedTheme) {
+                    return savedTheme
+                }
+            } catch (error) {
+                console.warn('Failed to read theme from localStorage:', error)
+            }
         }
-        const savedTheme = localStorage.getItem('themeMode')
-        return savedTheme || 'light'
+        return 'light'
     }
 
-    const [themeMode, setThemeMode] = useState(getInitialThemeMode)
+    const [themeMode, setThemeMode] = useState(() => getInitialThemeMode())
 
     // Update theme when user logs in/out or user preference changes
     useEffect(() => {
-        if (isLoggedIn && user.themePreference) {
+        if (isLoggedIn && user?.themePreference) {
             setThemeMode(user.themePreference)
-            localStorage.setItem('themeMode', user.themePreference)
+            try {
+                localStorage.setItem('themeMode', user.themePreference)
+            } catch (error) {
+                console.warn('Failed to save theme to localStorage:', error)
+            }
         } else if (!isLoggedIn) {
-            const savedTheme = localStorage.getItem('themeMode') || 'light'
+            let savedTheme = 'light'
+            try {
+                savedTheme = localStorage.getItem('themeMode') || 'light'
+            } catch (error) {
+                console.warn('Failed to read theme from localStorage:', error)
+            }
             setThemeMode(savedTheme)
+        } else if (isLoggedIn && !user?.themePreference) {
+            try {
+                const currentTheme = localStorage.getItem('themeMode') || themeMode || 'light'
+                localStorage.setItem('themeMode', currentTheme)
+                setThemeMode(currentTheme)
+            } catch (error) {
+                console.warn('Failed to sync theme preference:', error)
+            }
         }
-    }, [isLoggedIn, user.themePreference])
+    }, [isLoggedIn, user, themeMode])
 
     const theme = useMemo(
         () => createTheme(themeMode === 'dark' ? darkTheme : lightTheme),
@@ -48,8 +77,12 @@ export function ThemeContextProvider({ children }) {
     const toggleTheme = () => {
         const newMode = themeMode === 'light' ? 'dark' : 'light'
         setThemeMode(newMode)
-        // Always update localStorage for immediate persistence
-        localStorage.setItem('themeMode', newMode)
+        try {
+            // Always update localStorage for immediate persistence
+            localStorage.setItem('themeMode', newMode)
+        } catch (error) {
+            console.warn('Failed to persist theme toggle:', error)
+        }
         return newMode
     }
 

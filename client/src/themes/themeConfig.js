@@ -3,7 +3,7 @@
 
 export const lightTheme = {
     palette: {
-        type: 'light',
+        mode: 'light',
         primary: {
             main: '#52b274',
             contrastText: '#fff',
@@ -100,7 +100,7 @@ export const lightTheme = {
 
 export const darkTheme = {
     palette: {
-        type: 'dark',
+        mode: 'dark',
         primary: {
             main: '#52b274',
             contrastText: '#fff',

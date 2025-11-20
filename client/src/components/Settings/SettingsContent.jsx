@@ -1,8 +1,4 @@
-  useEffect(() => {
-    setLocalDarkMode(isDarkMode)
-  }, [isDarkMode])
-
-import React, { useMemo, useEffect, useState } from 'react'
+  import React, { useMemo, useEffect, useState } from 'react'
 import { Avatar, Typography, Switch, FormControlLabel } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -175,15 +171,11 @@ function SettingsContent({ setOpen }) {
   const { isDarkMode, toggleTheme } = useAppTheme()
   const [localDarkMode, setLocalDarkMode] = useState(isDarkMode)
 
-  useEffect(() => {
-    setLocalDarkMode(isDarkMode)
-  }, [isDarkMode])
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
   } = useSelector((state) => state.user.data)
 
-  // Memoize defaultValues to prevent recreation on every render
   const defaultValues = useMemo(() => ({
     username: username || '',
     password: username || '',
@@ -195,7 +187,6 @@ function SettingsContent({ setOpen }) {
     register, handleSubmit, errors, formState, reset,
   } = useForm({ defaultValues })
 
-  // Reset form when user data changes (but only if form hasn't been modified)
   useEffect(() => {
     const hasDirtyFields = Object.keys(formState.dirtyFields).length > 0
     if (username && name && email && !hasDirtyFields) {
@@ -206,8 +197,11 @@ function SettingsContent({ setOpen }) {
         email,
       }, { keepDirty: false })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, name, email])
+
+  useEffect(() => {
+    setLocalDarkMode(isDarkMode)
+  }, [isDarkMode])
 
   const isPasswordTouched = 'password' in formState.dirtyFields
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
@@ -219,9 +213,7 @@ function SettingsContent({ setOpen }) {
 
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
-    // Only include password if it was actually changed (not equal to username)
     const otherVariables = values.password === username ? otherValues : values
-    // Add theme preference to update
     const themePreference = localDarkMode ? 'dark' : 'light'
     try {
       const result = await updateUser({
@@ -241,7 +233,6 @@ function SettingsContent({ setOpen }) {
           email: values.email || email,
           themePreference,
         }))
-        // Reset form after successful update
         reset({
           username: otherValues.username || username,
           password: otherValues.username || username,
@@ -258,6 +249,12 @@ function SettingsContent({ setOpen }) {
     const newMode = !localDarkMode
     setLocalDarkMode(newMode)
     toggleTheme()
+    const themePreference = newMode ? 'dark' : 'light'
+    dispatch(SET_USER_DATA({
+      _id,
+      ...otherUserData,
+      themePreference,
+    }))
   }
 
   const handleLogout = () => {
