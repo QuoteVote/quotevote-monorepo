@@ -1,3 +1,7 @@
+  useEffect(() => {
+    setLocalDarkMode(isDarkMode)
+  }, [isDarkMode])
+
 import React, { useMemo, useEffect, useState } from 'react'
 import { Avatar, Typography, Switch, FormControlLabel } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -170,6 +174,10 @@ function SettingsContent({ setOpen }) {
   const dispatch = useDispatch()
   const { isDarkMode, toggleTheme } = useAppTheme()
   const [localDarkMode, setLocalDarkMode] = useState(isDarkMode)
+
+  useEffect(() => {
+    setLocalDarkMode(isDarkMode)
+  }, [isDarkMode])
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
