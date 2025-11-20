@@ -20,6 +20,15 @@ export const getBaseServerUrl = () => {
 
   if (process.env.REACT_APP_SERVER) {
     effectiveUrl = `${process.env.REACT_APP_SERVER}`
+  } else if (process.env.REACT_APP_API_URL) {
+    // Fallback to REACT_APP_API_URL (used in .env.example and potentially Netlify)
+    // Strip /graphql if present as we need the base URL
+    effectiveUrl = process.env.REACT_APP_API_URL.replace('/graphql', '')
+  }
+
+  // Remove trailing slash if present to ensure consistent formatting
+  if (effectiveUrl.endsWith('/')) {
+    effectiveUrl = effectiveUrl.slice(0, -1)
   }
 
   // Safety check: If we are on a remote domain (not localhost) but the API URL is localhost,
