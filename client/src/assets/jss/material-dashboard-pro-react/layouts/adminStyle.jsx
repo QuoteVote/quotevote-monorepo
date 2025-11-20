@@ -9,6 +9,8 @@ const appStyle = (theme) => ({
     height: '100%',
     width: '100%',
     minHeight: '100%',
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
   },
   toolbar: {
     marginRight: theme.spacing(1),
@@ -97,6 +99,8 @@ const appStyle = (theme) => ({
     width: '70%',
     marginLeft: 'auto',
     marginRight: 'auto',
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(7),
       width: '100%',

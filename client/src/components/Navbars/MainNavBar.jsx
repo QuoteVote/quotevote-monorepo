@@ -32,10 +32,13 @@ import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+    background: theme.palette.mode === 'dark' 
+      ? 'linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%)'
+      : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
     boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
     borderBottom: '2px solid transparent',
     borderImage: 'linear-gradient(90deg, #2AE6B2, #27C4E1, #178BE1) 1',
+    color: theme.palette.text.primary,
   },
   toolbar: {
     minHeight: 64,
@@ -64,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     fontWeight: 800,
     letterSpacing: '0.05em',
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontSize: '0.875rem',
     [theme.breakpoints.up('md')]: {
       fontSize: '1rem',
