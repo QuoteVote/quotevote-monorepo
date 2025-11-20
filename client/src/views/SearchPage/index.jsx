@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import {
   Grid,
   Typography,
@@ -343,6 +343,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SearchPage() {
   const classes = useStyles()
   const history = useHistory()
+  const theme = useTheme()
   const [showResults, setShowResults] = useState(true)
   const [searchKey, setSearchKey] = useState('')
   const user = useSelector((state) => state.user.data)
@@ -748,11 +749,52 @@ export default function SearchPage() {
         >
           <Grid item>
             <div className={classes.logoContainer}>
-              <img
-                src="/assets/search-quote-vote.png"
-                alt="logo"
-                className={classes.logoImage}
-              />
+              {theme.palette.mode === 'dark' ? (
+                <svg
+                  viewBox="0 0 1024 200"
+                  xmlns="http://www.w3.org/2000/svg"
+                  preserveAspectRatio="xMidYMid meet"
+                  className={classes.logoImage}
+                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                >
+                  {/* White text for dark background */}
+                  <text x="50" y="140" fontFamily="Arial, sans-serif" fontSize="120" fontWeight="bold" fill="#FFFFFF" letterSpacing="2">QUOTE.V</text>
+                  
+                  {/* Globe icon with gradient */}
+                  <defs>
+                    <linearGradient id="globeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: '#2AE6B2', stopOpacity: 1 }} />
+                      <stop offset="100%" style={{ stopColor: '#27C4E1', stopOpacity: 1 }} />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Globe circle */}
+                  <circle cx="650" cy="100" r="70" fill="url(#globeGradient)" opacity="0.9"/>
+                  
+                  {/* Globe grid lines */}
+                  <circle cx="650" cy="100" r="70" fill="none" stroke="#FFFFFF" strokeWidth="2" opacity="0.3"/>
+                  <ellipse cx="650" cy="100" rx="70" ry="20" fill="none" stroke="#FFFFFF" strokeWidth="2" opacity="0.3"/>
+                  <line x1="650" y1="30" x2="650" y2="170" stroke="#FFFFFF" strokeWidth="2" opacity="0.3"/>
+                  <line x1="580" y1="100" x2="720" y2="100" stroke="#FFFFFF" strokeWidth="2" opacity="0.3"/>
+                  
+                  {/* Vertical lines on globe */}
+                  <line x1="615" y1="35" x2="615" y2="165" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.2"/>
+                  <line x1="685" y1="35" x2="685" y2="165" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.2"/>
+                  
+                  {/* Horizontal curves */}
+                  <path d="M 590 80 Q 650 70 710 80" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.2"/>
+                  <path d="M 585 120 Q 650 130 715 120" fill="none" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.2"/>
+                  
+                  {/* TE text */}
+                  <text x="800" y="140" fontFamily="Arial, sans-serif" fontSize="120" fontWeight="bold" fill="#FFFFFF" letterSpacing="2">TE</text>
+                </svg>
+              ) : (
+                <img
+                  src="/assets/search-quote-vote.png"
+                  alt="logo"
+                  className={classes.logoImage}
+                />
+              )}
             </div>
           </Grid>
 

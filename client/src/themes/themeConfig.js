@@ -118,16 +118,18 @@ export const darkTheme = {
             paper: '#1A1A1A',
         },
         surface: {
-            main: '#252525',
-            light: '#2D2D2D',
-            dark: '#1F1F1F',
+            main: '#1F1F1F',
+            light: '#2A2A2A',
+            dark: '#161616',
         },
         text: {
-            primary: '#F5F5F5',
-            secondary: '#B0B0B0',
-            disabled: '#606060',
+            primary: '#EDEDED',
+            secondary: '#B3B3B3',
+            disabled: '#6F6F6F',
+            muted: '#8A8A8A',
         },
-        divider: 'rgba(255, 255, 255, 0.08)',
+        divider: 'rgba(255, 255, 255, 0.06)',
+        border: 'rgba(255, 255, 255, 0.08)',
         error: {
             main: '#EF5350',
             light: '#E57373',
@@ -147,6 +149,11 @@ export const darkTheme = {
             main: '#66BB6A',
             light: '#81C784',
             dark: '#2E7D32',
+        },
+        action: {
+            hover: 'rgba(255, 255, 255, 0.08)',
+            selected: 'rgba(255, 255, 255, 0.12)',
+            disabled: 'rgba(255, 255, 255, 0.04)',
         },
     },
     // Custom theme properties for QuoteVote (adjusted for dark mode)
