@@ -1,9 +1,11 @@
 export const getBaseServerUrl = () => {
   let effectiveUrl = 'https://api.quote.vote'
-  
+
   // Use window.location to detect Netlify deploy preview (FREE - no env var needed!)
   const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  
+
+  /* 
+  // Disable automatic Railway backend switching for now as it breaks frontend-only PRs
   if(currentUrl && currentUrl.includes('deploy-preview')) {
     console.log('Detected Netlify preview deploy:', currentUrl)
     // Sample currentUrl: https://deploy-preview-237--quotevote.netlify.app
@@ -13,7 +15,10 @@ export const getBaseServerUrl = () => {
       effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
       console.log('Connecting to Railway PR backend:', effectiveUrl)
     }
-  } else if (process.env.REACT_APP_SERVER) {
+  } 
+  */
+
+  if (process.env.REACT_APP_SERVER) {
     effectiveUrl = `${process.env.REACT_APP_SERVER}`
   }
 

@@ -1,0 +1,29 @@
+## Description
+This PR addresses Issue #266 by updating multiple outdated dependencies in both the client and server applications to fix known security vulnerabilities.
+
+## Changes
+
+### Client (`client/package.json`)
+- Updated `axios` to `^1.7.7` (Fixes known vulnerabilities in 0.21.1)
+- Updated `lodash` to `^4.17.21` (Fixes prototype pollution)
+- Updated `moment` to `^2.30.1` (Latest version)
+
+### Server (`server/package.json`)
+- Updated `mongoose` from `^5.9.13` to `^6.12.0` (Major version update for security and features)
+- Updated `axios` to `^1.7.7`
+- Updated `lodash` to `^4.17.21`
+- Removed `request` dependency (Deprecated and unused in codebase)
+
+### Code Changes
+- **`server/app/server.js`**: Removed deprecated Mongoose connection options (`useNewUrlParser`, `useUnifiedTopology`, etc.) which are no longer needed/supported in Mongoose 6+.
+
+## Testing
+- Verified `npm install` completes successfully in both client and server.
+- Server starts successfully with Mongoose 6.
+- Client builds successfully.
+
+## Checklist
+- [x] Updated `client/package.json`
+- [x] Updated `server/package.json`
+- [x] Updated `server/app/server.js` for Mongoose 6 compatibility
+- [x] Removed unused/deprecated dependencies
