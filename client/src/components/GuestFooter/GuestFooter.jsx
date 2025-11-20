@@ -5,14 +5,15 @@ const GuestFooter = ({isRequestAccess = false}) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const currentYear = new Date().getFullYear()
+  const isDark = theme.palette.mode === 'dark'
 
-  // Brand colors from logo
+  // Brand colors from logo - adapted for dark mode
   const BRAND_COLORS = {
-    teal: '#2AE6B2',
-    aqua: '#27C4E1', 
-    cyan: '#178BE1',
-    navy: '#0A2342',
-    overlay: 'rgba(14, 17, 22, 0.06)'
+    teal: isDark ? '#66BB6A' : '#2AE6B2',
+    aqua: isDark ? '#29B6F6' : '#27C4E1', 
+    cyan: isDark ? '#64B5F6' : '#178BE1',
+    navy: isDark ? '#F5F5F5' : '#0A2342',
+    overlay: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(14, 17, 22, 0.06)'
   }
 
   return (
