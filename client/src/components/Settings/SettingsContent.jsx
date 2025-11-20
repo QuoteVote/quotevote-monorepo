@@ -1,4 +1,4 @@
-  import React, { useMemo, useEffect, useState } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { Avatar, Typography, Switch, FormControlLabel } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -36,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
       minWidth: '100%',
@@ -55,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       position: 'sticky',
       bottom: 0,
-      backgroundColor: 'inherit',
+      backgroundColor: theme.palette.background.paper,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       borderTop: `1px solid ${theme.palette.divider}`,
@@ -70,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     textAlign: 'left',
-    color: '#ffffff',
+    color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       fontSize: '20px',
       marginBottom: theme.spacing(2),
@@ -102,6 +104,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: 15,
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
     },
@@ -117,11 +121,11 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: theme.palette.text.primary,
   },
   error: {
     padding: 15,
-    color: 'red',
+    color: theme.palette.error.main,
     font: 'bold',
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
@@ -129,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
   },
   success: {
     padding: 15,
-    color: 'white',
+    color: theme.palette.success.main,
     font: 'bold',
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
