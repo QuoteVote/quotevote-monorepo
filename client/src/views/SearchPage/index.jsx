@@ -82,10 +82,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     width: '100%',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(1, 2),
     marginBottom: theme.spacing(2),
-    border: '1px solid #ddd',
+    border: `1px solid ${theme.palette.divider}`,
     transition: 'border-color 0.2s ease',
   },
   searchBarUsernameMode: {
