@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '20px 0px',
   },
   groupInput: {
-    backgroundColor: 'rgb(160, 243, 204, 0.6)',
+    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.15)' : 'rgb(160, 243, 204, 0.6)',
     width: '100%',
     maxWidth: 220,
     marginLeft: 20,
@@ -123,21 +123,22 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   autocompleteListbox: {
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : 'white',
     maxHeight: '200px',
     padding: '2px 0',
-    '& li': {
+    '&amp; li': {
       padding: '8px 16px',
       minHeight: '40px',
       display: 'flex',
       alignItems: 'center',
       fontSize: '14px',
       lineHeight: '1.2',
-      '&:hover': {
-        backgroundColor: 'rgba(82, 178, 116, 0.08)',
+      color: theme.palette.text.primary,
+      '&amp;:hover': {
+        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.2)' : 'rgba(82, 178, 116, 0.08)',
       },
-      '&[data-focus="true"]': {
-        backgroundColor: 'rgba(82, 178, 116, 0.12)',
+      '&amp;[data-focus="true"]': {
+        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.25)' : 'rgba(82, 178, 116, 0.12)',
       },
     },
   },
@@ -155,34 +156,34 @@ function SubmitPostForm({ options = [], user, setOpen }) {
 
   const onSubmit = async (values) => {
     const { title, text, group } = values
-    
+
     // Handle case where group might be a string (typed value)
     const groupData = typeof group === 'string' ? { title: group } : group
-    
+
     try {
       let newGroup
       const isNewGroup = groupData && !('_id' in groupData)
-      
-              if (isNewGroup) {
-          setIsCreatingGroup(true)
-          setNewGroupName(groupData.title)
-          
-          newGroup = await createGroup({
-            variables: {
-              group: {
-                creatorId: user._id,
-                title: groupData.title,
-                description: `Description for: ${groupData.title} group`,
-                privacy: 'public',
-              },
+
+      if (isNewGroup) {
+        setIsCreatingGroup(true)
+        setNewGroupName(groupData.title)
+
+        newGroup = await createGroup({
+          variables: {
+            group: {
+              creatorId: user._id,
+              title: groupData.title,
+              description: `Description for: ${groupData.title} group`,
+              privacy: 'public',
             },
-          })
-        
+          },
+        })
+
         setIsCreatingGroup(false)
         setNewGroupName('')
       }
-      
-              const postGroupId = isNewGroup ? newGroup.data.createGroup._id : groupData._id
+
+      const postGroupId = isNewGroup ? newGroup.data.createGroup._id : groupData._id
       const submitResult = await submitPost({
         variables: {
           post: {
@@ -293,14 +294,14 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             </Typography>
           }
           action={
-              <IconButton className={classes.exit} onClick={() => setOpen(false)}>
-                x
-              </IconButton>
+            <IconButton className={classes.exit} onClick={() => setOpen(false)}>
+              x
+            </IconButton>
           }
-                     style={{ 
-             padding: isMobile ? "16px" : "20px", 
-             margin: 0 
-           }}
+          style={{
+            padding: isMobile ? "16px" : "20px",
+            margin: 0
+          }}
         />
         <Box className={classes.cardBody}>
           <InputBase
@@ -350,19 +351,19 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             spacing={isMobile ? 2 : 0}
             style={{ width: '100%' }}
           >
-            <Typography style={{ 
+            <Typography style={{
               marginRight: isMobile ? '0px' : '10px',
               marginBottom: isMobile ? '12px' : '0px',
               fontWeight: 500
             }}>
               Who can see your post
             </Typography>
-            
+
             {isCreatingGroup && (
-              <Typography 
-                variant="caption" 
-                style={{ 
-                  color: '#52b274', 
+              <Typography
+                variant="caption"
+                style={{
+                  color: '#52b274',
                   marginLeft: isMobile ? '0px' : '10px',
                   marginBottom: isMobile ? '8px' : '0px',
                   fontStyle: 'italic'
@@ -374,18 +375,18 @@ function SubmitPostForm({ options = [], user, setOpen }) {
 
             <Controller
               render={({ onChange, ...props }) => (
-                                 <Autocomplete
-                   {...props}
-                   variant="outlined"
-                   size="small"
-                   className={classes.groupInput}
-                   freeSolo
-                   classes={{
-                     popper: classes.autocompletePopper,
-                     listbox: classes.autocompleteListbox,
-                   }}
+                <Autocomplete
+                  {...props}
+                  variant="outlined"
+                  size="small"
+                  className={classes.groupInput}
+                  freeSolo
+                  classes={{
+                    popper: classes.autocompletePopper,
+                    listbox: classes.autocompleteListbox,
+                  }}
 
-                  
+
                   onChange={(event, newValue) => {
                     let data
                     if (typeof newValue === 'string') {
@@ -408,18 +409,18 @@ function SubmitPostForm({ options = [], user, setOpen }) {
                   filterOptions={(groupOptions, params) => {
                     // Use Material-UI's built-in filtering first
                     const filtered = filter(groupOptions, params)
-                    
+
                     // Add "Create new group" option if input doesn't match any existing option
-                    if (params.inputValue !== '' && 
-                        !groupOptions.some(option => 
-                          option.title.toLowerCase() === params.inputValue.toLowerCase()
-                        )) {
+                    if (params.inputValue !== '' &&
+                      !groupOptions.some(option =>
+                        option.title.toLowerCase() === params.inputValue.toLowerCase()
+                      )) {
                       filtered.push({
                         inputValue: params.inputValue,
                         title: `Create new group: "${params.inputValue}"`,
                       })
                     }
-                    
+
                     return filtered
                   }}
                   selectOnFocus
@@ -462,7 +463,7 @@ function SubmitPostForm({ options = [], user, setOpen }) {
               name="group"
               control={control}
               defaultValue=""
-              rules={{ 
+              rules={{
                 required: 'Group selection is required',
                 validate: (value) => {
                   // Allow both selected groups and typed values
@@ -472,16 +473,16 @@ function SubmitPostForm({ options = [], user, setOpen }) {
                   return true
                 }
               }}
-                         />
-           </Grid>
-           
-           <Grid
-             container
-             direction="row"
-             justify="flex-end"
-             alignItems="flex-end"
-             style={{ marginTop: isMobile ? '16px' : '20px' }}
-           >
+            />
+          </Grid>
+
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="flex-end"
+            style={{ marginTop: isMobile ? '16px' : '20px' }}
+          >
             <Button
               id="submit-button"
               type="submit"

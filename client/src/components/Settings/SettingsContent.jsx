@@ -281,6 +281,10 @@ function SettingsContent({ setOpen }) {
     const themePreference = newMode ? 'dark' : 'light'
     dispatch(SET_USER_DATA({
       _id,
+      username,
+      email,
+      name,
+      avatar,
       ...otherUserData,
       themePreference,
     }))
