@@ -257,9 +257,11 @@ function SettingsContent({ setOpen }) {
       if (result.data) {
         dispatch(SET_USER_DATA({
           _id,
-          ...otherUserData,
-          ...otherValues,
+          username: otherValues.username || username,
           email: values.email || email,
+          name: otherValues.name || name,
+          avatar,
+          ...otherUserData,
           themePreference,
         }))
         reset({
