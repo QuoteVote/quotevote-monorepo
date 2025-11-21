@@ -30,7 +30,7 @@ const GuestFooter = ({ isRequestAccess = false }) => {
         padding: isMobile ? '20px 16px' : '24px 16px',
         borderTop: `1px solid ${theme.palette.divider}`,
         // Use a subtle background in dark mode to distinguish the footer
-        backgroundColor: isRequestAccess ? theme.palette.background.default : (isDark ? 'rgba(255, 255, 255, 0.02)' : 'transparent'),
+        backgroundColor: isRequestAccess ? theme.palette.background.default : (isDark ? theme.palette.background.paper : 'transparent'),
         flexDirection: isMobile ? 'column' : 'row',
         gap: isMobile ? 20 : 0,
         textAlign: isMobile ? 'center' : 'left'
