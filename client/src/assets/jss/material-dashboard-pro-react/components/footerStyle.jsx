@@ -26,12 +26,19 @@ const footerStyle = (theme) => ({
   },
   footer: {
     bottom: '0',
-    borderTop: `1px solid ${grayColor[15]}`,
+    borderTop: theme.palette.mode === 'dark'
+      ? `1px solid ${theme.palette.divider}`
+      : `1px solid ${grayColor[15]}`,
     ...defaultFont,
-    background: 'rgba(0,0,0,0.7)',
+    background: theme.palette.mode === 'dark'
+      ? 'rgba(15, 15, 15, 0.95)'
+      : 'rgba(0,0,0,0.7)',
     backdropFilter: 'blur(8px)',
     WebkitBackdropFilter: 'blur(8px)',
-    boxShadow: '0 4px 32px 0 rgba(0,0,0,0.15)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 -4px 32px 0 rgba(0,0,0,0.3)'
+      : '0 4px 32px 0 rgba(0,0,0,0.15)',
+    color: theme.palette.text.primary,
   },
   container: {
     zIndex: 3,

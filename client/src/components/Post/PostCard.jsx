@@ -42,11 +42,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 7,
     border: '1px solid',
     borderBottom: '10px solid',
+    backgroundColor: theme.palette.background.paper,
     '&:hover': {
       animationName: 'post',
       animationDuration: '0.25s',
-      boxShadow:
-        '10px 7px 10px 0 rgba(0, 188, 212, 0.4), 0 4px 20px 0 rgba(0, 0, 0, 0.14)',
+      boxShadow: theme.palette.mode === 'dark'
+        ? '10px 7px 10px 0 rgba(82, 178, 116, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.4)'
+        : '10px 7px 10px 0 rgba(0, 188, 212, 0.4), 0 4px 20px 0 rgba(0, 0, 0, 0.14)',
     },
   },
   postedBg: {
@@ -79,18 +81,20 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       marginLeft: 0,
     },
-    color: '#000000',
+    color: theme.palette.text.primary,
     position: 'relative',
     paddingTop: '5px',
   },
   interactions: {
     fontSize: '14px',
-    color: '#666',
+    color: theme.palette.text.secondary,
     display: 'flex',
     alignItems: 'center',
     padding: '4px 8px',
     borderRadius: '4px',
-    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.06)'
+      : 'rgba(0, 0, 0, 0.03)',
   },
   bottomInfo: {
     display: 'flex',
@@ -108,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     marginBottom: '16px',
     padding: '8px 0',
-    borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   voteSection: {
     display: 'flex',
@@ -121,7 +125,9 @@ const useStyles = makeStyles((theme) => ({
     gap: '4px',
     padding: '4px 8px',
     borderRadius: '4px',
-    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.06)'
+      : 'rgba(0, 0, 0, 0.03)',
   },
   voteIcon: {
     fontSize: '18px',
@@ -129,6 +135,7 @@ const useStyles = makeStyles((theme) => ({
   voteNumber: {
     fontSize: '14px',
     fontWeight: 500,
+    color: theme.palette.text.primary,
   },
   upvoteIcon: {
     color: '#52b274',
@@ -138,13 +145,13 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     margin: '0 8px',
-    color: 'rgba(0, 0, 0, 0.38)',
+    color: theme.palette.divider,
   },
   username: {
     font: 'Roboto',
     fontSize: '14px',
     fontWeight: 'bold',
-    color: '#000000',
+    color: theme.palette.text.primary,
     whiteSpace: 'nowrap',
     padding: 0,
     top: 16,
@@ -153,14 +160,14 @@ const useStyles = makeStyles((theme) => ({
     opacity: 0.8,
     font: 'Roboto',
     fontSize: '10px',
-    color: '#000000',
+    color: theme.palette.text.secondary,
     padding: 0,
   },
   postTitle: {
     font: 'Roboto',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: theme.palette.text.primary,
     cursor: 'pointer',
     wordWrap: 'break-word',
     overflowWrap: 'break-word',
@@ -173,7 +180,7 @@ const useStyles = makeStyles((theme) => ({
     font: 'Roboto',
     fontSize: 96,
     fontWeight: 'bold',
-    color: 'grey',
+    color: theme.palette.text.disabled,
     top: 0,
     right: 35,
   },
@@ -181,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
     font: 'Roboto',
     fontSize: 16,
     fontWeight: 300,
-    color: '#000000',
+    color: theme.palette.text.secondary,
     lineHeight: '1.5',
     textAlign: 'left',
     [theme.breakpoints.down('sm')]: {
@@ -206,7 +213,7 @@ const useStyles = makeStyles((theme) => ({
     font: 'Roboto',
     fontSize: 10,
     fontWeight: 500,
-    color: '#000000',
+    color: theme.palette.text.primary,
     paddingLeft: 10,
   },
   bookmark: {
@@ -214,7 +221,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 0,
   },
   fontColor: {
-    color: '#000000',
+    color: theme.palette.text.primary,
   },
   groupName: {
     fontSize: '12px',
@@ -222,8 +229,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     padding: '4px 8px',
     borderRadius: '12px',
-    backgroundColor: 'rgba(82, 178, 116, 0.1)',
-    border: '1px solid rgba(82, 178, 116, 0.2)',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(82, 178, 116, 0.15)'
+      : 'rgba(82, 178, 116, 0.1)',
+    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.3)' : 'rgba(82, 178, 116, 0.2)'}`,
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
     '&:before': {

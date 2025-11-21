@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import {
   Grid,
   Typography,
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
     justifyContent: 'center',
     textAlign: 'center',
-    backgroundColor: '#f0f2f5',
+    backgroundColor: theme.palette.background.default,
     paddingLeft: 10,
     paddingRight: 10,
   },
@@ -82,10 +82,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     width: '100%',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(1, 2),
     marginBottom: theme.spacing(2),
-    border: '1px solid #ddd',
+    border: `1px solid ${theme.palette.divider}`,
     transition: 'border-color 0.2s ease',
   },
   searchBarUsernameMode: {
@@ -127,10 +127,14 @@ const useStyles = makeStyles((theme) => ({
     transition: 'all 0.2s ease-in-out',
     minWidth: 'auto',
     padding: theme.spacing(2),
-    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.08)'
+      : 'rgba(0, 0, 0, 0.04)',
     borderRadius: '12px',
-    border: '1px solid rgba(0, 0, 0, 0.12)',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 1px 3px rgba(0, 0, 0, 0.3)'
+      : '0 1px 3px rgba(0, 0, 0, 0.1)',
     [theme.breakpoints.down('sm')]: {
       fontSize: '1.5rem',
       padding: theme.spacing(1.5),
@@ -141,9 +145,13 @@ const useStyles = makeStyles((theme) => ({
     },
     '&:hover': {
       transform: 'scale(1.02)',
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
-      border: '1px solid rgba(0, 0, 0, 0.24)',
-      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+      backgroundColor: theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'rgba(0, 0, 0, 0.08)',
+      border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.24)'}`,
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 2px 6px rgba(0, 0, 0, 0.4)'
+        : '0 2px 6px rgba(0, 0, 0, 0.15)',
     },
   },
   list: {
@@ -164,9 +172,11 @@ const useStyles = makeStyles((theme) => ({
   },
   datePickerContainer: {
     padding: '16px',
-    backgroundColor: 'white',
+    backgroundColor: theme.palette.background.paper,
     borderRadius: '8px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 4px 20px rgba(0, 0, 0, 0.4)'
+      : '0 4px 20px rgba(0,0,0,0.15)',
     '& .DateRangePickerInput': {
       display: 'none !important',
     },
@@ -179,27 +189,27 @@ const useStyles = makeStyles((theme) => ({
       opacity: '1 !important',
     },
     '& .DayPicker': {
-      background: 'white !important',
+      background: theme.palette.background.paper + ' !important',
       display: 'block !important',
       visibility: 'visible !important',
       opacity: '1 !important',
     },
     '& .DayPicker_weekHeader': {
-      background: 'white !important',
+      background: theme.palette.background.paper + ' !important',
       display: 'table-row !important',
     },
     '& .DayPicker_weekHeader_ul': {
-      background: 'white !important',
+      background: theme.palette.background.paper + ' !important',
       display: 'table-row !important',
     },
     '& .DayPicker_transitionContainer': {
-      background: 'white !important',
+      background: theme.palette.background.paper + ' !important',
       display: 'block !important',
       visibility: 'visible !important',
       opacity: '1 !important',
     },
     '& .DayPicker_focusRegion': {
-      background: 'white !important',
+      background: theme.palette.background.paper + ' !important',
       display: 'block !important',
     },
     '& .DayPicker_weekHeader_li': {
@@ -244,16 +254,24 @@ const useStyles = makeStyles((theme) => ({
   },
   filterButton: {
     margin: theme.spacing(1),
-    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.08)'
+      : 'rgba(0, 0, 0, 0.04)',
     borderRadius: '12px',
-    border: '1px solid rgba(0, 0, 0, 0.12)',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 1px 3px rgba(0, 0, 0, 0.3)'
+      : '0 1px 3px rgba(0, 0, 0, 0.1)',
     transition: 'all 0.2s ease-in-out',
     '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
-      border: '1px solid rgba(0, 0, 0, 0.24)',
+      backgroundColor: theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.12)'
+        : 'rgba(0, 0, 0, 0.08)',
+      border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.24)'}`,
       transform: 'scale(1.02)',
-      boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 2px 6px rgba(0, 0, 0, 0.4)'
+        : '0 2px 6px rgba(0, 0, 0, 0.15)',
     },
   },
   datePickerInput: {
@@ -263,10 +281,12 @@ const useStyles = makeStyles((theme) => ({
     '& .react-datepicker__input-container input': {
       width: '100%',
       padding: '12px 16px',
-      border: '1px solid #ddd',
+      border: `1px solid ${theme.palette.divider}`,
       borderRadius: '4px',
       fontSize: '14px',
       fontFamily: theme.typography.fontFamily,
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
       '&:focus': {
         outline: 'none',
         borderColor: theme.palette.primary.main,
@@ -275,14 +295,17 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .react-datepicker': {
       fontFamily: theme.typography.fontFamily,
-      border: '1px solid #ddd',
+      border: `1px solid ${theme.palette.divider}`,
       borderRadius: '8px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 4px 20px rgba(0, 0, 0, 0.4)'
+        : '0 4px 20px rgba(0,0,0,0.15)',
     },
     '& .react-datepicker__header': {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.primary.contrastText,
-      borderBottom: '1px solid #ddd',
+      borderBottom: `1px solid ${theme.palette.divider}`,
       borderTopLeftRadius: '8px',
       borderTopRightRadius: '8px',
     },
@@ -320,6 +343,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SearchPage() {
   const classes = useStyles()
   const history = useHistory()
+  const theme = useTheme()
   const [showResults, setShowResults] = useState(true)
   const [searchKey, setSearchKey] = useState('')
   const user = useSelector((state) => state.user.data)
@@ -725,11 +749,20 @@ export default function SearchPage() {
         >
           <Grid item>
             <div className={classes.logoContainer}>
-              <img
-                src="/assets/search-quote-vote.png"
-                alt="logo"
-                className={classes.logoImage}
-              />
+              {theme.palette.mode === 'dark' ? (
+                <img
+                  src="/assets/search-quote-vote-dark.webp"
+                  alt="Quote.Vote Dark Logo"
+                  className={classes.logoImage}
+                  style={{ maxWidth: '100%', height: 'auto' }}
+                />
+              ) : (
+                <img
+                  src="/assets/search-quote-vote.png"
+                  alt="Quote.Vote Logo"
+                  className={classes.logoImage}
+                />
+              )}
             </div>
           </Grid>
 

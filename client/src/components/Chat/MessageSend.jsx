@@ -21,13 +21,19 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-end',
     padding: theme.spacing(1, 1.5),
     borderRadius: 28,
-    border: `2px solid ${theme.palette.grey[300]}`,
-    backgroundColor: '#ffffff',
+    border: theme.palette.mode === 'dark'
+      ? `2px solid ${theme.palette.divider}`
+      : `2px solid ${theme.palette.grey[300]}`,
+    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : '#ffffff',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1)'
+      : '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)',
     '&:focus-within': {
       borderColor: '#52b274',
-      boxShadow: `0 0 0 3px rgba(82, 178, 116, 0.25), 0 4px 16px rgba(82, 178, 116, 0.15)`,
+      boxShadow: theme.palette.mode === 'dark'
+        ? `0 0 0 3px rgba(82, 178, 116, 0.3), 0 4px 16px rgba(82, 178, 116, 0.2)`
+        : `0 0 0 3px rgba(82, 178, 116, 0.25), 0 4px 16px rgba(82, 178, 116, 0.15)`,
       transform: 'translateY(-1px)',
     },
   },
@@ -39,6 +45,8 @@ const useStyles = makeStyles((theme) => ({
       maxHeight: 140,
       overflowY: 'auto',
       lineHeight: 1.5,
+      backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : 'transparent',
+      color: theme.palette.text.primary,
       '&::placeholder': {
         color: theme.palette.text.secondary,
         opacity: 0.6,
@@ -50,10 +58,10 @@ const useStyles = makeStyles((theme) => ({
         background: 'transparent',
       },
       '&::-webkit-scrollbar-thumb': {
-        background: theme.palette.grey[400],
+        background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : theme.palette.grey[400],
         borderRadius: 3,
         '&:hover': {
-          background: theme.palette.grey[500],
+          background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.3)' : theme.palette.grey[500],
         },
       },
     },
@@ -76,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
     },
     '&:disabled': {
       color: theme.palette.text.disabled,
-      backgroundColor: theme.palette.grey[300],
+      backgroundColor: theme.palette.mode === 'dark' ? theme.palette.action.disabled : theme.palette.grey[300],
       boxShadow: 'none',
       transform: 'none',
       opacity: 0.5,
