@@ -21,6 +21,8 @@ const useStyles = makeStyles((theme) => ({
     margin: 10,
     paddingRight: (props) => (props.pageView ? 30 : 0),
     backgroundColor: theme.palette.background.paper,
+    borderRadius: 8,
+    border: `1px solid ${theme.palette.divider}`,
   },
   skeleton: {
     width: (props) => (props.pageView ? 'auto' : 350),
@@ -32,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: 20,
     right: 5,
+    color: theme.palette.text.secondary,
+    '&:hover': {
+      color: theme.palette.primary.main,
+    },
   },
 }))
 

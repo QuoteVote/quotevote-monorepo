@@ -39,6 +39,8 @@ const sidebarStyle = (theme) => ({
     transitionTimingFunction: 'linear, linear, ease',
     ...boxShadow,
     height: '100%',
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
     '&:before,&:after': {
       position: 'absolute',
       zIndex: '3',
@@ -50,8 +52,9 @@ const sidebarStyle = (theme) => ({
   },
   blackBackground: {
     color: whiteColor,
+    backgroundColor: theme.palette.mode === 'dark' ? '#1e1e1e' : blackColor,
     '&:after': {
-      background: blackColor,
+      background: theme.palette.mode === 'dark' ? '#1e1e1e' : blackColor,
       opacity: '.8',
     },
   },

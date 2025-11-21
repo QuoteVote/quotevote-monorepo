@@ -21,4 +21,5 @@ type User {
   botReports: Int
   accountStatus: String
   lastBotReportDate: String
+  themePreference: String
 }`;

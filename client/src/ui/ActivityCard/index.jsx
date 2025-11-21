@@ -27,9 +27,22 @@ const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: theme.typography.pxToRem(350),
     minHeight: theme.typography.pxToRem(200),
-    borderRadius: '6px',
-    backgroundColor: (props) => (props.cardColor ? props.cardColor : '#FFF'),
+    borderRadius: '8px',
+    backgroundColor: (props) => {
+      if (props.cardColor) return props.cardColor
+      return theme.palette.mode === 'dark' ? theme.palette.surface.main : '#FFFFFF'
+    },
     width: (props) => (props.width ? props.width : '100%'),
+    boxShadow: theme.palette.mode === 'dark' 
+      ? '0 2px 8px rgba(0, 0, 0, 0.4)'
+      : '0 1px 3px rgba(0, 0, 0, 0.12)',
+    border: `1px solid ${theme.palette.divider}`,
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 4px 16px rgba(0, 0, 0, 0.5)'
+        : '0 2px 8px rgba(0, 0, 0, 0.15)',
+    },
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
       minWidth: '100%',
