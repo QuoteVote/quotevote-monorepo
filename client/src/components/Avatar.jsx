@@ -27,10 +27,11 @@ function DisplayAvatar(props) {
     hatColor,
     height,
   } = props
+
   const style = {
     height,
     width: height,
-    backgroundColor: muiTheme.palette.mode === 'dark' ? '#2a2a2a' : '#f0f0f0',
+    backgroundColor: 'transparent',
     borderRadius: '50%',
   }
 

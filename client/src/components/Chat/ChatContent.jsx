@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(180deg, #1F1F1F 0%, #1A1A1A 100%)'
+      ? 'linear-gradient(180deg, #1e1e1e 0%, #121212 100%)'
       : 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
     borderRight: `1px solid ${theme.palette.divider}`,
     overflow: 'hidden',
@@ -149,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(to bottom, #1A1A1A 0%, #161616 50%, #1A1A1A 100%)'
+      ? 'linear-gradient(to bottom, #1A1A1A 0%, #141414 50%, #1A1A1A 100%)'
       : 'linear-gradient(to bottom, #fafbfc 0%, #ffffff 50%, #f5f7fa 100%)',
     position: 'relative',
   },
@@ -244,9 +244,9 @@ function ChatContent() {
   // Calculate counts for badges
   const onlineCount = Array.isArray(buddyList)
     ? buddyList.filter((b) => {
-        const status = b?.presence?.status || 'offline'
-        return status === 'online' || status === 'away' || status === 'dnd'
-      }).length
+      const status = b?.presence?.status || 'offline'
+      return status === 'online' || status === 'away' || status === 'dnd'
+    }).length
     : 0
 
   // Helper function to safely extract error message as a string
@@ -255,7 +255,7 @@ function ChatContent() {
   const getSafeErrorMessage = (err) => {
     // First, check if err exists and is not null/undefined
     if (err === null || err === undefined) return 'Unknown error'
-    
+
     // If it's already a string, return it directly
     try {
       if (typeof err === 'string') {
@@ -265,7 +265,7 @@ function ChatContent() {
       // If even typeof check fails, return safe message
       return 'Error occurred (unable to parse error)'
     }
-    
+
     // Try to extract message property with extreme caution
     let message = null
     try {
@@ -280,9 +280,9 @@ function ChatContent() {
     } catch {
       // Silently ignore - we'll try other methods
     }
-    
+
     if (message) return message
-    
+
     // Try graphQLErrors array
     try {
       if (Object.prototype.hasOwnProperty.call(err, 'graphQLErrors')) {
@@ -302,7 +302,7 @@ function ChatContent() {
     } catch {
       // Silently ignore
     }
-    
+
     // Try networkError
     try {
       if (Object.prototype.hasOwnProperty.call(err, 'networkError')) {
@@ -322,7 +322,7 @@ function ChatContent() {
     } catch {
       // Silently ignore
     }
-    
+
     // Last resort: return a safe message
     return 'Error occurred (unable to extract details)'
   }
@@ -335,13 +335,13 @@ function ChatContent() {
     // The errorPolicy: 'all' will still allow the component to render with cached data
     errorPolicy: 'all', // Continue rendering even if there are errors
   })
-  
+
   // Suppress error logging to prevent crashes from error object serialization
   // The error is handled gracefully by errorPolicy: 'all' which allows rendering with cached data
   // if (roomsError) {
   //   // Error logging suppressed to prevent "Cannot read properties of null (reading 'toString')" crashes
   // }
-  
+
   const rooms = roomsData?.messageRooms || []
   const dmCount = rooms.filter((r) => r?.messageType === 'USER' && r?.users?.length === 2).length
   const groupCount = rooms.filter((r) => r?.messageType === 'POST' || (r?.messageType === 'USER' && r?.users?.length > 2)).length
@@ -399,11 +399,11 @@ function ChatContent() {
               </Tooltip>
             </div>
           </div>
-          
+
           {/* Search Bar */}
           <div className={classes.searchContainer}>
-            <ChatSearchInput 
-              setSearch={setSearch} 
+            <ChatSearchInput
+              setSearch={setSearch}
               addBuddyMode={addBuddyMode}
               onAddBuddyModeChange={handleAddBuddyModeChange}
             />
@@ -449,9 +449,9 @@ function ChatContent() {
           </div>
 
           {/* Dialogs */}
-          <StatusEditor 
-            open={statusEditorOpen} 
-            onClose={() => dispatch(SET_STATUS_EDITOR_OPEN(false))} 
+          <StatusEditor
+            open={statusEditorOpen}
+            onClose={() => dispatch(SET_STATUS_EDITOR_OPEN(false))}
           />
         </div>
       </Fade>

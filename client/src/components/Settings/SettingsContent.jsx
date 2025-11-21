@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : theme.palette.background.paper,
     color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
@@ -50,6 +50,16 @@ const useStyles = makeStyles((theme) => ({
   contentArea: {
     flex: 1,
     overflow: 'auto',
+    '&::-webkit-scrollbar': {
+      width: 8,
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+      borderRadius: 4,
+    },
   },
   buttonContainer: {
     marginTop: 'auto',
@@ -57,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       position: 'sticky',
       bottom: 0,
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : theme.palette.background.paper,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       borderTop: `1px solid ${theme.palette.divider}`,
@@ -88,6 +98,8 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: theme.spacing(10),
     height: theme.spacing(10),
+    backgroundColor: 'transparent', // Ensure transparent background to avoid flickering
+    border: theme.palette.mode === 'dark' ? '2px solid rgba(255,255,255,0.1)' : 'none',
     [theme.breakpoints.down('sm')]: {
       width: theme.spacing(8),
       height: theme.spacing(8),
@@ -98,14 +110,22 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     position: 'absolute',
     display: 'flex',
+    color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0, 0, 0, 0.54)',
     [theme.breakpoints.down('sm')]: {
       marginTop: 20,
     },
   },
   paper: {
     padding: 15,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : theme.palette.background.default,
     color: theme.palette.text.primary,
+    borderRadius: 12,
+    border: theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.05)' : 'none',
+    boxShadow: theme.palette.mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.2)' : 'none',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#333333' : theme.palette.background.default,
+    },
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
     },
@@ -140,12 +160,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   required: {
-    color: 'red',
+    color: theme.palette.error.main,
   },
   forgot: {
     right: 10,
     position: 'absolute',
     marginTop: 5,
+    color: theme.palette.primary.main,
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
     [theme.breakpoints.down('sm')]: {
       position: 'relative',
       float: 'right',
