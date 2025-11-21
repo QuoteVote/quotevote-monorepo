@@ -1,20 +1,39 @@
 export const getBaseServerUrl = () => {
-  let effectiveUrl = 'https://api.quote.vote'
-  
-  // Use window.location to detect Netlify deploy preview (FREE - no env var needed!)
-  const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  
-  if(currentUrl && currentUrl.includes('deploy-preview')) {
-    console.log('Detected Netlify preview deploy:', currentUrl)
-    // Sample currentUrl: https://deploy-preview-237--quotevote.netlify.app
-    const prMatch = currentUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)
-    if (prMatch && prMatch[1]) {
-      const PR_NUMBER = prMatch[1]
-      effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
-      console.log('Connecting to Railway PR backend:', effectiveUrl)
+  let effectiveUrl = ''
+
+  // 1. Priority: REACT_APP_API_URL (Standardized Env Var)
+  if (process.env.REACT_APP_API_URL) {
+    effectiveUrl = process.env.REACT_APP_API_URL
+  }
+  // 2. Legacy Support: REACT_APP_SERVER
+  else if (process.env.REACT_APP_SERVER) {
+    effectiveUrl = process.env.REACT_APP_SERVER
+  }
+
+  // Clean up URL: remove /graphql suffix and trailing slashes
+  if (effectiveUrl) {
+    effectiveUrl = effectiveUrl.replace(/\/graphql\/?$/, '')
+    if (effectiveUrl.endsWith('/')) {
+      effectiveUrl = effectiveUrl.slice(0, -1)
     }
-  } else if (process.env.REACT_APP_SERVER) {
-    effectiveUrl = `${process.env.REACT_APP_SERVER}`
+  }
+
+  // 3. Fallback if no env var is found
+  if (!effectiveUrl) {
+    console.error('REACT_APP_API_URL is missing! Defaulting to production API.')
+    effectiveUrl = 'https://api.quote.vote'
+  }
+
+  // 4. Safety Check: Prevent localhost connection on remote environments
+  const isRemoteEnvironment = typeof window !== 'undefined' &&
+    !window.location.hostname.includes('localhost') &&
+    !window.location.hostname.includes('127.0.0.1')
+
+  const isLocalhostApi = effectiveUrl.includes('localhost') || effectiveUrl.includes('127.0.0.1')
+
+  if (isRemoteEnvironment && isLocalhostApi) {
+    console.warn('Detected localhost API URL on remote environment. Forcing fallback to production API.')
+    effectiveUrl = 'https://api.quote.vote'
   }
 
   console.log('Effective Base URL:', effectiveUrl)
