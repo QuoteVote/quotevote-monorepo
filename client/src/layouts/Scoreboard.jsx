@@ -9,7 +9,7 @@ import PrivateRoute from '../components/PrivateRoute'
 import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 import Hidden from '@material-ui/core/Hidden'
-import { createTheme, makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
+import { makeStyles, MuiThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import appRoutes from '../routes'
@@ -22,30 +22,16 @@ import MainNavBar from '../components/Navbars/MainNavBar'
 import Sidebar from '../mui-pro/Sidebar/Sidebar'
 import withUser from '../hoc/withUser'
 import { useAuthModal } from '../Context/AuthModalContext'
+import { useTheme as useAppTheme } from '../Context/ThemeContext'
+
 import RequestInviteDialog from '../components/RequestInviteDialog'
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#fff',
-      contrastText: '#52b274',
-    },
-    secondary: {
-      main: '#52b274',
-      contrastText: '#fff',
-    },
-    background: {
-      default: '#EEF4F9',
-    },
-  },
-  typography: {
-    useNextVariants: true,
-  },
-})
 const useStyles = makeStyles(styles)
 
 function Scoreboard(props) {
+  const { theme } = useAppTheme()
   const history = useHistory()
+
   const dispatch = useDispatch()
   const snackbar = useSelector((state) => state.ui.snackbar)
   const { isModalOpen, closeAuthModal } = useAuthModal()
@@ -117,6 +103,7 @@ function Scoreboard(props) {
 
   return (
     <MuiThemeProvider theme={theme}>
+
       <div className={classes.root}>
         <CssBaseline />
         {/* FIXED: Show MainNavBar on ALL screen sizes */}

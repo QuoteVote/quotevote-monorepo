@@ -14,28 +14,32 @@ const useStyles = makeStyles((theme) => ({
   searchContainer: {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: theme.palette.grey[50],
+    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.surface.main : theme.palette.grey[50],
     borderRadius: 12,
     padding: theme.spacing(0.75, 1.5),
     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
     border: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)',
+    boxShadow: theme.palette.mode === 'dark' 
+      ? '0 1px 2px rgba(0, 0, 0, 0.3)'
+      : '0 1px 2px rgba(0, 0, 0, 0.04)',
     '&:hover': {
-      backgroundColor: theme.palette.grey[100],
-      borderColor: theme.palette.grey[300],
-      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.06)',
+      backgroundColor: theme.palette.mode === 'dark' ? theme.palette.surface.light : theme.palette.grey[100],
+      borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : theme.palette.grey[300],
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 2px 4px rgba(0, 0, 0, 0.4)'
+        : '0 2px 4px rgba(0, 0, 0, 0.06)',
     },
     '&:focus-within': {
-      backgroundColor: 'white',
+      backgroundColor: theme.palette.mode === 'dark' ? theme.palette.surface.light : 'white',
       borderColor: '#52b274',
-      boxShadow: `0 0 0 3px rgba(82, 178, 116, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08)`,
+      boxShadow: `0 0 0 3px rgba(82, 178, 116, 0.15), 0 2px 8px ${theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.08)'}`,
       transform: 'translateY(-1px)',
     },
   },
   searchContainerAddMode: {
     borderColor: '#52b274',
-    backgroundColor: 'white',
-    boxShadow: `0 0 0 3px rgba(82, 178, 116, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08)`,
+    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.surface.light : 'white',
+    boxShadow: `0 0 0 3px rgba(82, 178, 116, 0.15), 0 2px 8px ${theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.08)'}`,
   },
   input: {
     flex: 1,

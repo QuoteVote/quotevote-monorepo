@@ -25,11 +25,17 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(30, 35, 41, 0.95)'
+      : 'rgba(255, 255, 255, 0.95)',
     backdropFilter: 'blur(8px)',
-    borderTop: '1px solid rgba(224, 224, 224, 0.5)',
+    borderTop: theme.palette.mode === 'dark'
+      ? '1px solid rgba(255, 255, 255, 0.1)'
+      : '1px solid rgba(224, 224, 224, 0.5)',
     zIndex: 1000,
-    boxShadow: '0 -4px 20px rgba(0,0,0,0.08)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 -4px 20px rgba(0,0,0,0.4)'
+      : '0 -4px 20px rgba(0,0,0,0.08)',
     padding: theme.spacing(1.5),
     width: '100%',
     maxWidth: '100%',
@@ -54,7 +60,7 @@ function StickyPaginationWrapper({ children, pagination, className }) {
       <Box className={classes.content}>
         {children}
       </Box>
-      
+
       {/* Sticky pagination */}
       {pagination && (
         <Box className={classes.paginationContainer}>

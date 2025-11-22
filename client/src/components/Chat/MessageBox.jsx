@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { 
-  Avatar, 
-  IconButton, 
-  Typography, 
-  Fade, 
-  Menu, 
-  MenuItem, 
-  ListItemIcon, 
-  ListItemText, 
-  Divider 
+import {
+  Avatar,
+  IconButton,
+  Typography,
+  Fade,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider
 } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import SettingsIcon from '@material-ui/icons/Settings'
@@ -53,13 +53,17 @@ function useWindowSize() {
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    background: 'linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%)',
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(to bottom, #1E2329 0%, #15191E 100%)'
+      : 'linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%)',
     padding: theme.spacing(1.75, 2),
     borderBottom: `1px solid ${theme.palette.divider}`,
     position: 'sticky',
     top: 0,
     zIndex: 10,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 2px 8px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2)'
+      : '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
     backdropFilter: 'blur(10px)',
   },
   headerContent: {
@@ -132,8 +136,12 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    background: 'linear-gradient(to bottom, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)',
-    backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)',
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(to bottom, #0B0E11 0%, #15191E 50%, #0B0E11 100%)'
+      : 'linear-gradient(to bottom, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)',
+    backgroundImage: theme.palette.mode === 'dark'
+      ? 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px)'
+      : 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)',
     position: 'relative',
   },
   messagesContainer: {
@@ -149,21 +157,25 @@ const useStyles = makeStyles((theme) => ({
       background: 'transparent',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: theme.palette.grey[400],
+      background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : theme.palette.grey[400],
       borderRadius: 4,
       border: '2px solid transparent',
       backgroundClip: 'padding-box',
       '&:hover': {
-        background: theme.palette.grey[500],
+        background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : theme.palette.grey[500],
         backgroundClip: 'padding-box',
       },
     },
   },
   footer: {
-    background: 'linear-gradient(to top, #ffffff 0%, #fafbfc 100%)',
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(to top, #1E2329 0%, #15191E 100%)'
+      : 'linear-gradient(to top, #ffffff 0%, #fafbfc 100%)',
     borderTop: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(1.75, 2),
-    boxShadow: '0 -2px 12px rgba(0, 0, 0, 0.06), 0 -1px 4px rgba(0, 0, 0, 0.04)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 -2px 12px rgba(0, 0, 0, 0.3), 0 -1px 4px rgba(0, 0, 0, 0.2)'
+      : '0 -2px 12px rgba(0, 0, 0, 0.06), 0 -1px 4px rgba(0, 0, 0, 0.04)',
   },
 }))
 
@@ -176,21 +188,21 @@ function Header() {
   const { blockBuddy, unblockBuddy, removeBuddy } = useRosterManagement()
   const { refetch: refetchChatRooms } = useQuery(GET_CHAT_ROOMS, { skip: true })
   const { data: rosterData } = useQuery(GET_ROSTER, { skip: !currentUser })
-  
+
   const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
-  
+
   // Get the other user's ID for USER type rooms
   const currentUserIdForHeader = currentUser?._id?.toString()
   const otherUserId = messageType === 'USER' && users?.length === 2
     ? users.find((id) => {
-        if (!id || !currentUserIdForHeader) return false
-        try {
-          return id.toString() !== currentUserIdForHeader
-        } catch (e) {
-          console.warn('Error comparing user IDs in header:', e)
-          return false
-        }
-      })?.toString() || null
+      if (!id || !currentUserIdForHeader) return false
+      try {
+        return id.toString() !== currentUserIdForHeader
+      } catch (e) {
+        console.warn('Error comparing user IDs in header:', e)
+        return false
+      }
+    })?.toString() || null
     : null
 
   // Check if user is blocked
@@ -199,9 +211,9 @@ function Header() {
     const rBuddyId = r.buddyId?.toString()
     const currentUserId = currentUser?._id?.toString()
     const otherId = otherUserId.toString()
-    
+
     return (rUserId === currentUserId && rBuddyId === otherId && r.status === 'blocked') ||
-           (rUserId === otherId && rBuddyId === currentUserId && r.status === 'blocked')
+      (rUserId === otherId && rBuddyId === currentUserId && r.status === 'blocked')
   })
 
   const handleBack = () => {
@@ -218,7 +230,7 @@ function Header() {
 
   const handleBlockUser = async () => {
     if (!otherUserId) return
-    
+
     try {
       if (isBlocked) {
         await unblockBuddy(otherUserId)
@@ -253,7 +265,7 @@ function Header() {
 
   const handleRemoveBuddy = async () => {
     if (!otherUserId) return
-    
+
     try {
       await removeBuddy(otherUserId)
       // Refetch chat rooms to update the list
@@ -294,7 +306,7 @@ function Header() {
           <IconButton onClick={handleBack} className={classes.backButton} size="small">
             <ArrowBackIcon fontSize="small" />
           </IconButton>
-          
+
           <Avatar className={classes.avatar}>
             {avatar && Object.keys(avatar).length > 0 ? (
               <AvatarDisplay height={40} width={40} {...avatar} />
@@ -306,7 +318,7 @@ function Header() {
               '?'
             )}
           </Avatar>
-          
+
           <div className={classes.headerText}>
             <Typography className={classes.title}>
               {title || 'Chat'}
@@ -316,9 +328,9 @@ function Header() {
             </Typography>
           </div>
 
-          <IconButton 
-            onClick={handleSettingsClick} 
-            className={classes.settingsButton} 
+          <IconButton
+            onClick={handleSettingsClick}
+            className={classes.settingsButton}
             size="small"
             aria-label="Chat settings"
           >
@@ -347,9 +359,9 @@ function Header() {
             }}
           >
             {messageType === 'USER' && otherUserId ? [
-              <MenuItem 
+              <MenuItem
                 key="block"
-                onClick={handleBlockUser} 
+                onClick={handleBlockUser}
                 className={`${classes.menuItem} ${classes.menuItemDanger}`}
               >
                 <ListItemIcon className={classes.menuItemIcon}>
@@ -357,9 +369,9 @@ function Header() {
                 </ListItemIcon>
                 <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
               </MenuItem>,
-              <MenuItem 
+              <MenuItem
                 key="remove"
-                onClick={handleRemoveBuddy} 
+                onClick={handleRemoveBuddy}
                 className={`${classes.menuItem} ${classes.menuItemDanger}`}
               >
                 <ListItemIcon className={classes.menuItemIcon}>
@@ -369,8 +381,8 @@ function Header() {
               </MenuItem>,
               <Divider key="divider" />
             ] : null}
-            <MenuItem 
-              onClick={handleDeleteChat} 
+            <MenuItem
+              onClick={handleDeleteChat}
               className={`${classes.menuItem} ${classes.menuItemDanger}`}
             >
               <ListItemIcon className={classes.menuItemIcon}>
@@ -406,7 +418,7 @@ function MessageBox() {
   const selectedRoomData = useSelector(
     (state) => state.chat?.selectedRoom?.room || {},
   )
-  
+
   if (!selectedRoomData) {
     return (
       <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
@@ -414,23 +426,23 @@ function MessageBox() {
       </div>
     )
   }
-  
+
   const { _id: messageRoomId, title, messageType, users } = selectedRoomData || {}
-  
+
   // Get the other user's ID for DM creation if room doesn't exist yet
   const currentUser = useSelector((state) => state.user?.data)
   const currentUserId = currentUser?._id?.toString()
-  const componentId = messageRoomId 
-    ? null 
+  const componentId = messageRoomId
+    ? null
     : users?.find((id) => {
-        if (!id || !currentUserId) return false
-        try {
-          return id.toString() !== currentUserId
-        } catch (e) {
-          console.warn('Error comparing user IDs:', e)
-          return false
-        }
-      })?.toString() || null
+      if (!id || !currentUserId) return false
+      try {
+        return id.toString() !== currentUserId
+      } catch (e) {
+        console.warn('Error comparing user IDs:', e)
+        return false
+      }
+    })?.toString() || null
 
   // Helper function to safely extract error message as a string
   // This function never returns objects or null - only safe strings
@@ -438,7 +450,7 @@ function MessageBox() {
   const getSafeErrorMessage = (err) => {
     // First, check if err exists and is not null/undefined
     if (err === null || err === undefined) return 'Unknown error'
-    
+
     // If it's already a string, return it directly
     try {
       if (typeof err === 'string') {
@@ -448,7 +460,7 @@ function MessageBox() {
       // If even typeof check fails, return safe message
       return 'Error occurred (unable to parse error)'
     }
-    
+
     // Try to extract message property with extreme caution
     let message = null
     try {
@@ -463,9 +475,9 @@ function MessageBox() {
     } catch {
       // Silently ignore - we'll try other methods
     }
-    
+
     if (message) return message
-    
+
     // Try graphQLErrors array
     try {
       if (Object.prototype.hasOwnProperty.call(err, 'graphQLErrors')) {
@@ -485,7 +497,7 @@ function MessageBox() {
     } catch {
       // Silently ignore
     }
-    
+
     // Try networkError
     try {
       if (Object.prototype.hasOwnProperty.call(err, 'networkError')) {
@@ -505,7 +517,7 @@ function MessageBox() {
     } catch {
       // Silently ignore
     }
-    
+
     // Last resort: return a safe message
     return 'Error occurred (unable to extract details)'
   }
@@ -525,7 +537,7 @@ function MessageBox() {
     // Removed onError callback - it was causing crashes when Apollo Client tried to serialize error objects with null properties
     // Error state is still tracked via roomsError, but we don't try to log it to prevent crashes
   })
-  
+
   // Track errors silently without logging to prevent crashes
   useEffect(() => {
     if (roomsError) {
@@ -547,7 +559,7 @@ function MessageBox() {
       })
     }
   }, [roomsError, stopPolling])
-  
+
   // Start/stop polling based on conditions
   useEffect(() => {
     // Only poll if:
@@ -563,7 +575,7 @@ function MessageBox() {
         stopPolling()
       }
     }
-    
+
     // Cleanup: stop polling when component unmounts or conditions change
     return () => {
       if (stopPolling) {
@@ -571,7 +583,7 @@ function MessageBox() {
       }
     }
   }, [messageRoomId, shouldPoll, errorRetryCount, startPolling, stopPolling])
-  
+
   // Reset error count on successful query and re-enable polling if needed
   useEffect(() => {
     if (roomsData && !roomsError) {
@@ -607,7 +619,7 @@ function MessageBox() {
               }
             })
             .filter(Boolean)
-          
+
           const selectedUserIds = selectedRoomData.users
             .map((id) => {
               if (!id) return null
@@ -619,7 +631,7 @@ function MessageBox() {
               }
             })
             .filter(Boolean)
-          
+
           if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
           return (
             roomUserIds.includes(selectedUserIds[0]) &&
@@ -630,7 +642,7 @@ function MessageBox() {
           return false
         }
       })
-      
+
       if (matchingRoom) {
         dispatch(SELECTED_CHAT_ROOM({ room: matchingRoom }))
       }
@@ -644,12 +656,12 @@ function MessageBox() {
   const currentRoomIdRef = useRef(null)
   // Store mutation function in ref to avoid dependency issues
   const updateMessageReadByRef = useRef(updateMessageReadBy)
-  
+
   // Update ref when mutation function changes (should be stable from Apollo)
   useEffect(() => {
     updateMessageReadByRef.current = updateMessageReadBy
   }, [updateMessageReadBy])
-  
+
   useEffect(() => {
     if (!ensureAuth() || !messageRoomId) {
       // Clear interval if room is closed or not authenticated
@@ -664,12 +676,12 @@ function MessageBox() {
       currentRoomIdRef.current = null
       return
     }
-    
+
     // Prevent setting up multiple intervals for the same room
     if (currentRoomIdRef.current === messageRoomId && intervalRef.current) {
       return
     }
-    
+
     // Clear any existing interval/timeout when room changes
     if (currentRoomIdRef.current !== messageRoomId) {
       if (intervalRef.current) {
@@ -681,27 +693,27 @@ function MessageBox() {
         timeoutRef.current = null
       }
     }
-    
+
     // Track current room
     currentRoomIdRef.current = messageRoomId
-    
+
     // Reset update flag when messageRoomId changes
     isUpdatingRef.current = false
-    
+
     // Update read receipts when room is opened
     const updateReadReceipts = async () => {
       // Prevent concurrent calls
       if (isUpdatingRef.current) {
         return
       }
-      
+
       // Ensure we're still on the same room
       if (currentRoomIdRef.current !== messageRoomId) {
         return
       }
-      
+
       isUpdatingRef.current = true
-      
+
       try {
         // Use ref to get the latest mutation function
         await updateMessageReadByRef.current({
@@ -722,7 +734,7 @@ function MessageBox() {
         }
       }
     }
-    
+
     // Initial update after a short delay to avoid immediate loops
     timeoutRef.current = setTimeout(() => {
       // Double-check room hasn't changed
@@ -730,7 +742,7 @@ function MessageBox() {
         updateReadReceipts()
       }
     }, 1000) // Increased delay to 1 second to avoid immediate calls
-    
+
     // Also update read receipts periodically (every 5 seconds) to catch updates from other users
     intervalRef.current = setInterval(() => {
       // Double-check room hasn't changed
@@ -738,7 +750,7 @@ function MessageBox() {
         updateReadReceipts()
       }
     }, 5000)
-    
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)

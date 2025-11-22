@@ -11,12 +11,16 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   quoteCard: {
-    background: 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
-    border: `2px solid rgba(82, 178, 116, 0.25)`,
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(135deg, #1F1F1F 0%, #1A1A1A 100%)'
+      : 'linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%)',
+    border: `2px solid ${theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.3)' : 'rgba(82, 178, 116, 0.25)'}`,
     borderRadius: 16,
     padding: theme.spacing(2, 2.5),
     position: 'relative',
-    boxShadow: '0 4px 12px rgba(82, 178, 116, 0.1), 0 2px 4px rgba(82, 178, 116, 0.05)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 4px 12px rgba(82, 178, 116, 0.15), 0 2px 4px rgba(0, 0, 0, 0.3)'
+      : '0 4px 12px rgba(82, 178, 116, 0.1), 0 2px 4px rgba(82, 178, 116, 0.05)',
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -38,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
     width: 40,
     height: 40,
     border: `2px solid ${theme.palette.background.paper}`,
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 2px 8px rgba(0, 0, 0, 0.3)'
+      : '0 2px 8px rgba(0, 0, 0, 0.1)',
   },
   headerText: {
     flex: 1,

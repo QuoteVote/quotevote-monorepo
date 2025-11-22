@@ -64,9 +64,9 @@ const useStyles = makeStyles((theme) => ({
       },
     },
     '&.MuiButton-outlined': {
-      borderColor: 'rgba(224, 224, 224, 0.8)',
-      color: '#666',
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.2)' : 'rgba(224, 224, 224, 0.8)',
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
       '&:hover': {
         borderColor: '#52b274',
         color: '#52b274',
@@ -94,8 +94,8 @@ const useStyles = makeStyles((theme) => ({
       height: '32px',
     },
     '&.MuiIconButton-root': {
-      color: '#666',
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      color: theme.palette.text.primary,
+      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
       '&:hover': {
         backgroundColor: 'rgba(82, 178, 116, 0.1)',
         color: '#52b274',
@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     minWidth: '36px',
     height: '36px',
-    color: '#999',
+    color: theme.palette.text.secondary,
     fontSize: '13px',
     fontWeight: 500,
     [theme.breakpoints.down('sm')]: {
@@ -299,9 +299,9 @@ function Pagination({
               Page {currentPage} of {totalPages}
             </Typography>
             {isChangingPage && (
-              <Box style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+              <Box style={{
+                display: 'flex',
+                alignItems: 'center',
                 marginLeft: 8,
                 backgroundColor: '#52b274',
                 padding: '4px 8px',
@@ -424,9 +424,9 @@ function Pagination({
 
           {/* Loading Indicator */}
           {isChangingPage && (
-            <Box style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <Box style={{
+              display: 'flex',
+              alignItems: 'center',
               marginLeft: 16,
               backgroundColor: '#52b274',
               padding: '6px 12px',

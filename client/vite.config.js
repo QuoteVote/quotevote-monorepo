@@ -81,6 +81,7 @@ export default defineConfig(({ mode }) => {
       'process.env.PUBLIC_URL': JSON.stringify(''),
       // Map REACT_APP_ environment variables
       'process.env.REACT_APP_SERVER': JSON.stringify(env.REACT_APP_SERVER),
+      'process.env.REACT_APP_API_URL': JSON.stringify(env.REACT_APP_API_URL),
       'process.env.REACT_APP_SERVER_WS': JSON.stringify(
         env.REACT_APP_SERVER_WS,
       ),
