@@ -351,12 +351,12 @@ function MainNavBar(props) {
           {/* Mobile Actions - Not Logged In */}
           {!loggedIn && (
             <Hidden mdUp>
-              <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Box style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
                 <Button
                   size="small"
                   className={classes.primaryButton}
                   onClick={() => history.push('/invite')}
-                  style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                  style={{ padding: '6px 12px', fontSize: '0.75rem', minWidth: 'auto' }}
                 >
                   Request Invite
                 </Button>
