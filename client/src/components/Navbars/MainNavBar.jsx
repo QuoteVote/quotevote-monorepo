@@ -291,7 +291,7 @@ function MainNavBar(props) {
 
                 <Button
                   className={classes.primaryButton}
-                  onClick={() => history.push('/auth/request-access')}
+                  onClick={() => history.push('/invite')}
                 >
                   Request Invite
                 </Button>
@@ -385,7 +385,7 @@ function MainNavBar(props) {
               <Button
                 className={`${classes.drawerButton} ${classes.drawerPrimaryButton}`}
                 onClick={() => {
-                  history.push('/auth/request-access')
+                  history.push('/invite')
                   closeDrawer()
                 }}
               >
