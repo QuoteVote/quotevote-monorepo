@@ -348,16 +348,41 @@ function MainNavBar(props) {
             </Hidden>
           )}
 
-          {/* Mobile Hamburger */}
-          <Hidden mdUp>
-            <IconButton
-              edge="end"
-              aria-label="Open menu"
-              onClick={toggleDrawer}
-            >
-              <MenuIcon style={{ color: '#0A2342' }} />
-            </IconButton>
-          </Hidden>
+          {/* Mobile Actions - Not Logged In */}
+          {!loggedIn && (
+            <Hidden mdUp>
+              <Box style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Button
+                  size="small"
+                  className={classes.primaryButton}
+                  onClick={() => history.push('/invite')}
+                  style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                >
+                  Request Invite
+                </Button>
+                <IconButton
+                  edge="end"
+                  aria-label="Open menu"
+                  onClick={toggleDrawer}
+                >
+                  <MenuIcon style={{ color: '#0A2342' }} />
+                </IconButton>
+              </Box>
+            </Hidden>
+          )}
+
+          {/* Mobile Hamburger - Logged In */}
+          {loggedIn && (
+            <Hidden mdUp>
+              <IconButton
+                edge="end"
+                aria-label="Open menu"
+                onClick={toggleDrawer}
+              >
+                <MenuIcon style={{ color: '#0A2342' }} />
+              </IconButton>
+            </Hidden>
+          )}
         </Toolbar>
       </AppBar>
 
