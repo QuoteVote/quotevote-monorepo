@@ -1,18 +1,19 @@
 import { Grid, Typography, useTheme, useMediaQuery } from '@material-ui/core'
 import { GitHub } from '@material-ui/icons'
 
-const GuestFooter = ({isRequestAccess = false}) => {
+const GuestFooter = ({ isRequestAccess = false }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
   const currentYear = new Date().getFullYear()
+  const isDark = theme.palette.mode === 'dark'
 
-  // Brand colors from logo
+  // Brand colors from logo - adapted for dark mode
   const BRAND_COLORS = {
-    teal: '#2AE6B2',
-    aqua: '#27C4E1', 
-    cyan: '#178BE1',
-    navy: '#0A2342',
-    overlay: 'rgba(14, 17, 22, 0.06)'
+    teal: isDark ? '#66BB6A' : '#2AE6B2',
+    aqua: isDark ? '#29B6F6' : '#27C4E1',
+    cyan: isDark ? '#64B5F6' : '#178BE1',
+    navy: isDark ? '#EDEDED' : '#0A2342', // Pure white/off-white for dark mode text
+    overlay: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(14, 17, 22, 0.06)'
   }
 
   return (
@@ -28,7 +29,8 @@ const GuestFooter = ({isRequestAccess = false}) => {
         minHeight: 48,
         padding: isMobile ? '20px 16px' : '24px 16px',
         borderTop: `1px solid ${theme.palette.divider}`,
-        backgroundColor: isRequestAccess ? theme.palette.background.default : 'transparent',
+        // Use a subtle background in dark mode to distinguish the footer
+        backgroundColor: isRequestAccess ? theme.palette.background.default : (isDark ? theme.palette.background.paper : 'transparent'),
         flexDirection: isMobile ? 'column' : 'row',
         gap: isMobile ? 20 : 0,
         textAlign: isMobile ? 'center' : 'left'
@@ -37,10 +39,10 @@ const GuestFooter = ({isRequestAccess = false}) => {
     >
       {/* Left Section - Brand & Copyright */}
       <Grid item style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <Typography 
-          variant="body1" 
-          style={{ 
-            fontSize: 'clamp(14px, 4vw, 18px)', 
+        <Typography
+          variant="body1"
+          style={{
+            fontSize: 'clamp(14px, 4vw, 18px)',
             fontWeight: 400,
             lineHeight: 1.4,
             display: 'flex',
@@ -50,19 +52,19 @@ const GuestFooter = ({isRequestAccess = false}) => {
             color: BRAND_COLORS.navy
           }}
         >
-          Quote.Vote made with 
-          <span style={{ 
-            color: '#e25555', 
+          Quote.Vote made with
+          <span style={{
+            color: '#e25555',
             fontSize: 'clamp(16px, 4.5vw, 20px)',
             margin: '0 4px'
-          }}>❤️</span> 
+          }}>❤️</span>
           on Earth
         </Typography>
-        
+
         {/* Copyright */}
-        <Typography 
-          variant="caption" 
-          style={{ 
+        <Typography
+          variant="caption"
+          style={{
             color: BRAND_COLORS.navy,
             fontSize: '12px',
             fontWeight: 400,
@@ -76,10 +78,10 @@ const GuestFooter = ({isRequestAccess = false}) => {
       </Grid>
 
       {/* Right Section - Links */}
-      <Grid 
-        item 
-        style={{ 
-          display: 'flex', 
+      <Grid
+        item
+        style={{
+          display: 'flex',
           gap: isMobile ? 'clamp(12px, 3vw, 24px)' : 'clamp(16px, 4vw, 36px)',
           justifyContent: 'center',
           flexWrap: 'wrap',
@@ -89,10 +91,10 @@ const GuestFooter = ({isRequestAccess = false}) => {
         {/* Request Invite Button*/}
         <a
           href="/auth/request-access"
-          style={{ 
+          style={{
             color: BRAND_COLORS.navy,
-            fontWeight: 500, 
-            fontSize: 'clamp(14px, 3.5vw, 16px)', 
+            fontWeight: 500,
+            fontSize: 'clamp(14px, 3.5vw, 16px)',
             textDecoration: 'none',
             padding: '8px 16px',
             borderRadius: '6px',
@@ -113,16 +115,16 @@ const GuestFooter = ({isRequestAccess = false}) => {
         >
           Request Invite
         </a>
-        
+
         {/* Donate Button */}
-        <a 
+        <a
           href="mailto:admin@quote.vote"
-          target="_blank" 
-          rel="noopener noreferrer" 
-          style={{ 
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
             color: BRAND_COLORS.navy,
-            fontWeight: 500, 
-            fontSize: 'clamp(14px, 3.5vw, 16px)', 
+            fontWeight: 500,
+            fontSize: 'clamp(14px, 3.5vw, 16px)',
             textDecoration: 'none',
             padding: '8px 16px',
             borderRadius: '6px',
@@ -143,16 +145,16 @@ const GuestFooter = ({isRequestAccess = false}) => {
         >
           Donate
         </a>
-        
+
         {/* GitHub Button */}
-        <a 
-          href="https://github.com/QuoteVote/quotevote-monorepo" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          style={{ 
+        <a
+          href="https://github.com/QuoteVote/quotevote-monorepo"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
             color: BRAND_COLORS.navy,
-            fontWeight: 500, 
-            fontSize: 'clamp(14px, 3.5vw, 16px)', 
+            fontWeight: 500,
+            fontSize: 'clamp(14px, 3.5vw, 16px)',
             textDecoration: 'none',
             padding: '8px 16px',
             borderRadius: '6px',
@@ -186,12 +188,12 @@ const GuestFooter = ({isRequestAccess = false}) => {
             }
           }}
         >
-          <GitHub 
-            style={{ 
+          <GitHub
+            style={{
               fontSize: '16px',
               color: BRAND_COLORS.navy,
               transition: 'all 0.2s ease'
-            }} 
+            }}
           />
           <span>GitHub</span>
         </a>

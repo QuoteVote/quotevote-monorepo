@@ -31,12 +31,12 @@ import TokenExpired from 'layouts/TokenExpired'
 import store, { persistor } from 'store/store'
 import Bugsnag from '@bugsnag/js'
 import BugsnagPluginReact from '@bugsnag/plugin-react'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
-import customTheme from './theme'
+import { ThemeProvider } from '@material-ui/core/styles'
 import 'assets/scss/material-dashboard-pro-react.scss'
 import LogoutPage from './components/LogoutPage'
 
 import { AuthModalProvider } from './Context/AuthModalContext'
+import { ThemeContextProvider, useTheme } from './Context/ThemeContext'
 
 import 'fontsource-montserrat'
 import ErrorPage from './mui-pro/views/Pages/ErrorPage'
@@ -77,29 +77,38 @@ if (typeof window !== 'undefined') {
   }
 }
 
-const theme = createTheme(customTheme)
+// App component to use theme from context
+function App() {
+  const { theme } = useTheme()
+
+  return (
+    <ThemeProvider theme={theme}>
+      <HelmetProvider>
+        <AuthModalProvider>
+          <Router history={hist}>
+            <Switch>
+              <Route path="/auth" component={AuthLayout} />
+              <Route path="/unauth" component={TokenExpired} />
+              <Route path="/logout" component={LogoutPage} />
+              <Route path="/error" component={ErrorPage} />
+              <Route path="/" component={Scoreboard} />
+              <Redirect from="*" to="/search" />
+            </Switch>
+          </Router>
+        </AuthModalProvider>
+      </HelmetProvider>
+    </ThemeProvider>
+  )
+}
 
 ReactDOM.render(
   <ErrorBoundary>
     <ApolloProvider client={client}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <HelmetProvider>
-              <AuthModalProvider>
-                <Router history={hist}>
-                  <Switch>
-                    <Route path="/auth" component={AuthLayout} />
-                    <Route path="/unauth" component={TokenExpired} />
-                    <Route path="/logout" component={LogoutPage} />
-                    <Route path="/error" component={ErrorPage} />
-                    <Route path="/" component={Scoreboard} />
-                    <Redirect from="*" to="/search" />
-                  </Switch>
-                </Router>
-              </AuthModalProvider>
-            </HelmetProvider>
-          </ThemeProvider>
+          <ThemeContextProvider>
+            <App />
+          </ThemeContextProvider>
         </PersistGate>
       </Provider>
     </ApolloProvider>

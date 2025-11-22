@@ -178,6 +178,7 @@ export const UPDATE_USER = gql`
       email
       avatar
       admin
+      themePreference
     }
   }
 `
