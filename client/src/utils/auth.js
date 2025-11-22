@@ -19,7 +19,7 @@ export function requireAuth(action) {
   return (...args) => {
     if (!isAuthenticated()) {
       window.location.assign(
-        `https://quote.vote/auth/request-access?from=${window.location.pathname}`,
+        `https://quote.vote/invite?from=${window.location.pathname}`,
       )
       return
     }
