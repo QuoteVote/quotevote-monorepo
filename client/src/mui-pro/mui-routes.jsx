@@ -77,7 +77,7 @@ const dashRoutes = [
         path: '/invite',
         name: 'Request Invite',
         component: RequestAccessPage,
-        layout: '/',
+        layout: '',
       },
       {
         path: '/learn-more',
