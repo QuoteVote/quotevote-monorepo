@@ -351,7 +351,7 @@ function MainNavBar(props) {
             </Hidden>
           )}
 
-          {/* Mobile Actions Group */}
+          {/* Mobile Actions */}
           <Hidden mdUp>
             <Box display="flex" alignItems="center">
               {!loggedIn && !location.pathname.includes('/invite') && (
