@@ -290,7 +290,7 @@ function MainNavBar(props) {
                   <GitHubIcon />
                 </IconButton>
 
-                {!location.pathname.includes('/invite') && (
+                {!location?.pathname?.includes('/invite') && (
                   <Button
                     className={classes.primaryButton}
                     onClick={() => history.push('/invite')}
@@ -354,7 +354,7 @@ function MainNavBar(props) {
           {/* Mobile Actions */}
           <Hidden mdUp>
             <Box display="flex" alignItems="center">
-              {!loggedIn && !location.pathname.includes('/invite') && (
+              {!loggedIn && location?.pathname && !location.pathname.includes('/invite') && (
                 <Button
                   className={classes.primaryButton}
                   onClick={() => history.push('/invite')}
@@ -397,7 +397,7 @@ function MainNavBar(props) {
         {!loggedIn ? (
           <List>
             <ListItem disableGutters>
-              {!location.pathname.includes('/invite') && (
+              {!location?.pathname?.includes('/invite') && (
                 <Button
                   className={`${classes.drawerButton} ${classes.drawerPrimaryButton}`}
                   onClick={() => {
