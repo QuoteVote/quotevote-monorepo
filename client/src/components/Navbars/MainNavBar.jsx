@@ -18,7 +18,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import GitHubIcon from '@material-ui/icons/GitHub'
 import Dialog from '@material-ui/core/Dialog'
 import Avatar from '@material-ui/core/Avatar'
-import { NavLink, useHistory } from 'react-router-dom'
+import { NavLink, useHistory, useLocation } from 'react-router-dom'
 import { useApolloClient } from '@apollo/react-hooks'
 
 import AvatarPreview from '../Avatar'
@@ -226,6 +226,7 @@ function MainNavBar(props) {
   const dispatch = useDispatch()
   const client = useApolloClient()
   const history = useHistory()
+  const location = useLocation()
   const isMobile = useMobileDetection()
 
   const handleMenu = (newSelectedMenu) => {
@@ -289,12 +290,14 @@ function MainNavBar(props) {
                   <GitHubIcon />
                 </IconButton>
 
-                <Button
-                  className={classes.primaryButton}
-                  onClick={() => history.push('/auth/request-access')}
-                >
-                  Request Invite
-                </Button>
+                {!location.pathname.includes('/invite') && (
+                  <Button
+                    className={classes.primaryButton}
+                    onClick={() => history.push('/invite')}
+                  >
+                    Request Invite
+                  </Button>
+                )}
                 <Button
                   className={classes.outlinedButton}
                   onClick={() => history.push('/auth/login')}
@@ -348,6 +351,20 @@ function MainNavBar(props) {
             </Hidden>
           )}
 
+          {/* Mobile Request Invite Button */}
+          {!loggedIn && !location.pathname.includes('/invite') && (
+            <Hidden mdUp>
+              <Button
+                className={classes.primaryButton}
+                onClick={() => history.push('/invite')}
+                size="small"
+                style={{ marginRight: 8, padding: '4px 12px', fontSize: '0.8rem' }}
+              >
+                Request Invite
+              </Button>
+            </Hidden>
+          )}
+
           {/* Mobile Hamburger */}
           <Hidden mdUp>
             <IconButton
@@ -382,15 +399,17 @@ function MainNavBar(props) {
         {!loggedIn ? (
           <List>
             <ListItem disableGutters>
-              <Button
-                className={`${classes.drawerButton} ${classes.drawerPrimaryButton}`}
-                onClick={() => {
-                  history.push('/auth/request-access')
-                  closeDrawer()
-                }}
-              >
-                Request Invite
-              </Button>
+              {!location.pathname.includes('/invite') && (
+                <Button
+                  className={`${classes.drawerButton} ${classes.drawerPrimaryButton}`}
+                  onClick={() => {
+                    history.push('/invite')
+                    closeDrawer()
+                  }}
+                >
+                  Request Invite
+                </Button>
+              )}
             </ListItem>
             <ListItem disableGutters>
               <Button
