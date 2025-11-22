@@ -14,7 +14,14 @@ import { serializeObjectIds } from '../utils/objectIdSerializer'
 import { getGraphqlServerUrl, getGraphqlWsServerUrl } from '../utils/getServerUrl'
 
 // Determine if we're using a local server
-const isLocalServer = process.env.REACT_APP_SERVER && process.env.REACT_APP_SERVER.includes('localhost');
+let isLocalServer = false
+try {
+  if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_SERVER) {
+    isLocalServer = process.env.REACT_APP_SERVER.includes('localhost')
+  }
+} catch (e) {
+  // ignore
+}
 
 const effectiveUrl = getGraphqlServerUrl()
 
@@ -31,24 +38,24 @@ const httpLink = createHttpLink({
 const authLink = new ApolloLink((operation, forward) => {
   // Get the token from localStorage for each request
   const token = localStorage.getItem('token')
-  
+
   // Build headers object
   const headers = {
     'Content-Type': 'application/json',
     ...operation.getContext().headers,
   }
-  
+
   // Add the authorization header if token exists
   if (token) {
     // Remove 'Bearer ' prefix if already present to avoid duplication
     const cleanToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`
     headers.authorization = cleanToken
   }
-  
+
   operation.setContext({
     headers,
   })
-  
+
   return forward(operation)
 })
 

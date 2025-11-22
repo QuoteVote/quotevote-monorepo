@@ -131,42 +131,52 @@ export default function RequestInviteDialog({ open, onClose }) {
   )
 
   const handleSubmit = async () => {
+    console.log('handleSubmit called with email:', email)
     setError('')
 
     if (!EMAIL_VALIDATION_PATTERN.test(email)) {
+      console.log('Email validation failed')
       setError('Please enter a valid email address')
       return
     }
 
     try {
+      console.log('Checking for duplicate email...')
       const checkDuplicate = await client.query({
         query: GET_CHECK_DUPLICATE_EMAIL,
         variables: { email },
         fetchPolicy: 'network-only',
       })
+      console.log('Duplicate check result:', checkDuplicate)
 
+      const isDuplicate = checkDuplicate?.data?.checkDuplicateEmail
+
+      // Handle both array (legacy?) and boolean responses
       if (
-        checkDuplicate &&
-        Array.isArray(checkDuplicate.data.checkDuplicateEmail) &&
-        checkDuplicate.data.checkDuplicateEmail.length > 0
+        (Array.isArray(isDuplicate) && isDuplicate.length > 0) ||
+        isDuplicate === true
       ) {
+        console.log('Duplicate email found')
         setError(
           'This email address has already been used to request an invite.',
         )
         return
       }
 
-      await requestUserAccess({
+      console.log('Requesting user access...')
+      const result = await requestUserAccess({
         variables: { requestUserAccessInput: { email } },
       })
+      console.log('User access requested:', result)
+
       setSubmitted(true)
       // Auto-close after 3 seconds with cleanup
       timeoutRef.current = setTimeout(() => {
         handleClose()
       }, 3000)
     } catch (err) {
-      setError('An unexpected error occurred. Please try again later.')
-      console.error(err)
+      console.error('Error in handleSubmit:', err)
+      setError(err.message || 'An unexpected error occurred. Please try again later.')
     }
   }
 

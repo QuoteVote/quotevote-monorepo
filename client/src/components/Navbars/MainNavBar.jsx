@@ -354,7 +354,7 @@ function MainNavBar(props) {
           {/* Mobile Actions */}
           <Hidden mdUp>
             <Box display="flex" alignItems="center">
-              {!loggedIn && location?.pathname && !location.pathname.includes('/invite') && (
+              {!loggedIn && location && location.pathname && !location.pathname.includes('/invite') && (
                 <Button
                   className={classes.primaryButton}
                   onClick={() => history.push('/invite')}
