@@ -6,6 +6,7 @@ import LogoutPage from './components/LogoutPage'
 import ProfileAvatar from './components/Profile/ProfileAvatar'
 import NotificationMobileView from './components/Notifications/NotificationMobileView'
 import SearchPage from 'views/SearchPage'
+import RequestAccessPage from 'views/RequestAccessPage/RequestAccessPage'
 
 const routes = [
   {
@@ -38,6 +39,12 @@ const routes = [
     rtlName: 'الحاجيات',
     icon: ProfileAvatar,
     component: Profile,
+    layout: '/',
+  },
+  {
+    path: 'invite',
+    name: 'Request Invite',
+    component: RequestAccessPage,
     layout: '/',
   },
   {
