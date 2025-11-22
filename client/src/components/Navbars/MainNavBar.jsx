@@ -351,29 +351,27 @@ function MainNavBar(props) {
             </Hidden>
           )}
 
-          {/* Mobile Request Invite Button */}
-          {!loggedIn && !location.pathname.includes('/invite') && (
-            <Hidden mdUp>
-              <Button
-                className={classes.primaryButton}
-                onClick={() => history.push('/invite')}
-                size="small"
-                style={{ marginRight: 8, padding: '4px 12px', fontSize: '0.8rem' }}
-              >
-                Request Invite
-              </Button>
-            </Hidden>
-          )}
-
-          {/* Mobile Hamburger */}
+          {/* Mobile Actions Group */}
           <Hidden mdUp>
-            <IconButton
-              edge="end"
-              aria-label="Open menu"
-              onClick={toggleDrawer}
-            >
-              <MenuIcon style={{ color: '#0A2342' }} />
-            </IconButton>
+            <Box display="flex" alignItems="center">
+              {!loggedIn && !location.pathname.includes('/invite') && (
+                <Button
+                  className={classes.primaryButton}
+                  onClick={() => history.push('/invite')}
+                  size="small"
+                  style={{ marginRight: 8, padding: '4px 12px', fontSize: '0.8rem' }}
+                >
+                  Request Invite
+                </Button>
+              )}
+              <IconButton
+                edge="end"
+                aria-label="Open menu"
+                onClick={toggleDrawer}
+              >
+                <MenuIcon style={{ color: '#0A2342' }} />
+              </IconButton>
+            </Box>
           </Hidden>
         </Toolbar>
       </AppBar>
