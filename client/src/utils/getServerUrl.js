@@ -1,13 +1,14 @@
 export const getBaseServerUrl = () => {
   let effectiveUrl = 'https://api.quote.vote'
-  
+
   // Use window.location to detect Netlify deploy preview (FREE - no env var needed!)
   const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  
-  if(currentUrl && currentUrl.includes('deploy-preview')) {
+
+  if (currentUrl && currentUrl.includes('deploy-preview')) {
     console.log('Detected Netlify preview deploy:', currentUrl)
     // Sample currentUrl: https://deploy-preview-237--quotevote.netlify.app
-    const prMatch = currentUrl.match(/deploy-preview-(\d+)--quotevote\.netlify\.app/)
+    // Also supports: https://deploy-preview-275--quotevote-monorepo.netlify.app
+    const prMatch = currentUrl.match(/deploy-preview-(\d+)--/)
     if (prMatch && prMatch[1]) {
       const PR_NUMBER = prMatch[1]
       effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
