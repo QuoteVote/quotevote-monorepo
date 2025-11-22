@@ -15,6 +15,7 @@ export const getBaseServerUrl = () => {
       console.log('Connecting to Railway PR backend:', effectiveUrl)
     }
   } else if (process.env.REACT_APP_SERVER) {
+    // Fallback to env var
     effectiveUrl = `${process.env.REACT_APP_SERVER}`
   }
 
