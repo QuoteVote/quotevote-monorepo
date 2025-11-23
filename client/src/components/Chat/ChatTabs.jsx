@@ -8,7 +8,7 @@ import PeopleIcon from '@material-ui/icons/People';
 const useStyles = makeStyles((theme) => ({
   root: {
     borderBottom: `1px solid ${theme.palette.divider}`,
-    background: '#ffffff',
+    background: theme.palette.mode === 'dark' ? '#1E2329' : '#ffffff',
     '& .MuiTabs-indicator': {
       height: 4,
       borderRadius: '4px 4px 0 0',

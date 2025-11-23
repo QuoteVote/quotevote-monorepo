@@ -36,22 +36,32 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     border: `1px solid transparent`,
-    backgroundColor: '#ffffff',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04)',
+    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : '#ffffff',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 1px 3px rgba(0, 0, 0, 0.2)'
+      : '0 1px 3px rgba(0, 0, 0, 0.04)',
     '&:hover': {
-      backgroundColor: '#f8fafc',
-      borderColor: theme.palette.grey[200],
+      backgroundColor: theme.palette.mode === 'dark' ? '#333333' : '#f8fafc',
+      borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : theme.palette.grey[200],
       transform: 'translateX(4px)',
-      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
+      boxShadow: theme.palette.mode === 'dark'
+        ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2)'
+        : '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
     },
   },
   selectedItem: {
-    background: 'linear-gradient(135deg, rgba(82, 178, 116, 0.1) 0%, rgba(74, 158, 99, 0.08) 100%)',
-    borderColor: '#52b274' + '60',
-    boxShadow: '0 4px 12px rgba(82, 178, 116, 0.15), 0 2px 4px rgba(82, 178, 116, 0.1)',
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(135deg, rgba(82, 178, 116, 0.2) 0%, rgba(74, 158, 99, 0.15) 100%)'
+      : 'linear-gradient(135deg, rgba(82, 178, 116, 0.1) 0%, rgba(74, 158, 99, 0.08) 100%)',
+    borderColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.4)' : '#52b274' + '60',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 4px 12px rgba(82, 178, 116, 0.25), 0 2px 4px rgba(82, 178, 116, 0.15)'
+      : '0 4px 12px rgba(82, 178, 116, 0.15), 0 2px 4px rgba(82, 178, 116, 0.1)',
     '&:hover': {
-      background: 'linear-gradient(135deg, rgba(82, 178, 116, 0.15) 0%, rgba(74, 158, 99, 0.12) 100%)',
-      borderColor: '#52b274' + '80',
+      background: theme.palette.mode === 'dark'
+        ? 'linear-gradient(135deg, rgba(82, 178, 116, 0.25) 0%, rgba(74, 158, 99, 0.2) 100%)'
+        : 'linear-gradient(135deg, rgba(82, 178, 116, 0.15) 0%, rgba(74, 158, 99, 0.12) 100%)',
+      borderColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.5)' : '#52b274' + '80',
       transform: 'translateX(4px)',
     },
   },
@@ -159,18 +169,18 @@ const ChatList = ({ search, filterType }) => {
   // Filter by search (simplified - just filter by title for now)
   const searchFiltered = search
     ? filteredRooms.filter((room) => {
-        const title = room.title || '';
-        return title.toLowerCase().includes(search.toLowerCase());
-      })
+      const title = room.title || '';
+      return title.toLowerCase().includes(search.toLowerCase());
+    })
     : filteredRooms;
 
   // Sort by last message time (most recent first), fallback to lastActivity, then created
   const sortedRooms = [...searchFiltered].sort((a, b) => {
     // Use lastMessageTime if available, otherwise use lastActivity, then created
-    const aTime = a.lastMessageTime 
+    const aTime = a.lastMessageTime
       ? new Date(a.lastMessageTime).getTime()
       : (a.lastActivity ? new Date(a.lastActivity).getTime() : new Date(a.created).getTime());
-    const bTime = b.lastMessageTime 
+    const bTime = b.lastMessageTime
       ? new Date(b.lastMessageTime).getTime()
       : (b.lastActivity ? new Date(b.lastActivity).getTime() : new Date(b.created).getTime());
     return bTime - aTime; // Most recent first
@@ -223,8 +233,8 @@ const ChatList = ({ search, filterType }) => {
           {search
             ? `Try a different search term`
             : filterType === 'chats'
-            ? 'Add a buddy and start a conversation!'
-            : 'Create a group or post to start chatting'}
+              ? 'Add a buddy and start a conversation!'
+              : 'Create a group or post to start chatting'}
         </Typography>
       </div>
     );

@@ -18,13 +18,18 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.08)'
+      : fade(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.12)'
+        : fade(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
     width: '100%',
+    border: `1px solid ${theme.palette.divider}`,
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(2),
       width: 'auto',
@@ -38,16 +43,21 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: theme.palette.text.secondary,
   },
   inputRoot: {
     color: 'inherit',
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
     width: '100%',
+    color: theme.palette.text.primary,
+    '&::placeholder': {
+      color: theme.palette.text.secondary,
+      opacity: 0.7,
+    },
     [theme.breakpoints.up('md')]: {
       width: '20ch',
     },
@@ -59,7 +69,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 0,
     flexWrap: 'inherit',
     height: '58px',
-    color: '#ff0000',
     zIndex: 10,
   },
   input: {
@@ -79,23 +88,24 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     width: '100px',
     whiteSpace: 'nowrap',
-    background: '0 0',
+    background: theme.palette.background.paper,
     fontFamily: 'Lato,Helvetica Neue,Arial,Helvetica,sans-serif',
     fontSize: '1em',
     padding: '.4em 1em',
     fontWeight: 700,
-    color: 'rgba(0,0,0,.4)',
-    borderBottom: '1px solid rgba(34,36,38,.1)',
+    color: theme.palette.text.primary,
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   results: {
     width: '100%',
     display: 'table-cell',
-    background: '#fff',
-    borderLeft: '1px solid rgba(34,36,38,.15)',
-    borderBottom: '2px solid rgba(34,36,38,.1)',
+    background: theme.palette.background.paper,
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    borderBottom: `2px solid ${theme.palette.divider}`,
   },
   paper: {
     textAlign: 'center',
+    backgroundColor: theme.palette.background.paper,
   },
   progress: {
     position: 'absolute',
@@ -103,12 +113,12 @@ const useStyles = makeStyles((theme) => ({
     width: '18em',
     textAlign: 'center',
     transformOrigin: 'center top',
-    background: '#fff',
+    background: theme.palette.background.paper,
     left: 0,
   },
   ruleStyle: {
     width: '200px',
-    borderBottom: '2px solid #9C27B0',
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
   },
   textinput: {
     display: 'flex',
@@ -138,7 +148,7 @@ function SidebarSearchView(props) {
       <Card style={{ zIndex: 10, height: 'fit-content' }}>
         <CardHeader
           style={{
-            backgroundColor: 'white', margin: '5px', paddingLeft: 0, paddingRight: 5,
+            margin: '5px', paddingLeft: 0, paddingRight: 5,
           }}
         >
           <div className={classes.search}>

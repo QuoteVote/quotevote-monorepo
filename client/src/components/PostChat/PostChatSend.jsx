@@ -28,10 +28,10 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     borderRadius: 6,
-    background: '#f5f7fa',
-    border: '1px solid #e1e8ed',
+    background: theme.palette.mode === 'dark' ? '#2A2A2A' : '#f5f7fa',
+    border: theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e1e8ed',
     minHeight: 45,
-    maxHeight: 75, 
+    maxHeight: 75,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
@@ -40,15 +40,17 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       width: '85%',
     },
-    '&:focus-within': {
-      background: '#ffffff',
+    '&amp;:focus-within': {
+      background: theme.palette.mode === 'dark' ? '#333333' : '#ffffff',
       border: '1px solid #1976d2',
       boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)',
     },
-    '& .MuiInputBase-input': {
+    '&amp; .MuiInputBase-input': {
       resize: 'none',
-      '&::placeholder': {
+      color: theme.palette.text.primary,
+      '&amp;::placeholder': {
         opacity: 0.7,
+        color: theme.palette.text.secondary,
       },
     },
   },
@@ -89,7 +91,7 @@ function PostChatSend(props) {
   const handleSubmit = async () => {
     if (!ensureAuth()) return
     if (!text.trim()) return // Don't submit empty messages
-    
+
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
@@ -140,7 +142,7 @@ function PostChatSend(props) {
         }
       },
     })
-    
+
     // Clear the text input after successful submission
     setText('')
   }

@@ -1,6 +1,7 @@
 import React from 'react'
 import Avatar from 'avataaars'
 import PropTypes from 'prop-types'
+import { useTheme } from '@material-ui/core/styles'
 
 /**
   * Display an avataaar | https://avataaars.com/
@@ -10,6 +11,7 @@ import PropTypes from 'prop-types'
 */
 
 function DisplayAvatar(props) {
+  const muiTheme = useTheme()
   const {
     topType,
     accessoriesType,
@@ -25,9 +27,12 @@ function DisplayAvatar(props) {
     hatColor,
     height,
   } = props
+
   const style = {
     height,
     width: height,
+    backgroundColor: 'transparent',
+    borderRadius: '50%',
   }
 
   return (
