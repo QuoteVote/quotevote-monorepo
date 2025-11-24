@@ -34,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: 400,
     },
-    backgroundImage: 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)',
+    backgroundImage: theme.palette.mode === 'dark'
+      ? 'linear-gradient(224.94deg, #2A3F35 1.63%, #1F3428 97.6%)'
+      : 'linear-gradient(224.94deg, #1BB5D8 1.63%, #4066EC 97.6%)',
   },
   titleStyle: {
     color: '#ffffff',

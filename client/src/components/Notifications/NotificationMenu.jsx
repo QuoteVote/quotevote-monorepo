@@ -26,9 +26,11 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     marginRight: theme.spacing(2),
+    backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : '#ffffff',
+    color: theme.palette.text.primary,
   },
   tipColor: {
-    backgroundColor: '#F1F1F1',
+    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : '#F1F1F1',
   },
 }))
 

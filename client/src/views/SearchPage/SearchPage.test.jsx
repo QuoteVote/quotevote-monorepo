@@ -27,7 +27,7 @@ const mockPostsData = {
         comments: [{ _id: 'c1' }, { _id: 'c2' }],
         votes: [{ _id: 'v1' }],
         quotes: [],
-        creator: { _id: 'user1', name: 'User 1', username: 'user1' }
+        creator: { _id: 'user1', name: 'User 1', username: 'user1' },
       },
       {
         _id: '2',
@@ -36,15 +36,15 @@ const mockPostsData = {
         comments: [{ _id: 'c3' }],
         votes: [{ _id: 'v2' }, { _id: 'v3' }],
         quotes: [{ _id: 'q1' }],
-        creator: { _id: 'user2', name: 'User 2', username: 'user2' }
-      }
+        creator: { _id: 'user2', name: 'User 2', username: 'user2' },
+      },
     ],
     pagination: {
       total_count: 2,
       limit: 10,
-      offset: 0
-    }
-  }
+      offset: 0,
+    },
+  },
 }
 
 const mocks = [
@@ -75,8 +75,8 @@ const mocks = [
         startDateRange: '',
         endDateRange: '',
         interactions: false,
-        sortOrder: 'desc'
-      }
+        sortOrder: 'desc',
+      },
     },
     result: {
       data: mockPostsData
@@ -116,12 +116,12 @@ describe('SearchPage Filters', () => {
       user: {
         data: {
           _id: 'currentUser',
-          _followingId: ['user1']
-        }
+          _followingId: ['user1'],
+        },
       },
       ui: {
-        hiddenPosts: []
-      }
+        hiddenPosts: [],
+      },
     })
   })
 

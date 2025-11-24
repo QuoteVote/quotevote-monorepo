@@ -1,5 +1,5 @@
-import React, { useMemo, useEffect } from 'react'
-import { Avatar, Typography } from '@material-ui/core'
+import React, { useMemo, useEffect, useState } from 'react'
+import { Avatar, Typography, Switch, FormControlLabel } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
@@ -24,6 +24,7 @@ import { UPDATE_USER } from '../../graphql/mutations'
 import { SET_USER_DATA } from '../../store/user'
 import { replaceGqlError } from '../../utils/replaceGqlError'
 import { useMobileDetection } from '../../utils/display'
+import { useTheme as useAppTheme } from '../../Context/ThemeContext'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +36,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : theme.palette.background.paper,
+    color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
       minWidth: '100%',
@@ -47,6 +50,16 @@ const useStyles = makeStyles((theme) => ({
   contentArea: {
     flex: 1,
     overflow: 'auto',
+    '&::-webkit-scrollbar': {
+      width: 8,
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+      borderRadius: 4,
+    },
   },
   buttonContainer: {
     marginTop: 'auto',
@@ -54,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       position: 'sticky',
       bottom: 0,
-      backgroundColor: 'inherit',
+      backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : theme.palette.background.paper,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       borderTop: `1px solid ${theme.palette.divider}`,
@@ -69,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     textAlign: 'left',
-    color: '#ffffff',
+    color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       fontSize: '20px',
       marginBottom: theme.spacing(2),
@@ -85,6 +98,8 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: theme.spacing(10),
     height: theme.spacing(10),
+    backgroundColor: 'transparent', // Ensure transparent background to avoid flickering
+    border: theme.palette.mode === 'dark' ? '2px solid rgba(255,255,255,0.1)' : 'none',
     [theme.breakpoints.down('sm')]: {
       width: theme.spacing(8),
       height: theme.spacing(8),
@@ -95,12 +110,22 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     position: 'absolute',
     display: 'flex',
+    color: theme.palette.mode === 'dark' ? '#fff' : 'rgba(0, 0, 0, 0.54)',
     [theme.breakpoints.down('sm')]: {
       marginTop: 20,
     },
   },
   paper: {
     padding: 15,
+    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : theme.palette.background.default,
+    color: theme.palette.text.primary,
+    borderRadius: 12,
+    border: theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.05)' : 'none',
+    boxShadow: theme.palette.mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.2)' : 'none',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#333333' : theme.palette.background.default,
+    },
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
     },
@@ -116,11 +141,11 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: theme.palette.text.primary,
   },
   error: {
     padding: 15,
-    color: 'red',
+    color: theme.palette.error.main,
     font: 'bold',
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
@@ -128,19 +153,24 @@ const useStyles = makeStyles((theme) => ({
   },
   success: {
     padding: 15,
-    color: 'white',
+    color: theme.palette.success.main,
     font: 'bold',
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
     },
   },
   required: {
-    color: 'red',
+    color: theme.palette.error.main,
   },
   forgot: {
     right: 10,
     position: 'absolute',
     marginTop: 5,
+    color: theme.palette.primary.main,
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'underline',
+    },
     [theme.breakpoints.down('sm')]: {
       position: 'relative',
       float: 'right',
@@ -167,24 +197,25 @@ function SettingsContent({ setOpen }) {
   const isMobileDevice = useMobileDetection()
   const history = useHistory()
   const dispatch = useDispatch()
+  const { isDarkMode, toggleTheme } = useAppTheme()
+  const [localDarkMode, setLocalDarkMode] = useState(isDarkMode)
+
   const client = useApolloClient()
   const {
     username, email, name, avatar, _id, ...otherUserData
   } = useSelector((state) => state.user.data)
-  
-  // Memoize defaultValues to prevent recreation on every render
+
   const defaultValues = useMemo(() => ({
     username: username || '',
     password: username || '',
     name: name || '',
     email: email || '',
   }), [username, name, email])
-  
+
   const {
     register, handleSubmit, errors, formState, reset,
   } = useForm({ defaultValues })
-  
-  // Reset form when user data changes (but only if form hasn't been modified)
+
   useEffect(() => {
     const hasDirtyFields = Object.keys(formState.dirtyFields).length > 0
     if (username && name && email && !hasDirtyFields) {
@@ -195,38 +226,44 @@ function SettingsContent({ setOpen }) {
         email,
       }, { keepDirty: false })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, name, email])
-  
+
+  useEffect(() => {
+    setLocalDarkMode(isDarkMode)
+  }, [isDarkMode])
+
   const isPasswordTouched = 'password' in formState.dirtyFields
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
-  
+
   const handleChangeAvatar = () => {
     setOpen(false)
     history.push(`/Profile/${username}/avatar`)
   }
-  
+
   const onSubmit = async (values) => {
     const { password, ...otherValues } = values
-    // Only include password if it was actually changed (not equal to username)
     const otherVariables = values.password === username ? otherValues : values
+    const themePreference = localDarkMode ? 'dark' : 'light'
     try {
       const result = await updateUser({
         variables: {
           user: {
             _id,
             ...otherVariables,
+            themePreference,
           },
         },
       })
       if (result.data) {
         dispatch(SET_USER_DATA({
           _id,
-          ...otherUserData,
-          ...otherValues,
+          username: otherValues.username || username,
           email: values.email || email,
+          name: otherValues.name || name,
+          avatar,
+          ...otherUserData,
+          themePreference,
         }))
-        // Reset form after successful update
         reset({
           username: otherValues.username || username,
           password: otherValues.username || username,
@@ -237,6 +274,22 @@ function SettingsContent({ setOpen }) {
     } catch (e) {
       reset()
     }
+  }
+
+  const handleThemeToggle = () => {
+    const newMode = !localDarkMode
+    setLocalDarkMode(newMode)
+    toggleTheme()
+    const themePreference = newMode ? 'dark' : 'light'
+    dispatch(SET_USER_DATA({
+      _id,
+      username,
+      email,
+      name,
+      avatar,
+      ...otherUserData,
+      themePreference,
+    }))
   }
 
   const handleLogout = () => {
@@ -251,9 +304,9 @@ function SettingsContent({ setOpen }) {
     history.push('/ControlPanel')
     setOpen(false)
   }
-  
+
   const hasChange = Object.keys(formState.dirtyFields).length
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid
@@ -274,9 +327,9 @@ function SettingsContent({ setOpen }) {
           >
             <Grid item>
               {!isMobileDevice && (
-                 <Typography className={classes.title}>
-                    Settings
-                  </Typography>
+                <Typography className={classes.title}>
+                  Settings
+                </Typography>
               )}
             </Grid>
             <Grid item>
@@ -401,11 +454,26 @@ function SettingsContent({ setOpen }) {
                 </Link>
               </Grid>
             </Grid>
+            <Grid item>
+              <Paper className={classes.paper}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={localDarkMode}
+                      onChange={handleThemeToggle}
+                      name="darkMode"
+                      color="primary"
+                    />
+                  }
+                  label="Dark Mode"
+                />
+              </Paper>
+            </Grid>
             {!loading && error && (<Typography className={classes.error}>{replaceGqlError(error.message)}</Typography>)}
             {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
           </Grid>
         </Grid>
-        
+
         <Grid item className={classes.buttonContainer}>
           <Grid
             container
