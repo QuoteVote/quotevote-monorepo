@@ -8,6 +8,11 @@
   ROLLUP_SKIP_NATIVE = "true"
   NODE_ENV = "production"
 
+# Edge Functions configuration for dynamic OG metadata
+[[edge_functions]]
+  function = "og-metadata"
+  path = "/post/*"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

@@ -4,9 +4,8 @@ export const getBaseServerUrl = () => {
   // Use window.location to detect Netlify deploy preview (FREE - no env var needed!)
   const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
 
-  // Railway PR deployment logic disabled due to infrastructure reliability issues.
-  // Falling back to production API or REACT_APP_SERVER if defined.
-  /*
+  /* 
+  // Disable automatic Railway backend switching for now as it breaks frontend-only PRs
   if(currentUrl && currentUrl.includes('deploy-preview')) {
     console.log('Detected Netlify preview deploy:', currentUrl)
     // Match any netlify site name (e.g. quotevote, quotevote-monorepo, etc.)
@@ -16,7 +15,8 @@ export const getBaseServerUrl = () => {
       effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
       console.log('Connecting to Railway PR backend:', effectiveUrl)
     }
-  } else */
+  } 
+  */
 
   if (process.env.REACT_APP_SERVER) {
     effectiveUrl = `${process.env.REACT_APP_SERVER}`
