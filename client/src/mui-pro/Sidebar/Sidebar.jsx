@@ -130,7 +130,7 @@ const MenuSidebar = (props) => {
       </ListItem>,
       <ListItem key="donate" style={{ padding: '4px 8px' }}>
         <a
-          href="mailto:admin@quote.vote"
+          href="https://opencollective.com/quotevote-duplicate/donate"
           target="_blank"
           rel="noopener noreferrer"
           style={{

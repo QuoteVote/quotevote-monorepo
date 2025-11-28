@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { REQUEST_USER_ACCESS_MUTATION } from '../../graphql/mutations'
 import { useMobileDetection } from '../../utils/display'
 
-export const DONATE_URL = 'mailto:admin@quote.vote'
+export const DONATE_URL = 'https://opencollective.com/quotevote-duplicate/donate'
 
 export default function SearchGuestSections() {
   const [email, setEmail] = useState('')

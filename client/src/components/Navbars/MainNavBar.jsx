@@ -32,17 +32,12 @@ import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    background: theme.palette.mode === 'dark' 
-      ? 'linear-gradient(135deg, #161616 0%, #1F1F1F 100%)'
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)'
       : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 2px 8px rgba(0, 0, 0, 0.3)'
-      : '0 1px 3px rgba(0,0,0,0.08)',
-    borderBottom: theme.palette.mode === 'dark'
-      ? `1px solid ${theme.palette.divider}`
-      : '2px solid transparent',
-    borderImage: !theme.palette.mode === 'dark' ? 'linear-gradient(90deg, #2AE6B2, #27C4E1, #178BE1) 1' : 'unset',
-    color: theme.palette.text.primary,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+    borderBottom: '2px solid transparent',
+    borderImage: 'linear-gradient(90deg, #2AE6B2, #27C4E1, #178BE1) 1',
   },
   toolbar: {
     minHeight: 64,
@@ -66,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
   logoImage: {
     height: 28,
     width: 28,
-    filter: theme.palette.mode === 'dark' ? 'brightness(1.2)' : 'none',
   },
   brandText: {
     marginLeft: theme.spacing(1),
@@ -92,34 +86,34 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   outlinedButton: {
-    border: theme.palette.mode === 'dark' ? '2px solid #52b274' : '2px solid #2AE6B2',
-    color: theme.palette.mode === 'dark' ? '#EDEDED' : '#0A2342',
+    border: '2px solid #2AE6B2',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 600,
     textTransform: 'none',
     padding: theme.spacing(1, 3),
     transition: 'all 0.2s',
     '&:hover': {
-      background: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.1)' : 'rgba(14, 17, 22, 0.06)',
+      background: 'rgba(14, 17, 22, 0.06)',
       transform: 'translateY(-1px)',
-      border: theme.palette.mode === 'dark' ? '2px solid #52b274' : '2px solid #2AE6B2',
+      border: '2px solid #2AE6B2',
     },
   },
   textButton: {
-    color: theme.palette.mode === 'dark' ? '#52b274' : '#20b087ff',
+    color: '#20b087ff',
     fontWeight: 500,
     textTransform: 'none',
     padding: theme.spacing(1, 2),
     transition: 'all 0.2s',
     '&:hover': {
-      background: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.1)' : 'rgba(14, 17, 22, 0.06)',
+      background: 'rgba(14, 17, 22, 0.06)',
       transform: 'translateY(-1px)',
     },
   },
   iconButton: {
-    color: theme.palette.mode === 'dark' ? '#DADADA' : '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     transition: 'all 0.2s',
     '&:hover': {
-      color: '#52b274',
+      color: '#2AE6B2',
       transform: 'scale(1.1)',
     },
   },
@@ -129,8 +123,6 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: 320,
     padding: theme.spacing(2.5),
-    backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : '#ffffff',
-    color: theme.palette.text.primary,
   },
   drawerHeader: {
     display: 'flex',
@@ -140,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerTitle: {
     fontWeight: 700,
-    color: theme.palette.mode === 'dark' ? '#EDEDED' : '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
   },
   divider: {
     height: 2,
@@ -154,10 +146,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1.5, 2.5),
     marginBottom: theme.spacing(1),
     transition: 'all 0.2s',
-    color: theme.palette.text.primary,
     '&:hover': {
       transform: 'translateX(4px)',
-      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.1)' : 'rgba(14, 17, 22, 0.06)',
     },
   },
   drawerPrimaryButton: {
@@ -170,19 +160,19 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerOutlinedButton: {
-    border: theme.palette.mode === 'dark' ? '2px solid #52b274' : '2px solid #2AE6B2',
-    color: theme.palette.mode === 'dark' ? '#EDEDED' : '#0A2342',
+    border: '2px solid #2AE6B2',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 600,
     '&:hover': {
-      background: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.1)' : 'rgba(14, 17, 22, 0.06)',
-      border: theme.palette.mode === 'dark' ? '2px solid #52b274' : '2px solid #2AE6B2',
+      background: 'rgba(14, 17, 22, 0.06)',
+      border: '2px solid #2AE6B2',
     },
   },
   drawerTextButton: {
-    color: theme.palette.mode === 'dark' ? '#EDEDED' : '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 500,
     '&:hover': {
-      background: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.1)' : 'rgba(14, 17, 22, 0.06)',
+      background: 'rgba(14, 17, 22, 0.06)',
     },
   },
   desktopActions: {
@@ -194,20 +184,19 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'none',
     padding: theme.spacing(1),
     borderRadius: theme.spacing(3),
-    color: theme.palette.text.primary,
     '&:hover': {
-      background: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.1)' : 'rgba(14, 17, 22, 0.06)',
+      background: 'rgba(14, 17, 22, 0.06)',
     },
   },
   profileName: {
     marginLeft: theme.spacing(1),
-    color: theme.palette.mode === 'dark' ? '#EDEDED' : '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 600,
   },
   loggedInActions: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
+    gap: theme.spacing(2.5),
   },
   createQuoteButton: {
     background: '#52b274',
@@ -241,6 +230,7 @@ function MainNavBar(props) {
   const history = useHistory()
   const location = useLocation()
   const isMobile = useMobileDetection()
+
 
   const handleMenu = (newSelectedMenu) => {
     client.stop()
@@ -280,7 +270,7 @@ function MainNavBar(props) {
             <Hidden smDown>
               <Box className={classes.desktopActions}>
                 <Button
-                  href="mailto:admin@quote.vote"
+                  href="https://opencollective.com/quotevote-duplicate/donate"
                   target="_blank"
                   className={classes.textButton}
                 >
@@ -382,7 +372,7 @@ function MainNavBar(props) {
                 aria-label="Open menu"
                 onClick={toggleDrawer}
               >
-                <MenuIcon style={{ color: '#0A2342' }} />
+                <MenuIcon style={{ color: classes.iconButton.color }} />
               </IconButton>
             </Box>
           </Hidden>
@@ -439,7 +429,7 @@ function MainNavBar(props) {
             <ListItem disableGutters>
               <Button
                 className={`${classes.drawerButton} ${classes.drawerTextButton}`}
-                href="mailto:admin@quote.vote"
+                href="https://opencollective.com/quotevote-duplicate/donate"
                 target="_blank"
                 onClick={closeDrawer}
               >
@@ -514,21 +504,6 @@ function MainNavBar(props) {
                 <AdminIconButton fontSize="default" onNavigate={closeDrawer} />
                 <SettingsMenu fontSize="default" />
               </Box>
-            </ListItem>
-
-            <Divider className={classes.divider} />
-
-            <ListItem disableGutters>
-              <Button
-                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
-                href="https://github.com/QuoteVote/quotevote-monorepo"
-                target="_blank"
-                rel="noopener noreferrer"
-                startIcon={<GitHubIcon />}
-                onClick={closeDrawer}
-              >
-                GitHub Repository
-              </Button>
             </ListItem>
           </List>
         )}
