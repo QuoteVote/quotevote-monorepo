@@ -32,7 +32,9 @@ import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)'
+      : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
     boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
     borderBottom: '2px solid transparent',
     borderImage: 'linear-gradient(90deg, #2AE6B2, #27C4E1, #178BE1) 1',
@@ -64,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
     fontWeight: 800,
     letterSpacing: '0.05em',
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontSize: '0.875rem',
     [theme.breakpoints.up('md')]: {
       fontSize: '1rem',
@@ -85,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   },
   outlinedButton: {
     border: '2px solid #2AE6B2',
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 600,
     textTransform: 'none',
     padding: theme.spacing(1, 3),
@@ -108,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   iconButton: {
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     transition: 'all 0.2s',
     '&:hover': {
       color: '#2AE6B2',
@@ -130,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerTitle: {
     fontWeight: 700,
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
   },
   divider: {
     height: 2,
@@ -159,7 +161,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerOutlinedButton: {
     border: '2px solid #2AE6B2',
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 600,
     '&:hover': {
       background: 'rgba(14, 17, 22, 0.06)',
@@ -167,7 +169,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   drawerTextButton: {
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 500,
     '&:hover': {
       background: 'rgba(14, 17, 22, 0.06)',
@@ -188,7 +190,7 @@ const useStyles = makeStyles((theme) => ({
   },
   profileName: {
     marginLeft: theme.spacing(1),
-    color: '#0A2342',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#0A2342',
     fontWeight: 600,
   },
   loggedInActions: {
@@ -228,6 +230,7 @@ function MainNavBar(props) {
   const history = useHistory()
   const location = useLocation()
   const isMobile = useMobileDetection()
+  const theme = { palette: { mode: useSelector((state) => state.user.data.themePreference) || 'light' } }
 
   const handleMenu = (newSelectedMenu) => {
     client.stop()
@@ -369,7 +372,7 @@ function MainNavBar(props) {
                 aria-label="Open menu"
                 onClick={toggleDrawer}
               >
-                <MenuIcon style={{ color: '#0A2342' }} />
+                <MenuIcon style={{ color: classes.iconButton.color }} />
               </IconButton>
             </Box>
           </Hidden>
