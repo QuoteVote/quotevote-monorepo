@@ -234,7 +234,7 @@ export default function LandingPage() {
             {/* Donate button opens email client */}
             <Button
               className={classes.navButton}
-              href="mailto:admin@quote.vote"
+              href="https://opencollective.com/quotevote-duplicate/donate"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Donate"
@@ -340,7 +340,7 @@ export default function LandingPage() {
                   Login
                 </Link>
                 <Link
-                  href="mailto:admin@quote.vote"
+                  href="https://opencollective.com/quotevote-duplicate/donate"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={classes.footerLink}

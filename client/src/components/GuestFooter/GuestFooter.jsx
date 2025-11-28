@@ -118,7 +118,7 @@ const GuestFooter = ({ isRequestAccess = false }) => {
 
         {/* Donate Button */}
         <a
-          href="mailto:admin@quote.vote"
+          href="https://opencollective.com/quotevote-duplicate/donate"
           target="_blank"
           rel="noopener noreferrer"
           style={{

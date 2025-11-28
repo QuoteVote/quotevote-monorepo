@@ -38,7 +38,7 @@ export default function Footer(props) {
                   Request Invite
                 </Typography>
               </Link>
-              <Link href="mailto:admin@quote.vote" color="inherit">
+              <Link href="https://opencollective.com/quotevote-duplicate/donate" color="inherit">
                 <Typography style={{ fontSize: '14px', fontWeight: 400 }}>
                   Donate
                 </Typography>
@@ -88,7 +88,7 @@ export default function Footer(props) {
                 </Typography>
               </Link>
               <Link
-                href="mailto:admin@quote.vote"
+                href="https://opencollective.com/quotevote-duplicate/donate"
                 color="inherit"
                 style={{ marginLeft: '1rem' }}
               >
