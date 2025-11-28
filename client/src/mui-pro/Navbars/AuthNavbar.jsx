@@ -79,7 +79,7 @@ export default function AuthNavbar(props) {
 
   const list = (
     <List className={classes.list}>
-      {activeRoute('/auth/request-access') && (
+      {(activeRoute('/auth/request-access') || activeRoute('/invite')) && (
         <>
           <ListItem className={classes.listItem}>
             <button
@@ -116,7 +116,7 @@ export default function AuthNavbar(props) {
         <ListItem className={classes.listItem}>
           <button
             type="button"
-            onClick={() => history.push('/auth/request-access')}
+            onClick={() => history.push('/invite')}
             className={classes.getAccessButton}
           >
             Get Access

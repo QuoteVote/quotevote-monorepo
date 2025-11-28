@@ -57,7 +57,7 @@ export default function Pages(props) {
     }
 
     // Specify how to clean up after this effect:
-    return function cleanup() {}
+    return function cleanup() { }
   }, [selectedBackground])
 
   const getRoutes = (routesParameter) =>
@@ -65,7 +65,7 @@ export default function Pages(props) {
       if (prop.collapse) {
         return getRoutes(prop.views)
       }
-      if (prop.layout === '/auth') {
+      if (prop.layout === '/auth' || prop.layout === '') {
         // console.log('Creating route:', prop.layout + prop.path, 'for component:', prop.component.name)
         return (
           <Route
@@ -98,7 +98,7 @@ export default function Pages(props) {
   }
 
   const showRequestAccessFooter = useMemo(
-    () => window.location.pathname.includes('request-access'),
+    () => window.location.pathname.includes('request-access') || window.location.pathname.includes('/invite'),
     [window.location.pathname],
   )
 
@@ -152,7 +152,7 @@ export default function Pages(props) {
         </div>
       )}
       {/* InfoSections - only on request-access page */}
-      {window.location.pathname === '/auth/request-access' && (
+      {(window.location.pathname === '/auth/request-access' || window.location.pathname === '/invite') && (
         <div>
           <InfoSections />
         </div>
