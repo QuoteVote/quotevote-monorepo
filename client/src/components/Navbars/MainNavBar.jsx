@@ -16,7 +16,6 @@ import Box from '@material-ui/core/Box'
 import MenuIcon from '@material-ui/icons/Menu'
 import CloseIcon from '@material-ui/icons/Close'
 import GitHubIcon from '@material-ui/icons/GitHub'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import Dialog from '@material-ui/core/Dialog'
 import Avatar from '@material-ui/core/Avatar'
 import { NavLink, useHistory, useLocation } from 'react-router-dom'
@@ -197,7 +196,7 @@ const useStyles = makeStyles((theme) => ({
   loggedInActions: {
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
+    gap: theme.spacing(2.5),
   },
   createQuoteButton: {
     background: '#52b274',
@@ -231,7 +230,7 @@ function MainNavBar(props) {
   const history = useHistory()
   const location = useLocation()
   const isMobile = useMobileDetection()
-  const theme = { palette: { mode: useSelector((state) => state.user.data.themePreference) || 'light' } }
+
 
   const handleMenu = (newSelectedMenu) => {
     client.stop()
@@ -248,13 +247,6 @@ function MainNavBar(props) {
 
   const toggleDrawer = () => setDrawerOpen((prev) => !prev)
   const closeDrawer = () => setDrawerOpen(false)
-
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    client.stop()
-    client.resetStore()
-    history.push('/auth/login')
-  }
 
   return (
     <>
@@ -357,13 +349,6 @@ function MainNavBar(props) {
                   <NotificationMenu fontSize="large" />
                   <AdminIconButton fontSize="large" />
                   <SettingsMenu fontSize="large" />
-                  <IconButton
-                    onClick={handleLogout}
-                    className={classes.iconButton}
-                    aria-label="Logout"
-                  >
-                    <ExitToAppIcon fontSize="large" />
-                  </IconButton>
                 </Box>
               </Box>
             </Hidden>
@@ -519,22 +504,6 @@ function MainNavBar(props) {
                 <AdminIconButton fontSize="default" onNavigate={closeDrawer} />
                 <SettingsMenu fontSize="default" />
               </Box>
-            </ListItem>
-
-            <Divider className={classes.divider} />
-
-            <ListItem disableGutters>
-              <Button
-                className={`${classes.drawerButton} ${classes.drawerTextButton}`}
-                onClick={() => {
-                  handleLogout()
-                  closeDrawer()
-                }}
-                startIcon={<ExitToAppIcon />}
-                style={{ color: '#f44336' }}
-              >
-                Logout
-              </Button>
             </ListItem>
           </List>
         )}
