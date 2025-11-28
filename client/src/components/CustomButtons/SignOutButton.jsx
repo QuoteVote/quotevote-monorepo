@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   button: {
     fontFamily: 'Roboto',
     fontSize: '14px',
@@ -14,7 +14,10 @@ const useStyles = makeStyles(() => ({
     lineHeight: 'normal',
     letterSpacing: 'normal',
     textAlign: 'right',
-    color: '#ffffff',
+    color: theme.palette.error.main,
+    '&:hover': {
+      backgroundColor: 'rgba(244, 67, 54, 0.08)',
+    },
   },
 }))
 
