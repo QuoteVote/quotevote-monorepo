@@ -270,7 +270,7 @@ function MainNavBar(props) {
             <Hidden smDown>
               <Box className={classes.desktopActions}>
                 <Button
-                  href="https://opencollective.com/quotevote-duplicate/donate"
+                  href="https://opencollective.com/quotevote/donate"
                   target="_blank"
                   className={classes.textButton}
                 >
@@ -429,7 +429,7 @@ function MainNavBar(props) {
             <ListItem disableGutters>
               <Button
                 className={`${classes.drawerButton} ${classes.drawerTextButton}`}
-                href="https://opencollective.com/quotevote-duplicate/donate"
+                href="https://opencollective.com/quotevote/donate"
                 target="_blank"
                 onClick={closeDrawer}
               >
