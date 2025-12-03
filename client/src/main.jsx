@@ -88,6 +88,7 @@ function App() {
           <Router history={hist}>
             <Switch>
               <Route path="/auth" component={AuthLayout} />
+              <Route path="/invite" component={AuthLayout} />
               <Route path="/unauth" component={TokenExpired} />
               <Route path="/logout" component={LogoutPage} />
               <Route path="/error" component={ErrorPage} />
@@ -106,23 +107,6 @@ ReactDOM.render(
     <ApolloProvider client={client}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <HelmetProvider>
-              <AuthModalProvider>
-                <Router history={hist}>
-                  <Switch>
-                    <Route path="/auth" component={AuthLayout} />
-                    <Route path="/invite" component={AuthLayout} />
-                    <Route path="/unauth" component={TokenExpired} />
-                    <Route path="/logout" component={LogoutPage} />
-                    <Route path="/error" component={ErrorPage} />
-                    <Route path="/" component={Scoreboard} />
-                    <Redirect from="*" to="/search" />
-                  </Switch>
-                </Router>
-              </AuthModalProvider>
-            </HelmetProvider>
-          </ThemeProvider>
           <ThemeContextProvider>
             <App />
           </ThemeContextProvider>
