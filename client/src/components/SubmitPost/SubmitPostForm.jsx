@@ -15,17 +15,20 @@ import {
   Card,
   CardHeader,
   Box,
+  Tooltip,
 } from '@material-ui/core'
 import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useMutation } from '@apollo/react-hooks'
 import { useDispatch } from 'react-redux'
-import { isEmpty } from 'lodash'
 import Button from '../../mui-pro/CustomButtons/Button'
 import SubmitPostAlert from './SubmitPostAlert'
 import { SET_SELECTED_POST } from '../../store/ui'
 import { CREATE_GROUP, SUBMIT_POST } from '../../graphql/mutations'
 import { useMobileDetection } from '../../utils/display'
+
+// URL detection regex for One-Link Rule validation
+const URL_REGEX = /(?:https?:\/\/|ftp:\/\/|www\.)[^\s/$.?#].[^\s]*/gi
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -155,7 +158,7 @@ function SubmitPostForm({ options = [], user, setOpen }) {
   const [error, setError] = React.useState(null)
 
   const onSubmit = async (values) => {
-    const { title, text, group } = values
+    const { title, text, group, citationUrl } = values
 
     // Handle case where group might be a string (typed value)
     const groupData = typeof group === 'string' ? { title: group } : group
@@ -191,6 +194,7 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             text,
             title,
             groupId: postGroupId,
+            citationUrl: citationUrl || null,
           },
         },
       })
@@ -216,7 +220,6 @@ function SubmitPostForm({ options = [], user, setOpen }) {
     reset()
   }
   const [value, setValue] = React.useState({ title: '', content: '' })
-  const [isPasting, setPasting] = React.useState(false)
 
   const handleTitleChange = (event) => {
     event.persist()
@@ -225,52 +228,7 @@ function SubmitPostForm({ options = [], user, setOpen }) {
 
   const handleContentChange = (event) => {
     event.persist()
-    const contentValue = event.target.value
-    const validURL = /^(?:http(s)?:\/\/)([\w.-])+(?:[\w.-]+)+([\w\-._~:/?#[\]@!$&'()*+,;=.])+$/
-    setValue({ ...value, content: contentValue })
-    if (isPasting && contentValue.match(validURL)) {
-      parseURLContent(contentValue)
-    }
-    setPasting(false)
-  }
-
-  const parseURLContent = async (url) => {
-    try {
-      const response = await fetch(`https://cors-anywhere.herokuapp.com/${url}`)
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const html = await response.text()
-
-      const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i)
-      const title = titleMatch ? titleMatch[1].trim() : 'Extracted Content'
-
-      const cleanHtml = html
-        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-
-      const content =
-        cleanHtml.substring(0, 500) + (cleanHtml.length > 500 ? '...' : '')
-
-      if (isEmpty(content)) {
-        setError('Could not extract site content.')
-        setShowAlert(true)
-      } else {
-        setValue({ title, content })
-      }
-    } catch (err) {
-      console.error('Error parsing URL:', err)
-      setError('Could not extract site content. Please try again.')
-      setShowAlert(true)
-    }
-  }
-
-  const handlePaste = () => {
-    setPasting(true)
+    setValue({ ...value, content: event.target.value })
   }
 
   const isMobile = useMobileDetection()
@@ -325,21 +283,55 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             <InputBase
               className={classes.input}
               id="text"
-              placeholder="Enter text or URL here"
+              placeholder="Enter your post content (no links allowed)"
               value={value.content}
               onChange={(event) => {
                 handleContentChange(event)
               }}
-              onPaste={handlePaste}
               multiline
               fullWidth
               name="text"
               inputRef={register({
                 required: 'Post is required',
+                validate: (val) => {
+                  URL_REGEX.lastIndex = 0
+                  return !URL_REGEX.test(val) || 'Links are not allowed in the post body.'
+                },
               })}
               required
-              error={errors.text}
+              error={!!errors.text}
             />
+            {errors.text && (
+              <Typography color="error" variant="caption" style={{ marginLeft: 4 }}>
+                {errors.text.message}
+              </Typography>
+            )}
+          </div>
+          <Divider style={{ margin: '16px 0' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <TextField
+              id="citationUrl"
+              name="citationUrl"
+              label="Citation Link"
+              placeholder="Source URL (optional)"
+              variant="outlined"
+              size="small"
+              fullWidth
+              inputRef={register({
+                validate: (val) => {
+                  if (!val) return true
+                  URL_REGEX.lastIndex = 0
+                  return URL_REGEX.test(val) || 'Invalid citation URL format.'
+                },
+              })}
+              error={!!errors.citationUrl}
+              helperText={errors.citationUrl?.message}
+            />
+            <Tooltip title="One citation per post. No other links allowed in the body." arrow>
+              <IconButton size="small" style={{ color: '#52b274' }}>
+                ?
+              </IconButton>
+            </Tooltip>
           </div>
         </Box>
         <CardActions className={classes.cardActions}>

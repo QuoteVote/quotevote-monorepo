@@ -4,5 +4,6 @@ export const PostInput = `
     groupId: String!
     title: String!
     text: String!
+    citationUrl: String
   }
 `;

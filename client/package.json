@@ -123,6 +123,7 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.6.1",
+    "@rollup/rollup-win32-x64-msvc": "^4.53.4",
     "@types/googlemaps": "3.37.3",
     "@types/markerclustererplus": "2.1.33",
     "ajv": "6.10.2",

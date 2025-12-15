@@ -46,6 +46,7 @@ export const GET_POST = gql`
       groupId
       title
       text
+      citationUrl
       url
       upvotes
       downvotes
@@ -252,6 +253,7 @@ export const GET_TOP_POSTS = gql`
         groupId
         title
         text
+        citationUrl
         upvotes
         downvotes
         bookmarkedBy

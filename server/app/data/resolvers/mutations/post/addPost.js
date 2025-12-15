@@ -5,9 +5,29 @@ import GroupModel from '../../models/GroupModel';
 import PostModel from '../../models/PostModel';
 import MessageRoomModel from '../../models/MessageRoomModel';
 
+// Robust URL detection regex (handles http, https, www, ftp)
+const URL_REGEX = /(?:https?:\/\/|ftp:\/\/|www\.)[^\s/$.?#].[^\s]*/gi;
+
 export const addPost = (pubsub) => {
   return async (_, args) => {
     logger.info('Function: add post', { args });
+
+    // Validation: Post body must NOT contain URLs
+    if (URL_REGEX.test(args.post.text)) {
+      logger.warn('Post rejected: URL detected in body', { text: args.post.text });
+      throw new Error('Post body cannot contain links. Please use the Citation field.');
+    }
+
+    // Validation: citationUrl (if provided) must be a valid URL format
+    if (args.post.citationUrl) {
+      // Reset regex lastIndex for reuse
+      URL_REGEX.lastIndex = 0;
+      if (!URL_REGEX.test(args.post.citationUrl)) {
+        logger.warn('Post rejected: Invalid citationUrl format', { citationUrl: args.post.citationUrl });
+        throw new Error('Invalid citation URL format.');
+      }
+    }
+
     let newPost = {};
     const group = await GroupModel.findById(args.post.groupId);
     const title = args.post.title.replace(/ /g, '-').toLowerCase();
@@ -16,6 +36,7 @@ export const addPost = (pubsub) => {
     const postObj = {
       ...args.post,
       url: '', // Temporary URL, will be updated after creation
+      citationUrl: args.post.citationUrl || null,
     };
 
     try {
