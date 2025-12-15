@@ -114,27 +114,17 @@ function NotificationMenu({ fontSize }) {
             color="error"
             badgeContent={notifications.length}
             overlap="rectangular"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
           >
             <IconButton
               aria-label="Notifications"
               color="inherit"
               onClick={handleToggle}
             >
-              {isHovered ? (
-                <img 
-                  src="/assets/NotificationsActive.svg" 
-                  alt="notifications active" 
-                  style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
-                />
-              ) : (
-                <img 
-                  src="/assets/Notifications.svg" 
-                  alt="notifications" 
-                  style={{fontSize: fontSize, width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
-                />
-              )}
+              <img 
+                src="/assets/Notifications.svg" 
+                alt="notifications" 
+                style={{width: fontSize === 'large' ? '49px' : '32px', height: fontSize === 'large' ? '46px' : '30px'}} 
+              />
             </IconButton>
           </StyledBadge>
           <MobileDrawer
