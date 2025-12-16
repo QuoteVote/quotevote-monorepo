@@ -106,13 +106,11 @@ function SettingsMenu({ fontSize }) {
             aria-label="Settings"
             color="inherit"
             onClick={handleToggle}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
           >
             <SvgIcon
-              component={svgIcon}
+              component={SettingsSvg}
               fontSize={fontSize}
-              viewBox={viewBox}
+              viewBox="0 0 49 46"
             />
           </IconButton>
           <MobileDrawer

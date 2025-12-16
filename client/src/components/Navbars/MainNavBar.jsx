@@ -371,8 +371,9 @@ function MainNavBar(props) {
                 edge="end"
                 aria-label="Open menu"
                 onClick={toggleDrawer}
+                className={classes.iconButton}
               >
-                <MenuIcon style={{ color: classes.iconButton.color }} />
+                <MenuIcon />
               </IconButton>
             </Box>
           </Hidden>
