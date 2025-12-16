@@ -5,6 +5,7 @@ import numpy as np
 import spacy
 import torch
 import graphene as gql
+from flask import Flask, request, jsonify
 
 from ml_model_training.ml_model import RedditTransformerPredictor
 
@@ -29,8 +30,19 @@ class Reception(gql.ObjectType):
     confidence = gql.Float()
 
 
-def create_schema():
-    """Load models and return a GraphQL schema."""
+# =============================================================================
+# Resource Loading
+# =============================================================================
+
+nlp = None
+model = None
+word_vector_model = None
+
+
+def load_resources():
+    """Load models at startup."""
+    global nlp, model, word_vector_model
+
     nlp = spacy.load("en_core_web_sm")
     model = RedditTransformerPredictor(
         vocab_length=15137,
@@ -54,70 +66,118 @@ def create_schema():
     )
     word_vector_model = {key.lower(): word_vector_model[key] for key in word_vector_model}
 
-    def ml_predict(comment: str) -> float:
-        np.random.seed(100)
-        torch.manual_seed(100)
 
-        parsed_comment = nlp(comment)
+# =============================================================================
+# Prediction Logic
+# =============================================================================
 
-        comment_vec = [
-            word_vector_model[tok.lemma_.lower()] if tok.lemma_.lower() in word_vector_model else 1
-            for tok in parsed_comment
+def ml_predict(comment: str) -> float:
+    np.random.seed(100)
+    torch.manual_seed(100)
+
+    parsed_comment = nlp(comment)
+
+    comment_vec = [
+        word_vector_model[tok.lemma_.lower()] if tok.lemma_.lower() in word_vector_model else 1
+        for tok in parsed_comment
+    ]
+
+    comment_vec = torch.LongTensor(
+        [
+            np.pad(data, (0, 300 - len(data)), "constant", constant_values=0)
+            for data in [comment_vec]
         ]
+    )
 
-        comment_vec = torch.LongTensor(
-            [
-                np.pad(data, (0, 300 - len(data)), "constant", constant_values=0)
-                for data in [comment_vec]
-            ]
+    model_prediction = model.predict(comment_vec).item()
+    prediction = float(np.round(model_prediction, 0))
+    return prediction
+
+
+def predict_truth(comment: str) -> float:
+    text = comment.lower()
+    hits = sum(1 for w in FALSE_KEYWORDS if w in text)
+    score = max(0.0, 1.0 - 0.2 * hits)
+    return score
+
+
+def predict_like(comment: str) -> float:
+    text = comment.lower()
+    pos = sum(1 for w in POSITIVE_KEYWORDS if w in text)
+    neg = sum(1 for w in NEGATIVE_KEYWORDS if w in text)
+    score = 0.5 + 0.1 * (pos - neg)
+    return min(max(score, 0.0), 1.0)
+
+
+def upvote_range(score: float) -> str:
+    if score < 0.3:
+        return "0-5"
+    if score < 0.6:
+        return "5-10"
+    return "10+"
+
+
+# =============================================================================
+# GraphQL Schema
+# =============================================================================
+
+class Query(gql.ObjectType):
+    score = gql.Field(Score, args={"reddit_comment": gql.String()})
+    predict_reception = gql.Field(Reception, args={"text": gql.String()})
+
+    def resolve_score(parent, info, reddit_comment: str = "Reddit Comment"):
+        if reddit_comment == "Reddit Comment":
+            return Score(significant=DATASET_SIZE >= MIN_SIGNIFICANT_SIZE)
+        prediction = ml_predict(reddit_comment)
+        return Score(
+            comment=reddit_comment,
+            confidence=prediction,
+            significant=DATASET_SIZE >= MIN_SIGNIFICANT_SIZE,
         )
 
-        model_prediction = model.predict(comment_vec).item()
-        prediction = float(np.round(model_prediction, 0))
-        return prediction
+    def resolve_predict_reception(parent, info, text: str):
+        truth = predict_truth(text)
+        like = predict_like(text)
+        return Reception(
+            upvote_range=upvote_range(like),
+            agreement_score=truth,
+            confidence=like if like < truth else truth,
+        )
 
-    def predict_truth(comment: str) -> float:
-        text = comment.lower()
-        hits = sum(1 for w in FALSE_KEYWORDS if w in text)
-        score = max(0.0, 1.0 - 0.2 * hits)
-        return score
 
-    def predict_like(comment: str) -> float:
-        text = comment.lower()
-        pos = sum(1 for w in POSITIVE_KEYWORDS if w in text)
-        neg = sum(1 for w in NEGATIVE_KEYWORDS if w in text)
-        score = 0.5 + 0.1 * (pos - neg)
-        return min(max(score, 0.0), 1.0)
+schema = gql.Schema(query=Query)
 
-    def upvote_range(score: float) -> str:
-        if score < 0.3:
-            return "0-5"
-        if score < 0.6:
-            return "5-10"
-        return "10+"
 
-    class Query(gql.ObjectType):
-        score = gql.Field(Score, args={"reddit_comment": gql.String()})
-        predict_reception = gql.Field( Reception, args={"text": gql.String()} )
+# =============================================================================
+# Flask Application
+# =============================================================================
 
-        def resolve_score(parent, info, reddit_comment: str = "Reddit Comment"):
-            if reddit_comment == "Reddit Comment":
-                return Score(significant=DATASET_SIZE >= MIN_SIGNIFICANT_SIZE)
-            prediction = ml_predict(reddit_comment)
-            return Score(
-                comment=reddit_comment,
-                confidence=prediction,
-                significant=DATASET_SIZE >= MIN_SIGNIFICANT_SIZE,
-            )
+app = Flask(__name__)
 
-        def resolve_predict_reception(parent, info, text: str):
-            truth = predict_truth(text)
-            like = predict_like(text)
-            return Reception(
-                upvote_range=upvote_range(like),
-                agreement_score=truth,
-                confidence= like if like < truth else truth,
-            )
 
-    return gql.Schema(query=Query)
+@app.route('/graphql', methods=['POST'])
+def graphql_server():
+    data = request.get_json()
+    result = schema.execute(data.get('query'), variable_values=data.get('variables'))
+    return jsonify(result.to_dict())
 
+
+@app.route("/health")
+def health():
+    """Health check endpoint."""
+    return jsonify({
+        "status": "healthy",
+        "model_loaded": model is not None,
+        "nlp_loaded": nlp is not None,
+    })
+
+
+# =============================================================================
+# Entry Point
+# =============================================================================
+
+if __name__ == "__main__":
+    print("Loading ML resources...")
+    load_resources()
+    print("Starting Flask server on port 5000...")
+    app.run(host="0.0.0.0", port=5000)
