@@ -18,6 +18,7 @@ import withWidth from '@material-ui/core/withWidth'
 import getTopPostsVoteHighlights from '../../utils/getTopPostsVoteHighlights'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
+import LinkIcon from '@material-ui/icons/Link'
 import { useQuery } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
@@ -253,6 +254,27 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'underline',
     },
   },
+  citationChip: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '4px 10px',
+    borderRadius: '16px',
+    fontSize: '12px',
+    fontWeight: 500,
+    color: '#1976d2',
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(25, 118, 210, 0.15)'
+      : 'rgba(25, 118, 210, 0.08)',
+    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(25, 118, 210, 0.3)' : 'rgba(25, 118, 210, 0.2)'}`,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: theme.palette.mode === 'dark'
+        ? 'rgba(25, 118, 210, 0.25)'
+        : 'rgba(25, 118, 210, 0.15)',
+    },
+  },
 }))
 
 const getCardBg = (activityType = 'POSTED') => {
@@ -271,6 +293,16 @@ const getCardBg = (activityType = 'POSTED') => {
       return 'quotedPostBg'
     default:
       return 'postedBg'
+  }
+}
+
+// Helper to extract domain from URL
+const getDomain = (url) => {
+  try {
+    const hostname = new URL(url).hostname
+    return hostname.replace(/^www\./, '')
+  } catch {
+    return url
   }
 }
 
@@ -300,6 +332,7 @@ function PostCard(props) {
     quotes,
     messageRoom,
     groupId,
+    citationUrl,
   } = props
   // Safely extract messages from messageRoom (handle case where it might be undefined or null)
   const { messages = [] } = messageRoom || {}
@@ -428,6 +461,18 @@ return {
                   }
                 </Typography>
               )}
+              {citationUrl && (
+                <div
+                  className={classes.citationChip}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    window.open(citationUrl, '_blank', 'noopener,noreferrer')
+                  }}
+                >
+                  <LinkIcon style={{ fontSize: 14 }} />
+                  Source: {getDomain(citationUrl)}
+                </div>
+              )}
             </div>
           </Grid>
           <Grid item xs={12}>
@@ -514,6 +559,7 @@ PostCard.propTypes = {
   width: PropTypes.any,
   limitText: PropTypes.bool,
   groupId: PropTypes.string,
+  citationUrl: PropTypes.string,
 }
 
 export default withWidth()(PostCard)

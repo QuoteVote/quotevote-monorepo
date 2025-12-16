@@ -1,0 +1,5 @@
+*.json
+tests/
+*.ipynb
+*.pyc
+*.model

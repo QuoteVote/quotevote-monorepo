@@ -21,6 +21,11 @@ const schema = mongoose.Schema({
     type: String,
     required: false,
   },
+  citationUrl: {
+    type: String,
+    required: false,
+    default: null,
+  },
   bookmarkedBy: {
     type: Array,
     required: false,

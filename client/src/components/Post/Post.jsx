@@ -7,6 +7,7 @@ import {
   IconButton,
   FormControlLabel,
   Tooltip,
+  Chip,
 } from '@material-ui/core'
 import Switch from '@material-ui/core/Switch'
 import { makeStyles } from '@material-ui/core/styles'
@@ -101,12 +102,22 @@ const useStyles = makeStyles((theme) => ({
 
 function Post({ post, user, postHeight, postActions, refetchPost }) {
   const classes = useStyles({ postHeight })
-  const { title, creator, created, _id, userId } = post
+  const { title, creator, created, _id, userId, citationUrl } = post
   const { name, avatar, username } = creator
   const { _followingId } = user
   const dispatch = useDispatch()
   const history = useHistory()
   const parsedCreated = moment(created).format('LLL')
+
+  // Helper to extract domain from URL
+  const getDomain = (url) => {
+    try {
+      const hostname = new URL(url).hostname
+      return hostname.replace(/^www\./, '')
+    } catch {
+      return url
+    }
+  }
 
   // State declarations
   const [selectedText, setSelectedText] = useState({
@@ -725,6 +736,21 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
               <IconButton size="small" onClick={handleReportPost}>
                 <BlockIcon className={classes.blockIcon} />
               </IconButton>
+              {citationUrl && (
+                <Chip
+                  icon={<LinkIcon style={{ color: '#52b274' }} />}
+                  label={`Source: ${getDomain(citationUrl)}`}
+                  size="small"
+                  variant="outlined"
+                  clickable
+                  onClick={() => window.open(citationUrl, '_blank', 'noopener,noreferrer')}
+                  style={{
+                    marginLeft: 8,
+                    borderColor: '#52b274',
+                    color: '#52b274',
+                  }}
+                />
+              )}
             </div>
           }
           subheader={

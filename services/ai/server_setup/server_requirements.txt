@@ -1,0 +1,9 @@
+gensim==3.8.2
+graphene>=3.3
+gunicorn==20.0.4
+flask>=2.2
+graphene-flask>=2.0.1
+numpy==1.18.4
+torch>=2.0
+pip==20.0.2
+spacy>=3.5

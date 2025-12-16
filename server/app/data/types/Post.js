@@ -6,6 +6,7 @@ type Post {
   groupId: String
   title: String
   text: String
+  citationUrl: String
   url: String
   deleted: Boolean
   upvotes: Int
