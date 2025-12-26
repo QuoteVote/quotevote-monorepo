@@ -70,12 +70,16 @@ app.use(cors({
 
     const allowedOrigins = [
       'http://localhost:3000',
+      'http://localhost:4000',
+      'http://127.0.0.1:3000',
       'https://www.quote.vote',
       'https://quote.vote',
     ];
 
     // Check if origin matches allowed origins or patterns
     if (allowedOrigins.includes(origin)
+        || /^http:\/\/localhost:\d+$/.test(origin)  // Allow any localhost port
+        || /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)  // Allow any 127.0.0.1 port
         || /\.netlify\.app$/.test(origin)
         || /\.quote\.vote$/.test(origin)) {
       return callback(null, true);
