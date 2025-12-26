@@ -30,6 +30,50 @@ import { useMobileDetection } from '../../utils/display'
 // URL detection regex for One-Link Rule validation
 const URL_REGEX = /(?:https?:\/\/|ftp:\/\/|www\.)[^\s/$.?#].[^\s]*/gi
 
+// Regex to detect emojis and other non-URL-safe characters
+const EMOJI_REGEX = /[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]/u;
+
+// Strict allowlist: Only RFC 3986 compliant URL characters
+// Allows: letters, digits, and -._~:/?#[]@!$&'()*+,;=%
+const INVALID_URL_CHARS_REGEX = /[^a-zA-Z0-9\-._~:/?#\[\]@!$&'()*+,;=%]/;
+
+// Helper: Strict URL Sanitizer
+const sanitizeUrl = (url) => {
+  if (!url) return null;
+  
+  const trimmedUrl = url.trim();
+  
+  // 1. Block emojis
+  if (EMOJI_REGEX.test(trimmedUrl)) {
+    return null;
+  }
+  
+  // 2. Block non-standard URL characters (strict allowlist)
+  if (INVALID_URL_CHARS_REGEX.test(trimmedUrl)) {
+    return null;
+  }
+  
+  try {
+    // 3. Parse using native URL constructor
+    const parsed = new URL(trimmedUrl);
+    
+    // 4. Block dangerous protocols (javascript:, data:, file:)
+    if (!['http:', 'https:', 'ftp:'].includes(parsed.protocol)) {
+      return null;
+    }
+    
+    // 5. Ensure hostname exists and is valid
+    if (!parsed.hostname || parsed.hostname.length < 3) {
+      return null;
+    }
+    
+    // 6. Return the clean, normalized string
+    return parsed.href;
+  } catch (e) {
+    return null; // Invalid URL
+  }
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -160,6 +204,16 @@ function SubmitPostForm({ options = [], user, setOpen }) {
   const onSubmit = async (values) => {
     const { title, text, group, citationUrl } = values
 
+    // Sanitize citation URL before submission
+    const cleanCitation = sanitizeUrl(citationUrl);
+    
+    // If user typed garbage that resulted in null, block submission
+    if (citationUrl && !cleanCitation) {
+      setError('Invalid URL format.');
+      setShowAlert(true);
+      return;
+    }
+
     // Handle case where group might be a string (typed value)
     const groupData = typeof group === 'string' ? { title: group } : group
 
@@ -194,7 +248,7 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             text,
             title,
             groupId: postGroupId,
-            citationUrl: citationUrl || null,
+            citationUrl: cleanCitation || null,
           },
         },
       })
@@ -302,9 +356,23 @@ function SubmitPostForm({ options = [], user, setOpen }) {
               error={!!errors.text}
             />
             {errors.text && (
-              <Typography color="error" variant="caption" style={{ marginLeft: 4 }}>
-                {errors.text.message}
-              </Typography>
+              <div
+                style={{
+                  backgroundColor: '#ffebee',
+                  border: '1px solid #f44336',
+                  borderRadius: 4,
+                  padding: '12px 16px',
+                  marginTop: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <span style={{ color: '#f44336', fontSize: 20 }}>⚠️</span>
+                <Typography color="error" variant="body2" style={{ fontWeight: 500 }}>
+                  {errors.text.message}
+                </Typography>
+              </div>
             )}
           </div>
           <Divider style={{ margin: '16px 0' }} />
@@ -313,15 +381,16 @@ function SubmitPostForm({ options = [], user, setOpen }) {
               id="citationUrl"
               name="citationUrl"
               label="Citation Link"
-              placeholder="Source URL (optional)"
+              placeholder="Source URL (e.g. https://wikipedia.org/wiki/...)"
               variant="outlined"
               size="small"
               fullWidth
               inputRef={register({
                 validate: (val) => {
-                  if (!val) return true
-                  URL_REGEX.lastIndex = 0
-                  return URL_REGEX.test(val) || 'Invalid citation URL format.'
+                  if (!val) return true; // Optional field
+                  const clean = sanitizeUrl(val);
+                  // If sanitizeUrl returns null, it contained invalid chars or bad format
+                  return !!clean || 'Invalid URL. Please remove special characters or fix format.';
                 },
               })}
               error={!!errors.citationUrl}
