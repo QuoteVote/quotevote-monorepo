@@ -1,4 +1,4 @@
-FROM mongo:8.0.10
+FROM mongo:8.0.17
 # NOTE: Above should be parity with prod mongo version, change if necessary
 
 EXPOSE 27017
