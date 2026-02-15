@@ -157,7 +157,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: 'flex',
     boxSizing: 'border-box',
-    position: 'relative',
     [theme.breakpoints.down('sm')]: {
       height: 'calc(100vh - 56px)',
     },
@@ -172,103 +171,54 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'border-box',
     borderRight: `1px solid ${theme.palette.divider}`,
   },
-  landscapeRightPanel: {
+  landscapeInteractionSection: {
     flex: '0 0 50%',
     maxWidth: '50%',
     height: '100%',
-    position: 'relative',
-    boxSizing: 'border-box',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    paddingBottom: 56,
-  },
-  landscapeDrawer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: '12px 12px 0 0',
-    boxShadow: '0 -2px 12px rgba(0,0,0,0.1)',
     display: 'flex',
     flexDirection: 'column',
-    transition: 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-    willChange: 'height',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
   },
-  landscapeDrawerCollapsed: {
-    height: 48,
-  },
-  landscapeDrawerExpanded: {
-    height: '80%',
-  },
-  landscapeDrawerHandle: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1.5),
-    cursor: 'pointer',
-    flexShrink: 0,
-    minHeight: 48,
-    userSelect: 'none',
-    WebkitTapHighlightColor: 'transparent',
-    '&:focus-visible': {
-      outline: `2px solid ${theme.palette.primary.main}`,
-      outlineOffset: -2,
-    },
-  },
-  landscapeDrawerHandleBar: {
-    width: 32,
-    height: 3,
-    backgroundColor: theme.palette.divider,
-    borderRadius: 2,
-    position: 'absolute',
-    top: 6,
-    left: '50%',
-    transform: 'translateX(-50%)',
-  },
-  landscapeDrawerLabel: {
-    flex: 1,
-    fontWeight: 600,
-    fontSize: '0.8rem',
-  },
-  landscapeDrawerCount: {
-    fontSize: '0.75rem',
-    color: theme.palette.text.secondary,
-    marginRight: theme.spacing(0.5),
-  },
-  landscapeDrawerContent: {
+  landscapeMessagesContainer: {
     flex: 1,
     minHeight: 0,
-    overflow: 'auto',
+    overflowX: 'hidden',
+    overflowY: 'auto',
     padding: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
   },
-  landscapeDrawerInput: {
+  landscapeChatInputContainer: {
     flexShrink: 0,
     borderTop: `1px solid ${theme.palette.divider}`,
-    padding: theme.spacing(0.5, 1),
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1, 1.5),
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
     '& .MuiGrid-container': {
       flexWrap: 'nowrap',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       padding: 0,
     },
     '& .MuiPaper-root': {
       display: 'flex',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       width: '100%',
       backgroundColor: 'transparent',
       boxShadow: 'none',
     },
     '& .MuiInputBase-root': {
       width: '100%',
-      minHeight: 36,
-      maxHeight: 'none',
-      borderRadius: 18,
+      minHeight: 40,
+      maxHeight: 40,
+      borderRadius: 20,
       fontSize: '0.85rem',
-      paddingLeft: theme.spacing(1.5),
+      paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(1),
     },
     '& .MuiIconButton-root': {
-      padding: theme.spacing(0.5),
+      padding: theme.spacing(1),
       color: theme.palette.primary.main,
     },
   },
@@ -463,8 +413,7 @@ function PostPage({ postId }) {
   const { url } = (!loadingPost && post) || {}
 
   if (isLandscapeMobile) {
-    // Landscape mobile layout - side by side with collapsible chat drawer
-    const discussionCount = postActions.length
+    // Landscape mobile layout - side by side, optimized for short viewports
     return (
       <>
         <Helmet>
@@ -495,68 +444,18 @@ function PostPage({ postId }) {
               />
             )}
           </div>
-          {/* Right Panel - with collapsible chat drawer */}
-          <div className={classes.landscapeRightPanel}>
-            <PostActionList
-              loading={loadingPost}
-              postActions={postActions}
-              postUrl={url}
-              refetchPost={refetchPost}
-            />
-
-            {/* Collapsible chat drawer */}
-            <div
-              className={`${classes.landscapeDrawer} ${
-                isChatExpanded ? classes.landscapeDrawerExpanded : classes.landscapeDrawerCollapsed
-              }`}
-              id="landscape-chat-drawer"
-              role="region"
-              aria-label="Discussion drawer"
-              onTouchStart={handleDrawerTouchStart}
-              onTouchEnd={handleDrawerTouchEnd}
-            >
-              <div className={classes.landscapeDrawerHandleBar} />
-              <div
-                className={classes.landscapeDrawerHandle}
-                onClick={toggleChat}
-                onKeyDown={handleKeyDown}
-                role="button"
-                tabIndex={0}
-                aria-expanded={isChatExpanded}
-                aria-controls="landscape-chat-drawer-content"
-                aria-label={`${isChatExpanded ? 'Collapse' : 'Expand'} discussion. ${discussionCount} items.`}
-              >
-                <Typography className={classes.landscapeDrawerLabel}>
-                  Open Discussion
-                </Typography>
-                <span className={classes.landscapeDrawerCount}>
-                  {discussionCount > 0 ? discussionCount : ''}
-                </span>
-                {isChatExpanded ? (
-                  <KeyboardArrowDown style={{ fontSize: 18 }} />
-                ) : (
-                  <KeyboardArrowUp style={{ fontSize: 18 }} />
-                )}
-              </div>
-
-              {isChatExpanded && (
-                <>
-                  <div
-                    className={classes.landscapeDrawerContent}
-                    id="landscape-chat-drawer-content"
-                  >
-                    <PostActionList
-                      loading={loadingPost}
-                      postActions={postActions}
-                      postUrl={url}
-                      refetchPost={refetchPost}
-                    />
-                  </div>
-                  <div className={classes.landscapeDrawerInput}>
-                    <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
-                  </div>
-                </>
-              )}
+          {/* Right Panel - Actions, Chat Messages, and Chat Input */}
+          <div className={classes.landscapeInteractionSection} role="region" aria-label="Discussion">
+            <div className={classes.landscapeMessagesContainer}>
+              <PostActionList
+                loading={loadingPost}
+                postActions={postActions}
+                postUrl={url}
+                refetchPost={refetchPost}
+              />
+            </div>
+            <div className={classes.landscapeChatInputContainer}>
+              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
             </div>
           </div>
         </div>

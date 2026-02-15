@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.mode === 'dark' ? '#2A2A2A' : '#f5f7fa',
     border: theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e1e8ed',
     minHeight: 45,
+    maxHeight: 75,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 8,
@@ -163,6 +164,7 @@ function PostChatSend(props) {
         <Paper elevation={0}>
           <InputBase
             multiline
+            maxRows={4}
             inputRef={commentInputRef}
             placeholder="type a message..."
             className={`${classes.input} ${!text.trim() ? classes.inputEmpty : ''}`}
