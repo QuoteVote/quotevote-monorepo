@@ -198,6 +198,17 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(211, 47, 47, 0.04)',
     },
   },
+  actionBarVotingToggle: {
+    margin: 0,
+    '& .MuiFormControlLabel-label': {
+      fontSize: '0.75rem',
+      fontWeight: 600,
+      color: '#666',
+    },
+    '& .MuiSwitch-root': {
+      marginRight: -4,
+    },
+  },
   ...buttonStyle,
 }))
 
@@ -958,6 +969,25 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
                 <span role="img" aria-label="bookmark">&#x1F4BE;</span>
               </IconButton>
             </Tooltip>
+            {user._id === userId && (
+              <>
+                <Divider orientation="vertical" flexItem className={classes.actionBarDivider} />
+                <Tooltip title={post.enable_voting ? 'Disable voting on this post' : 'Enable voting on this post'}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={post.enable_voting}
+                        onChange={handleToggleVoteButtons}
+                        color="primary"
+                        size="small"
+                      />
+                    }
+                    label={post.enable_voting ? 'Voting' : 'Voting'}
+                    className={classes.actionBarVotingToggle}
+                  />
+                </Tooltip>
+              </>
+            )}
             {(user._id === userId || user.admin) && (
               <>
                 <Divider orientation="vertical" flexItem className={classes.actionBarDivider} />
@@ -1022,19 +1052,6 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           </VotingBoard>
         </CardContent>
 
-        {user._id === userId && !post.enable_voting && (
-          <FormControlLabel
-            control={
-              <Switch
-                checked={post.enable_voting}
-                onChange={handleToggleVoteButtons}
-                color="secondary"
-              />
-            }
-            label="Enable Voting"
-            style={{ marginLeft: 20 }}
-          />
-        )}
         {open && (
           <SweetAlert
             confirmBtnCssClass={`${classes.button} ${classes.success}`}
