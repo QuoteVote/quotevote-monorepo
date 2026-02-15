@@ -190,37 +190,6 @@ const useStyles = makeStyles((theme) => ({
   },
   landscapeChatInputContainer: {
     flexShrink: 0,
-    borderTop: `1px solid ${theme.palette.divider}`,
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(1, 1.5),
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-    '& .MuiGrid-container': {
-      flexWrap: 'nowrap',
-      alignItems: 'center',
-      padding: 0,
-    },
-    '& .MuiPaper-root': {
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-      backgroundColor: 'transparent',
-      boxShadow: 'none',
-    },
-    '& .MuiInputBase-root': {
-      width: '100%',
-      minHeight: 40,
-      maxHeight: 40,
-      borderRadius: 20,
-      fontSize: '0.85rem',
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
-    '& .MuiIconButton-root': {
-      padding: theme.spacing(1),
-      color: theme.palette.primary.main,
-    },
   },
   emptyPost: {
     marginTop: 100,

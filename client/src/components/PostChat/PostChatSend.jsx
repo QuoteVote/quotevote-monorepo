@@ -3,12 +3,10 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { CHAT_SUBMITTING } from 'store/chat'
 import { useMutation } from '@apollo/react-hooks'
-import { Grid, InputBase } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Hidden from '@material-ui/core/Hidden'
+import InputBase from '@material-ui/core/InputBase'
 import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
+import SendRoundedIcon from '@material-ui/icons/SendRounded'
 import { SEND_MESSAGE } from '../../graphql/mutations'
 import { GET_ROOM_MESSAGES } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
@@ -16,48 +14,57 @@ import useGuestGuard from '../../utils/useGuestGuard'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    padding: 10,
-    [theme.breakpoints.down('xs')]: {
-      padding: 0,
-    },
+    alignItems: 'flex-end',
+    padding: theme.spacing(1, 1.5),
+    borderTop: '1px solid',
+    borderColor: theme.palette.divider,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
+    gap: theme.spacing(1),
+    ...(theme.palette.mode === 'dark' && {
+      backgroundColor: 'rgba(30, 30, 30, 0.85)',
+    }),
   },
-  chat: {
-    fontWeight: 600,
-    fontSize: 14,
-    color: '#666',
+  inputWrapper: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'flex-end',
+    borderRadius: 24,
+    backgroundColor: theme.palette.mode === 'dark' ? '#2a2a2a' : '#f0f2f5',
+    border: '1px solid transparent',
+    transition: 'border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease',
+    '&:focus-within': {
+      backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#ffffff',
+      borderColor: '#1976d2',
+      boxShadow: '0 0 0 3px rgba(25, 118, 210, 0.12)',
+    },
   },
   input: {
-    borderRadius: 6,
-    background: theme.palette.mode === 'dark' ? '#2A2A2A' : '#f5f7fa',
-    border: theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid #e1e8ed',
-    minHeight: 32,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 8,
-    paddingBottom: 8,
-    width: '80%',
-    [theme.breakpoints.up('md')]: {
-      width: '85%',
-    },
-    '&amp;:focus-within': {
-      background: theme.palette.mode === 'dark' ? '#333333' : '#ffffff',
-      border: '1px solid #1976d2',
-      boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)',
-    },
-    '&amp; .MuiInputBase-input': {
-      resize: 'none',
-      color: theme.palette.text.primary,
-      '&amp;::placeholder': {
-        opacity: 0.7,
+    flex: 1,
+    padding: theme.spacing(1, 2),
+    fontSize: '0.875rem',
+    lineHeight: 1.5,
+    color: theme.palette.text.primary,
+    '& .MuiInputBase-input': {
+      padding: 0,
+      '&::placeholder': {
+        opacity: 0.55,
         color: theme.palette.text.secondary,
       },
     },
   },
-  inputEmpty: {
-    minHeight: 32,
+  sendButton: {
+    padding: 8,
+    color: theme.palette.text.disabled,
+    transition: 'color 0.2s ease, transform 0.15s ease',
   },
-  send: {
-    float: 'right',
+  sendButtonActive: {
+    color: '#1976d2',
+    '&:hover': {
+      backgroundColor: 'rgba(25, 118, 210, 0.08)',
+      transform: 'scale(1.1)',
+    },
   },
 }))
 
@@ -89,15 +96,15 @@ function PostChatSend(props) {
 
   const handleSubmit = async () => {
     if (!ensureAuth()) return
-    if (!text.trim()) return // Don't submit empty messages
+    if (!text.trim()) return
 
     dispatch(CHAT_SUBMITTING(true))
 
     const message = {
       title,
       type,
-      messageRoomId: messageRoomId || null, // null if room doesn't exist yet
-      componentId: postId || null, // postId for creating room if needed
+      messageRoomId: messageRoomId || null,
+      componentId: postId || null,
       text: text.trim(),
     }
 
@@ -108,7 +115,7 @@ function PostChatSend(props) {
         __typename: 'Mutation',
         createMessage: {
           __typename: 'Message',
-          _id: dateSubmitted, // dummy
+          _id: dateSubmitted,
           messageRoomId,
           userName: user.name,
           userId: user._id,
@@ -126,10 +133,8 @@ function PostChatSend(props) {
       },
       // eslint-disable-next-line no-shadow
       update: (proxy, { data: { createMessage } }) => {
-        // Read the data from our cache for this query.
         const data = proxy.readQuery({ query: GET_ROOM_MESSAGES, variables: { messageRoomId } })
         if (data) {
-          // Write our data back to the cache with the new message in it
           proxy.writeQuery({
             query: GET_ROOM_MESSAGES,
             variables: { messageRoomId },
@@ -142,50 +147,38 @@ function PostChatSend(props) {
       },
     })
 
-    // Clear the text input after successful submission
     setText('')
   }
 
+  const hasText = text.trim().length > 0
+
   return (
-    <Grid
-      container
-      direction="row"
-      justify="center"
-      alignItems="center"
-      className={classes.root}
-    >
-      <Hidden only={['xs']}>
-        <Grid item sm={2}>
-          <Typography className={classes.chat}>Chat</Typography>
-        </Grid>
-      </Hidden>
-      <Grid item sm={10} xs={12}>
-        <Paper elevation={0}>
-          <InputBase
-            multiline
-            inputRef={commentInputRef}
-            placeholder="type a message..."
-            className={`${classes.input} ${!text.trim() ? classes.inputEmpty : ''}`}
-            value={text}
-            onChange={(event) => setText(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault()
-                handleSubmit()
-              }
-            }}
-          />
-          <IconButton
-            className={classes.send}
-            onClick={() => {
+    <div className={classes.root}>
+      <div className={classes.inputWrapper}>
+        <InputBase
+          multiline
+          inputRef={commentInputRef}
+          placeholder="Type a message..."
+          className={classes.input}
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault()
               handleSubmit()
-            }}
-          >
-            <img src="/assets/SendIcon.svg" alt="send"></img>
-          </IconButton>
-        </Paper>
-      </Grid>
-    </Grid>
+            }
+          }}
+        />
+      </div>
+      <IconButton
+        className={`${classes.sendButton} ${hasText ? classes.sendButtonActive : ''}`}
+        onClick={handleSubmit}
+        disabled={!hasText}
+        aria-label="Send message"
+      >
+        <SendRoundedIcon fontSize="small" />
+      </IconButton>
+    </div>
   )
 }
 
