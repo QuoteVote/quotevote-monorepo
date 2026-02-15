@@ -1,8 +1,9 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
-import { Grid, useMediaQuery } from '@material-ui/core';
+import { Grid, useMediaQuery, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { KeyboardArrowUp, KeyboardArrowDown } from '@material-ui/icons';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash';
@@ -26,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 !important',
   },
   mobileContainer: {
-    height: '85vh',
-    maxHeight: '100vh',
+    height: '100vh',
     overflow: 'hidden',
     marginTop: 0,
     display: 'flex',
     flexDirection: 'column',
+    position: 'relative',
   },
   desktopContainer: {
     height: '85vh',
@@ -45,10 +46,10 @@ const useStyles = makeStyles((theme) => ({
     width: '100% !important',
   },
   mobilePostSection: {
-    flex: '0 0 auto',
-    maxHeight: '40vh',
+    flex: 1,
     overflow: 'auto',
     padding: theme.spacing(2),
+    paddingBottom: 72,
   },
   desktopPostSection: {
     flex: '0 0 50%',
@@ -57,28 +58,79 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     borderRight: `1px solid ${theme.palette.divider}`,
   },
-  mobileInteractionSection: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: 0,
-    position: 'relative',
-  },
-  mobileMessagesContainer: {
-    flex: 1,
-    overflow: 'auto',
-    padding: theme.spacing(2),
-    paddingBottom: theme.spacing(8),
-  },
-  mobileChatInputContainer: {
+  mobileDrawer: {
     position: 'fixed',
     bottom: 0,
     left: 0,
     right: 0,
     zIndex: 1000,
     backgroundColor: theme.palette.background.paper,
+    borderRadius: '16px 16px 0 0',
+    boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
+    display: 'flex',
+    flexDirection: 'column',
+    transition: 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    willChange: 'height',
+  },
+  mobileDrawerCollapsed: {
+    height: 56,
+  },
+  mobileDrawerExpanded: {
+    height: '75vh',
+  },
+  mobileDrawerHandle: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 2),
+    cursor: 'pointer',
+    flexShrink: 0,
+    minHeight: 56,
+    userSelect: 'none',
+    WebkitTapHighlightColor: 'transparent',
+    '&:focus-visible': {
+      outline: `2px solid ${theme.palette.primary.main}`,
+      outlineOffset: -2,
+    },
+  },
+  mobileDrawerHandleBar: {
+    width: 36,
+    height: 4,
+    backgroundColor: theme.palette.divider,
+    borderRadius: 2,
+    position: 'absolute',
+    top: 8,
+    left: '50%',
+    transform: 'translateX(-50%)',
+  },
+  mobileDrawerLabel: {
+    flex: 1,
+    fontWeight: 600,
+    fontSize: '0.875rem',
+  },
+  mobileDrawerCount: {
+    fontSize: '0.8rem',
+    color: theme.palette.text.secondary,
+    marginRight: theme.spacing(1),
+  },
+  mobileDrawerContent: {
+    flex: 1,
+    overflow: 'auto',
+    padding: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+  },
+  mobileDrawerInput: {
+    flexShrink: 0,
     borderTop: `1px solid ${theme.palette.divider}`,
-    boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
+  },
+  mobileDrawerOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    zIndex: 999,
+    transition: 'opacity 0.3s ease',
   },
   desktopInteractionSection: {
     flex: '0 0 50%',
@@ -99,6 +151,38 @@ const useStyles = makeStyles((theme) => ({
     borderTop: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.paper,
   },
+  landscapeContainer: {
+    height: '100vh',
+    overflow: 'hidden',
+    marginTop: 0,
+    display: 'flex',
+    width: '100%',
+  },
+  landscapePostSection: {
+    flex: '0 0 40%',
+    height: '100vh',
+    overflow: 'auto',
+    padding: theme.spacing(1),
+    borderRight: `1px solid ${theme.palette.divider}`,
+  },
+  landscapeInteractionSection: {
+    flex: '0 0 60%',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+  },
+  landscapeMessagesContainer: {
+    flex: 1,
+    overflow: 'auto',
+    padding: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
+  landscapeChatInputContainer: {
+    flexShrink: 0,
+    borderTop: `1px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.paper,
+  },
   emptyPost: {
     marginTop: 100,
     display: 'flex',
@@ -115,8 +199,43 @@ function PostPage({ postId }) {
   const classes = useStyles()
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isLandscapeMobile = useMediaQuery(
+    '(orientation: landscape) and (max-height: 500px)'
+  )
   const [postHeight, setPostHeight] = useState()
+  const [isChatExpanded, setIsChatExpanded] = useState(false)
+  const touchStartY = useRef(null)
+  const drawerContentRef = useRef(null)
   const dispatch = useDispatch()
+
+  const toggleChat = useCallback(() => {
+    setIsChatExpanded((prev) => !prev)
+  }, [])
+
+  const handleDrawerTouchStart = useCallback((e) => {
+    touchStartY.current = e.touches[0].clientY
+  }, [])
+
+  const handleDrawerTouchEnd = useCallback((e) => {
+    if (touchStartY.current === null) return
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current
+    touchStartY.current = null
+    // Swipe down to collapse (threshold 50px)
+    if (deltaY > 50 && isChatExpanded) {
+      setIsChatExpanded(false)
+    }
+    // Swipe up to expand (threshold 50px)
+    if (deltaY < -50 && !isChatExpanded) {
+      setIsChatExpanded(true)
+    }
+  }, [isChatExpanded])
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      toggleChat()
+    }
+  }, [toggleChat])
 
   const idSelector = useSelector((state) => state.ui.selectedPost.id)
   const user = useSelector((state) => state.user.data)
@@ -254,8 +373,60 @@ function PostPage({ postId }) {
 
   const { url } = (!loadingPost && post) || {}
 
+  if (isLandscapeMobile) {
+    // Landscape mobile layout - side by side, optimized for short viewports
+    return (
+      <>
+        <Helmet>
+          <title>{ogTitle}</title>
+          <meta property="og:title" content={ogTitle} />
+          <meta property="og:description" content={ogDescription} />
+          <meta property="og:image" content={ogImage} />
+          <meta property="og:url" content={ogUrl} />
+          <meta property="og:type" content="article" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={ogTitle} />
+          <meta name="twitter:description" content={ogDescription} />
+          <meta name="twitter:image" content={ogImage} />
+        </Helmet>
+        <div className={classes.landscapeContainer} role="main" aria-label="Post view">
+          {/* Left Panel - Post Content */}
+          <div className={classes.landscapePostSection} id="post" role="region" aria-label="Post content">
+            {loadingPost ? (
+              <PostSkeleton />
+            ) : (
+              <Post
+                post={post}
+                loading={loadingPost}
+                user={user}
+                postHeight={postHeight}
+                postActions={postActions}
+                refetchPost={refetchPost}
+              />
+            )}
+          </div>
+          {/* Right Panel - Actions, Chat Messages, and Chat Input */}
+          <div className={classes.landscapeInteractionSection} role="region" aria-label="Discussion">
+            <div className={classes.landscapeMessagesContainer}>
+              <PostActionList
+                loading={loadingPost}
+                postActions={postActions}
+                postUrl={url}
+                refetchPost={refetchPost}
+              />
+            </div>
+            <div className={classes.landscapeChatInputContainer}>
+              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   if (isMobile) {
-    // Mobile layout - vertical stacking
+    // Mobile portrait layout - collapsible chat drawer
+    const discussionCount = postActions.length
     return (
       <>
         <Helmet>
@@ -285,18 +456,70 @@ function PostPage({ postId }) {
               />
             )}
           </div>
-          <div className={classes.mobileInteractionSection}>
-            <div className={classes.mobileMessagesContainer}>
-              <PostActionList
-                loading={loadingPost}
-                postActions={postActions}
-                postUrl={url}
-                refetchPost={refetchPost}
-              />
+
+          {/* Overlay backdrop when drawer is expanded */}
+          {isChatExpanded && (
+            <div
+              className={classes.mobileDrawerOverlay}
+              onClick={() => setIsChatExpanded(false)}
+              aria-hidden="true"
+            />
+          )}
+
+          {/* Collapsible chat drawer */}
+          <div
+            className={`${classes.mobileDrawer} ${
+              isChatExpanded ? classes.mobileDrawerExpanded : classes.mobileDrawerCollapsed
+            }`}
+            id="chat-drawer"
+            role="region"
+            aria-label="Discussion drawer"
+            onTouchStart={handleDrawerTouchStart}
+            onTouchEnd={handleDrawerTouchEnd}
+          >
+            <div className={classes.mobileDrawerHandleBar} />
+            <div
+              className={classes.mobileDrawerHandle}
+              onClick={toggleChat}
+              onKeyDown={handleKeyDown}
+              role="button"
+              tabIndex={0}
+              aria-expanded={isChatExpanded}
+              aria-controls="chat-drawer-content"
+              aria-label={`${isChatExpanded ? 'Collapse' : 'Expand'} discussion. ${discussionCount} items.`}
+            >
+              <Typography className={classes.mobileDrawerLabel}>
+                Open Discussion
+              </Typography>
+              <span className={classes.mobileDrawerCount}>
+                {discussionCount > 0 ? discussionCount : ''}
+              </span>
+              {isChatExpanded ? (
+                <KeyboardArrowDown fontSize="small" />
+              ) : (
+                <KeyboardArrowUp fontSize="small" />
+              )}
             </div>
-            <div className={classes.mobileChatInputContainer}>
-              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
-            </div>
+
+            {isChatExpanded && (
+              <>
+                <div
+                  className={classes.mobileDrawerContent}
+                  id="chat-drawer-content"
+                  ref={drawerContentRef}
+                >
+                  <PostActionList
+                    loading={loadingPost}
+                    postActions={postActions}
+                    postUrl={url}
+                    refetchPost={refetchPost}
+                  />
+                </div>
+                <div className={classes.mobileDrawerInput}>
+                  <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </>
