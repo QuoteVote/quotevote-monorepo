@@ -152,12 +152,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   landscapeContainer: {
-    height: 'calc(100vh - 56px)',
-    marginTop: 56,
+    height: 'calc(100vh - 80px)',
     width: '100vw',
     overflow: 'hidden',
     display: 'flex',
     boxSizing: 'border-box',
+    [theme.breakpoints.down('sm')]: {
+      height: 'calc(100vh - 56px)',
+    },
   },
   landscapePostSection: {
     flex: '0 0 50%',
