@@ -8,6 +8,8 @@ import {
   FormControlLabel,
   Tooltip,
   Chip,
+  Button,
+  Divider,
 } from '@material-ui/core'
 import Switch from '@material-ui/core/Switch'
 import { makeStyles } from '@material-ui/core/styles'
@@ -95,6 +97,93 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     [theme.breakpoints.down('sm')]: {
       height: (props) => (props.postHeight >= 742 ? '83vh' : 'auto'),
+    },
+  },
+  actionBar: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(1.5, 2),
+    margin: theme.spacing(0, 2, 1),
+    gap: theme.spacing(2),
+    borderRadius: 12,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
+    border: '1px solid rgba(0,0,0,0.08)',
+  },
+  actionBarSentiment: {
+    display: 'flex',
+    flex: 1,
+    gap: theme.spacing(1.5),
+  },
+  actionBarDisagree: {
+    flex: 1,
+    borderRadius: 8,
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '0.8rem',
+    borderColor: '#ef5350',
+    color: '#ef5350',
+    '&:hover': {
+      backgroundColor: '#d32f2f',
+      borderColor: '#d32f2f',
+      color: '#fff',
+    },
+  },
+  actionBarDisagreeSelected: {
+    flex: 1,
+    borderRadius: 8,
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '0.8rem',
+    backgroundColor: '#d32f2f',
+    borderColor: '#d32f2f',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#b71c1c',
+      borderColor: '#b71c1c',
+    },
+  },
+  actionBarSupport: {
+    flex: 1,
+    borderRadius: 8,
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '0.8rem',
+    backgroundColor: '#2e7d32',
+    color: '#fff',
+    boxShadow: 'none',
+    '&:hover': {
+      backgroundColor: '#1b5e20',
+      boxShadow: 'none',
+    },
+  },
+  actionBarSupportSelected: {
+    flex: 1,
+    borderRadius: 8,
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '0.8rem',
+    backgroundColor: '#1b5e20',
+    color: '#fff',
+    boxShadow: 'none',
+    '&:hover': {
+      backgroundColor: '#0a3d0a',
+      boxShadow: 'none',
+    },
+  },
+  actionBarUtilities: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+  },
+  actionBarDivider: {
+    height: 20,
+    alignSelf: 'center',
+    margin: theme.spacing(0, 0.5),
+  },
+  actionBarDeleteBtn: {
+    '&:hover': {
+      color: '#d32f2f',
     },
   },
   ...buttonStyle,
@@ -773,6 +862,62 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           }
           action={pointsHeader}
         />
+
+        {/* Interaction Header — above the fold */}
+        <div className={classes.actionBar}>
+          {post.enable_voting && (
+            <div className={classes.actionBarSentiment}>
+              <Button
+                variant={hasRejected ? 'contained' : 'outlined'}
+                className={hasRejected ? classes.actionBarDisagreeSelected : classes.actionBarDisagree}
+                onClick={handleRejectPost}
+                size="small"
+              >
+                Disagree{post.rejectedBy?.length > 0 ? ` (${post.rejectedBy.length})` : ''}
+              </Button>
+              <Button
+                variant="contained"
+                className={hasApproved ? classes.actionBarSupportSelected : classes.actionBarSupport}
+                onClick={handleApprovePost}
+                size="small"
+              >
+                Support{post.approvedBy?.length > 0 ? ` (${post.approvedBy.length})` : ''}
+              </Button>
+            </div>
+          )}
+          <div className={classes.actionBarUtilities}>
+            <Tooltip title="Follow Author">
+              <span>
+                <FollowButton
+                  isFollowing={isFollowing}
+                  profileUserId={userId}
+                  username={username}
+                  showIcon
+                />
+              </span>
+            </Tooltip>
+            <Tooltip title="Bookmark">
+              <span>
+                <BookmarkIconButton post={post} user={user} />
+              </span>
+            </Tooltip>
+            {(user._id === userId || user.admin) && (
+              <>
+                <Divider orientation="vertical" flexItem className={classes.actionBarDivider} />
+                <Tooltip title="Delete Post">
+                  <IconButton
+                    onClick={handleDelete}
+                    size="small"
+                    className={classes.actionBarDeleteBtn}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
+          </div>
+        </div>
+
         <CardContent
           style={{
             fontSize: '16px',
@@ -833,80 +978,6 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
             style={{ marginLeft: 20 }}
           />
         )}
-
-        <CardActions
-          disableSpacing
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginLeft: 20,
-          }}
-        >
-          {post.enable_voting && (
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Tooltip
-                title={<RejectTooltipContent />}
-                arrow
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      bgcolor: 'rgba(0, 0, 0, 0.87)',
-                      '& .MuiTooltip-arrow': {
-                        color: 'rgba(0, 0, 0, 0.87)',
-                      },
-                    },
-                  },
-                }}
-              >
-                <div>
-                  <RejectButton
-                    onClick={handleRejectPost}
-                    selected={hasRejected}
-                    count={post.rejectedBy ? post.rejectedBy.length : 0}
-                  />
-                </div>
-              </Tooltip>
-              <Tooltip
-                title={<ApproveTooltipContent />}
-                arrow
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      bgcolor: 'rgba(0, 0, 0, 0.87)',
-                      '& .MuiTooltip-arrow': {
-                        color: 'rgba(0, 0, 0, 0.87)',
-                      },
-                    },
-                  },
-                }}
-              >
-                <div>
-                  <ApproveButton
-                    onClick={handleApprovePost}
-                    selected={hasApproved}
-                    count={post.approvedBy ? post.approvedBy.length : 0}
-                  />
-                </div>
-              </Tooltip>
-            </div>
-          )}
-          <div style={{ display: 'flex', gap: 8 }}>
-            <FollowButton
-              isFollowing={isFollowing}
-              profileUserId={userId}
-              username={username}
-              showIcon
-            />
-            <BookmarkIconButton post={post} user={user} />
-            {(user._id === userId || user.admin) && (
-              <IconButton onClick={handleDelete} size="small">
-                <DeleteIcon />
-              </IconButton>
-            )}
-            {/* Add chat, person, and heart icons here as needed */}
-          </div>
-        </CardActions>
         {open && (
           <SweetAlert
             confirmBtnCssClass={`${classes.button} ${classes.success}`}
