@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react'
 import {
   Card,
-  CardActions,
   CardContent,
   CardHeader,
   IconButton,
@@ -15,20 +14,18 @@ import Switch from '@material-ui/core/Switch'
 import { makeStyles } from '@material-ui/core/styles'
 import BlockIcon from '@material-ui/icons/Block'
 import LinkIcon from '@material-ui/icons/Link'
-import DeleteIcon from '@material-ui/icons/Delete'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQuery } from '@apollo/react-hooks'
 import { useHistory } from 'react-router-dom'
-import { includes } from 'lodash'
+import { includes, without, concat } from 'lodash'
 import copy from 'clipboard-copy'
 import moment from 'moment'
 import SweetAlert from 'react-bootstrap-sweetalert'
-import FollowButton from 'components/CustomButtons/FollowButton'
+import { updateFollowing, tokenValidator } from 'store/user'
 import VotingBoard from '../VotingComponents/VotingBoard'
 import VotingPopup from '../VotingComponents/VotingPopup'
 import { SET_SNACKBAR } from '../../store/ui'
-import { tokenValidator } from 'store/user'
 import RequestInviteDialog from '../RequestInviteDialog'
 import {
   ADD_COMMENT,
@@ -39,15 +36,19 @@ import {
   REJECT_POST,
   DELETE_POST,
   TOGGLE_VOTING,
+  FOLLOW_MUTATION,
+  UPDATE_POST_BOOKMARK,
+  CREATE_POST_MESSAGE_ROOM,
 } from '../../graphql/mutations'
 import {
   GET_POST,
   GET_TOP_POSTS,
   GET_USER_ACTIVITY,
   GET_USERS,
+  GET_USER,
+  GET_CHAT_ROOMS,
 } from '../../graphql/query'
 import AvatarDisplay from '../Avatar'
-import BookmarkIconButton from '../CustomButtons/BookmarkIconButton'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
 import ApproveButton from '../CustomButtons/ApproveButton'
 import RejectButton from '../CustomButtons/RejectButton'
@@ -102,39 +103,38 @@ const useStyles = makeStyles((theme) => ({
   actionBar: {
     display: 'flex',
     alignItems: 'center',
-    padding: theme.spacing(1.5, 2),
-    margin: theme.spacing(0, 2, 1),
+    padding: theme.spacing(2),
     gap: theme.spacing(2),
-    borderRadius: 12,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    border: '1px solid rgba(0,0,0,0.08)',
+    borderBottom: '1px solid rgba(0,0,0,0.08)',
+    background: 'rgba(255, 255, 255, 0.8)',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
   },
   actionBarSentiment: {
     display: 'flex',
     flex: 1,
-    gap: theme.spacing(1.5),
+    gap: theme.spacing(1),
   },
   actionBarDisagree: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     textTransform: 'none',
-    fontWeight: 600,
-    fontSize: '0.8rem',
-    borderColor: '#ef5350',
-    color: '#ef5350',
+    fontWeight: 700,
+    borderColor: 'rgba(211, 47, 47, 0.2)',
+    color: '#d32f2f',
     '&:hover': {
-      backgroundColor: '#d32f2f',
+      backgroundColor: 'rgba(211, 47, 47, 0.04)',
       borderColor: '#d32f2f',
-      color: '#fff',
     },
   },
   actionBarDisagreeSelected: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     textTransform: 'none',
-    fontWeight: 600,
-    fontSize: '0.8rem',
+    fontWeight: 700,
     backgroundColor: '#d32f2f',
     borderColor: '#d32f2f',
     color: '#fff',
@@ -145,30 +145,26 @@ const useStyles = makeStyles((theme) => ({
   },
   actionBarSupport: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     textTransform: 'none',
-    fontWeight: 600,
-    fontSize: '0.8rem',
+    fontWeight: 700,
     backgroundColor: '#2e7d32',
     color: '#fff',
-    boxShadow: 'none',
+    boxShadow: '0 4px 14px 0 rgba(46, 125, 50, 0.39)',
     '&:hover': {
       backgroundColor: '#1b5e20',
-      boxShadow: 'none',
     },
   },
   actionBarSupportSelected: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     textTransform: 'none',
-    fontWeight: 600,
-    fontSize: '0.8rem',
+    fontWeight: 700,
     backgroundColor: '#1b5e20',
     color: '#fff',
-    boxShadow: 'none',
+    boxShadow: '0 4px 14px 0 rgba(46, 125, 50, 0.39)',
     '&:hover': {
       backgroundColor: '#0a3d0a',
-      boxShadow: 'none',
     },
   },
   actionBarUtilities: {
@@ -176,14 +172,30 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     gap: theme.spacing(0.5),
   },
+  actionBarEmojiBtn: {
+    fontSize: '1.2rem',
+    filter: 'grayscale(0.8) opacity(0.6)',
+    transition: 'filter 0.2s ease',
+    '&:hover': {
+      filter: 'none',
+    },
+  },
+  actionBarEmojiBtnActive: {
+    fontSize: '1.2rem',
+    transition: 'filter 0.2s ease',
+  },
   actionBarDivider: {
-    height: 20,
+    height: 24,
     alignSelf: 'center',
     margin: theme.spacing(0, 0.5),
   },
   actionBarDeleteBtn: {
+    fontSize: '1.2rem',
+    filter: 'grayscale(1) opacity(0.6)',
+    transition: 'filter 0.2s ease',
     '&:hover': {
-      color: '#d32f2f',
+      filter: 'none',
+      backgroundColor: 'rgba(211, 47, 47, 0.04)',
     },
   },
   ...buttonStyle,
@@ -533,6 +545,44 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     ],
   })
 
+  // Follow mutation
+  const [followMutation] = useMutation(FOLLOW_MUTATION, {
+    refetchQueries: [{ query: GET_USER, variables: { username } }],
+  })
+
+  const handleFollow = async () => {
+    if (!ensureAuth()) return
+    const action = isFollowing ? 'un-follow' : 'follow'
+    const followingArray = _followingId || []
+    const newFollowingArray = isFollowing
+      ? without(followingArray, userId)
+      : concat(followingArray, userId)
+    await updateFollowing(dispatch, newFollowingArray)
+    await followMutation({ variables: { user_id: userId, action } })
+  }
+
+  // Bookmark mutations
+  const [updatePostBookmark] = useMutation(UPDATE_POST_BOOKMARK)
+  const [createPostMessageRoom] = useMutation(CREATE_POST_MESSAGE_ROOM)
+
+  const isBookmarked = post.bookmarkedBy && post.bookmarkedBy.includes(user._id)
+
+  const handleBookmark = async () => {
+    if (!ensureAuth()) return
+    await updatePostBookmark({
+      variables: { postId: _id, userId: user._id },
+    })
+    await createPostMessageRoom({
+      variables: { postId: _id },
+      refetchQueries: [
+        { query: GET_CHAT_ROOMS },
+        { query: GET_POST, variables: { postId: _id } },
+        { query: GET_USER_ACTIVITY, variables: { user_id: user._id, limit: 5, offset: 0, searchKey: '', activityEvent: [] } },
+        { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+      ],
+    })
+  }
+
   const handleReportPost = async () => {
     if (!ensureAuth()) return
     try {
@@ -863,43 +913,50 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
           action={pointsHeader}
         />
 
-        {/* Interaction Header — above the fold */}
+        {/* Interaction Header — above the fold, glassmorphism sticky bar */}
         <div className={classes.actionBar}>
           {post.enable_voting && (
             <div className={classes.actionBarSentiment}>
               <Button
                 variant={hasRejected ? 'contained' : 'outlined'}
+                color="secondary"
+                fullWidth
                 className={hasRejected ? classes.actionBarDisagreeSelected : classes.actionBarDisagree}
                 onClick={handleRejectPost}
-                size="small"
+                startIcon={<span role="img" aria-label="disagree">&#x274C;</span>}
               >
                 Disagree{post.rejectedBy?.length > 0 ? ` (${post.rejectedBy.length})` : ''}
               </Button>
               <Button
                 variant="contained"
+                fullWidth
+                disableElevation
                 className={hasApproved ? classes.actionBarSupportSelected : classes.actionBarSupport}
                 onClick={handleApprovePost}
-                size="small"
+                startIcon={<span role="img" aria-label="support">&#x2705;</span>}
               >
                 Support{post.approvedBy?.length > 0 ? ` (${post.approvedBy.length})` : ''}
               </Button>
             </div>
           )}
           <div className={classes.actionBarUtilities}>
-            <Tooltip title="Follow Author">
-              <span>
-                <FollowButton
-                  isFollowing={isFollowing}
-                  profileUserId={userId}
-                  username={username}
-                  showIcon
-                />
-              </span>
+            <Tooltip title={isFollowing ? 'Unfollow Author' : 'Follow Author'}>
+              <IconButton
+                size="small"
+                className={isFollowing ? classes.actionBarEmojiBtnActive : classes.actionBarEmojiBtn}
+                onClick={handleFollow}
+              >
+                <span role="img" aria-label="follow">&#x1F464;</span>
+              </IconButton>
             </Tooltip>
-            <Tooltip title="Bookmark">
-              <span>
-                <BookmarkIconButton post={post} user={user} />
-              </span>
+            <Tooltip title={isBookmarked ? 'Bookmarked' : 'Bookmark'}>
+              <IconButton
+                size="small"
+                className={isBookmarked ? classes.actionBarEmojiBtnActive : classes.actionBarEmojiBtn}
+                onClick={handleBookmark}
+              >
+                <span role="img" aria-label="bookmark">&#x1F4BE;</span>
+              </IconButton>
             </Tooltip>
             {(user._id === userId || user.admin) && (
               <>
@@ -910,7 +967,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
                     size="small"
                     className={classes.actionBarDeleteBtn}
                   >
-                    <DeleteIcon fontSize="small" />
+                    <span role="img" aria-label="delete">&#x1F5D1;&#xFE0F;</span>
                   </IconButton>
                 </Tooltip>
               </>
