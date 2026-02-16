@@ -48,6 +48,7 @@ export const GET_POST = gql`
       text
       citationUrl
       url
+      deleted
       status
       deletedAt
       hardDeletedAt

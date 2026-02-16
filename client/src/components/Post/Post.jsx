@@ -398,35 +398,8 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   })
 
   const [deletePost] = useMutation(DELETE_POST, {
-    update(cache, { data: { deletePost } }) {
-      cache.modify({
-        fields: {
-          posts(existing = {}, { readField }) {
-            if (!existing.entities) return existing
-            return {
-              ...existing,
-              entities: existing.entities.filter(
-                (postRef) => readField('_id', postRef) !== deletePost._id,
-              ),
-            }
-          },
-          featuredPosts(existing = {}, { readField }) {
-            if (!existing.entities) return existing
-            return {
-              ...existing,
-              entities: existing.entities.filter(
-                (postRef) => readField('_id', postRef) !== deletePost._id,
-              ),
-            }
-          },
-        },
-      })
-      cache.evict({
-        id: cache.identify({ __typename: 'Post', _id: deletePost._id }),
-      })
-      cache.gc()
-    },
     refetchQueries: [
+      { query: GET_POST, variables: { postId: _id } },
       {
         query: GET_TOP_POSTS,
         variables: { limit: 5, offset: 0, searchKey: '', interactions: false },

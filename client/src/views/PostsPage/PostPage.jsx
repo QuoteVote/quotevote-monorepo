@@ -256,7 +256,11 @@ function PostPage({ postId }) {
 
   const { url } = (!loadingPost && post) || {}
 
-  const isNonActive = post && post.status && post.status !== 'ACTIVE'
+  const isNonActive = post && (
+    (post.status && post.status !== 'ACTIVE') ||
+    (!post.status && post.deleted)
+  )
+  const effectiveStatus = post?.status || (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
   const isAuthor = post && user && user._id === post.userId
 
   if (isMobile) {
@@ -281,8 +285,8 @@ function PostPage({ postId }) {
               <PostSkeleton />
             ) : isNonActive ? (
               <>
-                <QuoteTombstone status={post.status} moderationInfo={post.moderationInfo} />
-                {isAuthor && post.status === 'SOFT_DELETED_BY_AUTHOR' && (
+                <QuoteTombstone status={effectiveStatus} moderationInfo={post.moderationInfo} />
+                {isAuthor && effectiveStatus === 'SOFT_DELETED_BY_AUTHOR' && (
                   <QuoteAuthorRestorePanel postId={post._id} />
                 )}
               </>
@@ -337,8 +341,8 @@ function PostPage({ postId }) {
             <PostSkeleton />
           ) : isNonActive ? (
             <>
-              <QuoteTombstone status={post.status} moderationInfo={post.moderationInfo} />
-              {isAuthor && post.status === 'SOFT_DELETED_BY_AUTHOR' && (
+              <QuoteTombstone status={effectiveStatus} moderationInfo={post.moderationInfo} />
+              {isAuthor && effectiveStatus === 'SOFT_DELETED_BY_AUTHOR' && (
                 <QuoteAuthorRestorePanel postId={post._id} />
               )}
             </>
