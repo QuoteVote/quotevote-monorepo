@@ -708,9 +708,9 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     try {
       await deletePost({ variables: { postId: _id } })
       dispatch(
-        SET_SNACKBAR({ open: true, message: 'Post deleted', type: 'success' }),
+        SET_SNACKBAR({ open: true, message: 'Post removed', type: 'success' }),
       )
-      history.push('/search')
+      refetchPost?.()
     } catch (err) {
       dispatch(
         SET_SNACKBAR({

@@ -1,4 +1,5 @@
 import PostModel from '../../models/PostModel';
+import { POST_STATUS } from '../../constants/postStatus';
 
 export const deletePost = () => {
   return async (_, args, context) => {
@@ -11,7 +12,19 @@ export const deletePost = () => {
     if (!user || (post.userId.toString() !== user._id.toString() && !user.admin)) {
       throw new Error('Not authorized to delete this post');
     }
-    await PostModel.updateOne({ _id: postId }, { $set: { deleted: true } });
+    if (post.status === POST_STATUS.HARD_DELETED_BY_AUTHOR) {
+      throw new Error('Cannot delete a permanently deleted post');
+    }
+    await PostModel.updateOne(
+      { _id: postId },
+      {
+        $set: {
+          deleted: true,
+          status: POST_STATUS.SOFT_DELETED_BY_AUTHOR,
+          deletedAt: new Date(),
+        },
+      },
+    );
     return { _id: postId };
   };
 };

@@ -23,3 +23,6 @@ export * from './DeletedMessage';
 export * from './Presence';
 export * from './Roster';
 export * from './TypingIndicator';
+export * from './PostStatus';
+export * from './RemovalReasonCode';
+export * from './ModerationInfo';

@@ -35,17 +35,27 @@ export const topPosts = () => {
 
       logger.debug('topPosts - Validated parameters', { limit, offset, searchKey, friendsOnly, interactions, sortOrder });
 
-      // Build search arguments
-      const searchArgs = {
-        deleted: { $ne: true } // Exclude deleted posts
+      // Build search arguments — backward-compatible status filter
+      const statusFilter = {
+        $or: [
+          { status: 'ACTIVE' },
+          { status: { $exists: false }, deleted: { $ne: true } },
+        ],
       };
+      const searchArgs = { ...statusFilter };
 
       // Handle text search - can be combined with other filters
       if (searchKey && searchKey.trim()) {
-        searchArgs.$or = [
-          { title: { $regex: searchKey.trim(), $options: 'i' } },
-          { text: { $regex: searchKey.trim(), $options: 'i' } },
+        searchArgs.$and = [
+          statusFilter,
+          {
+            $or: [
+              { title: { $regex: searchKey.trim(), $options: 'i' } },
+              { text: { $regex: searchKey.trim(), $options: 'i' } },
+            ],
+          },
         ];
+        delete searchArgs.$or;
       }
 
       // Handle date range filter - can be combined with search and friendsOnly

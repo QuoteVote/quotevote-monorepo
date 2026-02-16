@@ -10,6 +10,8 @@ import { Redirect } from 'react-router-dom';
 import Post from '../../components/Post/Post';
 import PostActionList from '../../components/PostActions/PostActionList';
 import PostSkeleton from '../../components/Post/PostSkeleton';
+import QuoteTombstone from '../../components/Post/QuoteTombstone';
+import QuoteAuthorRestorePanel from '../../components/Post/QuoteAuthorRestorePanel';
 import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query';
 import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription';
 import PostChatSend from '../../components/PostChat/PostChatSend';
@@ -185,7 +187,7 @@ function PostPage({ postId }) {
     },
   })
 
-  if (postError) return <Redirect to="/error" />
+  if (postError && !postData) return <Redirect to="/error" />
 
   const { messages } = (!loadingMessages && messageData) || []
 
@@ -254,6 +256,9 @@ function PostPage({ postId }) {
 
   const { url } = (!loadingPost && post) || {}
 
+  const isNonActive = post && post.status && post.status !== 'ACTIVE'
+  const isAuthor = post && user && user._id === post.userId
+
   if (isMobile) {
     // Mobile layout - vertical stacking
     return (
@@ -274,6 +279,13 @@ function PostPage({ postId }) {
           <div className={classes.mobilePostSection} id="post">
             {loadingPost ? (
               <PostSkeleton />
+            ) : isNonActive ? (
+              <>
+                <QuoteTombstone status={post.status} moderationInfo={post.moderationInfo} />
+                {isAuthor && post.status === 'SOFT_DELETED_BY_AUTHOR' && (
+                  <QuoteAuthorRestorePanel postId={post._id} />
+                )}
+              </>
             ) : (
               <Post
                 post={post}
@@ -323,6 +335,13 @@ function PostPage({ postId }) {
         <div className={classes.desktopPostSection} id="post">
           {loadingPost ? (
             <PostSkeleton />
+          ) : isNonActive ? (
+            <>
+              <QuoteTombstone status={post.status} moderationInfo={post.moderationInfo} />
+              {isAuthor && post.status === 'SOFT_DELETED_BY_AUTHOR' && (
+                <QuoteAuthorRestorePanel postId={post._id} />
+              )}
+            </>
           ) : (
             <Post
               post={post}
