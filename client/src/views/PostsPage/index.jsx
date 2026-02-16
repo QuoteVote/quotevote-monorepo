@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import PostController from 'components/Post/PostController'
 import { useLocation } from 'react-router'
 import { useDispatch } from 'react-redux'
@@ -33,10 +33,13 @@ export default function PostRouter() {
   }
 
   return (
-    <>
+    <Switch>
       <Route path="/post/:group/:title/:postId">
         <PostController />
       </Route>
-    </>
+      <Route path="/post/:title/:postId">
+        <PostController />
+      </Route>
+    </Switch>
   )
 }
