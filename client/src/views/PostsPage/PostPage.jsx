@@ -191,11 +191,9 @@ function PostPage({ postId }) {
 
   const { messages } = (!loadingMessages && messageData) || []
 
-  const { comments, votes, quotes } = post || {
-    comments: [],
-    votes: [],
-    quotes: [],
-  }
+  const comments = post?.comments || []
+  const votes = post?.votes || []
+  const quotes = post?.quotes || []
 
   // Filter out deleted comments
   const filteredComments = comments.filter((c) => !c.deleted)
