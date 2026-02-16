@@ -211,7 +211,7 @@ function PostPage({ postId }) {
           ...comment,
           __typename: 'Comment',
           commentQuote:
-            comment.endWordIndex > comment.startWordIndex
+            comment.endWordIndex > comment.startWordIndex && post?.text
               ? post.text
                   .substring(comment.startWordIndex, comment.endWordIndex)
                   .replace(/(\r\n|\n|\r)/gm, '')

@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { tokenValidator } from 'store/user'
 import SubmitPost from '../../components/SubmitPost/SubmitPost'
 import { Redirect } from 'react-router-dom'
+import ErrorBoundary from '../../components/ErrorBoundary'
 
 export default function PostRouter() {
   const [, setOpen] = useState(true)
@@ -33,13 +34,15 @@ export default function PostRouter() {
   }
 
   return (
-    <Switch>
-      <Route path="/post/:group/:title/:postId">
-        <PostController />
-      </Route>
-      <Route path="/post/:title/:postId">
-        <PostController />
-      </Route>
-    </Switch>
+    <ErrorBoundary>
+      <Switch>
+        <Route path="/post/:group/:title/:postId">
+          <PostController />
+        </Route>
+        <Route path="/post/:title/:postId">
+          <PostController />
+        </Route>
+      </Switch>
+    </ErrorBoundary>
   )
 }
