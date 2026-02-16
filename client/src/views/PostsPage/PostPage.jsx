@@ -263,6 +263,16 @@ function PostPage({ postId }) {
   const effectiveStatus = post?.status || (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
   const isAuthor = post && user && user._id === post.userId
 
+  // Post not found — query finished but returned null
+  if (!loadingPost && !post) {
+    return (
+      <div className={classes.emptyPost}>
+        <h2>Post not found</h2>
+        <p>This post may have been removed or does not exist.</p>
+      </div>
+    )
+  }
+
   if (isMobile) {
     // Mobile layout - vertical stacking
     return (
