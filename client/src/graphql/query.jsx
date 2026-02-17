@@ -49,14 +49,6 @@ export const GET_POST = gql`
       citationUrl
       url
       deleted
-      status
-      deletedAt
-      hardDeletedAt
-      moderationInfo {
-        reasonCode
-        reasonText
-        moderatedAt
-      }
       upvotes
       downvotes
       approvedBy
@@ -125,6 +117,24 @@ export const GET_POST = gql`
         postId
         messageType
         created
+      }
+    }
+  }
+`
+
+// Supplementary query for new status fields — fails gracefully if server
+// hasn't been updated yet.  PostPage falls back to the `deleted` boolean.
+export const GET_POST_STATUS = gql`
+  query postStatus($postId: String!) {
+    post(postId: $postId) {
+      _id
+      status
+      deletedAt
+      hardDeletedAt
+      moderationInfo {
+        reasonCode
+        reasonText
+        moderatedAt
       }
     }
   }

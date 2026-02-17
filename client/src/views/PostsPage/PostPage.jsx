@@ -12,7 +12,7 @@ import PostActionList from '../../components/PostActions/PostActionList';
 import PostSkeleton from '../../components/Post/PostSkeleton';
 import QuoteTombstone from '../../components/Post/QuoteTombstone';
 import QuoteAuthorRestorePanel from '../../components/Post/QuoteAuthorRestorePanel';
-import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query';
+import { GET_ROOM_MESSAGES, GET_POST, GET_POST_STATUS } from '../../graphql/query';
 import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription';
 import PostChatSend from '../../components/PostChat/PostChatSend';
 import { tokenValidator } from 'store/user';
@@ -135,7 +135,19 @@ function PostPage({ postId }) {
     variables: { postId },
   })
 
-  const { post } = (!loadingPost && postData) || {}
+  // Supplementary query for status fields — silently ignored if server
+  // hasn't been updated yet (the effectiveStatus fallback handles it).
+  const { data: statusData } = useQuery(GET_POST_STATUS, {
+    variables: { postId },
+    fetchPolicy: 'cache-first',
+    onError: () => {}, // swallow errors
+  })
+
+  const basePost = (!loadingPost && postData?.post) || null
+  // Merge status fields into post when available
+  const post = basePost
+    ? { ...basePost, ...(statusData?.post || {}) }
+    : null
 
   // Open Graph/Twitter meta values
   const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
@@ -159,9 +171,9 @@ function PostPage({ postId }) {
   let title
   let currentPostId
   if (post) {
-    messageRoomId = postData.post.messageRoom?._id
-    title = postData.post.title
-    currentPostId = post._id || postData.post._id
+    messageRoomId = post.messageRoom?._id
+    title = post.title
+    currentPostId = post._id
   }
 
   const {
