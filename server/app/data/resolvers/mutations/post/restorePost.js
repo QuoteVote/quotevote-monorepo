@@ -1,5 +1,5 @@
 import PostModel from '../../models/PostModel';
-import { POST_STATUS, isRestorableByAuthor } from '../../constants/postStatus';
+import { POST_STATUS, isRestorableByAuthor, isPermanentlyDeleted } from '../../constants/postStatus';
 
 export const restorePost = () => {
   return async (_, args, context) => {
@@ -19,10 +19,10 @@ export const restorePost = () => {
       throw new Error('Only the author can restore this post');
     }
 
-    // Allow restore if status is SOFT_DELETED_BY_AUTHOR, or if pre-migration
-    // post has deleted: true but no status field yet
+    // Allow restore if soft-deleted by author, or if pre-migration post has
+    // deleted: true (Mongoose default sets status to 'ACTIVE' even for deleted posts)
     const restorable = isRestorableByAuthor(post.status) ||
-      (!post.status && post.deleted === true);
+      (post.deleted === true && !isPermanentlyDeleted(post.status));
     if (!restorable) {
       throw new Error('This post cannot be restored');
     }
