@@ -53,7 +53,7 @@ function PostActionList({
         container
         item
         direction="row"
-        justify="space-between"
+        justifyContent="space-between"
         alignItems="flex-start"
       >
       </Grid>
