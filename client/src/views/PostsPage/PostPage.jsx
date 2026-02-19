@@ -152,7 +152,9 @@ function PostPage({ postId }) {
   }, [post])
 
   useEffect(() => {
-    refetchPost({ postId: idSelector })
+    if (idSelector) {
+      refetchPost({ postId: idSelector })
+    }
   }, [idSelector, refetchPost])
 
   let messageRoomId
