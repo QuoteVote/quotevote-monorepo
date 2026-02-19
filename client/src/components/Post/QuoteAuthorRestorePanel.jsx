@@ -8,7 +8,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { useDispatch } from 'react-redux'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import { RESTORE_POST, HARD_DELETE_POST } from '../../graphql/mutations'
-import { GET_POST, GET_POST_STATUS } from '../../graphql/query'
+import { GET_POST } from '../../graphql/query'
 import { SET_SNACKBAR } from '../../store/ui'
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,6 @@ function QuoteAuthorRestorePanel({ postId }) {
   const refetchOpts = {
     refetchQueries: [
       { query: GET_POST, variables: { postId } },
-      { query: GET_POST_STATUS, variables: { postId } },
     ],
   }
 
