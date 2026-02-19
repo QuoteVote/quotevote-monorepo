@@ -19,7 +19,11 @@ export const restorePost = () => {
       throw new Error('Only the author can restore this post');
     }
 
-    if (!isRestorableByAuthor(post.status)) {
+    // Allow restore if status is SOFT_DELETED_BY_AUTHOR, or if pre-migration
+    // post has deleted: true but no status field yet
+    const restorable = isRestorableByAuthor(post.status) ||
+      (!post.status && post.deleted === true);
+    if (!restorable) {
       throw new Error('This post cannot be restored');
     }
 
