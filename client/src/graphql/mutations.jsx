@@ -280,6 +280,8 @@ export const DELETE_POST = gql`
   mutation deletePost($postId: String!) {
     deletePost(postId: $postId) {
       _id
+      status
+      deleted
     }
   }
 `
@@ -289,6 +291,9 @@ export const RESTORE_POST = gql`
     restorePost(postId: $postId) {
       _id
       status
+      deleted
+      title
+      text
     }
   }
 `
@@ -298,6 +303,8 @@ export const HARD_DELETE_POST = gql`
     hardDeletePost(postId: $postId) {
       _id
       status
+      deleted
+      title
     }
   }
 `

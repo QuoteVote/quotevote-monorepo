@@ -36,11 +36,11 @@ export const deletePost = () => {
 
     // Idempotent: already soft-deleted
     if (effectiveStatus === POST_STATUS.SOFT_DELETED_BY_AUTHOR) {
-      return { _id: postId };
+      return post;
     }
 
-    await PostModel.updateOne(
-      { _id: postId },
+    const updated = await PostModel.findByIdAndUpdate(
+      postId,
       {
         $set: {
           deleted: true,
@@ -48,7 +48,8 @@ export const deletePost = () => {
           deletedAt: new Date(),
         },
       },
+      { new: true },
     );
-    return { _id: postId };
+    return updated;
   };
 };

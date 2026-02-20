@@ -683,7 +683,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       dispatch(
         SET_SNACKBAR({ open: true, message: 'Post removed', type: 'success' }),
       )
-      refetchPost?.()
+      await refetchPost?.()
     } catch (err) {
       dispatch(
         SET_SNACKBAR({

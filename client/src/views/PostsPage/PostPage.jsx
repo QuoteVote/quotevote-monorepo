@@ -137,9 +137,19 @@ function PostPage({ postId }) {
 
   const post = (!loadingPost && postData?.post) || null
 
-  // Open Graph/Twitter meta values
-  const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
-  const ogDescription = post?.text ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
+  // Determine effective status — use explicit status field, fall back to deleted boolean
+  // for pre-migration posts that haven't been backfilled yet
+  const effectiveStatus = post?.status && post.status !== 'ACTIVE'
+    ? post.status
+    : (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
+  const isNonActive = post && effectiveStatus !== 'ACTIVE'
+  const isAuthor = post && user && user._id === post.userId
+
+  // Open Graph/Twitter meta values — use generic text for non-active posts
+  const ogTitle = (isNonActive || !post?.title)
+    ? 'Quote.Vote – The Internet\'s Quote Board'
+    : post.title;
+  const ogDescription = (!isNonActive && post?.text) ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
   const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg';
   const ogUrl = post ? `https://quote.vote/post/${post._id}` : 'https://quote.vote/';
 
@@ -255,14 +265,6 @@ function PostPage({ postId }) {
   }, [comments, votes, quotes, messages])
 
   const { url } = (!loadingPost && post) || {}
-
-  // Determine effective status — use explicit status field, fall back to deleted boolean
-  // for pre-migration posts that haven't been backfilled yet
-  const effectiveStatus = post?.status && post.status !== 'ACTIVE'
-    ? post.status
-    : (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
-  const isNonActive = post && effectiveStatus !== 'ACTIVE'
-  const isAuthor = post && user && user._id === post.userId
 
   // Post not found — query finished but returned null
   if (!loadingPost && !post) {
