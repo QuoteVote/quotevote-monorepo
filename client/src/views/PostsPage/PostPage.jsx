@@ -10,6 +10,8 @@ import { Redirect } from 'react-router-dom';
 import Post from '../../components/Post/Post';
 import PostActionList from '../../components/PostActions/PostActionList';
 import PostSkeleton from '../../components/Post/PostSkeleton';
+import QuoteTombstone from '../../components/Post/QuoteTombstone';
+import QuoteAuthorRestorePanel from '../../components/Post/QuoteAuthorRestorePanel';
 import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query';
 import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription';
 import PostChatSend from '../../components/PostChat/PostChatSend';
@@ -133,11 +135,21 @@ function PostPage({ postId }) {
     variables: { postId },
   })
 
-  const { post } = (!loadingPost && postData) || {}
+  const post = (!loadingPost && postData?.post) || null
 
-  // Open Graph/Twitter meta values
-  const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
-  const ogDescription = post?.text ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
+  // Determine effective status — use explicit status field, fall back to deleted boolean
+  // for pre-migration posts that haven't been backfilled yet
+  const effectiveStatus = post?.status && post.status !== 'ACTIVE'
+    ? post.status
+    : (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
+  const isNonActive = post && effectiveStatus !== 'ACTIVE'
+  const isAuthor = post && user && user._id === post.userId
+
+  // Open Graph/Twitter meta values — use generic text for non-active posts
+  const ogTitle = (isNonActive || !post?.title)
+    ? 'Quote.Vote – The Internet\'s Quote Board'
+    : post.title;
+  const ogDescription = (!isNonActive && post?.text) ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
   const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg';
   const ogUrl = post ? `https://quote.vote/post/${post._id}` : 'https://quote.vote/';
 
@@ -150,16 +162,18 @@ function PostPage({ postId }) {
   }, [post])
 
   useEffect(() => {
-    refetchPost({ postId: idSelector })
+    if (idSelector) {
+      refetchPost({ postId: idSelector })
+    }
   }, [idSelector, refetchPost])
 
   let messageRoomId
   let title
   let currentPostId
   if (post) {
-    messageRoomId = postData.post.messageRoom?._id
-    title = postData.post.title
-    currentPostId = post._id || postData.post._id
+    messageRoomId = post.messageRoom?._id
+    title = post.title
+    currentPostId = post._id
   }
 
   const {
@@ -185,15 +199,13 @@ function PostPage({ postId }) {
     },
   })
 
-  if (postError) return <Redirect to="/error" />
+  if (postError && !postData) return <Redirect to="/error" />
 
   const { messages } = (!loadingMessages && messageData) || []
 
-  const { comments, votes, quotes } = post || {
-    comments: [],
-    votes: [],
-    quotes: [],
-  }
+  const comments = post?.comments || []
+  const votes = post?.votes || []
+  const quotes = post?.quotes || []
 
   // Filter out deleted comments
   const filteredComments = comments.filter((c) => !c.deleted)
@@ -211,7 +223,7 @@ function PostPage({ postId }) {
           ...comment,
           __typename: 'Comment',
           commentQuote:
-            comment.endWordIndex > comment.startWordIndex
+            comment.endWordIndex > comment.startWordIndex && post?.text
               ? post.text
                   .substring(comment.startWordIndex, comment.endWordIndex)
                   .replace(/(\r\n|\n|\r)/gm, '')
@@ -254,6 +266,16 @@ function PostPage({ postId }) {
 
   const { url } = (!loadingPost && post) || {}
 
+  // Post not found — query finished but returned null
+  if (!loadingPost && !post) {
+    return (
+      <div className={classes.emptyPost}>
+        <h2>Post not found</h2>
+        <p>This post may have been removed or does not exist.</p>
+      </div>
+    )
+  }
+
   if (isMobile) {
     // Mobile layout - vertical stacking
     return (
@@ -274,6 +296,13 @@ function PostPage({ postId }) {
           <div className={classes.mobilePostSection} id="post">
             {loadingPost ? (
               <PostSkeleton />
+            ) : isNonActive ? (
+              <>
+                <QuoteTombstone status={effectiveStatus} moderationInfo={post.moderationInfo} />
+                {isAuthor && effectiveStatus === 'SOFT_DELETED_BY_AUTHOR' && (
+                  <QuoteAuthorRestorePanel postId={post._id} />
+                )}
+              </>
             ) : (
               <Post
                 post={post}
@@ -285,19 +314,21 @@ function PostPage({ postId }) {
               />
             )}
           </div>
-          <div className={classes.mobileInteractionSection}>
-            <div className={classes.mobileMessagesContainer}>
-              <PostActionList
-                loading={loadingPost}
-                postActions={postActions}
-                postUrl={url}
-                refetchPost={refetchPost}
-              />
+          {!isNonActive && (
+            <div className={classes.mobileInteractionSection}>
+              <div className={classes.mobileMessagesContainer}>
+                <PostActionList
+                  loading={loadingPost}
+                  postActions={postActions}
+                  postUrl={url}
+                  refetchPost={refetchPost}
+                />
+              </div>
+              <div className={classes.mobileChatInputContainer}>
+                <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+              </div>
             </div>
-            <div className={classes.mobileChatInputContainer}>
-              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
-            </div>
-          </div>
+          )}
         </div>
       </>
     )
@@ -323,6 +354,13 @@ function PostPage({ postId }) {
         <div className={classes.desktopPostSection} id="post">
           {loadingPost ? (
             <PostSkeleton />
+          ) : isNonActive ? (
+            <>
+              <QuoteTombstone status={effectiveStatus} moderationInfo={post.moderationInfo} />
+              {isAuthor && effectiveStatus === 'SOFT_DELETED_BY_AUTHOR' && (
+                <QuoteAuthorRestorePanel postId={post._id} />
+              )}
+            </>
           ) : (
             <Post
               post={post}
@@ -335,19 +373,21 @@ function PostPage({ postId }) {
           )}
         </div>
         {/* Right Panel - Actions, Chat Messages, and Chat Input */}
-        <div className={classes.desktopInteractionSection}>
-          <div className={classes.desktopMessagesContainer}>
-            <PostActionList
-              loading={loadingPost}
-              postActions={postActions}
-              postUrl={url}
-              refetchPost={refetchPost}
-            />
+        {!isNonActive && (
+          <div className={classes.desktopInteractionSection}>
+            <div className={classes.desktopMessagesContainer}>
+              <PostActionList
+                loading={loadingPost}
+                postActions={postActions}
+                postUrl={url}
+                refetchPost={refetchPost}
+              />
+            </div>
+            <div className={classes.desktopChatInputContainer}>
+              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+            </div>
           </div>
-          <div className={classes.desktopChatInputContainer}>
-            <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
-          </div>
-        </div>
+        )}
       </div>
     </>
   )

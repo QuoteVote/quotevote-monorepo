@@ -6,7 +6,7 @@ import {
   isModeratorActioned,
 } from '../../constants/postStatus';
 
-export const deletePost = () => {
+export const hardDeletePost = () => {
   return async (_, args, context) => {
     const { postId } = args;
     const { user } = context;
@@ -20,36 +20,37 @@ export const deletePost = () => {
       throw new Error('Post not found');
     }
 
-    if (post.userId.toString() !== user._id.toString() && !user.admin) {
-      throw new Error('Not authorized to delete this post');
+    if (post.userId.toString() !== user._id.toString()) {
+      throw new Error('Only the author can permanently delete this post');
     }
 
     const effectiveStatus = getEffectiveStatus(post);
 
     if (isImmutable(effectiveStatus)) {
-      throw new Error('This post has been permanently deleted and cannot be modified');
+      throw new Error('This post is already permanently deleted');
     }
 
     if (isModeratorActioned(effectiveStatus)) {
-      throw new Error('This post is under moderator action and cannot be modified by the author');
-    }
-
-    // Idempotent: already soft-deleted
-    if (effectiveStatus === POST_STATUS.SOFT_DELETED_BY_AUTHOR) {
-      return post;
+      throw new Error('This post is under moderator action and cannot be deleted by the author');
     }
 
     const updated = await PostModel.findByIdAndUpdate(
       postId,
       {
         $set: {
+          status: POST_STATUS.HARD_DELETED_BY_AUTHOR,
           deleted: true,
-          status: POST_STATUS.SOFT_DELETED_BY_AUTHOR,
-          deletedAt: new Date(),
+          deletedAt: post.deletedAt || new Date(),
+          hardDeletedAt: new Date(),
+          title: '[Deleted]',
+          text: '',
+          url: '',
+          citationUrl: '',
         },
       },
       { new: true },
     );
-    return updated;
+
+    return { _id: updated._id, status: updated.status };
   };
 };

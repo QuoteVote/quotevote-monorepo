@@ -20,17 +20,29 @@ export const getFeaturedPosts = () => {
     } = args;
 
     // Build search arguments - always include featured slot requirement and exclude deleted posts
-    const searchArgs = { 
+    const statusFilter = {
+      $or: [
+        { status: 'ACTIVE' },
+        { status: { $exists: false }, deleted: { $ne: true } },
+      ],
+    };
+    const searchArgs = {
       featuredSlot: { $ne: null },
-      deleted: { $ne: true } // Exclude deleted posts
+      ...statusFilter,
     };
 
     // Handle text search - can be combined with other filters
     if (searchKey && searchKey.trim()) {
-      searchArgs.$or = [
-        { title: { $regex: searchKey.trim(), $options: 'i' } },
-        { text: { $regex: searchKey.trim(), $options: 'i' } },
+      searchArgs.$and = [
+        statusFilter,
+        {
+          $or: [
+            { title: { $regex: searchKey.trim(), $options: 'i' } },
+            { text: { $regex: searchKey.trim(), $options: 'i' } },
+          ],
+        },
       ];
+      delete searchArgs.$or;
     }
 
     // Handle date range filter
@@ -94,9 +106,18 @@ export const getFeaturedPosts = () => {
       searchArgs.approved = approved;
     }
 
-    // Handle deleted filter
+    // Handle deleted filter — override status filter if explicitly requested
     if (deleted !== undefined && deleted !== null) {
-      searchArgs.deleted = deleted;
+      if (deleted) {
+        searchArgs.$or = [
+          { status: 'SOFT_DELETED_BY_AUTHOR' },
+          { status: 'HARD_DELETED_BY_AUTHOR' },
+          { status: 'UNDER_REVIEW' },
+          { status: 'REMOVED_BY_MODERATOR' },
+          { status: { $exists: false }, deleted: true },
+        ];
+      }
+      // If deleted === false, keep the default active filter
     }
 
     // Determine sort direction based on sortOrder parameter

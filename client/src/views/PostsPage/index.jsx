@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import PostController from 'components/Post/PostController'
 import { useLocation } from 'react-router'
 import { useDispatch } from 'react-redux'
 import { tokenValidator } from 'store/user'
 import SubmitPost from '../../components/SubmitPost/SubmitPost'
 import { Redirect } from 'react-router-dom'
+import ErrorBoundary from '../../components/ErrorBoundary'
 
 export default function PostRouter() {
   const [, setOpen] = useState(true)
@@ -33,10 +34,15 @@ export default function PostRouter() {
   }
 
   return (
-    <>
-      <Route path="/post/:group/:title/:postId">
-        <PostController />
-      </Route>
-    </>
+    <ErrorBoundary resetKey={location.pathname}>
+      <Switch>
+        <Route path="/post/:group/:title/:postId">
+          <PostController />
+        </Route>
+        <Route path="/post/:title/:postId">
+          <PostController />
+        </Route>
+      </Switch>
+    </ErrorBoundary>
   )
 }

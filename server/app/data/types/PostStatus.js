@@ -1,0 +1,8 @@
+export const PostStatus = `
+enum PostStatus {
+  ACTIVE
+  SOFT_DELETED_BY_AUTHOR
+  HARD_DELETED_BY_AUTHOR
+  UNDER_REVIEW
+  REMOVED_BY_MODERATOR
+}`;

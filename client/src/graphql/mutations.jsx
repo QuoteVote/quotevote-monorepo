@@ -280,6 +280,54 @@ export const DELETE_POST = gql`
   mutation deletePost($postId: String!) {
     deletePost(postId: $postId) {
       _id
+      status
+      deleted
+    }
+  }
+`
+
+export const RESTORE_POST = gql`
+  mutation restorePost($postId: String!) {
+    restorePost(postId: $postId) {
+      _id
+      status
+      deleted
+      title
+      text
+    }
+  }
+`
+
+export const HARD_DELETE_POST = gql`
+  mutation hardDeletePost($postId: String!) {
+    hardDeletePost(postId: $postId) {
+      _id
+      status
+      deleted
+      title
+    }
+  }
+`
+
+export const SET_POST_UNDER_REVIEW = gql`
+  mutation setPostUnderReview($postId: String!) {
+    setPostUnderReview(postId: $postId) {
+      _id
+      status
+    }
+  }
+`
+
+export const REMOVE_POST_BY_MODERATOR = gql`
+  mutation removePostByModerator($postId: String!, $reasonCode: String!, $reasonText: String) {
+    removePostByModerator(postId: $postId, reasonCode: $reasonCode, reasonText: $reasonText) {
+      _id
+      status
+      moderationInfo {
+        reasonCode
+        reasonText
+        moderatedAt
+      }
     }
   }
 `

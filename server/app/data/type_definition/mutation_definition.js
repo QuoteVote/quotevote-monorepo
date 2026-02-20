@@ -97,6 +97,18 @@ export const Mutation = `type Mutation {
   # Mutation for deleting a post
     deletePost(postId: String!): DeletedPost
 
+  # Mutation for restoring a soft-deleted post
+    restorePost(postId: String!): Post
+
+  # Mutation for permanently deleting a post
+    hardDeletePost(postId: String!): Post
+
+  # Mutation for putting a post under review (admin only)
+    setPostUnderReview(postId: String!): Post
+
+  # Mutation for removing a post by moderator (admin only)
+    removePostByModerator(postId: String!, reasonCode: String!, reasonText: String): Post
+
   # Mutation for sending user invite
     sendUserInvite(email: String!): JSON
 

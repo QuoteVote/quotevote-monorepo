@@ -2,11 +2,11 @@ import PostModel from '../../models/PostModel';
 import {
   POST_STATUS,
   getEffectiveStatus,
-  isImmutable,
   isModeratorActioned,
+  isImmutable,
 } from '../../constants/postStatus';
 
-export const deletePost = () => {
+export const restorePost = () => {
   return async (_, args, context) => {
     const { postId } = args;
     const { user } = context;
@@ -20,36 +20,36 @@ export const deletePost = () => {
       throw new Error('Post not found');
     }
 
-    if (post.userId.toString() !== user._id.toString() && !user.admin) {
-      throw new Error('Not authorized to delete this post');
+    if (post.userId.toString() !== user._id.toString()) {
+      throw new Error('Only the author can restore this post');
     }
 
     const effectiveStatus = getEffectiveStatus(post);
 
     if (isImmutable(effectiveStatus)) {
-      throw new Error('This post has been permanently deleted and cannot be modified');
+      throw new Error('This post cannot be restored');
     }
 
     if (isModeratorActioned(effectiveStatus)) {
-      throw new Error('This post is under moderator action and cannot be modified by the author');
+      throw new Error('This post is under moderator action and cannot be restored by the author');
     }
 
-    // Idempotent: already soft-deleted
-    if (effectiveStatus === POST_STATUS.SOFT_DELETED_BY_AUTHOR) {
-      return post;
+    if (effectiveStatus !== POST_STATUS.SOFT_DELETED_BY_AUTHOR) {
+      throw new Error('This post cannot be restored');
     }
 
     const updated = await PostModel.findByIdAndUpdate(
       postId,
       {
         $set: {
-          deleted: true,
-          status: POST_STATUS.SOFT_DELETED_BY_AUTHOR,
-          deletedAt: new Date(),
+          status: POST_STATUS.ACTIVE,
+          deleted: false,
+          deletedAt: null,
         },
       },
       { new: true },
     );
+
     return updated;
   };
 };

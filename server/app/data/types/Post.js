@@ -9,6 +9,10 @@ type Post {
   citationUrl: String
   url: String
   deleted: Boolean
+  status: PostStatus
+  deletedAt: String
+  hardDeletedAt: String
+  moderationInfo: ModerationInfo
   upvotes: Int
   downvotes: Int
   reportedBy: [String]

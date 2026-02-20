@@ -48,6 +48,13 @@ export const GET_POST = gql`
       text
       citationUrl
       url
+      deleted
+      status
+      moderationInfo {
+        reasonCode
+        reasonText
+        moderatedAt
+      }
       upvotes
       downvotes
       approvedBy

@@ -94,6 +94,25 @@ const schema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  status: {
+    type: String,
+    enum: ['ACTIVE', 'SOFT_DELETED_BY_AUTHOR', 'HARD_DELETED_BY_AUTHOR', 'UNDER_REVIEW', 'REMOVED_BY_MODERATOR'],
+    default: 'ACTIVE',
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
+  },
+  hardDeletedAt: {
+    type: Date,
+    default: null,
+  },
+  moderationInfo: {
+    moderatorId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    reasonCode: { type: String, default: null },
+    reasonText: { type: String, default: null },
+    moderatedAt: { type: Date, default: null },
+  },
   enable_voting: {
     type: Boolean,
     default: false,
@@ -111,5 +130,7 @@ schema.index({ featuredSlot: 1, deleted: 1 });
 schema.index({ featuredSlot: 1, approved: 1 });
 schema.index({ userId: 1, featuredSlot: 1 });
 schema.index({ groupId: 1, featuredSlot: 1 });
+schema.index({ status: 1, created: -1 });
+schema.index({ status: 1, pointTimestamp: -1 });
 
 export default mongoose.model('posts', schema);

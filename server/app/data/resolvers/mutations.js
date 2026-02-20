@@ -25,6 +25,10 @@ export const resolver_mutations = function () {
     updateActionReaction: postMutations.updateActionReaction(),
     reportPost: postMutations.reportPost(),
     deletePost: postMutations.deletePost(),
+    restorePost: postMutations.restorePost(),
+    hardDeletePost: postMutations.hardDeletePost(),
+    setPostUnderReview: postMutations.setPostUnderReview(),
+    removePostByModerator: postMutations.removePostByModerator(),
     toggleVoting: postMutations.toggleVoting(),
 
     // Domain
