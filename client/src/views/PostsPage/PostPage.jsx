@@ -256,11 +256,12 @@ function PostPage({ postId }) {
 
   const { url } = (!loadingPost && post) || {}
 
-  const isNonActive = post && (
-    (post.status && post.status !== 'ACTIVE') ||
-    (!post.status && post.deleted)
-  )
-  const effectiveStatus = post?.status || (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
+  // Determine effective status — use explicit status field, fall back to deleted boolean
+  // for pre-migration posts that haven't been backfilled yet
+  const effectiveStatus = post?.status && post.status !== 'ACTIVE'
+    ? post.status
+    : (post?.deleted ? 'SOFT_DELETED_BY_AUTHOR' : 'ACTIVE')
+  const isNonActive = post && effectiveStatus !== 'ACTIVE'
   const isAuthor = post && user && user._id === post.userId
 
   // Post not found — query finished but returned null
@@ -311,19 +312,21 @@ function PostPage({ postId }) {
               />
             )}
           </div>
-          <div className={classes.mobileInteractionSection}>
-            <div className={classes.mobileMessagesContainer}>
-              <PostActionList
-                loading={loadingPost}
-                postActions={postActions}
-                postUrl={url}
-                refetchPost={refetchPost}
-              />
+          {!isNonActive && (
+            <div className={classes.mobileInteractionSection}>
+              <div className={classes.mobileMessagesContainer}>
+                <PostActionList
+                  loading={loadingPost}
+                  postActions={postActions}
+                  postUrl={url}
+                  refetchPost={refetchPost}
+                />
+              </div>
+              <div className={classes.mobileChatInputContainer}>
+                <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+              </div>
             </div>
-            <div className={classes.mobileChatInputContainer}>
-              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
-            </div>
-          </div>
+          )}
         </div>
       </>
     )
@@ -368,19 +371,21 @@ function PostPage({ postId }) {
           )}
         </div>
         {/* Right Panel - Actions, Chat Messages, and Chat Input */}
-        <div className={classes.desktopInteractionSection}>
-          <div className={classes.desktopMessagesContainer}>
-            <PostActionList
-              loading={loadingPost}
-              postActions={postActions}
-              postUrl={url}
-              refetchPost={refetchPost}
-            />
+        {!isNonActive && (
+          <div className={classes.desktopInteractionSection}>
+            <div className={classes.desktopMessagesContainer}>
+              <PostActionList
+                loading={loadingPost}
+                postActions={postActions}
+                postUrl={url}
+                refetchPost={refetchPost}
+              />
+            </div>
+            <div className={classes.desktopChatInputContainer}>
+              <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
+            </div>
           </div>
-          <div className={classes.desktopChatInputContainer}>
-            <PostChatSend messageRoomId={messageRoomId} title={title} postId={currentPostId} />
-          </div>
-        </div>
+        )}
       </div>
     </>
   )

@@ -16,8 +16,27 @@ export const REMOVAL_REASON_CODES = {
   OTHER: 'OTHER',
 };
 
+// Mongoose schema default sets status to 'ACTIVE' even for pre-migration
+// documents that have deleted: true but no status stored in the DB.
+// This helper returns the true status accounting for that.
+export const getEffectiveStatus = (post) => {
+  if (post.deleted === true && post.status === POST_STATUS.ACTIVE) {
+    return POST_STATUS.SOFT_DELETED_BY_AUTHOR;
+  }
+  return post.status;
+};
+
 export const isRestorableByAuthor = (status) =>
   status === POST_STATUS.SOFT_DELETED_BY_AUTHOR;
 
 export const isPermanentlyDeleted = (status) =>
   status === POST_STATUS.HARD_DELETED_BY_AUTHOR;
+
+export const isModeratorActioned = (status) =>
+  status === POST_STATUS.UNDER_REVIEW ||
+  status === POST_STATUS.REMOVED_BY_MODERATOR;
+
+// Post cannot be modified by the author (hard-deleted or moderator-actioned)
+export const isImmutable = (status) =>
+  status === POST_STATUS.HARD_DELETED_BY_AUTHOR ||
+  status === POST_STATUS.REMOVED_BY_MODERATOR;

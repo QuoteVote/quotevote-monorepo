@@ -34,7 +34,7 @@ export default function PostRouter() {
   }
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary resetKey={location.pathname}>
       <Switch>
         <Route path="/post/:group/:title/:postId">
           <PostController />

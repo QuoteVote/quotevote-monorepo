@@ -7,14 +7,20 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
     return { hasError: !!error }
   }
 
+  static getDerivedStateFromProps(props, state) {
+    // Reset error state when children change (e.g. on navigation)
+    if (state.hasError && props.resetKey !== state.prevResetKey) {
+      return { hasError: false, prevResetKey: props.resetKey }
+    }
+    return { prevResetKey: props.resetKey }
+  }
+
   componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
     // eslint-disable-next-line no-console
-    console.log('Something went wrong!', { error, errorInfo })
+    console.error('ErrorBoundary caught:', error, errorInfo)
   }
 
   render() {
