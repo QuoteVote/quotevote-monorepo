@@ -50,8 +50,6 @@ import {
 } from '../../graphql/query'
 import AvatarDisplay from '../Avatar'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
-import ApproveButton from '../CustomButtons/ApproveButton'
-import RejectButton from '../CustomButtons/RejectButton'
 import { serializeVotedBy } from '../../utils/objectIdSerializer'
 
 const useStyles = makeStyles((theme) => ({
@@ -572,8 +570,25 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     const newFollowingArray = isFollowing
       ? without(followingArray, userId)
       : concat(followingArray, userId)
-    await updateFollowing(dispatch, newFollowingArray)
-    await followMutation({ variables: { user_id: userId, action } })
+    try {
+      await updateFollowing(dispatch, newFollowingArray)
+      await followMutation({ variables: { user_id: userId, action } })
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: isFollowing ? 'Unfollowed' : 'Following',
+          type: 'success',
+        }),
+      )
+    } catch (err) {
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: `Follow Error: ${err.message}`,
+          type: 'danger',
+        }),
+      )
+    }
   }
 
   // Bookmark mutations
@@ -584,18 +599,35 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
 
   const handleBookmark = async () => {
     if (!ensureAuth()) return
-    await updatePostBookmark({
-      variables: { postId: _id, userId: user._id },
-    })
-    await createPostMessageRoom({
-      variables: { postId: _id },
-      refetchQueries: [
-        { query: GET_CHAT_ROOMS },
-        { query: GET_POST, variables: { postId: _id } },
-        { query: GET_USER_ACTIVITY, variables: { user_id: user._id, limit: 5, offset: 0, searchKey: '', activityEvent: [] } },
-        { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
-      ],
-    })
+    try {
+      await updatePostBookmark({
+        variables: { postId: _id, userId: user._id },
+      })
+      await createPostMessageRoom({
+        variables: { postId: _id },
+        refetchQueries: [
+          { query: GET_CHAT_ROOMS },
+          { query: GET_POST, variables: { postId: _id } },
+          { query: GET_USER_ACTIVITY, variables: { user_id: user._id, limit: 5, offset: 0, searchKey: '', activityEvent: [] } },
+          { query: GET_TOP_POSTS, variables: { limit: 5, offset: 0, searchKey: '', interactions: false } },
+        ],
+      })
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: isBookmarked ? 'Bookmark removed' : 'Bookmarked',
+          type: 'success',
+        }),
+      )
+    } catch (err) {
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: `Bookmark Error: ${err.message}`,
+          type: 'danger',
+        }),
+      )
+    }
   }
 
   const handleReportPost = async () => {
