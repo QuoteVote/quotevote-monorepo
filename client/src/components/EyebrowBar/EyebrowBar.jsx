@@ -9,6 +9,7 @@ import { REQUEST_USER_ACCESS_MUTATION, SEND_MAGIC_LOGIN_LINK } from '@/graphql/m
 
 const EMAIL_VALIDATION_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'fixed',
