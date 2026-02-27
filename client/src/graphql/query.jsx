@@ -865,6 +865,13 @@ export const GET_ROSTER = gql`
   }
 `
 
+// ===== Eyebrow CTA =====
+export const CHECK_EMAIL_STATUS = gql`
+  query checkEmailStatus($email: String!) {
+    checkEmailStatus(email: $email)
+  }
+`
+
 // ===== Typing Queries =====
 export const GET_TYPING_USERS = gql`
   query getTypingUsers($messageRoomId: String!) {

@@ -9,6 +9,7 @@ export * from './getUserFollowInfo';
 export * from './getUserReputation';
 export * from './getUserInvites';
 export * from './getUserReports';
+export * from './checkEmailStatus';
 
 // Import default exports and re-export as named exports
 import getBotReportedUsers from './getBotReportedUsers';

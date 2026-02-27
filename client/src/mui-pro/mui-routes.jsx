@@ -9,6 +9,7 @@ import InvestorThanks from "../views/InvestorThanks/InvestorThanks";
 import ForgotPasswordPage from "../views/ForgotPassword/ForgotPasswordPage";
 import PasswordResetPage from "../views/PasswordResetPage/PasswordResetPage";
 import SignupPage from "../views/SignupPage/SignupPage";
+import MagicLoginPage from "../views/MagicLoginPage/MagicLoginPage";
 import AboutPage from "../views/AboutPage";
 import PlanCarouselPage from "../views/PlanCarouselPage/PlanCarouselPage";
 import TermsPage from "../views/TermsPage";
@@ -125,6 +126,13 @@ const dashRoutes = [
         mini: 'L',
         rtlMini: 'هعذا',
         component: SignupPage,
+        layout: '/auth',
+      },
+      {
+        path: '/magic-login',
+        name: 'Magic Login',
+        mini: 'M',
+        component: MagicLoginPage,
         layout: '/auth',
       },
     ],

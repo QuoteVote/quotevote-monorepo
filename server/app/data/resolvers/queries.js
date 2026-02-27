@@ -43,5 +43,8 @@ export const resolver_query = function () {
 
     // Typing queries
     getTypingUsers: typingQuery.getTypingUsers,
+
+    // Email status check (eyebrow CTA)
+    checkEmailStatus: userQuery.checkEmailStatus(),
   };
 };

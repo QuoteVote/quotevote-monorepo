@@ -37,6 +37,7 @@ import LogoutPage from './components/LogoutPage'
 
 import { AuthModalProvider } from './Context/AuthModalContext'
 import { ThemeContextProvider, useTheme } from './Context/ThemeContext'
+import EyebrowBar from './components/EyebrowBar/EyebrowBar'
 
 import 'fontsource-montserrat'
 import ErrorPage from './mui-pro/views/Pages/ErrorPage'
@@ -86,6 +87,7 @@ function App() {
       <HelmetProvider>
         <AuthModalProvider>
           <Router history={hist}>
+            <EyebrowBar />
             <Switch>
               <Route path="/auth" component={AuthLayout} />
               <Route path="/invite" component={AuthLayout} />

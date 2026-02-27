@@ -89,4 +89,8 @@ type Query {
   # ===== Typing Queries =====
   " Get typing users in a message room"
   getTypingUsers(messageRoomId: String!): [TypingIndicator]
+
+  # ===== Eyebrow CTA =====
+  " Check email status for eyebrow bar CTA flow"
+  checkEmailStatus(email: String!): JSON
 }`;
