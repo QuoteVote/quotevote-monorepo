@@ -40,9 +40,9 @@ export const sendMagicLoginLink = () => {
       const mailOptions = {
         to: email,
         from: `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`,
-        templateId: SENGRID_TEMPLATE_IDS.PASSWORD_RESET,
+        templateId: SENGRID_TEMPLATE_IDS.MAGIC_LOGIN,
         dynamicTemplateData: {
-          change_password_url: `${clientUrl}/auth/magic-login?token=${token}`,
+          MAGIC_LINK_URL: `${clientUrl}/auth/magic-login?token=${token}`,
         },
       };
 
