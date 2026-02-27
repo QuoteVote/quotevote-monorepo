@@ -386,6 +386,9 @@ function MainNavBar(props) {
         open={drawerOpen}
         onClose={closeDrawer}
         classes={{ paper: classes.drawerPaper }}
+        ModalProps={{
+          keepMounted: true,
+        }}
       >
         <Box className={classes.drawerHeader}>
           <Typography variant="h6" className={classes.drawerTitle}>

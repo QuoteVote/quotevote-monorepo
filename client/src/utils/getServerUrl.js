@@ -12,22 +12,10 @@ export const getBaseServerUrl = () => {
     console.warn('Error accessing process.env:', e)
   }
 
-  // 2. Fallback: Use window.location to detect Netlify deploy preview
-  const currentUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  // 2. For all other environments (including Netlify deploy previews),
+  //    use the production API. CORS on api.quote.vote already allows
+  //    all *.netlify.app origins.
 
-  if (currentUrl && currentUrl.includes('deploy-preview')) {
-    console.log('Detected Netlify preview deploy:', currentUrl)
-    // Sample currentUrl: https://deploy-preview-237--quotevote.netlify.app
-    // Also supports: https://deploy-preview-275--quotevote-monorepo.netlify.app
-    const prMatch = currentUrl.match(/deploy-preview-(\d+)/)
-    if (prMatch && prMatch[1]) {
-      const PR_NUMBER = prMatch[1]
-      effectiveUrl = `https://quotevote-api-quotevote-monorepo-pr-${PR_NUMBER}.up.railway.app`
-      console.log('Connecting to Railway PR backend:', effectiveUrl)
-    }
-  }
-
-  console.log('Effective Base URL:', effectiveUrl)
   return effectiveUrl
 }
 
