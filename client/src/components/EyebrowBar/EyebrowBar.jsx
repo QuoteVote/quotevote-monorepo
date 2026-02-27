@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Button, Input, Typography } from '@material-ui/core'
 import { useSelector } from 'react-redux'
@@ -11,6 +11,11 @@ const EMAIL_VALIDATION_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: theme.zIndex.appBar + 1,
     background: 'linear-gradient(135deg, #2AE6B2 0%, #27C4E1 50%, #178BE1 100%)',
     padding: theme.spacing(1, 2),
     display: 'flex',
@@ -128,6 +133,7 @@ export default function EyebrowBar() {
   const history = useHistory()
   const client = useApolloClient()
   const loggedIn = useSelector((state) => !!state.user.data._id)
+  const barRef = useRef(null)
 
   const [email, setEmail] = useState('')
   const [phase, setPhase] = useState('input') // input | loading | result
@@ -137,6 +143,28 @@ export default function EyebrowBar() {
 
   const [requestUserAccess] = useMutation(REQUEST_USER_ACCESS_MUTATION)
   const [sendMagicLink] = useMutation(SEND_MAGIC_LOGIN_LINK)
+
+  const updateHeight = useCallback(() => {
+    if (barRef.current) {
+      const height = barRef.current.offsetHeight
+      document.documentElement.style.setProperty('--eyebrow-height', `${height}px`)
+    }
+  }, [])
+
+  // Set/clear the CSS variable based on visibility
+  useEffect(() => {
+    if (loggedIn) {
+      document.documentElement.style.setProperty('--eyebrow-height', '0px')
+      return
+    }
+    // Measure after render
+    updateHeight()
+    window.addEventListener('resize', updateHeight)
+    return () => {
+      window.removeEventListener('resize', updateHeight)
+      document.documentElement.style.setProperty('--eyebrow-height', '0px')
+    }
+  }, [loggedIn, phase, updateHeight])
 
   if (loggedIn) return null
 
@@ -214,7 +242,7 @@ export default function EyebrowBar() {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={barRef}>
       {phase === 'input' && (
         <>
           <Typography className={classes.prompt}>
