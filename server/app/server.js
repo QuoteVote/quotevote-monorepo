@@ -20,6 +20,8 @@ import {
 import { schema } from './data/schema';
 import requireAuth from '~/utils/requireAuth';
 import { startPresenceCleanup } from './data/utils/presence/cleanupStalePresence';
+import PostModel from './data/resolvers/models/PostModel';
+import UserModel from './data/resolvers/models/UserModel';
 
 if (process.env.NODE_ENV === 'dev') {
   dotenvConfig.config({ path: './.env' });
@@ -78,10 +80,10 @@ app.use(cors({
 
     // Check if origin matches allowed origins or patterns
     if (allowedOrigins.includes(origin)
-        || /^http:\/\/localhost:\d+$/.test(origin)  // Allow any localhost port
-        || /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)  // Allow any 127.0.0.1 port
-        || /\.netlify\.app$/.test(origin)
-        || /\.quote\.vote$/.test(origin)) {
+      || /^http:\/\/localhost:\d+$/.test(origin)  // Allow any localhost port
+      || /^http:\/\/127\.0\.0\.1:\d+$/.test(origin)  // Allow any 127.0.0.1 port
+      || /\.netlify\.app$/.test(origin)
+      || /\.quote\.vote$/.test(origin)) {
       return callback(null, true);
     }
 
@@ -112,6 +114,78 @@ app.post('/register', register);
 app.post('/login', login);
 app.post('/authenticate', authenticate);
 app.post('/guest', createGuestUser);
+
+// ---------------------------------------------------------------------------
+// OG Metadata REST endpoint
+// Provides Open Graph metadata for a specific post so that link previews in
+// iMessage, Facebook, Slack, etc. can show the quote's title and preview text
+// instead of the generic site-level defaults.
+//
+// GET /api/og/:postId  →  { title, description, image, url, type, siteName }
+// ---------------------------------------------------------------------------
+
+app.get('/api/og/:postId', async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await PostModel.findById(postId).lean();
+
+    if (!post || post.deleted) {
+      return res.json({
+        title: "Quote.Vote – The Internet's Quote Board",
+        description:
+          'Discover, share, and vote on the best quotes from thought leaders, innovators, and visionaries. Join the Quote.Vote community!',
+        image: 'https://quote.vote/assets/og-default.jpg',
+        url: 'https://quote.vote/',
+        type: 'website',
+        siteName: 'Quote.Vote',
+      });
+    }
+
+    // Fetch the creator's name for author attribution
+    let authorName = null;
+    if (post.userId) {
+      const creator = await UserModel.findById(post.userId)
+        .select('name')
+        .lean();
+      authorName = creator?.name || null;
+    }
+
+    const ogTitle = post.title
+      ? authorName
+        ? `${post.title} – by ${authorName}`
+        : `${post.title} – Quote.Vote`
+      : "Quote.Vote – The Internet's Quote Board";
+
+    const ogDescription = post.text
+      ? post.text
+        .substring(0, 200)
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim() + (post.text.length > 200 ? '…' : '')
+      : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
+
+    return res.json({
+      title: ogTitle,
+      description: ogDescription,
+      image: 'https://quote.vote/assets/og-default.jpg',
+      url: `https://quote.vote/post/${post.url || postId}`,
+      type: 'article',
+      siteName: 'Quote.Vote',
+      authorName: authorName || undefined,
+    });
+  } catch (error) {
+    logger.error('[OG Metadata] Error:', error.message);
+    return res.json({
+      title: "Quote.Vote – The Internet's Quote Board",
+      description:
+        'Discover, share, and vote on the best quotes from thought leaders, innovators, and visionaries. Join the Quote.Vote community!',
+      image: 'https://quote.vote/assets/og-default.jpg',
+      url: 'https://quote.vote/',
+      type: 'website',
+      siteName: 'Quote.Vote',
+    });
+  }
+});
 
 const server = new ApolloServer({
   schema,
@@ -189,10 +263,10 @@ async function startServer() {
       schema,
       context: async (ctx) => {
         // Extract auth token from connection params
-        const authToken = ctx.connectionParams?.authToken || 
-                         ctx.connectionParams?.authorization ||
-                         ctx.connectionParams?.token;
-        
+        const authToken = ctx.connectionParams?.authToken ||
+          ctx.connectionParams?.authorization ||
+          ctx.connectionParams?.token;
+
         if (authToken) {
           try {
             // Remove 'Bearer ' prefix if present

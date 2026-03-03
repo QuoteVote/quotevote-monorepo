@@ -89,6 +89,7 @@ function SEOHead({
       updateMetaTag('meta[property="og:image"]', ogImage)
     }
     updateMetaTag('meta[property="og:type"]', ogType)
+    updateMetaTag('meta[property="og:site_name"]', 'Quote.Vote')
 
     // Update Twitter Card tags
     if (title) {
