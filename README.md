@@ -13,6 +13,7 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **Moderation Tools**: Admin panel for content moderation and user management
 - **Real-time Chat**: Live discussions and reactions on posts
 - **Search & Discovery**: Advanced search functionality with filters
+- **Rich Link Previews**: Dynamic Open Graph metadata so shared quote links display the quote title, author, and text preview in iMessage, Facebook, Twitter, Slack, and other platforms
 
 ### User Experience
 
@@ -80,6 +81,8 @@ monorepo/
 │   │   ├── graphql/        # GraphQL queries/mutations
 │   │   ├── store/          # Redux store configuration
 │   │   └── utils/          # Utility functions
+│   ├── netlify/
+│   │   └── edge-functions/ # Netlify Edge Functions (OG metadata)
 │   ├── public/             # Static assets
 │   ├── cypress/            # E2E tests
 │   └── docs/               # Documentation
@@ -245,6 +248,43 @@ npm run lint:server       # Lint server only
   ```
 - **API Documentation**: Available at GraphQL Playground
 - **Component Documentation**: See `client/docs/` for detailed guides
+
+## 🔗 Open Graph / Link Previews
+
+When a user shares a quote link (e.g. `https://quote.vote/post/group/title/postId`), the platform generates **rich link previews** that display the quote title, author name, and a text excerpt instead of the generic site name.
+
+### How It Works
+
+The OG metadata system operates at three layers:
+
+1. **Netlify Edge Function** (`client/netlify/edge-functions/og-metadata.js`)
+   - Intercepts `/post/*` requests at the CDN edge before the page is served
+   - Fetches post data from the GraphQL API
+   - Rewrites the default OG meta tags in the HTML with quote-specific values
+   - This is the **primary mechanism** — social media crawlers (iMessage, Facebook, Twitter, Slack) don't execute JavaScript, so they rely on the raw HTML meta tags
+
+2. **Server REST API** (`GET /api/og/:postId`)
+   - Returns OG metadata as JSON for a given post
+   - Used as a fallback for non-Netlify deployments
+   - Response: `{ title, description, image, url, type, siteName, authorName }`
+
+3. **Client-side React Helmet** (`PostPage.jsx`)
+   - Updates meta tags dynamically after the React app hydrates
+   - Acts as a secondary layer for browsers that do execute JavaScript
+
+### OG Title Format
+
+| Scenario | Title |
+|---|---|
+| Post with author | `Quote Title – by Author Name` |
+| Post without author | `Quote Title – Quote.Vote` |
+| Fallback / no post | `Quote.Vote – The Internet's Quote Board` |
+
+### Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `GRAPHQL_API_URL` | GraphQL API URL used by the edge function | `https://api.quote.vote/graphql` |
 
 ## 🚀 Deployment
 
