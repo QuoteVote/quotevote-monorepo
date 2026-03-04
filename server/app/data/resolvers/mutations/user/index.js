@@ -5,6 +5,7 @@ export * from './updateUserAdminRight';
 export * from './sendPasswordResetEmail';
 export * from './updateUserPassword';
 export * from './updateUserAvatar';
+export * from './sendMagicLoginLink';
 
 // Import default exports and re-export as named exports
 import sendUserInvite from './sendUserInvite';
