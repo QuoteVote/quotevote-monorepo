@@ -263,10 +263,17 @@ function PostPage({ postId }) {
   const { post } = (!loadingPost && postData) || {}
 
   // Open Graph/Twitter meta values
-  const ogTitle = post?.title || 'Quote.Vote – The Internet\'s Quote Board';
-  const ogDescription = post?.text ? post.text.substring(0, 140) : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
-  const ogImage = post?.imageUrl || 'https://quote.vote/og-default.jpg';
-  const ogUrl = post ? `https://quote.vote/post/${post._id}` : 'https://quote.vote/';
+  const authorName = post?.creator?.name;
+  const ogTitle = post?.title
+    ? authorName
+      ? `${post.title} – by ${authorName}`
+      : `${post.title} – Quote.Vote`
+    : 'Quote.Vote – The Internet\'s Quote Board';
+  const ogDescription = post?.text
+    ? post.text.substring(0, 200).replace(/\n/g, ' ').replace(/\s+/g, ' ').trim() + (post.text.length > 200 ? '…' : '')
+    : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
+  const ogImage = 'https://quote.vote/assets/og-default.jpg';
+  const ogUrl = post?.url ? `https://quote.vote${post.url}` : 'https://quote.vote/';
 
   // To reset the scroll when the selected post changes
   useEffect(() => {
@@ -340,8 +347,8 @@ function PostPage({ postId }) {
           commentQuote:
             comment.endWordIndex > comment.startWordIndex
               ? post.text
-                  .substring(comment.startWordIndex, comment.endWordIndex)
-                  .replace(/(\r\n|\n|\r)/gm, '')
+                .substring(comment.startWordIndex, comment.endWordIndex)
+                .replace(/(\r\n|\n|\r)/gm, '')
               : null,
         }))
       )
@@ -387,6 +394,8 @@ function PostPage({ postId }) {
       <>
         <Helmet>
           <title>{ogTitle}</title>
+          <meta name="description" content={ogDescription} />
+          <meta property="og:site_name" content="Quote.Vote" />
           <meta property="og:title" content={ogTitle} />
           <meta property="og:description" content={ogDescription} />
           <meta property="og:image" content={ogImage} />
@@ -439,6 +448,8 @@ function PostPage({ postId }) {
       <>
         <Helmet>
           <title>{ogTitle}</title>
+          <meta name="description" content={ogDescription} />
+          <meta property="og:site_name" content="Quote.Vote" />
           <meta property="og:title" content={ogTitle} />
           <meta property="og:description" content={ogDescription} />
           <meta property="og:image" content={ogImage} />
@@ -476,9 +487,8 @@ function PostPage({ postId }) {
 
           {/* Collapsible chat drawer */}
           <div
-            className={`${classes.mobileDrawer} ${
-              isChatExpanded ? classes.mobileDrawerExpanded : classes.mobileDrawerCollapsed
-            }`}
+            className={`${classes.mobileDrawer} ${isChatExpanded ? classes.mobileDrawerExpanded : classes.mobileDrawerCollapsed
+              }`}
             id="chat-drawer"
             role="region"
             aria-label="Discussion drawer"
@@ -539,6 +549,8 @@ function PostPage({ postId }) {
     <>
       <Helmet>
         <title>{ogTitle}</title>
+        <meta name="description" content={ogDescription} />
+        <meta property="og:site_name" content="Quote.Vote" />
         <meta property="og:title" content={ogTitle} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:image" content={ogImage} />

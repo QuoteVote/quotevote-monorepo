@@ -1,10 +1,47 @@
 /**
- * Netlify Edge Function to inject dynamic Open Graph metadata for quote pages
- * 
- * This function intercepts requests to /post/:group/:title/:postId routes,
- * fetches the quote data from the GraphQL API, and injects dynamic OG tags
- * into the HTML before serving it to social media scrapers.
+ * Netlify Edge Function to inject dynamic Open Graph metadata for quote pages.
+ *
+ * When a user shares a link like https://quote.vote/post/:group/:title/:postId
+ * in iMessage, Facebook, Twitter, Slack, etc., the social media crawler fetches
+ * the URL but does NOT execute JavaScript. This edge function intercepts those
+ * requests on the CDN edge, fetches the quote data from the GraphQL API, and
+ * rewrites the default OG meta tags in the HTML with the quote-specific values
+ * so the link preview shows the quote title and text instead of the generic
+ * "The Internet's Quote Board" default.
+ *
+ * Route: /post/* (configured in netlify.toml)
  */
+
+// Common social media / link preview bot user-agent patterns.
+// We use this to optimise: for regular browser requests we can skip the
+// GraphQL fetch and just let the SPA handle everything client-side. For
+// bots/crawlers we *must* inject the OG tags server-side because they
+// don't run JavaScript.
+const BOT_USER_AGENTS = [
+  'facebookexternalhit',
+  'Facebot',
+  'Twitterbot',
+  'LinkedInBot',
+  'WhatsApp',
+  'Slackbot',
+  'Discordbot',
+  'TelegramBot',
+  'Googlebot',
+  'bingbot',
+  'iMessageBot',
+  'Applebot',
+  'Pinterest',
+  'Embedly',
+  'Quora Link Preview',
+  'Showyou',
+  'OutbrainBot',
+  'vkShare',
+  'W3C_Validator',
+  'redditbot',
+  'Rogerbot',
+  'SeznamBot',
+  'SkypeUriPreview',
+];
 
 export default async (request, context) => {
   const url = new URL(request.url);
@@ -23,8 +60,22 @@ export default async (request, context) => {
 
   const postId = pathParts[3]; // The 4th segment is the postId
 
+  // Check if the request is from a social media crawler / link preview bot.
+  // For normal browsers the React app will handle OG via react-helmet,
+  // so we can skip the server-side injection to reduce latency.
+  const userAgent = request.headers.get('user-agent') || '';
+  const isBot = BOT_USER_AGENTS.some((bot) =>
+    userAgent.toLowerCase().includes(bot.toLowerCase())
+  );
+
+  // If it's not a bot, still inject metadata as a best practice since some
+  // crawlers may not be in our bot list (e.g. iMessage on iOS doesn't always
+  // send a recognisable user-agent). We'll always inject for /post/* pages.
+  // The overhead is a single GraphQL fetch per edge request, with caching.
+
   // Determine the GraphQL API URL based on environment
-  const graphqlUrl = Deno.env.get('GRAPHQL_API_URL') || 'https://api.quote.vote/graphql';
+  const graphqlUrl =
+    Deno.env.get('GRAPHQL_API_URL') || 'https://api.quote.vote/graphql';
 
   try {
     // Fetch quote data from GraphQL API
@@ -37,12 +88,13 @@ export default async (request, context) => {
             text
             url
             creator {
+              name
               avatar
             }
           }
         }
       `,
-      variables: { postId }
+      variables: { postId },
     };
 
     const graphqlResponse = await fetch(graphqlUrl, {
@@ -54,7 +106,10 @@ export default async (request, context) => {
     });
 
     if (!graphqlResponse.ok) {
-      console.error('[Edge Function] GraphQL request failed:', graphqlResponse.status);
+      console.error(
+        '[Edge Function] GraphQL request failed:',
+        graphqlResponse.status
+      );
       return context.next();
     }
 
@@ -78,18 +133,48 @@ export default async (request, context) => {
     const response = await context.next();
     const html = await response.text();
 
-    // Generate dynamic OG metadata
-    const ogTitle = post.title || "Quote.Vote – The Internet's Quote Board";
+    // Build descriptive OG metadata for the specific quote.
+    //
+    // For the title we format it as:
+    //   "Quote Title – by Author Name" (if author name available)
+    //   "Quote Title – Quote.Vote" (fallback)
+    //
+    // For the description we use the first 200 characters of the quote text.
+    const authorName = post.creator?.name;
+    const ogTitle = post.title
+      ? authorName
+        ? `${post.title} – by ${authorName}`
+        : `${post.title} – Quote.Vote`
+      : "Quote.Vote – The Internet's Quote Board";
+
     const ogDescription = post.text
-      ? post.text.substring(0, 140).replace(/\n/g, ' ').trim() + (post.text.length > 140 ? '...' : '')
+      ? post.text
+          .substring(0, 200)
+          .replace(/\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim() + (post.text.length > 200 ? '…' : '')
       : 'Discover, share, and vote on the best quotes. Join the Quote.Vote community!';
 
-    // Use creator's avatar as OG image, fallback to default
-    const ogImage = post.creator?.avatar || 'https://quote.vote/assets/og-default.jpg';
+    // Use the default OG image – it's a branded image that works well for
+    // link previews. The creator's avatar is too small for og:image.
+    const ogImage = 'https://quote.vote/assets/og-default.jpg';
     const ogUrl = `https://quote.vote${pathname}`;
 
-    // Replace default OG tags with dynamic values
+    // Replace default OG tags with dynamic values.
+    // Each regex matches the default tag pattern from index.html.
     let modifiedHtml = html;
+
+    // Replace page title
+    modifiedHtml = modifiedHtml.replace(
+      /<title>[^<]*<\/title>/,
+      `<title>${escapeHtml(ogTitle)}</title>`
+    );
+
+    // Replace meta description
+    modifiedHtml = modifiedHtml.replace(
+      /<meta name="description" content="[^"]*" \/>/,
+      `<meta name="description" content="${escapeHtml(ogDescription)}" />`
+    );
 
     // Replace og:title
     modifiedHtml = modifiedHtml.replace(
@@ -137,21 +222,15 @@ export default async (request, context) => {
       `<meta name="twitter:image" content="${escapeHtml(ogImage)}" />`
     );
 
-    // Replace page title
-    modifiedHtml = modifiedHtml.replace(
-      /<title>[^<]*<\/title>/,
-      `<title>${escapeHtml(ogTitle)}</title>`
-    );
-
-    // Return modified HTML
+    // Return modified HTML with appropriate caching headers.
+    // Short cache so updates to quotes reflect within a few minutes.
     return new Response(modifiedHtml, {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=300, s-maxage=600', // Cache for 5-10 minutes
+        'Cache-Control': 'public, max-age=300, s-maxage=600', // 5-10 min cache
       },
     });
-
   } catch (error) {
     console.error('[Edge Function] Error processing request:', error);
     // On error, serve the original HTML with default metadata
@@ -160,15 +239,16 @@ export default async (request, context) => {
 };
 
 /**
- * Escape HTML special characters to prevent XSS
+ * Escape HTML special characters to prevent XSS in meta tag content.
  */
 function escapeHtml(text) {
+  if (!text) return '';
   const map = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    "'": '&#039;'
+    "'": '&#039;',
   };
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
