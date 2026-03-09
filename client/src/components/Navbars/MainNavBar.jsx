@@ -250,7 +250,7 @@ function MainNavBar(props) {
 
   return (
     <>
-      <AppBar position="fixed" className={classes.appBar} elevation={0}>
+      <AppBar position="fixed" className={classes.appBar} elevation={0} style={{ top: 'var(--eyebrow-height, 0px)' }}>
         <Toolbar className={classes.toolbar}>
           {/* Logo */}
           <NavLink to="/search" onClick={handleQuoteVote} className={classes.logo}>
