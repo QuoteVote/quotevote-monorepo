@@ -23,6 +23,7 @@ const PUBLIC_QUERIES = [
   'groups',
   'checkEmailStatus',
   'sendMagicLoginLink',
+  'sendOnboardingCompletionLink',
   // add more public queries/mutations
 ];
 

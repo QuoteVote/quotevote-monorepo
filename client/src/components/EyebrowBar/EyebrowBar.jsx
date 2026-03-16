@@ -1,14 +1,27 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
+import {
+  useState, useRef, useEffect, useCallback,
+} from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import { Button, Input, Typography } from '@material-ui/core'
+import {
+  Button,
+  Input,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@material-ui/core'
 import { useSelector } from 'react-redux'
 import { useApolloClient, useMutation } from '@apollo/react-hooks'
 import { useHistory } from 'react-router-dom'
 import { CHECK_EMAIL_STATUS } from '@/graphql/query'
-import { REQUEST_USER_ACCESS_MUTATION, SEND_MAGIC_LOGIN_LINK } from '@/graphql/mutations'
+import {
+  REQUEST_USER_ACCESS_MUTATION,
+  SEND_MAGIC_LOGIN_LINK,
+  SEND_ONBOARDING_COMPLETION_LINK,
+} from '@/graphql/mutations'
 
 const EMAIL_VALIDATION_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     right: 0,
     zIndex: theme.zIndex.appBar + 1,
-    background: 'linear-gradient(135deg, #2AE6B2 0%, #27C4E1 50%, #178BE1 100%)',
+    background:
+      'linear-gradient(135deg, #2AE6B2 0%, #27C4E1 50%, #178BE1 100%)',
     padding: theme.spacing(1, 2),
     display: 'flex',
     alignItems: 'center',
@@ -28,6 +42,22 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       padding: theme.spacing(1.5, 2),
       gap: theme.spacing(1),
+    },
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 8,
+    right: 12,
+    color: '#fff',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    fontSize: '0.8rem',
+    fontWeight: 500,
+    padding: 0,
+    '&:hover': {
+      opacity: 0.85,
     },
   },
   prompt: {
@@ -135,181 +165,217 @@ export default function EyebrowBar() {
   const client = useApolloClient()
   const loggedIn = useSelector((state) => !!state.user.data._id)
   const barRef = useRef(null)
+  const [isDismissed, setIsDismissed] = useState(false)
 
   const [email, setEmail] = useState('')
-  const [phase, setPhase] = useState('input') // input | loading | result
-  const [status, setStatus] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
   const [feedback, setFeedback] = useState('')
   const [error, setError] = useState('')
+  const [isLoginOptionsModalOpen, setIsLoginOptionsModalOpen] = useState(false)
+  const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false)
+  const [isOnboardingLinkLoading, setIsOnboardingLinkLoading] = useState(false)
 
   const [requestUserAccess] = useMutation(REQUEST_USER_ACCESS_MUTATION)
   const [sendMagicLink] = useMutation(SEND_MAGIC_LOGIN_LINK)
+  const [sendOnboardingCompletionLink] = useMutation(
+    SEND_ONBOARDING_COMPLETION_LINK,
+  )
 
   const updateHeight = useCallback(() => {
     if (barRef.current) {
       const height = barRef.current.offsetHeight
-      document.documentElement.style.setProperty('--eyebrow-height', `${height}px`)
+      document.documentElement.style.setProperty(
+        '--eyebrow-height',
+        `${height}px`,
+      )
     }
   }, [])
 
   // Set/clear the CSS variable based on visibility
   useEffect(() => {
-    if (loggedIn) {
-      document.documentElement.style.setProperty('--eyebrow-height', '0px')
-      return
-    }
-    // Measure after render
-    updateHeight()
-    window.addEventListener('resize', updateHeight)
-    return () => {
-      window.removeEventListener('resize', updateHeight)
-      document.documentElement.style.setProperty('--eyebrow-height', '0px')
-    }
-  }, [loggedIn, phase, updateHeight])
+    const isVisible = !(loggedIn || isDismissed)
 
-  if (loggedIn) return null
+    if (!isVisible) {
+      document.documentElement.style.setProperty('--eyebrow-height', '0px')
+    } else {
+      updateHeight()
+      window.addEventListener('resize', updateHeight)
+    }
+
+    return () => {
+      if (isVisible) {
+        window.removeEventListener('resize', updateHeight)
+      }
+      document.documentElement.style.setProperty('--eyebrow-height', '0px')
+    }
+  }, [loggedIn, isDismissed, isLoading, feedback, updateHeight])
+
+  if (loggedIn || isDismissed) return null
 
   const handleContinue = async () => {
-    setError('')
+    const normalizedEmail = email.trim()
 
-    if (!EMAIL_VALIDATION_PATTERN.test(email)) {
+    setError('')
+    setFeedback('')
+    setIsLoginOptionsModalOpen(false)
+    setIsOnboardingModalOpen(false)
+
+    if (!EMAIL_VALIDATION_PATTERN.test(normalizedEmail)) {
       setError('Please enter a valid email address.')
       return
     }
 
-    setPhase('loading')
+    if (normalizedEmail !== email) {
+      setEmail(normalizedEmail)
+    }
+
+    setIsLoading(true)
 
     try {
       const { data } = await client.query({
         query: CHECK_EMAIL_STATUS,
-        variables: { email },
+        variables: { email: normalizedEmail },
         fetchPolicy: 'network-only',
       })
 
       const emailStatus = data?.checkEmailStatus?.status
-      setStatus(emailStatus)
 
       switch (emailStatus) {
         case 'not_requested':
           // Auto-submit invite request
           await requestUserAccess({
-            variables: { requestUserAccessInput: { email } },
+            variables: { requestUserAccessInput: { email: normalizedEmail } },
           })
-          setFeedback("Invite requested! We'll email you when a spot opens up.")
-          setPhase('result')
+          setFeedback(
+            "Your request has been received! You'll be notified once approved.",
+          )
           break
 
         case 'requested_pending':
-          setFeedback('Your invite request is pending approval. Hang tight!')
-          setPhase('result')
+          setFeedback('Your invite request is still waiting for approval.')
           break
 
         case 'approved_no_password':
-          setFeedback('Your invite is approved! Complete your signup to get started.')
-          setPhase('result')
+          setFeedback('')
+          setIsOnboardingModalOpen(true)
           break
 
         case 'registered':
-          setPhase('result')
+          setFeedback('')
+          setIsLoginOptionsModalOpen(true)
           break
 
         default:
-          setFeedback('Something went wrong. Please try again.')
-          setPhase('result')
+          setFeedback('An error has occurred')
           break
       }
     } catch (err) {
-      setError(err.message || 'Something went wrong. Please try again.')
-      setPhase('input')
+      setError(err.message || 'An error has occurred')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleSendMagicLink = async () => {
+    setError('')
+
     try {
       setFeedback('Sending login link...')
-      await sendMagicLink({ variables: { email } })
-      setFeedback('Login link sent! Check your email.')
+      const { data } = await sendMagicLink({ variables: { email } })
+      const result = data?.sendMagicLoginLink
+
+      if (!result?.success) {
+        setIsLoginOptionsModalOpen(false)
+        setIsOnboardingModalOpen(true)
+        setFeedback('')
+
+        if (
+          result?.message &&
+          result.message !== 'This account has not completed signup yet.'
+        ) {
+          setError(result.message)
+        }
+
+        return
+      }
+
+      setIsLoginOptionsModalOpen(false)
+      setFeedback(result?.message || 'Login link sent! Check your email.')
     } catch (err) {
       setError(err.message || 'Failed to send login link.')
     }
   }
 
+  const handleSendOnboardingLink = async () => {
+    setError('')
+    setIsOnboardingLinkLoading(true)
+
+    try {
+      setFeedback('Sending onboarding link...')
+      const { data } = await sendOnboardingCompletionLink({
+        variables: { email },
+      })
+      const result = data?.sendOnboardingCompletionLink
+
+      if (result?.success === false) {
+        setError(result.message || 'Failed to send onboarding link.')
+        setFeedback('')
+        return
+      }
+
+      setIsOnboardingModalOpen(false)
+      setFeedback(result?.message || 'Onboarding link sent! Check your email.')
+    } catch (err) {
+      setError(err.message || 'Failed to send onboarding link.')
+    } finally {
+      setIsOnboardingLinkLoading(false)
+    }
+  }
+
   const handleReset = () => {
     setEmail('')
-    setPhase('input')
-    setStatus(null)
     setFeedback('')
     setError('')
+    setIsLoginOptionsModalOpen(false)
+    setIsOnboardingModalOpen(false)
   }
 
   return (
     <div className={classes.root} ref={barRef}>
-      {phase === 'input' && (
-        <>
-          <Typography className={classes.prompt}>
-            Join Quote Vote
-          </Typography>
-          <div className={classes.inputWrapper}>
-            <Input
-              disableUnderline
-              placeholder="Enter your email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleContinue()}
-              className={classes.emailInput}
-            />
-            <Button
-              onClick={handleContinue}
-              className={classes.continueButton}
-            >
-              Continue
-            </Button>
-          </div>
-          {error && (
-            <Typography className={classes.errorText}>{error}</Typography>
-          )}
-        </>
-      )}
+      <button
+        type="button"
+        onClick={() => setIsDismissed(true)}
+        className={classes.closeButton}
+        aria-label="Close banner"
+      >
+        Close
+      </button>
+      <Typography className={classes.prompt}>Join Quote Vote</Typography>
+      <div className={classes.inputWrapper}>
+        <Input
+          disableUnderline
+          placeholder="Enter your email"
+          type="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value)
+            if (error) setError('')
+          }}
+          onKeyDown={(e) => e.key === 'Enter' && handleContinue()}
+          className={classes.emailInput}
+        />
+        <Button
+          onClick={handleContinue}
+          className={classes.continueButton}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Checking...' : 'Continue'}
+        </Button>
+      </div>
 
-      {phase === 'loading' && (
-        <Typography className={classes.message}>Checking...</Typography>
-      )}
+      {error && <Typography className={classes.errorText}>{error}</Typography>}
 
-      {phase === 'result' && status === 'registered' && (
-        <div className={classes.responseArea}>
-          <Typography className={classes.message}>
-            Welcome back! How would you like to sign in?
-          </Typography>
-          <Button
-            onClick={handleSendMagicLink}
-            className={classes.actionButton}
-          >
-            Email me a login link
-          </Button>
-          <button
-            type="button"
-            onClick={() => history.push(`/auth/login`)}
-            className={classes.linkButton}
-          >
-            Login with password
-          </button>
-        </div>
-      )}
-
-      {phase === 'result' && status === 'approved_no_password' && (
-        <div className={classes.responseArea}>
-          <Typography className={classes.message}>{feedback}</Typography>
-          <Button
-            onClick={() => history.push('/auth/signup')}
-            className={classes.actionButton}
-          >
-            Complete Signup
-          </Button>
-        </div>
-      )}
-
-      {phase === 'result' && status !== 'registered' && status !== 'approved_no_password' && (
+      {!!feedback && (
         <div className={classes.responseArea}>
           <Typography className={classes.message}>{feedback}</Typography>
           <button
@@ -322,9 +388,57 @@ export default function EyebrowBar() {
         </div>
       )}
 
-      {error && phase === 'result' && (
-        <Typography className={classes.errorText}>{error}</Typography>
-      )}
+      <Dialog
+        open={isLoginOptionsModalOpen}
+        onClose={() => setIsLoginOptionsModalOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>We recognize this email.</DialogTitle>
+        <DialogContent>
+          <Typography>Choose how you&apos;d like to log in</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSendMagicLink} color="primary">
+            Send me a login link
+          </Button>
+          <Button
+            onClick={() => {
+              setIsLoginOptionsModalOpen(false)
+              history.push('/auth/login')
+            }}
+            color="default"
+          >
+            Login with password
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isOnboardingModalOpen}
+        onClose={() => setIsOnboardingModalOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Your invite is approved!</DialogTitle>
+        <DialogContent>
+          <Typography>Let&apos;s finish setting up your account.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleSendOnboardingLink}
+            color="primary"
+            disabled={isOnboardingLinkLoading}
+          >
+            {isOnboardingLinkLoading ?
+              'Sending...' :
+              'Send me a link to finish onboarding'}
+          </Button>
+          <Button onClick={handleReset} color="default">
+            Try another email
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   )
 }

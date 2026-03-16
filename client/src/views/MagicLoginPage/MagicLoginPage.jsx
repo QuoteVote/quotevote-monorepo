@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { useApolloClient } from '@apollo/react-hooks'
 import { makeStyles } from '@material-ui/core/styles'
 import { Typography, Button, CircularProgress } from '@material-ui/core'
-import { VERIFY_PASSWORD_RESET_TOKEN } from '@/graphql/query'
 import { USER_LOGIN_SUCCESS } from 'store/user'
+import { VERIFY_PASSWORD_RESET_TOKEN } from '@/graphql/query'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,11 +74,13 @@ export default function MagicLoginPage() {
         }
 
         // Dispatch login success with user data
-        dispatch(USER_LOGIN_SUCCESS({
-          data: user,
-          loading: false,
-          loginError: null,
-        }))
+        dispatch(
+          USER_LOGIN_SUCCESS({
+            data: user,
+            loading: false,
+            loginError: null,
+          }),
+        )
 
         setStatus('success')
 
@@ -90,9 +92,9 @@ export default function MagicLoginPage() {
         localStorage.removeItem('token')
         setStatus('error')
         setErrorMsg(
-          err.message?.includes('expired')
-            ? 'This login link has expired. Please request a new one.'
-            : 'Invalid or expired login link.',
+          err.message?.includes('expired') ?
+            'This login link has expired. Please request a new one.' :
+            'Invalid or expired login link.',
         )
       }
     }

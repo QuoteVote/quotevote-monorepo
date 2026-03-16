@@ -63,6 +63,7 @@ export const resolver_mutations = function () {
     // User mutations
     sendPasswordResetEmail: userMutations.sendPasswordResetEmail(),
     sendMagicLoginLink: userMutations.sendMagicLoginLink(),
+    sendOnboardingCompletionLink: userMutations.sendOnboardingCompletionLink(),
     updateUserPassword: userMutations.updateUserPassword(),
     updateUser: userMutations.updateUser(),
 
