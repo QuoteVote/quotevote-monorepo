@@ -12,6 +12,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 import { serializeObjectIds } from '../utils/objectIdSerializer'
 import { getGraphqlServerUrl, getGraphqlWsServerUrl } from '../utils/getServerUrl'
+import { getAnonymousSessionId } from '../utils/anonymousSession'
 
 // Determine if we're using a local server
 let isLocalServer = false
@@ -42,6 +43,7 @@ const authLink = new ApolloLink((operation, forward) => {
   // Build headers object
   const headers = {
     'Content-Type': 'application/json',
+    'x-anonymous-session-id': getAnonymousSessionId(),
     ...operation.getContext().headers,
   }
 
@@ -70,6 +72,7 @@ const wsLink = typeof window !== 'undefined' ? new GraphQLWsLink(createClient({
   url: getGraphqlWsServerUrl(),
   connectionParams: () => ({
     authToken: `Bearer ${localStorage.getItem('token')}`,
+    anonymousSessionId: getAnonymousSessionId(),
   }),
   retryAttempts: MAX_RETRY_ATTEMPTS, // Limit retry attempts
   shouldRetry: (errOrCloseEvent) => {

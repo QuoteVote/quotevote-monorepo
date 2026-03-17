@@ -216,10 +216,10 @@ const server = new ApolloServer({
       if (authToken && authToken.length) {
         try {
           const user = await verifyToken(authToken);
-          return { user, res };
+          return { user, res, req };
         } catch (error) {
           logger.debug('Invalid token, proceeding without user context:', error.message);
-          return { res };
+          return { res, req };
         }
       }
 
@@ -232,7 +232,7 @@ const server = new ApolloServer({
       }
     }
 
-    return { res };
+    return { res, req };
   },
 });
 

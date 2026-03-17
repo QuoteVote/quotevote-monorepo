@@ -5,15 +5,18 @@ const schema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
   commentId: {
     type: mongoose.Schema.Types.ObjectId,
     required: false,
   },
-  // can be either up or down
+  sessionId: {
+    type: String,
+    required: true,
+  },
+  fingerprintHash: {
+    type: String,
+    required: true,
+  },
   type: {
     type: String,
     required: true,
@@ -44,6 +47,19 @@ const schema = mongoose.Schema({
   },
 });
 
-schema.index({ content: 'text' });
+schema.index({
+  postId: 1,
+  commentId: 1,
+  sessionId: 1,
+  deleted: 1,
+}, {
+  unique: true,
+  partialFilterExpression: {
+    deleted: { $ne: true },
+  },
+});
 
-export default mongoose.model('Votes', schema);
+schema.index({ content: 'text' });
+schema.index({ sessionId: 1, created: -1 });
+
+export default mongoose.model('AnonymousVotes', schema);

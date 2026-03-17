@@ -15,6 +15,7 @@ import { GET_ROOM_MESSAGES, GET_POST } from '../../graphql/query';
 import { NEW_MESSAGE_SUBSCRIPTION } from '../../graphql/subscription';
 import PostChatSend from '../../components/PostChat/PostChatSend';
 import { tokenValidator } from 'store/user';
+import { getVisibleVotes } from '../../utils/votes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -247,6 +248,7 @@ function PostPage({ postId }) {
 
   const idSelector = useSelector((state) => state.ui.selectedPost.id)
   const user = useSelector((state) => state.user.data)
+  const showAnonymousVotes = useSelector((state) => state.ui.showAnonymousVotes)
 
   // Check if user is authenticated
   const isAuthenticated = user && user._id && tokenValidator(dispatch)
@@ -323,9 +325,10 @@ function PostPage({ postId }) {
 
   const { messages } = (!loadingMessages && messageData) || []
 
-  const { comments, votes, quotes } = post || {
+  const { comments, votes, anonymousVotes, quotes } = post || {
     comments: [],
     votes: [],
+    anonymousVotes: [],
     quotes: [],
   }
 
@@ -335,6 +338,12 @@ function PostPage({ postId }) {
   const filteredQuotes = quotes.filter((q) => !q.deleted)
   // Filter out deleted votes
   const filteredVotes = votes.filter((v) => !v.deleted)
+  const filteredAnonymousVotes = anonymousVotes.filter((v) => !v.deleted)
+  const visibleVotes = getVisibleVotes(
+    filteredVotes,
+    filteredAnonymousVotes,
+    showAnonymousVotes,
+  )
 
   const postActions = useMemo(() => {
     let postActions = []
@@ -344,6 +353,8 @@ function PostPage({ postId }) {
         filteredComments.map((comment) => ({
           ...comment,
           __typename: 'Comment',
+          votes: comment.votes || [],
+          anonymousVotes: comment.anonymousVotes || [],
           commentQuote:
             comment.endWordIndex > comment.startWordIndex
               ? post.text
@@ -354,11 +365,11 @@ function PostPage({ postId }) {
       )
     }
 
-    if (!isEmpty(filteredVotes)) {
+    if (!isEmpty(visibleVotes)) {
       postActions = postActions.concat(
-        filteredVotes.map((vote) => ({
+        visibleVotes.map((vote) => ({
           ...vote,
-          __typename: 'Vote',
+          __typename: vote.anonymous ? 'AnonymousVote' : 'Vote',
         }))
       )
     }
@@ -384,7 +395,7 @@ function PostPage({ postId }) {
     }
 
     return postActions
-  }, [comments, votes, quotes, messages])
+  }, [filteredComments, filteredQuotes, messages, post?.text, visibleVotes])
 
   const { url } = (!loadingPost && post) || {}
 

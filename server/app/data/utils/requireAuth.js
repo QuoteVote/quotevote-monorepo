@@ -21,6 +21,7 @@ const PUBLIC_QUERIES = [
   'getUserFollowInfo',
   'group',
   'groups',
+  'addAnonymousVote',
   // add more public queries/mutations
 ];
 

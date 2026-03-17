@@ -32,6 +32,7 @@ export const resolver_mutations = function () {
 
     // Votes mutations
     addVote: voteMutations.addVote(),
+    addAnonymousVote: voteMutations.addAnonymousVote(),
     deleteVote: voteMutations.deleteVote(),
 
     // Comment mutations

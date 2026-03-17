@@ -275,7 +275,7 @@ export default function RequestInviteDialog({ open, onClose }) {
                 }}
               >
                 You need an account to contribute. Viewing is public, but
-                posting, voting, and quoting require an invite.
+                posting, commenting, and quoting require an invite.
               </Typography>
 
               <div className={classes.emailInputWrapper}>

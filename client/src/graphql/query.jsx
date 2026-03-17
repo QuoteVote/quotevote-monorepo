@@ -79,6 +79,18 @@ export const GET_POST = gql`
           avatar
           contributorBadge
         }
+        votes {
+          _id
+          type
+          userId
+          commentId
+        }
+        anonymousVotes {
+          _id
+          type
+          commentId
+          anonymous
+        }
       }
       votes {
         _id
@@ -95,6 +107,16 @@ export const GET_POST = gql`
           avatar
           contributorBadge
         }
+      }
+      anonymousVotes {
+        _id
+        startWordIndex
+        endWordIndex
+        created
+        type
+        tags
+        content
+        anonymous
       }
       quotes {
         _id
@@ -274,6 +296,13 @@ export const GET_TOP_POSTS = gql`
           endWordIndex
           type
         }
+        anonymousVotes {
+          _id
+          startWordIndex
+          endWordIndex
+          type
+          anonymous
+        }
         comments {
           _id
         }
@@ -346,6 +375,13 @@ export const GET_PAGINATED_POSTS = gql`
           endWordIndex
           type
         }
+        anonymousVotes {
+          _id
+          startWordIndex
+          endWordIndex
+          type
+          anonymous
+        }
         comments {
           _id
         }
@@ -409,6 +445,13 @@ export const GET_FRIENDS_POSTS = gql`
           startWordIndex
           endWordIndex
           type
+        }
+        anonymousVotes {
+          _id
+          startWordIndex
+          endWordIndex
+          type
+          anonymous
         }
         comments {
           _id
@@ -755,6 +798,13 @@ export const GET_FEATURED_POSTS = gql`
           startWordIndex
           endWordIndex
           type
+        }
+        anonymousVotes {
+          _id
+          startWordIndex
+          endWordIndex
+          type
+          anonymous
         }
         comments {
           _id

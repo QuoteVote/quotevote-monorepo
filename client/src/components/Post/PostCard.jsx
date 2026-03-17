@@ -24,6 +24,7 @@ import gql from 'graphql-tag'
 import { tokenValidator } from 'store/user'
 import { useState, useMemo } from 'react'
 import useGuestGuard from '../../utils/useGuestGuard'
+import { getVisibleVotes } from '../../utils/votes'
 
 const GET_GROUP = gql`
   query getGroup($groupId: String!) {
@@ -310,6 +311,7 @@ function PostCard(props) {
   const dispatch = useDispatch()
   const history = useHistory()
   const user = useSelector((state) => state.user.data)
+  const showAnonymousVotes = useSelector((state) => state.ui.showAnonymousVotes)
   const classes = useStyles(props)
   const { width } = props
   
@@ -328,6 +330,7 @@ function PostCard(props) {
     activityType,
     limitText,
     votes,
+    anonymousVotes = [],
     comments,
     quotes,
     messageRoom,
@@ -342,6 +345,7 @@ function PostCard(props) {
   
   // Determine what text to show based on expanded state
   let postText = isExpanded || !shouldShowButton ? text : stringLimit(text, contentLimit)
+  const visibleVotes = getVisibleVotes(votes, anonymousVotes, showAnonymousVotes)
 
   let interactions = []
 
@@ -349,9 +353,13 @@ function PostCard(props) {
     interactions = interactions.concat(comments)
   }
 
-  if (!isEmpty(votes)) {
-    interactions = interactions.concat(votes)
-    postText = getTopPostsVoteHighlights(votes, postText, text)
+  if (!isEmpty(visibleVotes)) {
+    interactions = interactions.concat(visibleVotes)
+    postText = getTopPostsVoteHighlights(
+      visibleVotes,
+      postText,
+      text,
+    )
   }
 
   if (!isEmpty(quotes)) {
@@ -373,18 +381,18 @@ function PostCard(props) {
 
   // TODO: show quote up/down
   const { upQuote, downQuote } = useMemo(() => {
-    if (!votes || votes?.length === 0) {
-return {
+    if (!visibleVotes || visibleVotes.length === 0) {
+      return {
         upQuote: 0,
         downQuote: 0,
       }
     }
 
     return {
-      upQuote: votes.filter((vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP').length,
-      downQuote: votes.filter((vote) => vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN').length,
+      upQuote: visibleVotes.filter((vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP').length,
+      downQuote: visibleVotes.filter((vote) => vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN').length,
     }
-  }, [votes])
+  }, [visibleVotes])
 
   const { data: groupData, loading: groupLoading, error: groupError } = useQuery(GET_GROUP, {
     variables: { groupId },

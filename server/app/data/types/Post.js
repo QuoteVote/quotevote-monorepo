@@ -23,6 +23,7 @@ type Post {
   creator: User
   comments: [Comment]
   votes: [Vote]
+  anonymousVotes: [AnonymousVote]
   quotes: [Quote]
   messageRoom: MessageRoom
 }`;
