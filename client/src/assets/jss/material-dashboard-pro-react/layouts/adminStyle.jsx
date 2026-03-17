@@ -94,7 +94,7 @@ const appStyle = (theme) => ({
   content: {
     flexGrow: 1,
     height: '100%',
-    marginTop: theme.spacing(10),
+    marginTop: `calc(${theme.spacing(10)}px + var(--eyebrow-height, 0px))`,
     overflow: 'hidden',
     width: '70%',
     marginLeft: 'auto',
@@ -102,14 +102,14 @@ const appStyle = (theme) => ({
     backgroundColor: theme.palette.background.default,
     color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(7),
+      marginTop: `calc(${theme.spacing(7)}px + var(--eyebrow-height, 0px))`,
       width: '100%',
     },
   },
   contentChat: {
     flexGrow: 1,
     height: '100%',
-    marginTop: theme.spacing(10),
+    marginTop: `calc(${theme.spacing(10)}px + var(--eyebrow-height, 0px))`,
     [theme.breakpoints.up('md')]: {
       marginRight: drawerWidth,
     },

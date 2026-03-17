@@ -36,6 +36,15 @@ const httpLink = createHttpLink({
 
 // Create an auth link that dynamically adds the authorization header
 const authLink = new ApolloLink((operation, forward) => {
+  const includeRequestIdHeader =
+    typeof process !== 'undefined'
+    && process.env
+    && process.env.REACT_APP_ENABLE_REQUEST_ID_HEADER === 'true'
+
+  const requestId = includeRequestIdHeader
+    ? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+    : null
+
   // Get the token from localStorage for each request
   const token = localStorage.getItem('token')
 
@@ -43,6 +52,10 @@ const authLink = new ApolloLink((operation, forward) => {
   const headers = {
     'Content-Type': 'application/json',
     ...operation.getContext().headers,
+  }
+
+  if (requestId) {
+    headers['x-request-id'] = requestId
   }
 
   // Add the authorization header if token exists

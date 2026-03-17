@@ -6,6 +6,7 @@ export const SENGRID_TEMPLATE_IDS = {
   INVITATION_APPROVE: 'd-87274eb1bc824899aa350b26ad33e8eb.1064787e-b021-478b-8e14-ab7f890f0c53',
   INVITATION_DECLINE: 'd-cbac3519f74f4670915a658877550a75.aacbe956-5240-4692-ab80-d790d728f4c4',
   PASSWORD_RESET: 'd-8be5275161b04a0f85f32b8023ac727f.3f4240d3-9533-44ad-9ac0-ae25b90cee6c',
+  MAGIC_LOGIN: 'd-c561351713dc44e48a1fdc6a69c9de4f',
 };
 
 /**
@@ -22,10 +23,20 @@ export const SENGRID_TEMPLATE_IDS = {
  */
 const sendGridEmail = async (emailData) => {
   const apiKey = process.env.SENDGRID_API_KEY;
+  const requestId = emailData.requestId;
   
   if (!apiKey) {
-    logger.error('SENDGRID_API_KEY environment variable is not set');
+    logger.error('SENDGRID_API_KEY environment variable is not set', {
+      requestId,
+    });
     throw new Error('SENDGRID_API_KEY environment variable is not set');
+  }
+
+  if (!apiKey.startsWith('SG.')) {
+    logger.error('SENDGRID_API_KEY does not start with SG.', {
+      requestId,
+      keyPrefix: apiKey.slice(0, 3),
+    });
   }
 
   sgMail.setApiKey(apiKey);
@@ -60,6 +71,7 @@ const sendGridEmail = async (emailData) => {
   };
 
   logger.debug('sendGridEmail', {
+    requestId,
     to: emailData.to,
     from: emailData.from || `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`,
     subject: emailData.subject,
@@ -68,10 +80,15 @@ const sendGridEmail = async (emailData) => {
 
   try {
     await sgMail.send(msg);
-    logger.info('Email sent successfully', { to: emailData.to, subject: emailData.subject });
+    logger.info('Email sent successfully', {
+      requestId,
+      to: emailData.to,
+      subject: emailData.subject,
+    });
     return { success: true, message: 'Email sent successfully' };
   } catch (error) {
     logger.error('Error sending email', {
+      requestId,
       error: error.message,
       to: emailData.to,
       stack: error.stack,
@@ -79,7 +96,9 @@ const sendGridEmail = async (emailData) => {
 
     if (error.response) {
       logger.error('SendGrid API Error', {
+        requestId,
         error: error.response.body,
+        statusCode: error.response.statusCode,
         to: emailData.to,
       });
 
@@ -89,6 +108,7 @@ const sendGridEmail = async (emailData) => {
         errors.forEach((err) => {
           if (err.message.includes('authorization grant is invalid')) {
             logger.error('SendGrid API Key Error: Please check your SENDGRID_API_KEY environment variable', {
+              requestId,
               error: err.message,
             });
           }

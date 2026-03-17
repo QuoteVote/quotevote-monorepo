@@ -1,25 +1,55 @@
-# Fix: Add "Request Invite" Button to Mobile Nav (Pre-Login)
+# Feat: Legacy Auth Parity for Eyebrow + Magic Login Flows
 
 ## Description
-This PR addresses Issue #251 by adding a visible "Request Invite" button to the mobile navigation header for unauthenticated users. It also introduces a cleaner `/invite` route and ensures consistent behavior across the application.
+This PR brings the legacy monorepo behavior in line with the Next implementation for the guest eyebrow CTA and magic-login/onboarding entry points.
+
+It adds the missing backend onboarding-link mutation, updates the eyebrow UX to handle all status branches consistently, and adds targeted test coverage for critical parity paths on both client and server.
 
 ## Changes
-- **Added `/invite` Route**: Created a new route in `mui-routes.jsx` that maps to the `RequestAccessPage`.
-- **Routing Fix**: Updated `main.jsx` and `Auth.jsx` to correctly handle the top-level `/invite` route using the `AuthLayout`.
-- **Navbar Fix**: Updated `AuthNavbar.jsx` to ensure navigation buttons (Go Back, Login) appear correctly on the `/invite` route, and updated the "Get Access" link on the login page to point to `/invite`.
-- **Mobile Header Update**: Added a "Request Invite" button to the `MainNavBar` toolbar.
-    - **Positioning**: Grouped the button with the hamburger menu using a flex container to ensure they appear together on the right side of the toolbar.
-    - **Visibility**: Visible only on mobile screens (`Hidden mdUp`) when the user is not logged in.
-- **Route Updates**: Updated existing "Request Invite" buttons (desktop and mobile drawer) to use the new `/invite` route.
-- **Auth Redirect**: Updated `requireAuth` in `auth.js` to redirect to `/invite` instead of `/auth/request-access`.
-- **UX Improvements**: The "Request Invite" button is hidden if the user is already on the `/invite` page to prevent redundant navigation.
+- **Eyebrow CTA parity (`client`)**
+    - Refactored `EyebrowBar` flow to branch by `checkEmailStatus` and show modal-based actions for:
+        - `registered` -> login options modal (magic link or password login)
+        - `approved_no_password` -> onboarding completion modal
+    - Added dismiss behavior and preserved layout offset updates (`--eyebrow-height`).
+    - Normalized email input (`trim`) before network calls.
+    - Updated mutation handling to honor backend payloads (`success/message`) instead of assuming transport-level success.
+    - Added fallback behavior: if magic-link mutation returns incomplete-signup response, transition to onboarding modal.
+
+- **Client GraphQL contract updates**
+    - Added `SEND_ONBOARDING_COMPLETION_LINK` mutation in `client/src/graphql/mutations.jsx`.
+
+- **Magic login page hardening (`client`)**
+    - Kept token verification/login redirect flow aligned with parity behavior.
+    - Added tests for missing token, invalid token, valid token login dispatch + redirect, and expired token messaging.
+
+- **Backend parity (`server`)**
+    - Added new resolver `sendOnboardingCompletionLink`:
+        - sends tokenized `/auth/signup?token=...` onboarding link for approved users without passwords
+        - returns generic success for non-eligible accounts to avoid account enumeration
+    - Wired resolver into mutation exports and root mutation map.
+    - Added schema mutation definition: `sendOnboardingCompletionLink(email: String!): JSON`.
+    - Allowed public access for new onboarding-link mutation via `requireAuth` allowlist.
+
+- **Automated tests added**
+    - `client/src/components/EyebrowBar/EyebrowBar.test.jsx`
+    - `client/src/views/MagicLoginPage/MagicLoginPage.test.jsx`
+    - `server/app/tests/queries/user/checkEmailStatus.test.js`
+    - `server/app/tests/mutations/user/sendMagicLoginLink.test.js`
+    - `server/app/tests/mutations/user/sendOnboardingCompletionLink.test.js`
 
 ## Verification
-- **Mobile View**: Confirmed that the "Request Invite" button appears in the header on mobile screens for unauthenticated users, positioned correctly next to the menu icon.
-- **Navigation**: Verified that clicking the button navigates to `/invite`.
-- **Layout**: Verified that `/invite` renders with the correct `AuthLayout` and that the `AuthNavbar` buttons (Go Back, Login) are visible.
-- **Visibility Logic**: Confirmed the button is hidden when logged in or when already on the `/invite` page.
-- **Backward Compatibility**: The old `/auth/request-access` route remains functional (via the component mapping), but the app now prefers `/invite`.
+- **Client tests**
+    - `npm run test -- src/components/EyebrowBar/EyebrowBar.test.jsx src/views/MagicLoginPage/MagicLoginPage.test.jsx`
+    - Result: passing (11 tests)
 
-## Related Issue
-Fixes #251
+- **Server tests**
+    - `npm run test -- --runInBand app/tests/queries/user/checkEmailStatus.test.js app/tests/mutations/user/sendMagicLoginLink.test.js app/tests/mutations/user/sendOnboardingCompletionLink.test.js`
+    - Result: passing (11 tests)
+
+- **Lint / style**
+    - Client files linted and auto-fixed for repository rules; remaining warnings are existing workspace alias-resolution warnings for `@/...` imports.
+    - Prettier was applied to all files changed in this PR.
+
+## Notes
+- This PR intentionally focuses on parity-critical auth paths and their regression coverage.
+- A full-suite regression run can be done separately if broader release confidence is required.

@@ -448,6 +448,19 @@ export const REMOVE_BUDDY = gql`
   }
 `
 
+// ===== Eyebrow CTA =====
+export const SEND_MAGIC_LOGIN_LINK = gql`
+  mutation sendMagicLoginLink($email: String!) {
+    sendMagicLoginLink(email: $email)
+  }
+`
+
+export const SEND_ONBOARDING_COMPLETION_LINK = gql`
+  mutation sendOnboardingCompletionLink($email: String!) {
+    sendOnboardingCompletionLink(email: $email)
+  }
+`
+
 // ===== Typing Mutations =====
 export const UPDATE_TYPING = gql`
   mutation updateTyping($typing: TypingInput!) {
