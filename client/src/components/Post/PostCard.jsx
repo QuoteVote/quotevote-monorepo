@@ -34,7 +34,6 @@ const GET_GROUP = gql`
   }
 `
 
-
 const useStyles = makeStyles((theme) => ({
   cardRootStyle: {
     [theme.breakpoints.down('sm')]: {
@@ -44,12 +43,13 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid',
     borderBottom: '10px solid',
     backgroundColor: theme.palette.background.paper,
+    transition: 'all 300ms cubic-bezier(0.34, 1.61, 0.7, 1)',
     '&:hover': {
-      animationName: 'post',
-      animationDuration: '0.25s',
-      boxShadow: theme.palette.mode === 'dark'
-        ? '10px 7px 10px 0 rgba(82, 178, 116, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.4)'
-        : '10px 7px 10px 0 rgba(0, 188, 212, 0.4), 0 4px 20px 0 rgba(0, 0, 0, 0.14)',
+      transform: 'translateY(-4px)',
+      boxShadow:
+        theme.palette.mode === 'dark'
+          ? '10px 7px 10px 0 rgba(82, 178, 116, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.4)'
+          : '10px 7px 10px 0 rgba(0, 188, 212, 0.4), 0 4px 20px 0 rgba(0, 0, 0, 0.14)',
     },
   },
   postedBg: {
@@ -93,9 +93,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: '4px 8px',
     borderRadius: '4px',
-    backgroundColor: theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.06)'
-      : 'rgba(0, 0, 0, 0.03)',
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.06)'
+        : 'rgba(0, 0, 0, 0.03)',
   },
   bottomInfo: {
     display: 'flex',
@@ -126,9 +127,10 @@ const useStyles = makeStyles((theme) => ({
     gap: '4px',
     padding: '4px 8px',
     borderRadius: '4px',
-    backgroundColor: theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.06)'
-      : 'rgba(0, 0, 0, 0.03)',
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.06)'
+        : 'rgba(0, 0, 0, 0.03)',
   },
   voteIcon: {
     fontSize: '18px',
@@ -230,10 +232,15 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     padding: '4px 8px',
     borderRadius: '12px',
-    backgroundColor: theme.palette.mode === 'dark'
-      ? 'rgba(82, 178, 116, 0.15)'
-      : 'rgba(82, 178, 116, 0.1)',
-    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.3)' : 'rgba(82, 178, 116, 0.2)'}`,
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(82, 178, 116, 0.15)'
+        : 'rgba(82, 178, 116, 0.1)',
+    border: `1px solid ${
+      theme.palette.mode === 'dark'
+        ? 'rgba(82, 178, 116, 0.3)'
+        : 'rgba(82, 178, 116, 0.2)'
+    }`,
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
     '&:before': {
@@ -263,16 +270,22 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '12px',
     fontWeight: 500,
     color: '#1976d2',
-    backgroundColor: theme.palette.mode === 'dark'
-      ? 'rgba(25, 118, 210, 0.15)'
-      : 'rgba(25, 118, 210, 0.08)',
-    border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(25, 118, 210, 0.3)' : 'rgba(25, 118, 210, 0.2)'}`,
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(25, 118, 210, 0.15)'
+        : 'rgba(25, 118, 210, 0.08)',
+    border: `1px solid ${
+      theme.palette.mode === 'dark'
+        ? 'rgba(25, 118, 210, 0.3)'
+        : 'rgba(25, 118, 210, 0.2)'
+    }`,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: theme.palette.mode === 'dark'
-        ? 'rgba(25, 118, 210, 0.25)'
-        : 'rgba(25, 118, 210, 0.15)',
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? 'rgba(25, 118, 210, 0.25)'
+          : 'rgba(25, 118, 210, 0.15)',
     },
   },
 }))
@@ -312,7 +325,7 @@ function PostCard(props) {
   const user = useSelector((state) => state.user.data)
   const classes = useStyles(props)
   const { width } = props
-  
+
   // State for show more/less functionality
   const [isExpanded, setIsExpanded] = useState(false)
   const {
@@ -339,9 +352,10 @@ function PostCard(props) {
   const contentLimit = limitText ? 20 : 200
   const isContentTruncated = text && text.length > contentLimit
   const shouldShowButton = isContentTruncated && !limitText
-  
+
   // Determine what text to show based on expanded state
-  let postText = isExpanded || !shouldShowButton ? text : stringLimit(text, contentLimit)
+  let postText =
+    isExpanded || !shouldShowButton ? text : stringLimit(text, contentLimit)
 
   let interactions = []
 
@@ -364,7 +378,7 @@ function PostCard(props) {
 
   const cardBg = getCardBg(activityType)
   const guestGuard = useGuestGuard()
-  
+
   const handleRedirectToProfile = (username) => {
     if (guestGuard()) {
       history.push(`/Profile/${username}`)
@@ -374,19 +388,28 @@ function PostCard(props) {
   // TODO: show quote up/down
   const { upQuote, downQuote } = useMemo(() => {
     if (!votes || votes?.length === 0) {
-return {
+      return {
         upQuote: 0,
         downQuote: 0,
       }
     }
 
     return {
-      upQuote: votes.filter((vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP').length,
-      downQuote: votes.filter((vote) => vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN').length,
+      upQuote: votes.filter(
+        (vote) => vote.type === 'UPVOTE' || vote.type?.toUpperCase() === 'UP',
+      ).length,
+      downQuote: votes.filter(
+        (vote) =>
+          vote.type === 'DOWNVOTE' || vote.type?.toUpperCase() === 'DOWN',
+      ).length,
     }
   }, [votes])
 
-  const { data: groupData, loading: groupLoading, error: groupError } = useQuery(GET_GROUP, {
+  const {
+    data: groupData,
+    loading: groupLoading,
+    error: groupError,
+  } = useQuery(GET_GROUP, {
     variables: { groupId },
     skip: !groupId,
     errorPolicy: 'all', // Don't fail the entire component if group query fails
@@ -422,7 +445,9 @@ return {
               <ArrowUpwardIcon
                 className={classNames(classes.voteIcon, classes.upvoteIcon)}
               />
-              <Typography className={classes.voteNumber}>{approvedBy?.length}</Typography>
+              <Typography className={classes.voteNumber}>
+                {approvedBy?.length}
+              </Typography>
             </div>
             <div className={classes.voteItem}>
               <ArrowDownwardIcon
@@ -445,20 +470,25 @@ return {
           spacing={2}
         >
           <Grid item xs={12}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-              <Typography className={classes.postTitle}>
-                {title}
-              </Typography>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '8px',
+                flexWrap: 'wrap',
+                gap: '8px',
+              }}
+            >
+              <Typography className={classes.postTitle}>{title}</Typography>
               {groupId && (
                 <Typography className={classes.groupName}>
-                  {groupData?.group 
-                    ? groupData.group.title 
-                    : groupLoading 
-                      ? 'Loading...'
-                      : groupError 
-                        ? `#GROUP` // Show generic group indicator as fallback
-                        : ''
-                  }
+                  {groupData?.group
+                    ? groupData.group.title
+                    : groupLoading
+                    ? 'Loading...'
+                    : groupError
+                    ? `#GROUP` // Show generic group indicator as fallback
+                    : ''}
                 </Typography>
               )}
               {citationUrl && (
@@ -477,10 +507,12 @@ return {
           </Grid>
           <Grid item xs={12}>
             <div className={classes.contentSection}>
-              <Typography 
+              <Typography
                 className={classNames(
                   classes.postContent,
-                  shouldShowButton && !isExpanded && classes.postContentTruncated
+                  shouldShowButton &&
+                    !isExpanded &&
+                    classes.postContentTruncated,
                 )}
               >
                 {postText}
