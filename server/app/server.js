@@ -35,6 +35,15 @@ if (process.env.CLIENT_URL && process.env.CLIENT_URL.endsWith('/')) {
 const GRAPHQL_PORT = process.env.PORT || 4000;
 
 logger.info(`Database URL: ${process.env.DATABASE_URL ? 'SET' : 'NOT SET'}`);
+logger.info('Email environment check', {
+  hasSendgridApiKey: !!process.env.SENDGRID_API_KEY,
+  hasSendgridSenderEmail: !!process.env.SENDGRID_SENDER_EMAIL,
+  hasClientUrl: !!process.env.CLIENT_URL,
+});
+
+const buildRequestId = () => {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+};
 
 // Set mongoose global options to prevent deprecation warnings
 mongoose.set('useNewUrlParser', true);
@@ -64,6 +73,13 @@ connectDB();
 
 const app = express();
 
+// Attach a request ID to all requests for browser-to-server correlation.
+app.use((req, res, next) => {
+  req.requestId = req.headers['x-request-id'] || buildRequestId();
+  res.setHeader('x-request-id', req.requestId);
+  next();
+});
+
 // ✅ GLOBAL CORS middleware
 app.use(cors({
   origin(origin, callback) {
@@ -87,6 +103,13 @@ app.use(cors({
       return callback(null, true);
     }
 
+    logger.warn('CORS blocked request origin', {
+      requestId: req.requestId,
+      origin,
+      method: req.method,
+      path: req.path,
+    });
+
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
@@ -98,11 +121,43 @@ app.use(cors({
     'Pragma',
     'Origin',
     'X-Requested-With',
+    'X-Request-Id',
+    'x-request-id',
   ],
   optionsSuccessStatus: 200, // Some legacy browsers choke on 204
 }));
 
 app.use(bodyParser.json({ limit: '17mb' }));
+
+app.use('/graphql', (req, res, next) => {
+  const startedAt = Date.now();
+  const query = req.body && req.body.query ? req.body.query : '';
+  const operationName = req.body && req.body.operationName ? req.body.operationName : null;
+
+  logger.debug('GraphQL request received', {
+    requestId: req.requestId,
+    method: req.method,
+    path: req.path,
+    origin: req.headers.origin,
+    contentType: req.headers['content-type'],
+    operationName,
+    hasAuthorization: !!req.headers.authorization,
+    hasQuery: !!query,
+    queryPreview: query ? query.replace(/\s+/g, ' ').trim().slice(0, 160) : null,
+  });
+
+  res.on('finish', () => {
+    logger.debug('GraphQL request completed', {
+      requestId: req.requestId,
+      method: req.method,
+      path: req.path,
+      statusCode: res.statusCode,
+      durationMs: Date.now() - startedAt,
+    });
+  });
+
+  next();
+});
 
 // Handle preflight requests for GraphQL endpoint
 app.options('/graphql', (req, res) => {
@@ -216,10 +271,10 @@ const server = new ApolloServer({
       if (authToken && authToken.length) {
         try {
           const user = await verifyToken(authToken);
-          return { user, res };
+          return { user, res, requestId: req && req.requestId };
         } catch (error) {
           logger.debug('Invalid token, proceeding without user context:', error.message);
-          return { res };
+          return { res, requestId: req && req.requestId };
         }
       }
 
@@ -232,7 +287,7 @@ const server = new ApolloServer({
       }
     }
 
-    return { res };
+    return { res, requestId: req && req.requestId };
   },
 });
 

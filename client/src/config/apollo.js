@@ -36,12 +36,15 @@ const httpLink = createHttpLink({
 
 // Create an auth link that dynamically adds the authorization header
 const authLink = new ApolloLink((operation, forward) => {
+  const requestId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+
   // Get the token from localStorage for each request
   const token = localStorage.getItem('token')
 
   // Build headers object
   const headers = {
     'Content-Type': 'application/json',
+    'x-request-id': requestId,
     ...operation.getContext().headers,
   }
 

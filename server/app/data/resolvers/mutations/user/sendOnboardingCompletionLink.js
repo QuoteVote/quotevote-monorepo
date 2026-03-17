@@ -6,9 +6,15 @@ import sendGridEmail, {
 } from '../../../utils/send-grid-mail';
 
 export const sendOnboardingCompletionLink = () => {
-  return async (_, args) => {
+  return async (_, args, context) => {
     try {
       const { email } = args;
+      const requestId = context && context.requestId;
+      logger.info('sendOnboardingCompletionLink called', {
+        requestId,
+        email,
+      });
+
       const user = await UserModel.findOne({
         email: {
           $regex: new RegExp(
@@ -19,6 +25,13 @@ export const sendOnboardingCompletionLink = () => {
       });
 
       if (!user || user.hash_password || user.status !== 4) {
+        logger.info('sendOnboardingCompletionLink returning generic success for ineligible account', {
+          requestId,
+          email,
+          hasUser: !!user,
+          userStatus: user ? user.status : null,
+          hasPassword: user ? !!user.hash_password : null,
+        });
         return {
           success: true,
           message:
@@ -41,6 +54,7 @@ export const sendOnboardingCompletionLink = () => {
 
       const clientUrl = process.env.CLIENT_URL;
       const mailOptions = {
+        requestId,
         to: email,
         from: `Team Quote.Vote <${process.env.SENDGRID_SENDER_EMAIL}>`,
         templateId: SENGRID_TEMPLATE_IDS.INVITATION_APPROVE,
@@ -49,7 +63,23 @@ export const sendOnboardingCompletionLink = () => {
         },
       };
 
-      await sendGridEmail(mailOptions);
+      logger.info('sendOnboardingCompletionLink sending email', {
+        requestId,
+        email,
+        userId: user._id,
+        hasClientUrl: !!clientUrl,
+        hasSendgridApiKey: !!process.env.SENDGRID_API_KEY,
+        hasSenderEmail: !!process.env.SENDGRID_SENDER_EMAIL,
+      });
+
+      const sendResult = await sendGridEmail(mailOptions);
+
+      logger.info('sendOnboardingCompletionLink sendGrid result', {
+        requestId,
+        email,
+        success: !!sendResult.success,
+        error: sendResult.error || null,
+      });
 
       return {
         success: true,
@@ -58,6 +88,7 @@ export const sendOnboardingCompletionLink = () => {
       };
     } catch (err) {
       logger.error('Error in sendOnboardingCompletionLink', {
+        requestId: context && context.requestId,
         error: err.message,
       });
       throw new Error(
