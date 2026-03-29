@@ -333,6 +333,8 @@ function PostCard(props) {
     messageRoom,
     groupId,
     citationUrl,
+    attribution,
+    attributionType,
   } = props
   // Safely extract messages from messageRoom (handle case where it might be undefined or null)
   const { messages = [] } = messageRoom || {}
@@ -473,6 +475,19 @@ return {
                   Source: {getDomain(citationUrl)}
                 </div>
               )}
+              {attribution && (
+                <Typography
+                  style={{
+                    fontSize: 14,
+                    fontStyle: 'italic',
+                    color: 'gray',
+                    marginTop: 4,
+                    marginBottom: 4,
+                  }}
+                >
+                  — {attribution}
+                </Typography>
+              )}
             </div>
           </Grid>
           <Grid item xs={12}>
@@ -560,6 +575,8 @@ PostCard.propTypes = {
   limitText: PropTypes.bool,
   groupId: PropTypes.string,
   citationUrl: PropTypes.string,
+  attribution: PropTypes.string,
+  attributionType: PropTypes.string,
 }
 
 export default withWidth()(PostCard)
