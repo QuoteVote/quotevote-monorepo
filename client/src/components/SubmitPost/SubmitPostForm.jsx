@@ -16,6 +16,10 @@ import {
   CardHeader,
   Box,
   Tooltip,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core'
 import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
@@ -249,6 +253,8 @@ function SubmitPostForm({ options = [], user, setOpen }) {
             title,
             groupId: postGroupId,
             citationUrl: cleanCitation || null,
+            attribution: attributionType === 'Unknown' ? 'Unknown' : (attribution || null),
+            attributionType: attributionType || null,
           },
         },
       })
@@ -274,6 +280,17 @@ function SubmitPostForm({ options = [], user, setOpen }) {
     reset()
   }
   const [value, setValue] = React.useState({ title: '', content: '' })
+
+  const [attribution, setAttribution] = React.useState('')
+  const [attributionType, setAttributionType] = React.useState('')
+
+  const handleAttributionTypeChange = (event) => {
+    const type = event.target.value
+    setAttributionType(type)
+    if (type === 'Self') {
+      setAttribution(user?.username || user?.name || '')
+    }
+  }
 
   const handleTitleChange = (event) => {
     event.persist()
@@ -401,6 +418,43 @@ function SubmitPostForm({ options = [], user, setOpen }) {
                 ?
               </IconButton>
             </Tooltip>
+          </div>
+
+          {/* Attribution Section */}
+          <Divider style={{ margin: '16px 0' }} />
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8, flexWrap: 'wrap' }}>
+            <FormControl variant="outlined" size="small" style={{ minWidth: 160 }}>
+              <InputLabel id="attribution-type-label">Attribution Type</InputLabel>
+              <Select
+                labelId="attribution-type-label"
+                id="attributionType"
+                value={attributionType}
+                onChange={handleAttributionTypeChange}
+                label="Attribution Type"
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                <MenuItem value="Self">Self</MenuItem>
+                <MenuItem value="Person">Person</MenuItem>
+                <MenuItem value="Organization">Organization</MenuItem>
+                <MenuItem value="AI">AI</MenuItem>
+                <MenuItem value="Unknown">Unknown</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              id="attribution"
+              name="attribution"
+              label="Attributed To"
+              placeholder="e.g. James Madison"
+              variant="outlined"
+              size="small"
+              fullWidth
+              value={attribution}
+              onChange={(e) => setAttribution(e.target.value)}
+              disabled={attributionType === 'Self' || attributionType === 'Unknown'}
+              inputProps={{ maxLength: 120 }}
+              helperText={attribution.length > 0 ? `${attribution.length}/120` : 'Optional'}
+              style={{ flex: 1, minWidth: 180 }}
+            />
           </div>
         </Box>
         <CardActions className={classes.cardActions}>
