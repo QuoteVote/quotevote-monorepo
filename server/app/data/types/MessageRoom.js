@@ -7,6 +7,7 @@ type MessageRoom {
   lastActivity: Date
   lastMessageTime: Date
   title: String
+  otherUsername: String
   avatar: JSON
   unreadMessages: Int
   postId: String
@@ -21,4 +22,4 @@ type PostDetails {
   userId: ID
   url: String
 }
-`;
+`
