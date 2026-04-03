@@ -1,12 +1,20 @@
-import { Avatar, Paper, IconButton, Tooltip, Typography } from '@material-ui/core'
+import {
+  Avatar,
+  Paper,
+  IconButton,
+  Tooltip,
+  Typography,
+} from '@material-ui/core'
 import { Delete, Done, DoneAll } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import { useMutation } from '@apollo/react-hooks'
+import { useHistory } from 'react-router-dom'
 import AvatarDisplay from '../Avatar'
 import { DELETE_MESSAGE } from '../../graphql/mutations'
 import { SET_SNACKBAR } from '../../store/ui'
+import { SET_CHAT_OPEN } from '../../store/chat'
 
 const useStyles = makeStyles((theme) => ({
   messageWrapper: {
@@ -33,9 +41,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1.25),
     flexShrink: 0,
     border: `2px solid ${theme.palette.background.paper}`,
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 2px 8px rgba(0, 0, 0, 0.3)'
-      : '0 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 2px 8px rgba(0, 0, 0, 0.3)'
+        : '0 2px 8px rgba(0, 0, 0, 0.1)',
   },
   avatarOwn: {
     order: 2,
@@ -54,21 +63,24 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.mode === 'dark' ? '#2A2A2A' : '#ffffff',
     borderRadius: '20px 20px 20px 6px',
     padding: theme.spacing(1.25, 1.75),
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2)'
-      : '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 2px 8px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2)'
+        : '0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
     wordWrap: 'break-word',
     fontSize: '0.9375rem',
     lineHeight: 1.5,
     color: theme.palette.text.primary,
-    border: theme.palette.mode === 'dark'
-      ? `1px solid ${theme.palette.divider}`
-      : `1px solid ${theme.palette.grey[200]}`,
+    border:
+      theme.palette.mode === 'dark'
+        ? `1px solid ${theme.palette.divider}`
+        : `1px solid ${theme.palette.grey[200]}`,
     transition: 'all 0.2s ease',
     '&:hover': {
-      boxShadow: theme.palette.mode === 'dark'
-        ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2)'
-        : '0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.1)',
+      boxShadow:
+        theme.palette.mode === 'dark'
+          ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2)'
+          : '0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.1)',
     },
   },
   bubbleReverse: {
@@ -76,7 +88,8 @@ const useStyles = makeStyles((theme) => ({
     background: 'linear-gradient(135deg, #52b274 0%, #4a9e63 100%)',
     borderRadius: '20px 20px 6px 20px',
     padding: theme.spacing(1.25, 1.75),
-    boxShadow: '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
+    boxShadow:
+      '0 4px 12px rgba(82, 178, 116, 0.35), 0 2px 4px rgba(82, 178, 116, 0.2)',
     wordWrap: 'break-word',
     fontSize: '0.9375rem',
     lineHeight: 1.5,
@@ -84,7 +97,8 @@ const useStyles = makeStyles((theme) => ({
     border: 'none',
     transition: 'all 0.2s ease',
     '&:hover': {
-      boxShadow: '0 6px 16px rgba(82, 178, 116, 0.4), 0 3px 6px rgba(82, 178, 116, 0.25)',
+      boxShadow:
+        '0 6px 16px rgba(82, 178, 116, 0.4), 0 3px 6px rgba(82, 178, 116, 0.25)',
     },
   },
   deleteIcon: {
@@ -104,18 +118,20 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#3A3A3A' : '#ffffff',
     borderRadius: '50%',
     padding: '6px',
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 3px 10px rgba(0,0,0,0.4)'
-      : '0 3px 10px rgba(0,0,0,0.2)',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 3px 10px rgba(0,0,0,0.4)'
+        : '0 3px 10px rgba(0,0,0,0.2)',
     width: 28,
     height: 28,
     opacity: 0,
     transition: 'opacity 0.2s ease',
     '&:hover': {
       backgroundColor: theme.palette.mode === 'dark' ? '#4A4A4A' : '#f5f5f5',
-      boxShadow: theme.palette.mode === 'dark'
-        ? '0 4px 14px rgba(0,0,0,0.5)'
-        : '0 4px 14px rgba(0,0,0,0.25)',
+      boxShadow:
+        theme.palette.mode === 'dark'
+          ? '0 4px 14px rgba(0,0,0,0.5)'
+          : '0 4px 14px rgba(0,0,0,0.25)',
       transform: 'scale(1.1)',
     },
   },
@@ -149,24 +165,36 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
   },
   receiptIconSent: {
-    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
+    color:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.6)'
+        : 'rgba(0, 0, 0, 0.6)',
     opacity: 1,
     fontSize: '1rem',
   },
   receiptIconSentOther: {
-    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)',
+    color:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.5)'
+        : 'rgba(0, 0, 0, 0.5)',
     opacity: 1,
   },
   timestamp: {
     fontSize: '0.6875rem',
-    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.65)',
+    color:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.65)'
+        : 'rgba(0, 0, 0, 0.65)',
     marginTop: theme.spacing(0.25),
     paddingLeft: theme.spacing(0.5),
     fontWeight: 500,
   },
   timestampOwn: {
     fontSize: '0.6875rem',
-    color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(0, 0, 0, 0.65)',
+    color:
+      theme.palette.mode === 'dark'
+        ? 'rgba(255, 255, 255, 0.65)'
+        : 'rgba(0, 0, 0, 0.65)',
     marginTop: theme.spacing(0.25),
     paddingRight: theme.spacing(0.5),
     textAlign: 'right',
@@ -179,11 +207,26 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(0.25),
     paddingLeft: theme.spacing(0.5),
   },
+  clickableAvatar: {
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 0.8,
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.2)',
+    },
+  },
+  clickableName: {
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+      color: theme.palette.primary.main,
+    },
+  },
 }))
 
 function MessageItem({ message }) {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
   const user = useSelector((state) => state.user?.data)
   const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
 
@@ -196,14 +239,19 @@ function MessageItem({ message }) {
   // Get other user ID for DM read receipt check
   const getOtherUserId = () => {
     if (!selectedRoom || !selectedRoom.users) return null
-    const otherUser = selectedRoom.users.find((id) => id.toString() !== userId.toString())
+    const otherUser = selectedRoom.users.find(
+      (id) => id.toString() !== userId.toString(),
+    )
     return otherUser?.toString()
   }
 
   const [deleteMessage] = useMutation(DELETE_MESSAGE, {
     update(cache, { data: { deleteMessage } }) {
       if (deleteMessage && deleteMessage._id) {
-        const normalizedId = cache.identify({ __typename: 'Message', _id: deleteMessage._id })
+        const normalizedId = cache.identify({
+          __typename: 'Message',
+          _id: deleteMessage._id,
+        })
         cache.evict({ id: normalizedId })
         cache.gc()
       }
@@ -246,9 +294,10 @@ function MessageItem({ message }) {
 
   // For DMs: check if the recipient (other user) has read it
   // For groups: check if anyone has read it
-  const isRead = selectedRoom?.messageType === 'USER' && normalizedOtherUserId
-    ? normalizedReadBy.includes(normalizedOtherUserId)
-    : normalizedReadBy.length > 0
+  const isRead =
+    selectedRoom?.messageType === 'USER' && normalizedOtherUserId
+      ? normalizedReadBy.includes(normalizedOtherUserId)
+      : normalizedReadBy.length > 0
 
   // Format timestamp
   const formatTime = (date) => {
@@ -263,7 +312,12 @@ function MessageItem({ message }) {
     if (d.toDateString() === now.toDateString()) {
       return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
-    return d.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    return d.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   }
 
   // Get read receipt icon with better styling
@@ -291,22 +345,54 @@ function MessageItem({ message }) {
   }
 
   return (
-    <div className={`${classes.messageWrapper} ${isDefaultDirection ? classes.messageWrapperOther : classes.messageWrapperOwn}`}>
+    <div
+      className={`${classes.messageWrapper} ${
+        isDefaultDirection
+          ? classes.messageWrapperOther
+          : classes.messageWrapperOwn
+      }`}
+    >
       {isDefaultDirection && (
-        <Avatar className={classes.avatar}>
+        <Avatar
+          className={`${classes.avatar} ${
+            message.user?.username ? classes.clickableAvatar : ''
+          }`}
+          onClick={
+            message.user?.username
+              ? () => {
+                  dispatch(SET_CHAT_OPEN(false))
+                  history.push(`/Profile/${message.user.username}/`)
+                }
+              : undefined
+          }
+        >
           <AvatarDisplay height={40} width={40} {...message.user.avatar} />
         </Avatar>
       )}
       <div className={classes.bubbleContainer}>
         {isDefaultDirection && message.user?.name && (
-          <Typography className={classes.senderName}>
+          <Typography
+            className={`${classes.senderName} ${
+              message.user?.username ? classes.clickableName : ''
+            }`}
+            onClick={
+              message.user?.username
+                ? () => {
+                    dispatch(SET_CHAT_OPEN(false))
+                    history.push(`/Profile/${message.user.username}/`)
+                  }
+                : undefined
+            }
+          >
             {message.user.name || message.user.username}
           </Typography>
         )}
         <div className={classes.messageContainer}>
           <Paper
             elevation={0}
-            className={isDefaultDirection ? classes.bubble : classes.bubbleReverse}
+            className={
+              isDefaultDirection ? classes.bubble : classes.bubbleReverse
+            }
           >
             <Typography
               variant="body2"
@@ -331,7 +417,14 @@ function MessageItem({ message }) {
             </IconButton>
           )}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: isOwnMessage ? 'flex-end' : 'flex-start', gap: 6 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: isOwnMessage ? 'flex-end' : 'flex-start',
+            gap: 6,
+          }}
+        >
           {isOwnMessage && getReadReceiptIcon()}
           <Typography
             className={isOwnMessage ? classes.timestampOwn : classes.timestamp}
@@ -356,7 +449,10 @@ MessageItem.propTypes = {
     userId: PropTypes.string.isRequired,
     user: PropTypes.object,
     readBy: PropTypes.array,
-    created: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+    created: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.instanceOf(Date),
+    ]),
   }).isRequired,
 }
 

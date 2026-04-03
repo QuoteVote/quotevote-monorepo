@@ -165,6 +165,7 @@ export const GET_CHAT_ROOMS = gql`
       lastActivity
       lastMessageTime
       title
+      otherUsername
       avatar
       unreadMessages
       postId
@@ -603,13 +604,13 @@ export const GET_USER_ACTIVITY = gql`
           }
           bookmarkedBy
           created
-                  creator {
-          _id
-          name
-          username
-          avatar
-          contributorBadge
-        }
+          creator {
+            _id
+            name
+            username
+            avatar
+            contributorBadge
+          }
         }
         voteId
         vote {
@@ -703,7 +704,7 @@ export const GET_LATEST_QUOTES = gql`
     }
   }
 `
-export const GET_FEATURED_POSTS = gql` 
+export const GET_FEATURED_POSTS = gql`
   query featuredPosts(
     $limit: Int
     $offset: Int
