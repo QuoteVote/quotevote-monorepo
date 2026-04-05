@@ -8,7 +8,9 @@ export const getBaseServerUrl = () => {
   } catch (e) {}
 
   try {
-    if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_SERVER) {
+
+    const hasReactAppServer = typeof process !== 'undefined' && process.env && process.env.REACT_APP_SERVER;
+    if (hasReactAppServer) {
       return process.env.REACT_APP_SERVER
     }
   } catch (e) {}
