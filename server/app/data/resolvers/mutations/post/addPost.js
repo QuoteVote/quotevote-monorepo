@@ -62,12 +62,12 @@ export const addPost = (pubsub) => {
 
     // Validation: citationUrl (if provided) must pass strict sanitization
     let sanitizedCitationUrl = null;
-    // Validation: attribution max 120 chars, plain text only
-    if (args.post.attribution && args.post.attribution.length > 120) {
+
+    const MAX_ATTRIBUTION_LENGTH = 120;
+    if (args.post.attribution && args.post.attribution.length > MAX_ATTRIBUTION_LENGTH) {
       throw new Error('Attribution must be 120 characters or less.');
     }
 
-    // If attributionType is Self, populate attribution with user's name
     let attribution = args.post.attribution || null;
     const attributionType = args.post.attributionType || null;
     
