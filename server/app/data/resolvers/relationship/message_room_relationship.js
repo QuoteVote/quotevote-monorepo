@@ -113,22 +113,6 @@ export const messageRoomRelationship = () => {
 
       return avatar || null
     },
-    async otherUsername(data, root, context) {
-      const { users, messageType } = data
-      if (messageType !== 'USER') return null
-      const contextUserId = context.user._id
-      const userBuddy = users.filter(
-        (user) => user.toString() !== contextUserId.toString(),
-      )
-      if (userBuddy.length === 0) userBuddy.push(contextUserId)
-      try {
-        const buddyUserId = new ObjectId(userBuddy[0])
-        const user = await UserModel.findById(buddyUserId)
-        return user?.username || null
-      } catch (error) {
-        return null
-      }
-    },
     async messages(data, root, context) {
       const { _id: messageRoomId } = data
       const messages = await getMessages(messageRoomId, context)
