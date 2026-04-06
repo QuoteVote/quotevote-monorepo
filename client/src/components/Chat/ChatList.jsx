@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useLazyQuery } from '@apollo/react-hooks'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   makeStyles,
@@ -15,7 +15,7 @@ import {
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
 import GroupIcon from '@material-ui/icons/Group'
 import { useHistory } from 'react-router-dom'
-import { GET_CHAT_ROOMS, GET_USER } from '../../graphql/query'
+import { GET_CHAT_ROOMS, GET_USER, GET_USER_BY_ID } from '../../graphql/query'
 import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
 import LoadingSpinner from '../LoadingSpinner'
 import AvatarDisplay from '../Avatar'
@@ -174,6 +174,10 @@ const ChatList = ({ search, filterType }) => {
   const selectedRoom = useSelector((state) => state.chat.selectedRoom)
   const [userCache, setUserCache] = useState({})
 
+  const [fetchUserById] = useLazyQuery(GET_USER_BY_ID, {
+    fetchPolicy: 'cache-first',
+  })
+
   const { loading, data, refetch } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
     pollInterval: 10000, // Poll every 10 seconds for new messages
@@ -227,14 +231,21 @@ const ChatList = ({ search, filterType }) => {
     dispatch(SELECTED_CHAT_ROOM({ room }))
   }
 
+  const getOtherUserId = (room) => {
+    if (room.messageType !== 'USER' || room.users?.length !== 2) return null
+    const currentUserId = currentUser?._id?.toString()
+    return room.users.find((id) => id?.toString() !== currentUserId)?.toString() || null
+  }
+
   const getRoomDisplayInfo = (room) => {
     if (room.messageType === 'USER' && room.users?.length === 2) {
       // Direct message - use avatar from GraphQL response (resolved by server)
       return {
         name: room.title || 'Direct Message',
-        avatar: room.avatar || null, // Use avatar from room (resolved by messageRoomRelationship)
+        avatar: room.avatar || null,
         subtitle: `${room.users?.length || 0} participants`,
-        linkTo: room.otherUsername ? `/Profile/${room.otherUsername}/` : null,
+        otherUserId: getOtherUserId(room),
+        linkTo: null, // Resolved on-click via user query
       }
     } else if (room.messageType === 'POST') {
       // Group chat for post - show post title
@@ -262,11 +273,28 @@ const ChatList = ({ search, filterType }) => {
     }
   }
 
-  const handleNameClick = (e, linkTo) => {
+  const handleNameClick = async (e, displayInfo) => {
     e.stopPropagation()
-    if (linkTo) {
+    // For posts, navigate directly using the URL
+    if (displayInfo.linkTo) {
       dispatch(SET_CHAT_OPEN(false))
-      history.push(linkTo)
+      history.push(displayInfo.linkTo)
+      return
+    }
+    // For DMs, fetch the other user's username first
+    if (displayInfo.otherUserId) {
+      try {
+        const { data: userData } = await fetchUserById({
+          variables: { user_id: displayInfo.otherUserId },
+        })
+        const username = userData?.user?.username
+        if (username) {
+          dispatch(SET_CHAT_OPEN(false))
+          history.push(`/Profile/${username}/`)
+        }
+      } catch (err) {
+        // Silently fail — user stays on chat
+      }
     }
   }
 
@@ -328,20 +356,30 @@ const ChatList = ({ search, filterType }) => {
                 <div className={classes.primaryTextContainer}>
                   <span
                     className={`${classes.primaryText} ${
-                      displayInfo.linkTo ? classes.nameLink : ''
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? classes.nameLink
+                        : ''
                     }`}
                     onClick={
-                      displayInfo.linkTo
-                        ? (e) => handleNameClick(e, displayInfo.linkTo)
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? (e) => handleNameClick(e, displayInfo)
                         : undefined
                     }
-                    role={displayInfo.linkTo ? 'link' : undefined}
-                    tabIndex={displayInfo.linkTo ? 0 : undefined}
+                    role={
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? 'link'
+                        : undefined
+                    }
+                    tabIndex={
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? 0
+                        : undefined
+                    }
                     onKeyDown={
-                      displayInfo.linkTo
+                      displayInfo.linkTo || displayInfo.otherUserId
                         ? (e) => {
                             if (e.key === 'Enter')
-                              handleNameClick(e, displayInfo.linkTo)
+                              handleNameClick(e, displayInfo)
                           }
                         : undefined
                     }

@@ -17,7 +17,7 @@ import BlockIcon from '@material-ui/icons/Block'
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
 import { useHistory } from 'react-router-dom'
 import MessageSend from './MessageSend'
 import MessageItemList from './MessageItemList'
@@ -29,6 +29,7 @@ import {
   GET_CHAT_ROOMS,
   GET_ROOM_MESSAGES,
   GET_ROSTER,
+  GET_USER_BY_ID,
 } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useRosterManagement } from '../../hooks/useRosterManagement'
@@ -225,24 +226,9 @@ function Header() {
 
   const history = useHistory()
 
-  // Determine link target for the header
-  const headerLinkTo = (() => {
-    if (!selectedRoom) return null
-    if (messageType === 'USER' && selectedRoom.otherUsername) {
-      return `/Profile/${selectedRoom.otherUsername}/`
-    }
-    if (messageType === 'POST' && selectedRoom.postDetails?.url) {
-      return selectedRoom.postDetails.url
-    }
-    return null
-  })()
-
-  const handleHeaderNavigation = () => {
-    if (headerLinkTo) {
-      dispatch(SET_CHAT_OPEN(false))
-      history.push(headerLinkTo)
-    }
-  }
+  const [fetchUserById] = useLazyQuery(GET_USER_BY_ID, {
+    fetchPolicy: 'cache-first',
+  })
 
   // Get the other user's ID for USER type rooms
   const currentUserIdForHeader = currentUser?._id?.toString()
@@ -260,6 +246,33 @@ function Header() {
           })
           ?.toString() || null
       : null
+
+  // Determine if header is clickable
+  const isHeaderClickable =
+    (messageType === 'USER' && !!otherUserId) ||
+    (messageType === 'POST' && !!selectedRoom?.postDetails?.url)
+
+  const handleHeaderNavigation = async () => {
+    if (messageType === 'POST' && selectedRoom?.postDetails?.url) {
+      dispatch(SET_CHAT_OPEN(false))
+      history.push(selectedRoom.postDetails.url)
+      return
+    }
+    if (messageType === 'USER' && otherUserId) {
+      try {
+        const { data: userData } = await fetchUserById({
+          variables: { user_id: otherUserId },
+        })
+        const username = userData?.user?.username
+        if (username) {
+          dispatch(SET_CHAT_OPEN(false))
+          history.push(`/Profile/${username}/`)
+        }
+      } catch (err) {
+        // Silently fail
+      }
+    }
+  }
 
   // Check if user is blocked
   const isBlocked =
@@ -392,9 +405,9 @@ function Header() {
 
           <Avatar
             className={`${classes.avatar} ${
-              headerLinkTo ? classes.avatarClickable : ''
+              isHeaderClickable ? classes.avatarClickable : ''
             }`}
-            onClick={headerLinkTo ? handleHeaderNavigation : undefined}
+            onClick={isHeaderClickable ? handleHeaderNavigation : undefined}
           >
             {avatar && Object.keys(avatar).length > 0 ? (
               <AvatarDisplay height={40} width={40} {...avatar} />
@@ -410,13 +423,13 @@ function Header() {
           <div className={classes.headerText}>
             <Typography
               className={`${classes.title} ${
-                headerLinkTo ? classes.titleClickable : ''
+                isHeaderClickable ? classes.titleClickable : ''
               }`}
-              onClick={headerLinkTo ? handleHeaderNavigation : undefined}
-              role={headerLinkTo ? 'link' : undefined}
-              tabIndex={headerLinkTo ? 0 : undefined}
+              onClick={isHeaderClickable ? handleHeaderNavigation : undefined}
+              role={isHeaderClickable ? 'link' : undefined}
+              tabIndex={isHeaderClickable ? 0 : undefined}
               onKeyDown={
-                headerLinkTo
+                isHeaderClickable
                   ? (e) => {
                       if (e.key === 'Enter') handleHeaderNavigation()
                     }

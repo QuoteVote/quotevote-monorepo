@@ -165,7 +165,6 @@ export const GET_CHAT_ROOMS = gql`
       lastActivity
       lastMessageTime
       title
-      otherUsername
       avatar
       unreadMessages
       postId
@@ -176,6 +175,15 @@ export const GET_CHAT_ROOMS = gql`
         userId
         url
       }
+    }
+  }
+`
+
+export const GET_USER_BY_ID = gql`
+  query userById($user_id: String!) {
+    user(user_id: $user_id) {
+      _id
+      username
     }
   }
 `
