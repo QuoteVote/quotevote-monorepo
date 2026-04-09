@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+package-lock.json
 
 # testing
 /coverage
@@ -36,6 +37,7 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
+*.code-workspace
 *.suo
 *.ntvs*
 *.njsproj
