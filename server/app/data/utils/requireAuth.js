@@ -21,6 +21,8 @@ const PUBLIC_QUERIES = [
   'getUserFollowInfo',
   'group',
   'groups',
+  'checkEmailStatus',
+  'sendMagicLoginLink',
   // add more public queries/mutations
 ];
 

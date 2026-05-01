@@ -64,6 +64,9 @@ export const Mutation = `type Mutation {
   # Mutation for send email password reset link
     sendPasswordResetEmail(email: String!): JSON
 
+  # Mutation for sending a magic login link
+    sendMagicLoginLink(email: String!): JSON
+
   # Mutation for updating user password
     updateUserPassword(username: String, password: String, token: String): JSON
 
