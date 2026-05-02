@@ -371,7 +371,6 @@ function PostCard(props) {
     }
   }
 
-  // TODO: show quote up/down
   const { upQuote, downQuote } = useMemo(() => {
     if (!votes || votes?.length === 0) {
 return {
