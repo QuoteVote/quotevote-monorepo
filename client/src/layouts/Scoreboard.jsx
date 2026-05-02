@@ -14,7 +14,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import appRoutes from '../routes'
 import styles from 'assets/jss/material-dashboard-pro-react/layouts/adminStyle'
-import { tokenValidator } from 'store/user'
+import useTokenValidation from '../hooks/useTokenValidation'
 import { useDispatch, useSelector } from 'react-redux'
 import { SET_SNACKBAR } from 'store/ui'
 import Snackbar from 'mui-pro/Snackbar/Snackbar'
@@ -65,11 +65,8 @@ function Scoreboard(props) {
 
   const routes = getRoutes(appRoutes)
 
-  // TODO: Abstract validation into custom hook
-  useEffect(() => {
-    tokenValidator(dispatch)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  useTokenValidation()
+
 
   useEffect(() => {
     const {
