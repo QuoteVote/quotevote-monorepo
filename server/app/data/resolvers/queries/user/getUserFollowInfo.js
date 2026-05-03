@@ -1,4 +1,3 @@
-import { isUndefined } from 'lodash';
 import UserModel from '../../models/UserModel';
 import VotesModel from '../../models/VoteModel';
 import * as utils from '../../utils';
@@ -17,7 +16,7 @@ export function getUserFollowInfo() {
     const username = args && args.username;
     const filter = args && args.filter;
     const userData = await UserModel.findOne({ username });
-    if (isUndefined(userData)) {
+    if (!userData) {
       return {
         error: true,
         message: 'No user found',
