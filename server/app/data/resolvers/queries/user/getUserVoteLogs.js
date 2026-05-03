@@ -13,6 +13,7 @@ export const getUserVoteLogs = () => {
       } else if (userId !== '' && username === '') {
         user = await UserModel.findOne({ _id: userId });
       } else {
+        if (!context.user) throw new Error('Authentication required');
         userId = context.user._id;
         user = await UserModel.findOne({ _id: userId });
       }
@@ -26,7 +27,7 @@ export const getUserVoteLogs = () => {
       userId = user._id;
 
       // get user total votes
-      const voteLog = await VoteLogsModel.find({ _userId: userId });
+      const voteLog = await VoteLogsModel.find({userId});
 
       return voteLog;
     } catch (err) {
