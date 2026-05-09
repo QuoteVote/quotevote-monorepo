@@ -89,4 +89,10 @@ type Query {
   # ===== Typing Queries =====
   " Get typing users in a message room"
   getTypingUsers(messageRoomId: String!): [TypingIndicator]
+
+  " Search content by text "
+  searchContent(text: String!): [Content]
+
+  " Search creators by name "
+  searchCreator(text: String!): [Creator]
 }`;
