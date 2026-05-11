@@ -23,6 +23,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: |
+          server/package-lock.json
+          client/package-lock.json
 
     - name: Clean install (workaround for Vite/Rollup native module bug)
       run: |
