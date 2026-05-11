@@ -76,6 +76,11 @@ app.use(cors({
       'http://127.0.0.1:3000',
       'https://www.quote.vote',
       'https://quote.vote',
+      'http://beta.quote.vote',
+      'http://www.beta.quote.vote',
+      'https://www.beta.quote.vote',
+      'https://beta.quote.vote',
+      'https://quotevote-rho.vercel.app' // this will be removed after the beta is fully functional.
     ];
 
     // Check if origin matches allowed origins or patterns
