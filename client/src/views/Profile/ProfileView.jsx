@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import AppBar from 'components/Navbars/ProfileHeader'
 import LoadingSpinner from 'components/LoadingSpinner'
 import { Link, Typography } from '@material-ui/core'
-import UserPosts from '../../components/UserPosts'
+import UserPosts from '@/components/UserPosts'
 import ReputationDisplay from '../../components/Profile/ReputationDisplay'
 
 const useStyles = makeStyles(({
