@@ -6,6 +6,8 @@ import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
 import * as presenceQuery from './queries/presence';
 import * as typingQuery from './queries/typing';
+import * as contentQuery from './queries/content';
+import * as creatorQuery from './queries/creator';
 
 export const resolver_query = function () {
   return {
@@ -43,5 +45,9 @@ export const resolver_query = function () {
 
     // Typing queries
     getTypingUsers: typingQuery.getTypingUsers,
+
+    // Search
+    searchContent: contentQuery.searchContent(),
+    searchCreator: creatorQuery.searchCreator(),
   };
 };
