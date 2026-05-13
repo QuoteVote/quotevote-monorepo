@@ -98,6 +98,18 @@ const schema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  attribution: {
+    type: String,
+    required: false,
+    default: null,
+    maxlength: 120,
+  },
+  attributionType: {
+    type: String,
+    required: false,
+    default: null,
+    enum: ['Self', 'Person', 'Organization', 'AI', 'Unknown', null],
+  },
 });
 
 schema.index({ title: 'text', text: 'text' });

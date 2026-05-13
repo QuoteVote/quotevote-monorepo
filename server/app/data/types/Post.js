@@ -20,6 +20,8 @@ type Post {
   pointTimestamp: String
   featuredSlot: Int
   enable_voting: Boolean
+  attribution: String
+  attributionType: String
   creator: User
   comments: [Comment]
   votes: [Vote]

@@ -3,6 +3,8 @@ export * from './Activities';
 export * from './Pagination';
 export * from './Comment';
 export * from './ChatRooms';
+export * from './Content';
+export * from './Creator';
 export * from './Group';
 export * from './Message';
 export * from './MessageRoom';

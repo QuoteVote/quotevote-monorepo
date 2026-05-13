@@ -5,5 +5,7 @@ export const PostInput = `
     title: String!
     text: String!
     citationUrl: String
+    attribution: String
+    attributionType: String
   }
 `;

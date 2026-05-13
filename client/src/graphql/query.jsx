@@ -47,6 +47,8 @@ export const GET_POST = gql`
       title
       text
       citationUrl
+      attribution
+      attributionType
       url
       upvotes
       downvotes
@@ -254,6 +256,8 @@ export const GET_TOP_POSTS = gql`
         title
         text
         citationUrl
+        attribution
+        attributionType
         upvotes
         downvotes
         bookmarkedBy
