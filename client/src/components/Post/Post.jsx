@@ -32,6 +32,7 @@ import {
   ADD_QUOTE,
   REPORT_POST,
   VOTE,
+  ADD_ANONYMOUS_VOTE,
   APPROVE_POST,
   REJECT_POST,
   DELETE_POST,
@@ -51,6 +52,7 @@ import {
 import AvatarDisplay from '../Avatar'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
 import { serializeVotedBy } from '../../utils/objectIdSerializer'
+import { getVisibleVotes } from '../../utils/votes'
 
 const useStyles = makeStyles((theme) => ({
   header2: {
@@ -222,6 +224,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   const dispatch = useDispatch()
   const history = useHistory()
   const parsedCreated = moment(created).format('LLL')
+  const showAnonymousVotes = useSelector((state) => state.ui.showAnonymousVotes)
 
   // Helper to extract domain from URL
   const getDomain = (url) => {
@@ -241,6 +244,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   })
   const [open, setOpen] = useState(false)
   const [openInvite, setOpenInvite] = useState(false)
+  const [anonymousVoteSubmitted, setAnonymousVoteSubmitted] = useState(false)
 
   const isFollowing = includes(_followingId, userId)
 
@@ -397,6 +401,18 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
       },
     ],
   })
+  const [addAnonymousVote] = useMutation(ADD_ANONYMOUS_VOTE, {
+    refetchQueries: [
+      {
+        query: GET_TOP_POSTS,
+        variables: { limit: 5, offset: 0, searchKey: '' },
+      },
+      {
+        query: GET_POST,
+        variables: { postId: _id },
+      },
+    ],
+  })
   const [addComment] = useMutation(ADD_COMMENT, {
     refetchQueries: [
       {
@@ -489,6 +505,23 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     )
     return userVote ? userVote.type : null
   }
+
+  const promptCreateAccountToPostOrComment = useCallback(() => {
+    dispatch(
+      SET_SNACKBAR({
+        open: true,
+        message: 'Create an account to post or comment.',
+        type: 'warning',
+      }),
+    )
+    setOpenInvite(true)
+  }, [dispatch])
+
+  const visibleVotes = getVisibleVotes(
+    post.votes || [],
+    post.anonymousVotes || [],
+    showAnonymousVotes,
+  )
 
   const [removeApprove] = useMutation(APPROVE_POST, {
     variables: { postId: _id, userId: user._id },
@@ -657,7 +690,10 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
   }
 
   const handleAddComment = async (comment, commentWithQuote = false) => {
-    if (!ensureAuth()) return
+    if (!ensureAuth()) {
+      promptCreateAccountToPostOrComment()
+      return
+    }
     let startIndex
     let endIndex
     let quoteText
@@ -702,9 +738,10 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     }
   }
   const handleVoting = async (obj) => {
-    if (!ensureAuth()) return
-    // Check if user has already voted
-    if (hasVoted) {
+    const isAuthenticated = tokenValidator(dispatch)
+    const alreadyVoted = isAuthenticated ? hasVoted : anonymousVoteSubmitted
+
+    if (alreadyVoted) {
       dispatch(
         SET_SNACKBAR({
           open: true,
@@ -718,14 +755,25 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
     const vote = {
       content: selectedText.text || '',
       postId: post._id,
-      userId: user._id,
       type: obj.type,
       tags: obj.tags,
       startWordIndex: selectedText.startIndex,
       endWordIndex: selectedText.endIndex,
     }
     try {
-      await addVote({ variables: { vote } })
+      if (isAuthenticated) {
+        await addVote({
+          variables: {
+            vote: {
+              ...vote,
+              userId: user._id,
+            },
+          },
+        })
+      } else {
+        await addAnonymousVote({ variables: { vote } })
+        setAnonymousVoteSubmitted(true)
+      }
       dispatch(
         SET_SNACKBAR({
           open: true,
@@ -1049,7 +1097,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
             flexDirection: 'column',
           }}
         >
-          {hasVoted && (
+          {(hasVoted || anonymousVoteSubmitted) && (
             <div
               style={{
                 backgroundColor: '#e3f2fd',
@@ -1062,7 +1110,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
               }}
             >
               ✓ You have already{' '}
-              {getUserVoteType() === 'up' ? 'upvoted' : 'downvoted'} this post
+              {getUserVoteType() === 'up' ? 'upvoted' : getUserVoteType() === 'down' ? 'downvoted' : 'voted on'} this post
             </div>
           )}
           <VotingBoard
@@ -1070,7 +1118,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
             onSelect={setSelectedText}
             selectedText={selectedText}
             highlights
-            votes={post.votes}
+            votes={visibleVotes}
             style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
           >
             {({ text }) => (
@@ -1081,7 +1129,7 @@ function Post({ post, user, postHeight, postActions, refetchPost }) {
                 text={text}
                 selectedText={selectedText}
                 votedBy={serializeVotedBy(post.votedBy)}
-                hasVoted={hasVoted}
+                hasVoted={hasVoted || anonymousVoteSubmitted}
                 userVoteType={getUserVoteType()}
               />
             )}

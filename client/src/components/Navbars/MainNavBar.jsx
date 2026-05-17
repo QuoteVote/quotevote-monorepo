@@ -7,6 +7,8 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import Drawer from '@material-ui/core/Drawer'
+import Switch from '@material-ui/core/Switch'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Divider from '@material-ui/core/Divider'
@@ -27,7 +29,7 @@ import SettingsMenu from '../Settings/SettingsMenu'
 import SubmitPost from '../SubmitPost/SubmitPost'
 import ChatMenu from '../Chat/ChatMenu'
 import AdminIconButton from '../CustomButtons/AdminIconButton'
-import { SET_SELECTED_PAGE } from 'store/ui'
+import { SET_SELECTED_PAGE, SET_SHOW_ANONYMOUS_VOTES } from 'store/ui'
 import { useMobileDetection } from '../../utils/display'
 
 const useStyles = makeStyles((theme) => ({
@@ -216,6 +218,16 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     padding: theme.spacing(1, 0),
   },
+  voteToggle: {
+    marginLeft: theme.spacing(1),
+    '& .MuiFormControlLabel-label': {
+      fontSize: '0.85rem',
+      fontWeight: 600,
+    },
+  },
+  drawerToggleRow: {
+    padding: theme.spacing(0.5, 0),
+  },
 }))
 
 function MainNavBar(props) {
@@ -223,6 +235,7 @@ function MainNavBar(props) {
   const avatar = useSelector((state) => state.user.data.avatar)
   const name = useSelector((state) => state.user.data.name)
   const loggedIn = useSelector((state) => !!state.user.data._id)
+  const showAnonymousVotes = useSelector((state) => state.ui.showAnonymousVotes)
   const [open, setOpen] = React.useState(false)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
   const dispatch = useDispatch()
@@ -247,6 +260,9 @@ function MainNavBar(props) {
 
   const toggleDrawer = () => setDrawerOpen((prev) => !prev)
   const closeDrawer = () => setDrawerOpen(false)
+  const handleAnonymousVoteToggle = (event) => {
+    dispatch(SET_SHOW_ANONYMOUS_VOTES(event.target.checked))
+  }
 
   return (
     <>
@@ -334,6 +350,18 @@ function MainNavBar(props) {
                 >
                   <GitHubIcon />
                 </IconButton>
+                <FormControlLabel
+                  className={classes.voteToggle}
+                  control={(
+                    <Switch
+                      checked={showAnonymousVotes}
+                      onChange={handleAnonymousVoteToggle}
+                      color="primary"
+                      size="small"
+                    />
+                  )}
+                  label="Show anonymous votes"
+                />
                 <NavLink to="/Profile" style={{ textDecoration: 'none' }}>
                   <Button className={classes.profileButton} onClick={handleProfileClick}>
                     <Avatar>
@@ -479,6 +507,23 @@ function MainNavBar(props) {
             </ListItem>
 
             <Divider className={classes.divider} />
+
+            <ListItem disableGutters>
+              <div className={classes.drawerToggleRow}>
+                <FormControlLabel
+                  className={classes.voteToggle}
+                  control={(
+                    <Switch
+                      checked={showAnonymousVotes}
+                      onChange={handleAnonymousVoteToggle}
+                      color="primary"
+                      size="small"
+                    />
+                  )}
+                  label="Show anonymous votes"
+                />
+              </div>
+            </ListItem>
 
             <ListItem disableGutters>
               <NavLink to="/Profile" style={{ width: '100%', textDecoration: 'none' }}>

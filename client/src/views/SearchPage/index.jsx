@@ -752,6 +752,7 @@ export default function SearchPage() {
           creator={post.creator}
           activityType={post.activityType || 'POSTED'}
           votes={post.votes || []}
+          anonymousVotes={post.anonymousVotes || []}
           comments={post.comments || []}
           quotes={post.quotes || []}
           messageRoom={{ messages: post.messageRoom?.messages || [] }}

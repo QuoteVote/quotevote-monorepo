@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { findUserById } from '~/resolvers/queries/user';
 import CommentModel from '~/resolvers/models/CommentModel';
 import VoteModel from '~/resolvers/models/VoteModel';
+import AnonymousVoteModel from '~/resolvers/models/AnonymousVoteModel';
 import QuoteModel from '~/resolvers/models/QuoteModel';
 import MessageRoomModel from '~/resolvers/models/MessageRoomModel';
 
@@ -19,6 +20,13 @@ export const postRelationship = () => {
     async votes(post) {
       const votes = await VoteModel.find({ postId: post._id, deleted: { $ne: true } });
       return votes;
+    },
+    async anonymousVotes(post) {
+      const votes = await AnonymousVoteModel.find({ postId: post._id, deleted: { $ne: true } });
+      return votes.map((vote) => ({
+        ...vote.toObject(),
+        anonymous: true,
+      }));
     },
     async quotes(post) {
       const quotes = await QuoteModel.find({ postId: post._id, deleted: { $ne: true } });

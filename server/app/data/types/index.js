@@ -17,6 +17,7 @@ export * from './User';
 export * from './UserInvite';
 export * from './UserReputation';
 export * from './Vote';
+export * from './AnonymousVote';
 export * from './DeletedPost';
 export * from './DeletedQuote';
 export * from './DeletedComment';

@@ -49,7 +49,19 @@ export const VOTE = gql`
   mutation addVote($vote: VoteInput!) {
     addVote(vote: $vote) {
       postId
+      commentId
       type
+    }
+  }
+`
+
+export const ADD_ANONYMOUS_VOTE = gql`
+  mutation addAnonymousVote($vote: VoteInput!) {
+    addAnonymousVote(vote: $vote) {
+      postId
+      commentId
+      type
+      anonymous
     }
   }
 `

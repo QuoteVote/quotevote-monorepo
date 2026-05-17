@@ -7,12 +7,17 @@ import { addNotification } from '~/resolvers/utils/notifications/addNotification
 import { addUserToPostRoom } from '../../utils/message/addUserToPostRoom';
 
 export const addComment = (pubsub) => {
-  return async (_, args) => {
+  return async (_, args, context) => {
     logger.info('Function: addComment');
+
+    if (!context.user || !context.user._id) {
+      throw new Error('Create an account to post or comment.');
+    }
 
     try {
       const comment = await new CommentModel({
         ...args.comment,
+        userId: context.user._id,
         created: new Date(),
       }).save();
 
