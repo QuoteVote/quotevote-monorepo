@@ -166,59 +166,59 @@ export default async (request, context) => {
 
     // Replace page title
     modifiedHtml = modifiedHtml.replace(
-      /<title>[^<]*<\/title>/,
+      /<title>[^<]*<\/title>/i,
       `<title>${escapeHtml(ogTitle)}</title>`
     );
 
     // Replace meta description
     modifiedHtml = modifiedHtml.replace(
-      /<meta name="description" content="[^"]*" \/>/,
+      /<meta[^>]*name=["']?description["']?[^>]*>/i,
       `<meta name="description" content="${escapeHtml(ogDescription)}" />`
     );
 
     // Replace og:title
     modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:title" content="[^"]*" \/>/,
+      /<meta[^>]*property=["']?og:title["']?[^>]*>/i,
       `<meta property="og:title" content="${escapeHtml(ogTitle)}" />`
     );
 
     // Replace og:description
     modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:description" content="[^"]*" \/>/,
+      /<meta[^>]*property=["']?og:description["']?[^>]*>/i,
       `<meta property="og:description" content="${escapeHtml(ogDescription)}" />`
     );
 
     // Replace og:image
     modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:image" content="[^"]*" \/>/,
+      /<meta[^>]*property=["']?og:image["']?[^>]*>/i,
       `<meta property="og:image" content="${escapeHtml(ogImage)}" />`
     );
 
     // Replace og:url
     modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:url" content="[^"]*" \/>/,
+      /<meta[^>]*property=["']?og:url["']?[^>]*>/i,
       `<meta property="og:url" content="${escapeHtml(ogUrl)}" />`
     );
 
     // Replace og:type to "article" for quote pages
     modifiedHtml = modifiedHtml.replace(
-      /<meta property="og:type" content="[^"]*" \/>/,
+      /<meta[^>]*property=["']?og:type["']?[^>]*>/i,
       `<meta property="og:type" content="article" />`
     );
 
     // Replace Twitter card metadata
     modifiedHtml = modifiedHtml.replace(
-      /<meta name="twitter:title" content="[^"]*" \/>/,
+      /<meta[^>]*name=["']?twitter:title["']?[^>]*>/i,
       `<meta name="twitter:title" content="${escapeHtml(ogTitle)}" />`
     );
 
     modifiedHtml = modifiedHtml.replace(
-      /<meta name="twitter:description" content="[^"]*" \/>/,
+      /<meta[^>]*name=["']?twitter:description["']?[^>]*>/i,
       `<meta name="twitter:description" content="${escapeHtml(ogDescription)}" />`
     );
 
     modifiedHtml = modifiedHtml.replace(
-      /<meta name="twitter:image" content="[^"]*" \/>/,
+      /<meta[^>]*name=["']?twitter:image["']?[^>]*>/i,
       `<meta name="twitter:image" content="${escapeHtml(ogImage)}" />`
     );
 

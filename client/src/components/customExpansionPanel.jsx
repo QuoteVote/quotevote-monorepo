@@ -1,4 +1,3 @@
-// TODO: Fix links to have href
 import React from 'react'
 import PropTypes from 'prop-types'
 // @material-ui/core components
@@ -63,10 +62,9 @@ export default function CustomAccordion({ collapses, active: activeProp }) {
               }}
             >
               <h4 className={classes.title} style={{ width: '10%' }}>
-                {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                 <Link
                   className={classes.title}
-                  tp
+                  href={url}
                 >
                   {title}
                 </Link>
@@ -89,8 +87,13 @@ export default function CustomAccordion({ collapses, active: activeProp }) {
                       display: 'flex', alignItems: 'center', flexDirection: 'row', marginRight: '2%',
                     }}
                   >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <Link onClick={() => handleCopy(DOMAIN + url, key)}>
+                    <Link 
+                      href={url} 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleCopy(DOMAIN + url, key);
+                      }}
+                    >
                       {activeKey === key ? (
                         <Tooltip
                           placement="top"
