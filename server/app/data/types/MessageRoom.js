@@ -21,4 +21,4 @@ type PostDetails {
   userId: ID
   url: String
 }
-`;
+`
