@@ -18,13 +18,14 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useHistory } from 'react-router-dom'
 import MessageSend from './MessageSend'
 import MessageItemList from './MessageItemList'
 import TypingIndicator from './TypingIndicator'
 import { SELECTED_CHAT_ROOM } from '../../store/chat'
 import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
-import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES, GET_ROSTER } from '../../graphql/query'
+import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES, GET_ROSTER, GET_USER_BY_ID } from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useRosterManagement } from '../../hooks/useRosterManagement'
 import { SET_SNACKBAR as SET_UI_SNACKBAR } from '../../store/ui'
@@ -70,6 +71,29 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(1.5),
+  },
+  headerTarget: {
+    flex: 1,
+    minWidth: 0,
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1.5),
+    borderRadius: 12,
+    padding: theme.spacing(0.5),
+    marginLeft: theme.spacing(-0.5),
+    transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
+    '&:focus': {
+      outline: 'none',
+    },
+  },
+  headerTargetClickable: {
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&:focus-visible': {
+      boxShadow: `0 0 0 2px ${theme.palette.primary.main}`,
+    },
   },
   backButton: {
     padding: theme.spacing(0.75),
@@ -182,6 +206,7 @@ const useStyles = makeStyles((theme) => ({
 function Header() {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const history = useHistory()
   const currentUser = useSelector((state) => state.user?.data)
   const selectedRoom = useSelector((state) => state.chat?.selectedRoom?.room)
   const [anchorEl, setAnchorEl] = useState(null)
@@ -189,7 +214,7 @@ function Header() {
   const { refetch: refetchChatRooms } = useQuery(GET_CHAT_ROOMS, { skip: true })
   const { data: rosterData } = useQuery(GET_ROSTER, { skip: !currentUser })
 
-  const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
+  const { title, avatar, messageType, users, postDetails, _id: messageRoomId } = selectedRoom || {}
 
   // Get the other user's ID for USER type rooms
   const currentUserIdForHeader = currentUser?._id?.toString()
@@ -215,6 +240,31 @@ function Header() {
     return (rUserId === currentUserId && rBuddyId === otherId && r.status === 'blocked') ||
       (rUserId === otherId && rBuddyId === currentUserId && r.status === 'blocked')
   })
+
+  const { data: otherUserData } = useQuery(GET_USER_BY_ID, {
+    variables: { userId: otherUserId },
+    skip: !otherUserId,
+  })
+
+  const otherUser = otherUserData?.user
+  const profilePath = otherUser?.username ? `/Profile/${otherUser.username}` : null
+  const postPath = postDetails?.url ? postDetails.url.replace(/\?/g, '') : null
+  const headerTargetPath = messageType === 'USER' ? profilePath : postPath
+  const headerTargetLabel = messageType === 'USER' ? 'View profile' : 'View post'
+
+  const handleHeaderTargetClick = () => {
+    if (headerTargetPath) {
+      history.push(headerTargetPath)
+    }
+  }
+
+  const handleHeaderTargetKeyDown = (event) => {
+    if (!headerTargetPath) return
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleHeaderTargetClick()
+    }
+  }
 
   const handleBack = () => {
     dispatch(SELECTED_CHAT_ROOM(null))
@@ -298,6 +348,37 @@ function Header() {
   }
 
   const menuOpen = Boolean(anchorEl)
+  const headerTarget = (
+    <div
+      className={`${classes.headerTarget} ${headerTargetPath ? classes.headerTargetClickable : ''}`}
+      role={headerTargetPath ? 'button' : undefined}
+      tabIndex={headerTargetPath ? 0 : undefined}
+      aria-label={headerTargetPath ? headerTargetLabel : undefined}
+      onClick={headerTargetPath ? handleHeaderTargetClick : undefined}
+      onKeyDown={headerTargetPath ? handleHeaderTargetKeyDown : undefined}
+    >
+      <Avatar className={classes.avatar}>
+        {avatar && Object.keys(avatar).length > 0 ? (
+          <AvatarDisplay height={40} width={40} {...avatar} />
+        ) : messageType === 'USER' && title ? (
+          title[0]?.toUpperCase() || '?'
+        ) : title ? (
+          title[0]?.toUpperCase() || '?'
+        ) : (
+          '?'
+        )}
+      </Avatar>
+
+      <div className={classes.headerText}>
+        <Typography className={classes.title}>
+          {title || 'Chat'}
+        </Typography>
+        <Typography className={classes.subtitle}>
+          {messageType === 'USER' ? 'Direct Message' : 'Group Chat'}
+        </Typography>
+      </div>
+    </div>
+  )
 
   return (
     <Fade in timeout={300}>
@@ -307,26 +388,11 @@ function Header() {
             <ArrowBackIcon fontSize="small" />
           </IconButton>
 
-          <Avatar className={classes.avatar}>
-            {avatar && Object.keys(avatar).length > 0 ? (
-              <AvatarDisplay height={40} width={40} {...avatar} />
-            ) : messageType === 'USER' && title ? (
-              title[0]?.toUpperCase() || '?'
-            ) : title ? (
-              title[0]?.toUpperCase() || '?'
-            ) : (
-              '?'
-            )}
-          </Avatar>
-
-          <div className={classes.headerText}>
-            <Typography className={classes.title}>
-              {title || 'Chat'}
-            </Typography>
-            <Typography className={classes.subtitle}>
-              {messageType === 'USER' ? 'Direct Message' : 'Group Chat'}
-            </Typography>
-          </div>
+          {headerTargetPath ? (
+            <Tooltip title={headerTargetLabel} placement="bottom" arrow>
+              {headerTarget}
+            </Tooltip>
+          ) : headerTarget}
 
           <IconButton
             onClick={handleSettingsClick}
