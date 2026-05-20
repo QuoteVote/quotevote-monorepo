@@ -12,10 +12,12 @@ import { useMutation } from '@apollo/react-hooks'
 import copy from 'clipboard-copy'
 import SweetAlert from 'react-bootstrap-sweetalert'
 import AvatarDisplay from '../Avatar'
+import LinkifiedText from '../LinkifiedText'
 import { parseCommentDate } from '../../utils/momentUtils'
 import { SET_FOCUSED_COMMENT, SET_SNACKBAR } from '../../store/ui'
 import { DELETE_COMMENT } from '../../graphql/mutations'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
+
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -131,7 +133,7 @@ function Comment({ comment, postUrl, selected }) {
         )}
       />
       <CardContent className={classes.content}>
-        <p>{content}</p>
+        <LinkifiedText text={content} />
       </CardContent>
       <CardActions disableSpacing>
         <IconButton className={classes.expand}>
