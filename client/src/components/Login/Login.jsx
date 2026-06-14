@@ -88,13 +88,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginForm({ onSubmit = () => {}, loading, loginError }) {
   const classes = useStyles()
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setError,
-    watch,
-  } = useForm()
+  const { register, handleSubmit, errors, setError, watch } = useForm()
   const tosAccepted = watch('tos')
   const cocAccepted = watch('coc')
 
@@ -152,12 +146,12 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
         inputRef={register({
           required: 'Password is required',
           minLength: {
-            value: 2,
-            message: 'Password should be more than 2 characters',
+            value: 16,
+            message: 'Password should be more than 16 characters',
           },
           maxLength: {
-            value: 20,
-            message: 'Password should be less than twenty characters',
+            value: 128,
+            message: 'Password should be less than 128 characters',
           },
         })}
         className={classes.textfield}
@@ -170,18 +164,17 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
         helperText={errors.password && errors.password.message}
       />
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             color="default"
             style={{ color: 'gray' }}
             name="tos"
             inputRef={register({ required: true })}
           />
-        )}
-        label={(
+        }
+        label={
           <Typography variant="body2">
-            I agree to the
-            {' '}
+            I agree to the{' '}
             <Link
               href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_terms_of_service.md"
               target="_blank"
@@ -192,7 +185,7 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
               Terms of Service
             </Link>
           </Typography>
-        )}
+        }
       />
       {errors.tos && (
         <Typography color="error" variant="caption">
@@ -200,18 +193,17 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
         </Typography>
       )}
       <FormControlLabel
-        control={(
+        control={
           <Checkbox
             color="default"
             style={{ color: 'gray' }}
             name="coc"
             inputRef={register({ required: true })}
           />
-        )}
-        label={(
+        }
+        label={
           <Typography variant="body2">
-            I agree to the
-            {' '}
+            I agree to the{' '}
             <Link
               href="https://github.com/QuoteVote/quotevote-monorepo/blob/main/quote_vote_code_of_conduct.md"
               target="_blank"
@@ -222,7 +214,7 @@ function LoginForm({ onSubmit = () => {}, loading, loginError }) {
               Code of Conduct
             </Link>
           </Typography>
-        )}
+        }
       />
       {errors.coc && (
         <Typography color="error" variant="caption">
@@ -284,12 +276,14 @@ function Login({ onSubmit = () => {}, loading = false }) {
                 spacing={2}
               >
                 <Grid item>
-                  <Typography className={classes.header}>
-                    Login
-                  </Typography>
+                  <Typography className={classes.header}>Login</Typography>
                 </Grid>
                 <Grid item>
-                  <LoginForm onSubmit={onSubmit} loading={loading} loginError={loginError} />
+                  <LoginForm
+                    onSubmit={onSubmit}
+                    loading={loading}
+                    loginError={loginError}
+                  />
                 </Grid>
                 <Grid item className={classes.forgotPasswordContainer}>
                   <Typography variant="body1">

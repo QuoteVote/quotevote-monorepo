@@ -71,14 +71,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function PasswordResetForm({
-  onSubmit = () => {
-  }, loading, error,
-}) {
+function PasswordResetForm({ onSubmit = () => {}, loading, error }) {
   const classes = useStyles()
-  const {
-    register, handleSubmit, errors, setError, getValues,
-  } = useForm()
+  const { register, handleSubmit, errors, setError, getValues } = useForm()
 
   const [showPassword, setShowPassword] = useState(false)
   useEffect(() => {
@@ -121,15 +116,15 @@ function PasswordResetForm({
         inputRef={register({
           required: 'Password is required',
           minLength: {
-            value: 6,
-            message: 'Password should be more than six characters',
+            value: 16,
+            message: 'Password should be more than sixteen characters',
           },
           maxLength: {
-            value: 20,
-            message: 'Password should be less than twenty characters',
+            value: 128,
+            message: 'Password should be less than 128 characters',
           },
           pattern: {
-            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+            value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{16,}$/,
             message:
               'Password should contain a number, an uppercase, and lowercase letter',
           },
@@ -153,7 +148,8 @@ function PasswordResetForm({
         }}
         inputRef={register({
           required: 'Confirm password is required',
-          validate: (value) => value === getValues('password') || "Passwords don't match.",
+          validate: (value) =>
+            value === getValues('password') || "Passwords don't match.",
         })}
         className={classes.textfield}
         placeholder="Confirm Password"
@@ -188,8 +184,8 @@ PasswordResetForm.propTypes = {
 }
 
 function PasswordReset({
-  onSubmit = () => {
-  }, loading = false,
+  onSubmit = () => {},
+  loading = false,
   error,
   passwordUpdated,
   isValidToken,
@@ -254,7 +250,11 @@ function PasswordReset({
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <PasswordResetForm onSubmit={onSubmit} loading={loading} error={error} />
+                    <PasswordResetForm
+                      onSubmit={onSubmit}
+                      loading={loading}
+                      error={error}
+                    />
                   </Grid>
                 </>
               )}
@@ -281,7 +281,6 @@ function PasswordReset({
                   </Grid>
                 </>
               )}
-
             </>
           )}
         </Grid>

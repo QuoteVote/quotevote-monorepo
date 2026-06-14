@@ -1,28 +1,28 @@
-import { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
+import { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
 
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Link from '@material-ui/core/Link';
+import { makeStyles } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import Grid from '@material-ui/core/Grid'
+import Link from '@material-ui/core/Link'
 
 import {
   CardActions,
   CircularProgress,
   Checkbox,
   FormControlLabel,
-} from '@material-ui/core';
-import { useMutation } from '@apollo/react-hooks';
-import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import CardBody from '../../mui-pro/Card/CardBody';
-import CardHeader from '../../mui-pro/Card/CardHeader';
-import Card from '../../mui-pro/Card/Card';
-import { UPDATE_USER } from '../../graphql/mutations';
-import { USER_LOGIN_SUCCESS } from '../../store/user';
+} from '@material-ui/core'
+import { useMutation } from '@apollo/react-hooks'
+import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import CardBody from '../../mui-pro/Card/CardBody'
+import CardHeader from '../../mui-pro/Card/CardHeader'
+import Card from '../../mui-pro/Card/Card'
+import { UPDATE_USER } from '../../graphql/mutations'
+import { USER_LOGIN_SUCCESS } from '../../store/user'
 
 const useStyles = makeStyles({
   header: {
@@ -60,10 +60,11 @@ function SignupForm({ user, token }) {
   const classes = useStyles()
   const history = useHistory()
   const dispatch = useDispatch()
-  const { register, handleSubmit, errors, setError, formState, watch } = useForm({
-    mode: 'onChange', // Validate on change
-    reValidateMode: 'onChange', // Re-validate on change
-  })
+  const { register, handleSubmit, errors, setError, formState, watch } =
+    useForm({
+      mode: 'onChange', // Validate on change
+      reValidateMode: 'onChange', // Re-validate on change
+    })
   const [updateUser, { loading, error, data }] = useMutation(UPDATE_USER)
 
   // Watch form values to track validity
@@ -85,7 +86,7 @@ function SignupForm({ user, token }) {
         user: {
           _id: user._id,
           email,
-          name: "",
+          name: '',
           username,
           password,
         },
@@ -102,7 +103,6 @@ function SignupForm({ user, token }) {
       )
     }
   }
-
 
   useEffect(() => {
     if (error) {
@@ -178,15 +178,15 @@ function SignupForm({ user, token }) {
                 inputRef={register({
                   required: 'Password is required',
                   minLength: {
-                    value: 8,
-                    message: 'Password should be at least 8 characters',
+                    value: 16,
+                    message: 'Password should be at least 16 characters',
                   },
                   maxLength: {
-                    value: 20,
-                    message: 'Password should be less than twenty characters',
+                    value: 128,
+                    message: 'Password should be less than 128 characters',
                   },
                   pattern: {
-                    value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
+                    value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$/,
                     message:
                       'Password should contain a number, an uppercase, and lowercase letter',
                   },
@@ -198,81 +198,79 @@ function SignupForm({ user, token }) {
                 id="password"
                 type="password"
                 error={errors.password}
-              helperText={errors.password && errors.password.message}
-            />
+                helperText={errors.password && errors.password.message}
+              />
+            </Grid>
           </Grid>
-        </Grid>
-        <FormControlLabel
-          control={(
-            <Checkbox
-              color="default"
-              style={{ color: 'gray' }}
-              name="tos"
-              inputRef={register({ required: true })}
-            />
-          )}
-          label={(
-            <Typography variant="body2">
-              I agree to the
-              {' '}
-              <Link
-                href="/quote_vote_terms_of_service.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={classes.link}
-                underline="always"
-              >
-                Terms of Service
-              </Link>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="default"
+                style={{ color: 'gray' }}
+                name="tos"
+                inputRef={register({ required: true })}
+              />
+            }
+            label={
+              <Typography variant="body2">
+                I agree to the{' '}
+                <Link
+                  href="/quote_vote_terms_of_service.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={classes.link}
+                  underline="always"
+                >
+                  Terms of Service
+                </Link>
+              </Typography>
+            }
+          />
+          {errors.tos && (
+            <Typography color="error" variant="caption">
+              Acceptance required
             </Typography>
           )}
-        />
-        {errors.tos && (
-          <Typography color="error" variant="caption">
-            Acceptance required
-          </Typography>
-        )}
-        <FormControlLabel
-          control={(
-            <Checkbox
-              color="default"
-              style={{ color: 'gray' }}
-              name="coc"
-              inputRef={register({ required: true })}
-            />
-          )}
-          label={(
-            <Typography variant="body2">
-              I agree to the
-              {' '}
-              <Link
-                href="/quote_vote_code_of_conduct.md"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={classes.link}
-                underline="always"
-              >
-                Code of Conduct
-              </Link>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="default"
+                style={{ color: 'gray' }}
+                name="coc"
+                inputRef={register({ required: true })}
+              />
+            }
+            label={
+              <Typography variant="body2">
+                I agree to the{' '}
+                <Link
+                  href="/quote_vote_code_of_conduct.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={classes.link}
+                  underline="always"
+                >
+                  Code of Conduct
+                </Link>
+              </Typography>
+            }
+          />
+          {errors.coc && (
+            <Typography color="error" variant="caption">
+              Acceptance required
             </Typography>
           )}
-        />
-        {errors.coc && (
-          <Typography color="error" variant="caption">
-            Acceptance required
-          </Typography>
-        )}
-      </CardBody>
+        </CardBody>
 
-      <CardActions>
-        <Button
-          className={classes.submitButton}
+        <CardActions>
+          <Button
+            className={classes.submitButton}
             color="secondary"
             variant="contained"
             fullWidth
             type="submit"
-          disabled={loading || !isFormValid || !tosAccepted || !cocAccepted}
-          size={"small"}
+            disabled={loading || !isFormValid || !tosAccepted || !cocAccepted}
+            size={'small'}
           >
             <Typography variant="body1">
               Submit
@@ -284,7 +282,7 @@ function SignupForm({ user, token }) {
         </CardActions>
       </Card>
     </form>
-  );
+  )
 }
 
 SignupForm.propTypes = {
