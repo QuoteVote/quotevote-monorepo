@@ -251,6 +251,7 @@ function BuddyItemList({ buddyList }) {
           messageType: 'USER',
           title: item.user.name || item.user.username,
           avatar: item.user.avatar,
+          otherUser: item.user,
           isDirect: true,
         }
         dispatch(SELECTED_CHAT_ROOM({ room: roomData }))

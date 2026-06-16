@@ -170,6 +170,12 @@ export const GET_CHAT_ROOMS = gql`
       avatar
       unreadMessages
       postId
+      otherUser {
+        _id
+        name
+        username
+        avatar
+      }
       postDetails {
         _id
         title
