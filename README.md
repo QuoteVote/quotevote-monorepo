@@ -111,7 +111,7 @@ monorepo/
 
    ```bash
    git clone <repository-url>
-   cd monorepo
+   cd quotevote-monorepo
    ```
 
 2. **Install all dependencies (Monorepo Setup)**
