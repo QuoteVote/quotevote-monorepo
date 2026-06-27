@@ -1,18 +1,17 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "layouts/*": ["src/layouts/*"],
-      "components/*": ["src/components/*"],
-      "config/*": ["src/config/*"],
-      "store/*": ["src/store/*"],
-      "assets/*": ["src/assets/*"],
-      "utils/*": ["src/utils/*"],
-      "views/*": ["src/views/*"],
-      "mui-pro/*": ["src/mui-pro/*"],
-      "hoc/*": ["src/hoc/*"],
-      "themes/*": ["src/themes/*"]
+      "@/*": ["./src/*"],
+      "layouts/*": ["./src/layouts/*"],
+      "components/*": ["./src/components/*"],
+      "config/*": ["./src/config/*"],
+      "store/*": ["./src/store/*"],
+      "assets/*": ["./src/assets/*"],
+      "utils/*": ["./src/utils/*"],
+      "views/*": ["./src/views/*"],
+      "mui-pro/*": ["./src/mui-pro/*"],
+      "hoc/*": ["./src/hoc/*"],
+      "themes/*": ["./src/themes/*"]
     }
   },
   "include": ["src/**/*"],
