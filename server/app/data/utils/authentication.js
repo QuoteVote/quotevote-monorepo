@@ -217,18 +217,18 @@ export const authenticate = async (req, res) => {
 
 export const verifyToken = async (authToken) => {
   const authSecret = process.env.SECRET;
+
+  if (!authToken || typeof authToken !== 'string') {
+  throw new AuthenticationError('Authorization token is missing or invalid');
+}
   
   // Remove 'Bearer ' prefix if present
   const token = authToken.startsWith('Bearer ') ? authToken.substring(7) : authToken;
   
-  const decodedJwtTokenRequest = jwt.decode(token, { complete: true });
-  if (!decodedJwtTokenRequest) {
-    throw new AuthenticationError('Auth token supplied is corrupted');
-  }
-  const user = { ...decodedJwtTokenRequest.payload };
+  
   try {
-    await jwt.verify(token, authSecret);
-    return user;
+    const user=await jwt.verify(token,authSecret);
+    return { ...user};
   } catch (err) {
     logger.error(err.message);
     if (err.message === 'invalid issuer') {
