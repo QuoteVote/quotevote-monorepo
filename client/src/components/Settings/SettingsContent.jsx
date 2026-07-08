@@ -36,7 +36,10 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : theme.palette.background.paper,
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? '#1F1F1F'
+        : theme.palette.background.paper,
     color: theme.palette.text.primary,
     [theme.breakpoints.down('sm')]: {
       maxWidth: '100%',
@@ -57,7 +60,10 @@ const useStyles = makeStyles((theme) => ({
       background: 'transparent',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+      background:
+        theme.palette.mode === 'dark'
+          ? 'rgba(255,255,255,0.1)'
+          : 'rgba(0,0,0,0.1)',
       borderRadius: 4,
     },
   },
@@ -67,7 +73,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       position: 'sticky',
       bottom: 0,
-      backgroundColor: theme.palette.mode === 'dark' ? '#1F1F1F' : theme.palette.background.paper,
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? '#1F1F1F'
+          : theme.palette.background.paper,
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       borderTop: `1px solid ${theme.palette.divider}`,
@@ -99,7 +108,10 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(10),
     height: theme.spacing(10),
     backgroundColor: 'transparent', // Ensure transparent background to avoid flickering
-    border: theme.palette.mode === 'dark' ? '2px solid rgba(255,255,255,0.1)' : 'none',
+    border:
+      theme.palette.mode === 'dark'
+        ? '2px solid rgba(255,255,255,0.1)'
+        : 'none',
     [theme.breakpoints.down('sm')]: {
       width: theme.spacing(8),
       height: theme.spacing(8),
@@ -117,14 +129,24 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: 15,
-    backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : theme.palette.background.default,
+    backgroundColor:
+      theme.palette.mode === 'dark'
+        ? '#2A2A2A'
+        : theme.palette.background.default,
     color: theme.palette.text.primary,
     borderRadius: 12,
-    border: theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.05)' : 'none',
-    boxShadow: theme.palette.mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.2)' : 'none',
+    border:
+      theme.palette.mode === 'dark'
+        ? '1px solid rgba(255,255,255,0.05)'
+        : 'none',
+    boxShadow:
+      theme.palette.mode === 'dark' ? '0 4px 12px rgba(0,0,0,0.2)' : 'none',
     transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: theme.palette.mode === 'dark' ? '#333333' : theme.palette.background.default,
+      backgroundColor:
+        theme.palette.mode === 'dark'
+          ? '#333333'
+          : theme.palette.background.default,
     },
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(2),
@@ -201,30 +223,36 @@ function SettingsContent({ setOpen }) {
   const [localDarkMode, setLocalDarkMode] = useState(isDarkMode)
 
   const client = useApolloClient()
-  const {
-    username, email, name, avatar, _id, ...otherUserData
-  } = useSelector((state) => state.user.data)
+  const { username, email, name, avatar, _id, ...otherUserData } = useSelector(
+    (state) => state.user.data,
+  )
 
-  const defaultValues = useMemo(() => ({
-    username: username || '',
-    password: username || '',
-    name: name || '',
-    email: email || '',
-  }), [username, name, email])
+  const defaultValues = useMemo(
+    () => ({
+      username: username || '',
+      password: username || '',
+      name: name || '',
+      email: email || '',
+    }),
+    [username, name, email],
+  )
 
-  const {
-    register, handleSubmit, errors, formState, reset,
-  } = useForm({ defaultValues })
+  const { register, handleSubmit, errors, formState, reset } = useForm({
+    defaultValues,
+  })
 
   useEffect(() => {
     const hasDirtyFields = Object.keys(formState.dirtyFields).length > 0
     if (username && name && email && !hasDirtyFields) {
-      reset({
-        username,
-        password: username,
-        name,
-        email,
-      }, { keepDirty: false })
+      reset(
+        {
+          username,
+          password: username,
+          name,
+          email,
+        },
+        { keepDirty: false },
+      )
     }
   }, [username, name, email])
 
@@ -255,15 +283,17 @@ function SettingsContent({ setOpen }) {
         },
       })
       if (result.data) {
-        dispatch(SET_USER_DATA({
-          _id,
-          username: otherValues.username || username,
-          email: values.email || email,
-          name: otherValues.name || name,
-          avatar,
-          ...otherUserData,
-          themePreference,
-        }))
+        dispatch(
+          SET_USER_DATA({
+            _id,
+            username: otherValues.username || username,
+            email: values.email || email,
+            name: otherValues.name || name,
+            avatar,
+            ...otherUserData,
+            themePreference,
+          }),
+        )
         reset({
           username: otherValues.username || username,
           password: otherValues.username || username,
@@ -281,15 +311,17 @@ function SettingsContent({ setOpen }) {
     setLocalDarkMode(newMode)
     toggleTheme()
     const themePreference = newMode ? 'dark' : 'light'
-    dispatch(SET_USER_DATA({
-      _id,
-      username,
-      email,
-      name,
-      avatar,
-      ...otherUserData,
-      themePreference,
-    }))
+    dispatch(
+      SET_USER_DATA({
+        _id,
+        username,
+        email,
+        name,
+        avatar,
+        ...otherUserData,
+        themePreference,
+      }),
+    )
   }
 
   const handleLogout = () => {
@@ -327,9 +359,7 @@ function SettingsContent({ setOpen }) {
           >
             <Grid item>
               {!isMobileDevice && (
-                <Typography className={classes.title}>
-                  Settings
-                </Typography>
+                <Typography className={classes.title}>Settings</Typography>
               )}
             </Grid>
             <Grid item>
@@ -350,7 +380,9 @@ function SettingsContent({ setOpen }) {
                   </IconButton>
                 </Grid>
                 <Grid item className={classes.paperName}>
-                  <Paper className={classNames(classes.paperName, classes.paper)}>
+                  <Paper
+                    className={classNames(classes.paperName, classes.paper)}
+                  >
                     <InputLabel>Name</InputLabel>
                     <TextField
                       inputRef={register({
@@ -398,7 +430,8 @@ function SettingsContent({ setOpen }) {
                   inputRef={register({
                     required: 'Email is required',
                     pattern: {
-                      value: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                      value:
+                        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
                       message: 'Entered value does not match email format',
                     },
                   })}
@@ -422,18 +455,21 @@ function SettingsContent({ setOpen }) {
                     inputRef={register({
                       required: 'Password is required',
                       minLength: {
-                        value: 3,
-                        message: 'Password should be more than 3 characters',
+                        value: 16,
+                        message: 'Password should be more than 16 characters',
                       },
                       maxLength: {
-                        value: 50,
-                        message: 'Password should be less than twenty characters',
+                        value: 20,
+                        message: 'Password should be less than 20 characters',
                       },
-                      pattern: isPasswordTouched ? {
-                        value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-                        message:
-                          'Password should contain a number, an uppercase, and lowercase letter',
-                      } : null,
+                      pattern: isPasswordTouched
+                        ? {
+                            value:
+                              /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{16,}$/,
+                            message:
+                              'Password should contain a number, an uppercase, and lowercase letter',
+                          }
+                        : null,
                     })}
                     defaultValue={username}
                     fullWidth
@@ -469,8 +505,16 @@ function SettingsContent({ setOpen }) {
                 />
               </Paper>
             </Grid>
-            {!loading && error && (<Typography className={classes.error}>{replaceGqlError(error.message)}</Typography>)}
-            {!loading && data && (<Typography className={classes.success}>Successfully saved!</Typography>)}
+            {!loading && error && (
+              <Typography className={classes.error}>
+                {replaceGqlError(error.message)}
+              </Typography>
+            )}
+            {!loading && data && (
+              <Typography className={classes.success}>
+                Successfully saved!
+              </Typography>
+            )}
           </Grid>
         </Grid>
 
