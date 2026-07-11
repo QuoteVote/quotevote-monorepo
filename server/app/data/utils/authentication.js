@@ -215,20 +215,22 @@ export const authenticate = async (req, res) => {
   }, res, true);
 };
 
-export const verifyToken = async (authToken) => {
-  const authSecret = process.env.SECRET;
+export const verifyToken = (authToken) => {
+  const authSecret = process.env.JWT_SECRET;
 
   if (!authToken || typeof authToken !== 'string') {
-  throw new AuthenticationError('Authorization token is missing or invalid');
-}
+    throw new AuthenticationError(
+      'Authorization token is missing or invalid'
+    );
+  }
   
   // Remove 'Bearer ' prefix if present
   const token = authToken.startsWith('Bearer ') ? authToken.substring(7) : authToken;
   
   
   try {
-    const user=await jwt.verify(token,authSecret);
-    return { ...user};
+    const user = jwt.verify(token, authSecret);
+    return { ...user };
   } catch (err) {
     logger.error(err.message);
     if (err.message === 'invalid issuer') {
