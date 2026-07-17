@@ -2,6 +2,7 @@ export const VoteInput = `
 input VoteInput {
     postId: String!
     userId: String
+    commentId: String
     type: String!
     tags: String!
     startWordIndex: Int!

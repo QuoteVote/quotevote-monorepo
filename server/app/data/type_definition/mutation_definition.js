@@ -22,6 +22,9 @@ export const Mutation = `type Mutation {
   # Mutation for updating/inserting votes
   addVote(vote: VoteInput!): Vote
 
+  # Mutation for anonymous voting
+  addAnonymousVote(vote: VoteInput!): AnonymousVote
+
   # Mutation for deleting a vote
   deleteVote(voteId: String!): DeletedVote
 

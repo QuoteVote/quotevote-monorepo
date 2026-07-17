@@ -1,17 +1,14 @@
-export const Vote = `
-type Vote {
+export const AnonymousVote = `
+type AnonymousVote {
   _id: String
   created: Date
   postId: String
-  userId: String
   commentId: String
   type: String
   tags: String
   startWordIndex: Int
   endWordIndex: Int
   deleted: Boolean
-  user: User
   content: String
   anonymous: Boolean
-}
-`;
+}`;

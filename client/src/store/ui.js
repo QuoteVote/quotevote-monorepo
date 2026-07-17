@@ -27,6 +27,7 @@ export const uiInitialState = {
   selectedPlan: 'personal',
   focusedComment: null,
   sharedComment: null,
+  showAnonymousVotes: true,
 }
 
 const uiSlice = createSlice({
@@ -54,6 +55,9 @@ const uiSlice = createSlice({
     SET_SHARED_COMMENT: (state, action) => {
       state.sharedComment = action.payload
     },
+    SET_SHOW_ANONYMOUS_VOTES: (state, action) => {
+      state.showAnonymousVotes = action.payload
+    },
   },
 })
 
@@ -65,6 +69,7 @@ export const {
   SET_SELECTED_PLAN,
   SET_FOCUSED_COMMENT,
   SET_SHARED_COMMENT,
+  SET_SHOW_ANONYMOUS_VOTES,
 } = uiSlice.actions
 
 export default uiSlice.reducer

@@ -14,7 +14,13 @@ import SweetAlert from 'react-bootstrap-sweetalert'
 import AvatarDisplay from '../Avatar'
 import { parseCommentDate } from '../../utils/momentUtils'
 import { SET_FOCUSED_COMMENT, SET_SHARED_COMMENT, SET_SNACKBAR } from '../../store/ui'
-import { DELETE_VOTE, DELETE_COMMENT, DELETE_QUOTE } from '../../graphql/mutations'
+import {
+  DELETE_VOTE,
+  DELETE_COMMENT,
+  DELETE_QUOTE,
+  VOTE,
+  ADD_ANONYMOUS_VOTE,
+} from '../../graphql/mutations'
 import { GET_ACTION_REACTIONS } from '../../graphql/query'
 import CommentReactions from '../Comment/CommentReactions'
 import PostChatMessage from '../PostChat/PostChatMessage'
@@ -22,6 +28,7 @@ import LikeIcon from '../../assets/svg/Like.jsx'
 import DislikeIcon from '../../assets/svg/Dislike.jsx'
 import { SvgIcon } from '@material-ui/core'
 import buttonStyle from '../../assets/jss/material-dashboard-pro-react/components/buttonStyle'
+import { getVisibleVotes, getVoteCounts } from '../../utils/votes'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +80,26 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.85em',
     color: '#888',
   },
+  voteButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+  },
+  voteCount: {
+    fontSize: '0.85rem',
+    fontWeight: 600,
+  },
+  anonymousBadge: {
+    display: 'inline-block',
+    marginLeft: theme.spacing(1),
+    padding: '2px 8px',
+    borderRadius: 999,
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    color: '#555',
+    backgroundColor: 'rgba(0, 0, 0, 0.06)',
+  },
   deleteIcon: {
     color: '#f44336',
   },
@@ -81,12 +108,19 @@ const useStyles = makeStyles((theme) => ({
 
 function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
   const [commentSelected, setCommentSelected] = useState()
+  const [anonymousCommentVoteSubmitted, setAnonymousCommentVoteSubmitted] = useState(false)
   const history = useHistory()
   const classes = useStyles()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user.data)
-  const { user: actionUser, content, created, _id } = postAction
-  const { username, avatar, name } = actionUser
+  const showAnonymousVotes = useSelector((state) => state.ui.showAnonymousVotes)
+  const { user: actionUser = {}, content, created, _id } = postAction
+  const {
+    username,
+    avatar,
+    name,
+    _id: actionUserId,
+  } = actionUser
   const parsedDate = parseCommentDate(created)
   const voteType = get(postAction, 'type')
   const quote = get(postAction, 'quote')
@@ -110,6 +144,18 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
   let postContent = content
   let svgIcon
   let voteTags = ''
+  const visibleCommentVotes = getVisibleVotes(
+    postAction.votes || [],
+    postAction.anonymousVotes || [],
+    showAnonymousVotes,
+  )
+  const { up: upVoteCount, down: downVoteCount } = getVoteCounts(visibleCommentVotes)
+  const isAuthenticated = Boolean(user._id)
+  const hasAuthenticatedCommentVote =
+    type === 'Comment' &&
+    Array.isArray(postAction.votes) &&
+    postAction.votes.some((vote) => vote.userId === user._id)
+  const commentVoteLocked = hasAuthenticatedCommentVote || anonymousCommentVoteSubmitted
 
   const [deleteVote] = useMutation(DELETE_VOTE, {
     update(cache, { data: { deleteVote } }) {
@@ -152,6 +198,8 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
       })
     },
   })
+  const [addVote] = useMutation(VOTE)
+  const [addAnonymousVote] = useMutation(ADD_ANONYMOUS_VOTE)
 
   const handleDelete = async () => {
     try {
@@ -197,6 +245,55 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
     }
   }
 
+  const handleCommentVote = async (nextVoteType) => {
+    if (type !== 'Comment' || commentVoteLocked) {
+      return
+    }
+
+    const vote = {
+      postId: postAction.postId,
+      commentId: _id,
+      content: postAction.content,
+      type: nextVoteType,
+      tags: nextVoteType === 'up' ? '#agree' : '#disagree',
+      startWordIndex: 0,
+      endWordIndex: 0,
+    }
+
+    try {
+      if (isAuthenticated) {
+        await addVote({
+          variables: {
+            vote: {
+              ...vote,
+              userId: user._id,
+            },
+          },
+        })
+      } else {
+        await addAnonymousVote({ variables: { vote } })
+        setAnonymousCommentVoteSubmitted(true)
+      }
+
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: 'Vote recorded successfully',
+          type: 'success',
+        }),
+      )
+      if (refetchPost) refetchPost()
+    } catch (err) {
+      dispatch(
+        SET_SNACKBAR({
+          open: true,
+          message: `Vote Error: ${err.message}`,
+          type: 'danger',
+        }),
+      )
+    }
+  }
+
   const handleClick = useCallback(() => {
     if (!commentSelected) {
       dispatch(SET_FOCUSED_COMMENT(postAction))
@@ -208,6 +305,9 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
   }, [commentSelected, dispatch, postAction, sharedComment])
 
   const handleRedirectToProfile = () => {
+    if (!username) {
+      return
+    }
     history.push(`/Profile/${username}`)
   }
 
@@ -239,8 +339,8 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
       className={selected ? classes.selectedRoot : classes.root}
     >
       <div className={classes.userContainer}>
-        <IconButton onClick={() => handleRedirectToProfile()}>
-          <AvatarDisplay height={20} width={20} {...avatar} />
+        <IconButton onClick={() => handleRedirectToProfile()} disabled={!username}>
+          <AvatarDisplay height={20} width={20} {...(avatar || {})} />
         </IconButton>
 
         <Typography display="inline" className={classes.userInfo}>
@@ -251,13 +351,16 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
               handleRedirectToProfile();
             }}
           >
-            {name}
-            {type === 'Vote' && username}
+            {type === 'AnonymousVote' ? 'Anonymous voter' : (name || username || 'Unknown user')}
+            {type === 'Vote' && username ? ` @${username}` : ''}
           </span>
+          {type === 'AnonymousVote' && (
+            <span className={classes.anonymousBadge}>Anonymous</span>
+          )}
           <span className={classes.date}>{parsedDate}</span>
         </Typography>
       </div>
-      {type === 'Vote' && (
+      {(type === 'Vote' || type === 'AnonymousVote') && (
         <CardContent className={classes.content}>
           <Typography display="inline">
             {`❝ ${postAction.content ? postAction.content : '(no text selected)'} ❞`}
@@ -280,20 +383,44 @@ function PostActionCard({ postAction, postUrl, selected, refetchPost }) {
         </CardContent>
       )}
       <CardActions disableSpacing>
-        <SvgIcon
-          component={svgIcon}
-          fontSize="large"
-          viewBox="-10 -10 50 50"
-          htmlColor="black"
-        />
-        <Typography display="inline">{voteTags}</Typography>
+        {(type === 'Vote' || type === 'AnonymousVote') && (
+          <>
+            <SvgIcon
+              component={svgIcon}
+              fontSize="large"
+              viewBox="-10 -10 50 50"
+              htmlColor="black"
+            />
+            <Typography display="inline">{voteTags}</Typography>
+          </>
+        )}
+        {type === 'Comment' && (
+          <div className={classes.voteButtons}>
+            <IconButton
+              size="small"
+              onClick={() => handleCommentVote('up')}
+              disabled={commentVoteLocked}
+            >
+              <SvgIcon component={LikeIcon} viewBox="0 0 30 30" />
+            </IconButton>
+            <Typography className={classes.voteCount}>{upVoteCount}</Typography>
+            <IconButton
+              size="small"
+              onClick={() => handleCommentVote('down')}
+              disabled={commentVoteLocked}
+            >
+              <SvgIcon component={DislikeIcon} viewBox="0 0 30 30" />
+            </IconButton>
+            <Typography className={classes.voteCount}>{downVoteCount}</Typography>
+          </div>
+        )}
         <div className={classes.expand}>
           <CommentReactions actionId={_id} reactions={actionReactions} />
         </div>
         <IconButton onClick={handleCopy}>
           <InsertLink />
         </IconButton>
-        {(user._id === actionUser._id || user.admin) && (
+        {(actionUserId && (user._id === actionUserId || user.admin)) && (
           <IconButton onClick={handleDelete} className={classes.deleteIcon}>
             <Delete />
           </IconButton>

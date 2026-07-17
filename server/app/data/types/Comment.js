@@ -11,4 +11,6 @@ type Comment {
   reaction: String
   deleted: Boolean
   user: User
+  votes: [Vote]
+  anonymousVotes: [AnonymousVote]
 }`;

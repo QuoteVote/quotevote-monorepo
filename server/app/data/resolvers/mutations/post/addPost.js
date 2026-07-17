@@ -50,8 +50,12 @@ const sanitizeUrl = (url) => {
 };
 
 export const addPost = (pubsub) => {
-  return async (_, args) => {
+  return async (_, args, context) => {
     logger.info('Function: add post', { args });
+
+    if (!context.user || !context.user._id) {
+      throw new Error('Create an account to post or comment.');
+    }
 
     // Validation: Post body must NOT contain URLs
     URL_REGEX.lastIndex = 0;
@@ -86,6 +90,7 @@ export const addPost = (pubsub) => {
     // Create the post first to get the ID
     const postObj = {
       ...args.post,
+      userId: context.user._id,
       url: '', // Temporary URL, will be updated after creation
       citationUrl: sanitizedCitationUrl,
       attribution,
