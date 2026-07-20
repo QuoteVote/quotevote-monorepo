@@ -10,6 +10,7 @@ type MessageRoom {
   avatar: JSON
   unreadMessages: Int
   postId: String
+  otherUser: User
   messages: [Message]
   postDetails: PostDetails
 }

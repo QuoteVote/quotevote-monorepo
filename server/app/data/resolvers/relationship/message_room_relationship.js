@@ -118,5 +118,21 @@ export const messageRoomRelationship = () => {
       const unreadMessages = await getUnreadMessages(messageRoomId, context);
       return unreadMessages.length;
     },
+    async otherUser(data, root, context) {
+      const { users, messageType } = data;
+      const contextUserId = context.user?.['_id']?.toString();
+
+      if (messageType !== 'USER' || !contextUserId || !users?.length) {
+        return null;
+      }
+
+      const otherUserId = users.find((user) => user.toString() !== contextUserId);
+
+      if (!otherUserId) {
+        return null;
+      }
+
+      return UserModel.findById(new ObjectId(otherUserId));
+    },
   };
 };

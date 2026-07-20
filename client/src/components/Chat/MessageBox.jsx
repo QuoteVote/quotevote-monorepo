@@ -18,6 +18,7 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation, useQuery } from '@apollo/react-hooks'
+import { Link } from 'react-router-dom'
 import MessageSend from './MessageSend'
 import MessageItemList from './MessageItemList'
 import TypingIndicator from './TypingIndicator'
@@ -28,6 +29,7 @@ import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES, GET_ROSTER } from '../../graphql/que
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useRosterManagement } from '../../hooks/useRosterManagement'
 import { SET_SNACKBAR as SET_UI_SNACKBAR } from '../../store/ui'
+import { getChatRoomNavigationLabel, getChatRoomNavigationPath } from '../../utils/chatNavigation'
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -90,6 +92,29 @@ const useStyles = makeStyles((theme) => ({
   headerText: {
     flex: 1,
     minWidth: 0,
+  },
+  headerLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1.5),
+    flex: 1,
+    minWidth: 0,
+    color: 'inherit',
+    textDecoration: 'none',
+    borderRadius: 10,
+    outline: 'none',
+    '&:hover $title': {
+      color: '#52b274',
+      textDecoration: 'underline',
+    },
+    '&:focus $title': {
+      color: '#52b274',
+      textDecoration: 'underline',
+    },
+    '&:focus-visible': {
+      outline: `2px solid ${theme.palette.primary.main}`,
+      outlineOffset: 3,
+    },
   },
   title: {
     fontWeight: 700,
@@ -190,6 +215,8 @@ function Header() {
   const { data: rosterData } = useQuery(GET_ROSTER, { skip: !currentUser })
 
   const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
+  const navigationPath = getChatRoomNavigationPath(selectedRoom)
+  const navigationLabel = getChatRoomNavigationLabel(selectedRoom, title || 'Chat')
 
   // Get the other user's ID for USER type rooms
   const currentUserIdForHeader = currentUser?._id?.toString()
@@ -298,6 +325,29 @@ function Header() {
   }
 
   const menuOpen = Boolean(anchorEl)
+  const avatarNode = (
+    <Avatar className={classes.avatar}>
+      {avatar && Object.keys(avatar).length > 0 ? (
+        <AvatarDisplay height={40} width={40} {...avatar} />
+      ) : messageType === 'USER' && title ? (
+        title[0]?.toUpperCase() || '?'
+      ) : title ? (
+        title[0]?.toUpperCase() || '?'
+      ) : (
+        '?'
+      )}
+    </Avatar>
+  )
+  const headerTextNode = (
+    <div className={classes.headerText}>
+      <Typography className={classes.title}>
+        {title || 'Chat'}
+      </Typography>
+      <Typography className={classes.subtitle}>
+        {messageType === 'USER' ? 'Direct Message' : 'Group Chat'}
+      </Typography>
+    </div>
+  )
 
   return (
     <Fade in timeout={300}>
@@ -307,26 +357,21 @@ function Header() {
             <ArrowBackIcon fontSize="small" />
           </IconButton>
 
-          <Avatar className={classes.avatar}>
-            {avatar && Object.keys(avatar).length > 0 ? (
-              <AvatarDisplay height={40} width={40} {...avatar} />
-            ) : messageType === 'USER' && title ? (
-              title[0]?.toUpperCase() || '?'
-            ) : title ? (
-              title[0]?.toUpperCase() || '?'
-            ) : (
-              '?'
-            )}
-          </Avatar>
-
-          <div className={classes.headerText}>
-            <Typography className={classes.title}>
-              {title || 'Chat'}
-            </Typography>
-            <Typography className={classes.subtitle}>
-              {messageType === 'USER' ? 'Direct Message' : 'Group Chat'}
-            </Typography>
-          </div>
+          {navigationPath ? (
+            <Link
+              to={navigationPath}
+              className={classes.headerLink}
+              aria-label={navigationLabel}
+            >
+              {avatarNode}
+              {headerTextNode}
+            </Link>
+          ) : (
+            <>
+              {avatarNode}
+              {headerTextNode}
+            </>
+          )}
 
           <IconButton
             onClick={handleSettingsClick}
