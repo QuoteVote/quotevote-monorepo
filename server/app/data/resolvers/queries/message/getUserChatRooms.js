@@ -14,6 +14,14 @@ export const getUserChatRooms = () => {
       },
       {
         $lookup: {
+          from: 'users',
+          localField: 'users',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $lookup: {
           from: 'posts',
           localField: 'postId',
           foreignField: '_id',
@@ -93,6 +101,136 @@ export const getUserChatRooms = () => {
               else: '$lastActivity', // Fall back to lastActivity if no messages
             },
           },
+          // Get the other user for DM rooms (for avatar and title)
+          otherUser: {
+            $cond: {
+              if: {
+                $and: [
+                  { $eq: ['$messageType', 'USER'] },
+                  { $eq: [{ $size: '$users' }, 2] },
+                ],
+              },
+              then: {
+                $arrayElemAt: [
+                  {
+                    $filter: {
+                      input: '$userDetails',
+                      as: 'u',
+                      cond: {
+                        $ne: ['$$u._id', mongoose.Types.ObjectId(user._id)],
+                      },
+                    },
+                  },
+                  0,
+                ],
+              },
+              else: null,
+            },
+          },
+          // Compute avatar for the room
+          avatar: {
+            $cond: {
+              if: {
+                $and: [
+                  { $eq: ['$messageType', 'USER'] },
+                  { $eq: [{ $size: '$users' }, 2] },
+                ],
+              },
+              then: {
+                $let: {
+                  vars: {
+                    otherUserData: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: '$userDetails',
+                            as: 'u',
+                            cond: {
+                              $ne: ['$$u._id', mongoose.Types.ObjectId(user._id)],
+                            },
+                          },
+                        },
+                        0,
+                      ],
+                    },
+                  },
+                  in: '$$otherUserData.avatar',
+                },
+              },
+              else: null,
+            },
+          },
+          // Compute title for DM rooms from the other user's name
+          title: {
+            $cond: {
+              if: {
+                $and: [
+                  { $eq: ['$messageType', 'USER'] },
+                  { $eq: [{ $size: '$users' }, 2] },
+                ],
+              },
+              then: {
+                $let: {
+                  vars: {
+                    otherUserData: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: '$userDetails',
+                            as: 'u',
+                            cond: {
+                              $ne: ['$$u._id', mongoose.Types.ObjectId(user._id)],
+                            },
+                          },
+                        },
+                        0,
+                      ],
+                    },
+                  },
+                  in: { $ifNull: ['$$otherUserData.name', '$$otherUserData.username'] },
+                },
+              },
+              else: '$title',
+            },
+          },
+          // Compute unread messages count
+          unreadMessages: {
+            $let: {
+              vars: {
+                lastSeen: { $ifNull: [{ $getField: { field: user._id.toString(), input: '$lastSeenMessages' } }, null] },
+              },
+              in: {
+                $cond: {
+                  if: { $ne: ['$$lastSeen', null] },
+                  then: {
+                    $size: {
+                      $filter: {
+                        input: '$messages',
+                        as: 'msg',
+                        cond: {
+                          $and: [
+                            { $ne: ['$$msg.userId', mongoose.Types.ObjectId(user._id)] },
+                            { $gt: ['$$msg.created', '$$lastSeen'] },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                  else: {
+                    $size: {
+                      $filter: {
+                        input: '$messages',
+                        as: 'msg',
+                        cond: {
+                          $ne: ['$$msg.userId', mongoose.Types.ObjectId(user._id)],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
       {
@@ -128,6 +266,9 @@ export const getUserChatRooms = () => {
           postId: 1,
           lastActivity: 1,
           lastMessageTime: 1,
+          avatar: 1,
+          title: 1,
+          unreadMessages: 1,
           postDetails: {
             _id: 1,
             title: 1,
