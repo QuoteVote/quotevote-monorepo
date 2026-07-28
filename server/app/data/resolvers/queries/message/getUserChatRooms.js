@@ -127,10 +127,14 @@ export const getUserChatRooms = () => {
               else: null,
             },
           },
+        },
+      },
+      {
+        $addFields: {
           // Derive avatar from otherUser
           avatar: {
             $cond: {
-              if: '$otherUser',
+              if: { $ne: ['$otherUser', null] },
               then: '$otherUser.avatar',
               else: null,
             },
@@ -138,7 +142,7 @@ export const getUserChatRooms = () => {
           // Derive title from otherUser
           title: {
             $cond: {
-              if: '$otherUser',
+              if: { $ne: ['$otherUser', null] },
               then: { $ifNull: ['$otherUser.name', '$otherUser.username'] },
               else: '$title',
             },
