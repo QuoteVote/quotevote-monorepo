@@ -127,108 +127,20 @@ export const getUserChatRooms = () => {
               else: null,
             },
           },
-          // Compute avatar for the room
+          // Derive avatar from otherUser
           avatar: {
             $cond: {
-              if: {
-                $and: [
-                  { $eq: ['$messageType', 'USER'] },
-                  { $eq: [{ $size: '$users' }, 2] },
-                ],
-              },
-              then: {
-                $let: {
-                  vars: {
-                    otherUserData: {
-                      $arrayElemAt: [
-                        {
-                          $filter: {
-                            input: '$userDetails',
-                            as: 'u',
-                            cond: {
-                              $ne: ['$$u._id', mongoose.Types.ObjectId(user._id)],
-                            },
-                          },
-                        },
-                        0,
-                      ],
-                    },
-                  },
-                  in: '$$otherUserData.avatar',
-                },
-              },
+              if: '$otherUser',
+              then: '$otherUser.avatar',
               else: null,
             },
           },
-          // Compute title for DM rooms from the other user's name
+          // Derive title from otherUser
           title: {
             $cond: {
-              if: {
-                $and: [
-                  { $eq: ['$messageType', 'USER'] },
-                  { $eq: [{ $size: '$users' }, 2] },
-                ],
-              },
-              then: {
-                $let: {
-                  vars: {
-                    otherUserData: {
-                      $arrayElemAt: [
-                        {
-                          $filter: {
-                            input: '$userDetails',
-                            as: 'u',
-                            cond: {
-                              $ne: ['$$u._id', mongoose.Types.ObjectId(user._id)],
-                            },
-                          },
-                        },
-                        0,
-                      ],
-                    },
-                  },
-                  in: { $ifNull: ['$$otherUserData.name', '$$otherUserData.username'] },
-                },
-              },
+              if: '$otherUser',
+              then: { $ifNull: ['$otherUser.name', '$otherUser.username'] },
               else: '$title',
-            },
-          },
-          // Compute unread messages count
-          unreadMessages: {
-            $let: {
-              vars: {
-                lastSeen: { $ifNull: [{ $getField: { field: user._id.toString(), input: '$lastSeenMessages' } }, null] },
-              },
-              in: {
-                $cond: {
-                  if: { $ne: ['$$lastSeen', null] },
-                  then: {
-                    $size: {
-                      $filter: {
-                        input: '$messages',
-                        as: 'msg',
-                        cond: {
-                          $and: [
-                            { $ne: ['$$msg.userId', mongoose.Types.ObjectId(user._id)] },
-                            { $gt: ['$$msg.created', '$$lastSeen'] },
-                          ],
-                        },
-                      },
-                    },
-                  },
-                  else: {
-                    $size: {
-                      $filter: {
-                        input: '$messages',
-                        as: 'msg',
-                        cond: {
-                          $ne: ['$$msg.userId', mongoose.Types.ObjectId(user._id)],
-                        },
-                      },
-                    },
-                  },
-                },
-              },
             },
           },
         },
@@ -268,7 +180,6 @@ export const getUserChatRooms = () => {
           lastMessageTime: 1,
           avatar: 1,
           title: 1,
-          unreadMessages: 1,
           postDetails: {
             _id: 1,
             title: 1,
