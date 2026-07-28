@@ -43,7 +43,8 @@ services:
       - ./server:/app/server
       - /app/server/node_modules
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
   mongo:
     container_name: "quotevote-mongo"
     build:
@@ -56,9 +57,15 @@ services:
       - "quotevote-dev-data:/data/db"
     networks:
       - quotevote-net
+    healthcheck:
+       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+       interval: 10s
+       timeout: 5s
+       retries: 5
+       start_period: 10s
 
   mongo-express:
-    image: mongo-express:1.0.0-alpha.4 
+    image: mongo-express:1.0.2
     restart: always
     ports:
       - 8081:8081
