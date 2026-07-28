@@ -1,6 +1,6 @@
 export const Content = `
 type Content {
-  _id: String
+  _id: String!
   creatorId: String
   domainId: String
   title: String
