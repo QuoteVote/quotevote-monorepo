@@ -23,6 +23,7 @@ export const resolver_mutations = function () {
     updateFeaturedSlot: postMutations.updateFeaturedSlot(),
     addActionReaction: postMutations.addActionReactions(),
     updateActionReaction: postMutations.updateActionReaction(),
+    deleteActionReaction: postMutations.deleteActionReaction(),
     reportPost: postMutations.reportPost(),
     deletePost: postMutations.deletePost(),
     toggleVoting: postMutations.toggleVoting(),
@@ -37,6 +38,7 @@ export const resolver_mutations = function () {
     // Comment mutations
     addComment: commentMutations.addComment(),
     deleteComment: commentMutations.deleteComment(),
+    updateComment: commentMutations.updateComment(),
 
     // Quote mutation
     addQuote: quoteMutations.addQuote(),

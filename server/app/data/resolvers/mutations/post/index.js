@@ -4,6 +4,7 @@ export * from './rejectPost';
 export * from './updatePostBookmark';
 export * from './addActionReactions';
 export * from './updateActionReaction';
+export * from './deleteActionReaction';
 export * from './reportPost';
 export * from './deletePost';
 export * from './updateFeaturedSlot';
