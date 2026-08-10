@@ -23,6 +23,11 @@ export const updatePresence = async (root, { presence }, context) => {
       userId: user._id,
       status,
       statusMessage: statusMessage || '',
+      // This call is the user choosing a status, so record it as their intent.
+      // The cleanup job may later force `status` to offline; `preferredStatus`
+      // is what the next heartbeat restores them to.
+      preferredStatus: status,
+      preferredStatusMessage: statusMessage || '',
       lastHeartbeat: now,
       lastSeen: now,
       expiresAt, // Explicitly set expiresAt for TTL index

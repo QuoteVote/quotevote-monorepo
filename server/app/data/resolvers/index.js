@@ -33,6 +33,12 @@ const resolvers = {
   Presence: relationship.presenceRelationship(),
   Roster: relationship.rosterRelationship(),
   TypingIndicator: relationship.typingIndicatorRelationship(),
+
+  // user_relationship was never added to this map, so its field resolvers have
+  // never run — User.reputation returns null in production today. Only
+  // `presence` is wired here: enabling `reputation` would start running
+  // ReputationCalculator on every user query, which needs its own review.
+  User: { presence: relationship.user_relationship.User.presence },
 };
 
 export { resolvers };

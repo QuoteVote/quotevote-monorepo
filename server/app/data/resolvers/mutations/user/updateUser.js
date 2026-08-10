@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { UserInputError } from 'apollo-server-express';
 import UserModel from '../../models/UserModel';
 import { logger } from '../../../utils/logger';
+import { normalizeBio } from '../../../utils/bioValidation';
 import PostModel from '~/resolvers/models/PostModel';
 
 export const updateUser = (pubsub) => {
@@ -34,6 +35,16 @@ export const updateUser = (pubsub) => {
         });
         if (checkEmail) {
           throw new UserInputError('Email address already exists!');
+        }
+      }
+
+      // Only touch bio when the client sent it, so omitting the field leaves
+      // the stored value alone rather than clearing it.
+      if ('bio' in userData) {
+        try {
+          userData.bio = normalizeBio(userData.bio);
+        } catch (err) {
+          throw new UserInputError(err.message);
         }
       }
 

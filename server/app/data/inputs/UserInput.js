@@ -4,6 +4,7 @@ input UserInput {
   name: String
   username: String
   email: String
+  bio: String
   password: String
   quotes: [String]
   avatar: String

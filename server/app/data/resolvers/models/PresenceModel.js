@@ -18,6 +18,18 @@ const schema = mongoose.Schema({
     maxlength: 200,
     default: '',
   },
+  // The status the user last chose for themselves. `status` tracks live state
+  // and may be forced to 'offline' by the cleanup job; these preserve intent
+  // so the next heartbeat can restore it.
+  preferredStatus: {
+    type: String,
+    enum: ['online', 'away', 'dnd', 'invisible', 'offline'],
+  },
+  preferredStatusMessage: {
+    type: String,
+    maxlength: 200,
+    default: '',
+  },
   lastHeartbeat: {
     type: Date,
     required: true,

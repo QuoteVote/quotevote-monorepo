@@ -20,5 +20,11 @@ module.exports = {
     '!app/server.js',
   ],
   setupFilesAfterEnv: [],
+  // Importing the resolver barrel drags in dependencies that leave ~400 open
+  // handles (signal-exit and friends), so Jest hangs after a run instead of
+  // exiting — most visibly when running a single file. The leak is in
+  // third-party code and predates these tests; results are fully reported
+  // before this takes effect.
+  forceExit: true,
 };
 
