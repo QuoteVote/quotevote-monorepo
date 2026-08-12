@@ -118,6 +118,24 @@ const invalidUserPassword = (res) => {
     .json({ message: 'Invalid username or password.' });
 };
 
+/**
+ * Single source of truth for the JWT secret.
+ *
+ * Signing and verification MUST read the same variable. They diverged once
+ * (signing on SECRET, verifying on JWT_SECRET), which silently invalidated
+ * every token in production. Going through this helper keeps them together,
+ * and throwing on an unset value fails loudly instead of failing one token
+ * at a time. `SECRET` is the name the deployment provisions — see
+ * app/ecosystem.config.js and deploy/.
+ */
+export const getAuthSecret = () => {
+  const secret = process.env.SECRET;
+  if (!secret) {
+    throw new Error('SECRET is not set — JWTs cannot be signed or verified.');
+  }
+  return secret;
+};
+
 export const addCreatorToUser = async ({ username, password, requirePassword }, res, authenticate, expiresIn = (60 * 60 * 24), tokenOnly = false) => {
   let query;
   if (/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(username)) {
@@ -154,7 +172,7 @@ export const addCreatorToUser = async ({ username, password, requirePassword }, 
     admin: updatedUser.admin,
     primary: updatedUser.primary,
   },
-  process.env.SECRET,
+  getAuthSecret(),
   { expiresIn });
 
   if (tokenOnly) {
@@ -216,18 +234,19 @@ export const authenticate = async (req, res) => {
 };
 
 export const verifyToken = (authToken) => {
-  const authSecret = process.env.JWT_SECRET;
-
   if (!authToken || typeof authToken !== 'string') {
     throw new AuthenticationError(
       'Authorization token is missing or invalid'
     );
   }
-  
+
+  // Read before the try block: a missing secret is a deployment fault, not a
+  // bad token, and must not be reported to the caller as an auth failure.
+  const authSecret = getAuthSecret();
+
   // Remove 'Bearer ' prefix if present
   const token = authToken.startsWith('Bearer ') ? authToken.substring(7) : authToken;
-  
-  
+
   try {
     const user = jwt.verify(token, authSecret);
     return { ...user };
@@ -238,8 +257,13 @@ export const verifyToken = (authToken) => {
     }
     if (err.name === 'JsonWebTokenError' || err.message === 'invalid signature') {
       throw new AuthenticationError(`Invalid access token because of ${err.message}`);
-    } else if (err.name === 'TokenExpiredError') {
+    }
+    if (err.name === 'TokenExpiredError') {
       throw new AuthenticationError('Access token has expired');
     }
+    // Every other jwt failure (NotBeforeError, and anything jsonwebtoken adds
+    // later) must still throw. Falling through returned `undefined`, which the
+    // GraphQL context accepted as a valid user and later dereferenced.
+    throw new AuthenticationError('Invalid access token');
   }
 };
