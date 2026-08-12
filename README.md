@@ -1,6 +1,30 @@
 # Quote Vote
 
+> [!IMPORTANT]
+> **Active development has moved to [QuoteVote/quotevote-next](https://github.com/QuoteVote/quotevote-next).**
+> New frontend work, RC1 bug fixes, and test coverage belong there — not in this repository.
+
 A text-first civic engagement platform for creating posts, voting on specific text passages, and thoughtful discussions. Built with React/GraphQL frontend and Node.js backend, featuring targeted voting, quotes, social features, and moderation tools for transparent public dialogue.
+
+## 📦 Repository status
+
+Quote.Vote is being rebuilt as a Next.js application in [`quotevote-next`](https://github.com/QuoteVote/quotevote-next). That repository is the active development target and is where the production frontend now lives.
+
+**Please open new work there:**
+
+| Work | Where it belongs |
+| --- | --- |
+| RC1 bug fixes | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next/issues) |
+| Frontend features and stabilization | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next) |
+| Playwright end-to-end tests | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next) (`quotevote-frontend/e2e/`) |
+| Unit test coverage | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next) |
+
+### What this repository is still used for
+
+- **`server/` is the live production API.** It serves `api.quote.vote` today, so backend fixes and GraphQL schema changes still land here — until the migrated backend in `quotevote-next/quotevote-backend/` is deployed and takes over.
+- **`client/` is superseded.** The legacy React 17 frontend is kept for historical reference and architecture context. It should not receive new feature work.
+
+**Not sure where something belongs?** Frontend goes to [`quotevote-next`](https://github.com/QuoteVote/quotevote-next); backend and schema changes stay here.
 
 ## 🚀 Features
 
@@ -353,6 +377,9 @@ npm run start:server  # Uses PM2 for production
 
 ## 🤝 Contributing
 
+> [!NOTE]
+> **Before you start:** frontend contributions belong in [`quotevote-next`](https://github.com/QuoteVote/quotevote-next), not here. See [Repository status](#-repository-status). The steps below apply to backend (`server/`) work in this repository.
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
@@ -399,15 +426,18 @@ This project is licensed under the LGPL-3.0 license - see the [LICENSE](LICENSE)
 
 ## 🐛 Issues
 
-If you encounter any issues, please:
+**File frontend issues — including RC1 bugs, UI defects, and test gaps — in [`quotevote-next`](https://github.com/QuoteVote/quotevote-next/issues).** Use this repository's tracker only for the production backend in `server/`.
 
-1. Check the existing issues in the repository
+Either way, please:
+
+1. Check the existing issues first
 2. Create a new issue with detailed information
 3. Include steps to reproduce the problem
 
 ## 🔗 Links
 
-- **Repository**: [GitHub Repository]
+- **Active development**: [QuoteVote/quotevote-next](https://github.com/QuoteVote/quotevote-next)
+- **Legacy repository**: [QuoteVote/quotevote-monorepo](https://github.com/QuoteVote/quotevote-monorepo)
 - **Live Demo**: [Demo URL]
 - **Documentation**: [Documentation URL]
 
