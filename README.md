@@ -47,27 +47,30 @@ Quote.Vote is being rebuilt as a Next.js application in [`quotevote-next`](https
 - **Dark/Light Themes**: Customizable user interface themes
 - **Accessibility**: WCAG compliant design with screen reader support
 
-## 🎥 Demo Videos
+## 🎥 Setup Walkthroughs
 
-See Quote Vote in action! Watch our demonstration videos to get a quick overview of the platform's features and functionality:
+Step-by-step videos covering local setup, from cloning the repository to a running application. Pick the one matching your operating system — see [Getting Started](#-getting-started) for the written instructions.
 
-### Windows Demo
+### Windows Setup
 
-Platform demonstration on Windows
+Windows 10, 11 (PowerShell, CMD, Git Bash compatible)
 
-<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows demonstration video"></video>
+<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows setup walkthrough video"></video>
 
-### Linux Demo
+### Linux Setup
 
-Platform demonstration on Linux
+Linux (Arch, Ubuntu, Debian, Fedora compatible)
 
-<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux demonstration video"></video>
+<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux setup walkthrough video"></video>
 
-**These videos showcase:**
-- Creating and voting on posts
-- Highlighting and discussing quotes
-- Using the moderation tools
-- Navigating the user interface
+**Each walkthrough covers:**
+- Initial project setup using `setup.js`
+- Creating admin and developer accounts
+- Starting the development servers with `start.js`
+- Navigating the running application
+- Common workflows and platform-specific tips
+
+More detail on the setup scripts themselves is in [`scripts/README.md`](./scripts/README.md).
 
 ## 🛠 Tech Stack
 
