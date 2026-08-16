@@ -1,6 +1,30 @@
 # Quote Vote
 
+> [!IMPORTANT]
+> **Active development has moved to [QuoteVote/quotevote-next](https://github.com/QuoteVote/quotevote-next).**
+> New frontend work, RC1 bug fixes, and test coverage belong there — not in this repository.
+
 A text-first civic engagement platform for creating posts, voting on specific text passages, and thoughtful discussions. Built with React/GraphQL frontend and Node.js backend, featuring targeted voting, quotes, social features, and moderation tools for transparent public dialogue.
+
+## 📦 Repository status
+
+Quote.Vote is being rebuilt as a Next.js application in [`quotevote-next`](https://github.com/QuoteVote/quotevote-next). That repository is the active development target and is where the production frontend now lives.
+
+**Please open new work there:**
+
+| Work | Where it belongs |
+| --- | --- |
+| RC1 bug fixes | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next/issues) |
+| Frontend features and stabilization | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next) |
+| Playwright end-to-end tests | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next) (`quotevote-frontend/e2e/`) |
+| Unit test coverage | [`quotevote-next`](https://github.com/QuoteVote/quotevote-next) |
+
+### What this repository is still used for
+
+- **`server/` is the live production API.** It serves `api.quote.vote` today, so backend fixes and GraphQL schema changes still land here — until the migrated backend in `quotevote-next/quotevote-backend/` is deployed and takes over.
+- **`client/` is superseded.** The legacy React 17 frontend is kept for historical reference and architecture context. It should not receive new feature work.
+
+**Not sure where something belongs?** Frontend goes to [`quotevote-next`](https://github.com/QuoteVote/quotevote-next); backend and schema changes stay here.
 
 ## 🚀 Features
 
@@ -23,27 +47,30 @@ A text-first civic engagement platform for creating posts, voting on specific te
 - **Dark/Light Themes**: Customizable user interface themes
 - **Accessibility**: WCAG compliant design with screen reader support
 
-## 🎥 Demo Videos
+## 🎥 Setup Walkthroughs
 
-See Quote Vote in action! Watch our demonstration videos to get a quick overview of the platform's features and functionality:
+Step-by-step videos covering local setup, from cloning the repository to a running application. Pick the one matching your operating system — see [Getting Started](#-getting-started) for the written instructions.
 
-### Windows Demo
+### Windows Setup
 
-Platform demonstration on Windows
+Windows 10, 11 (PowerShell, CMD, Git Bash compatible)
 
-<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows demonstration video"></video>
+<video src="./docs/videos/mp4/QuoteVote - Windows.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Windows setup walkthrough video"></video>
 
-### Linux Demo
+### Linux Setup
 
-Platform demonstration on Linux
+Linux (Arch, Ubuntu, Debian, Fedora compatible)
 
-<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux demonstration video"></video>
+<video src="./docs/videos/mp4/QuoteVote - linux.mp4" autoplay loop muted playsinline width="600" aria-label="QuoteVote Linux setup walkthrough video"></video>
 
-**These videos showcase:**
-- Creating and voting on posts
-- Highlighting and discussing quotes
-- Using the moderation tools
-- Navigating the user interface
+**Each walkthrough covers:**
+- Initial project setup using `setup.js`
+- Creating admin and developer accounts
+- Starting the development servers with `start.js`
+- Navigating the running application
+- Common workflows and platform-specific tips
+
+More detail on the setup scripts themselves is in [`scripts/README.md`](./scripts/README.md).
 
 ## 🛠 Tech Stack
 
@@ -353,6 +380,9 @@ npm run start:server  # Uses PM2 for production
 
 ## 🤝 Contributing
 
+> [!NOTE]
+> **Before you start:** frontend contributions belong in [`quotevote-next`](https://github.com/QuoteVote/quotevote-next), not here. See [Repository status](#-repository-status). The steps below apply to backend (`server/`) work in this repository.
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
@@ -399,15 +429,18 @@ This project is licensed under the LGPL-3.0 license - see the [LICENSE](LICENSE)
 
 ## 🐛 Issues
 
-If you encounter any issues, please:
+**File frontend issues — including RC1 bugs, UI defects, and test gaps — in [`quotevote-next`](https://github.com/QuoteVote/quotevote-next/issues).** Use this repository's tracker only for the production backend in `server/`.
 
-1. Check the existing issues in the repository
+Either way, please:
+
+1. Check the existing issues first
 2. Create a new issue with detailed information
 3. Include steps to reproduce the problem
 
 ## 🔗 Links
 
-- **Repository**: [GitHub Repository]
+- **Active development**: [QuoteVote/quotevote-next](https://github.com/QuoteVote/quotevote-next)
+- **Legacy repository**: [QuoteVote/quotevote-monorepo](https://github.com/QuoteVote/quotevote-monorepo)
 - **Live Demo**: [Demo URL]
 - **Documentation**: [Documentation URL]
 
