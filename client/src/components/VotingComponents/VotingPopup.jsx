@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { makeStyles } from '@material-ui/core/styles'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import {
     Paper,
@@ -50,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
   input: {
     color: '#3c4858cc',
     paddingBottom: 1,
+    minHeight: 50,
+    fontSize: '1rem',
     '&::before': {
       pointerEvents: 'auto',
     },
@@ -71,6 +73,7 @@ const VotingPopup = ({
   const [expand, setExpand] = useState({ open: false, type: '' })
   const [comment, setComment] = useState('')
   const [checkWindowWidth, setCheckWindowWidth] = useState(true)
+  const commentInputRef = useRef(null)
 
   const handleWindowSizeChange = () => {
     if (window.innerWidth < 400) {
@@ -130,6 +133,10 @@ const VotingPopup = ({
     const selectionPopover = document.querySelector('#popButtons')
     if (selectionPopover) {
       const handleMouseDown = (e) => {
+        const tag = e.target.tagName.toLowerCase()
+        if (tag === 'input' || tag === 'textarea') {
+          return
+        }
         e.preventDefault()
       }
       selectionPopover.addEventListener('mousedown', handleMouseDown)
@@ -140,6 +147,17 @@ const VotingPopup = ({
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (expand.open && expand.type === 'comment' && commentInputRef.current) {
+      const timer = setTimeout(() => {
+        if (commentInputRef.current) {
+          commentInputRef.current.focus()
+        }
+      }, 300)
+      return () => clearTimeout(timer)
+    }
+  }, [expand.open, expand.type])
 
   let inputValue = comment
 
@@ -281,6 +299,7 @@ const VotingPopup = ({
             <Input
               placeholder="Type comment here"
               className={classes.input}
+              inputRef={commentInputRef}
               endAdornment={(
                 <InputAdornment position="end">
                   <Button
