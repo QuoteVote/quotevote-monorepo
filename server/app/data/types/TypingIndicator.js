@@ -9,8 +9,13 @@ export const TypingIndicator = `
   }
 
   # Typing mutation response
+  #
+  # Echoes the room and state back so a client with several open rooms can
+  # correlate a response to the request that produced it.
   type TypingResponse {
     success: Boolean!
+    messageRoomId: String
+    isTyping: Boolean
   }
 `;
 

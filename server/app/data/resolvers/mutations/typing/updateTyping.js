@@ -34,6 +34,6 @@ export const updateTyping = async (root, { typing }, context) => {
     },
   });
 
-  return { success: true };
+  return { success: true, messageRoomId, isTyping };
 };
 

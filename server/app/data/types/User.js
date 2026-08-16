@@ -6,6 +6,7 @@ type User {
   username: String
   name: String
   email: String
+  bio: String
   tokens: Int
   _wallet: String
   avatar: JSON
@@ -18,6 +19,8 @@ type User {
   downvotes: Int
   contributorBadge: Boolean
   reputation: UserReputation
+  # Resolved on demand — only queried when selected, so user lists are unaffected.
+  presence: Presence
   botReports: Int
   accountStatus: String
   lastBotReportDate: String

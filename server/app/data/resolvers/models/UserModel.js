@@ -11,6 +11,13 @@ const schema = mongoose.Schema({
   name: {
     type: String,
   },
+  // Profile "About" text. Plain text only; validated in normalizeBio.
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: 500,
+    default: '',
+  },
   companyName: {
     type: String,
   },
