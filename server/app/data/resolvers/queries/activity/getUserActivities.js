@@ -19,7 +19,13 @@ export const getUserActivities = (pubsub) => {
     if (activityEvent) {
       try {
         const parsedActivityEvent = typeof activityEvent === 'string' ? JSON.parse(activityEvent) : activityEvent;
-        searchArgs.activityType = { $in: parsedActivityEvent };
+        // An empty list means "no filter", not "match nothing". `[]` is truthy,
+        // so without this guard $in: [] silently returned an empty feed.
+        if (Array.isArray(parsedActivityEvent) && parsedActivityEvent.length === 0) {
+          logger.debug('activityEvent is empty — not filtering by activity type');
+        } else {
+          searchArgs.activityType = { $in: parsedActivityEvent };
+        }
       } catch (error) {
         logger.error('Error parsing activityEvent', { error: error.message, stack: error.stack, activityEvent });
       }

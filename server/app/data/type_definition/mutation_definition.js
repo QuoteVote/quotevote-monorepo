@@ -31,6 +31,9 @@ export const Mutation = `type Mutation {
   # Mutation for deleting a comment
   deleteComment(commentId: String!): DeletedComment
 
+  # Mutation for editing a comment's text. Author or admin only.
+  updateComment(commentId: String!, content: String!): Comment
+
   # Mutation for creating new quote
   addQuote(quote: QuoteInput!): Quote
 
@@ -90,6 +93,9 @@ export const Mutation = `type Mutation {
 
   # Mutation for updating an action reaction
     updateActionReaction(_id: String! emoji: String!): Reaction
+
+  # Mutation for removing an action reaction. Author or admin only.
+    deleteActionReaction(_id: String!): Boolean!
 
   # Mutation for reporting a post
     reportPost(postId: String!, userId: String!): Post

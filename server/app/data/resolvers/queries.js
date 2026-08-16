@@ -4,6 +4,7 @@ import * as groupQuery from './queries/group';
 import * as messageQuery from './queries/message';
 import * as userQuery from './queries/user';
 import * as notificationQuery from './queries/notification';
+import * as quoteQuery from './queries/quote';
 import * as presenceQuery from './queries/presence';
 import * as typingQuery from './queries/typing';
 import * as contentQuery from './queries/content';
@@ -37,6 +38,7 @@ export const resolver_query = function () {
     messageRoom: messageQuery.getUserChatRoom(),
     notifications: notificationQuery.getNotifications(),
     messageReactions: messageQuery.getUserMessageReactions(),
+    latestQuotes: quoteQuery.latestQuotes(),
 
     // Presence queries
     getPresence: presenceQuery.getPresence,

@@ -67,8 +67,11 @@ type Query {
   " This will query user info if token is valid"
   verifyUserPasswordResetToken(token: String!): JSON
   
-  " This will query user notifications"
-  notifications: [Notification]
+  " This will query user notifications. limit defaults to 50 and is capped at 100; status defaults to 'new' "
+  notifications(limit: Int, offset: Int, status: String): [Notification]
+
+  " Most recently created quotes, newest first. limit is capped at 100 "
+  latestQuotes(limit: Int!): [Quote]
 
   " This will query the message Reactions"
   messageReactions(messageId: String!): [Reaction]
