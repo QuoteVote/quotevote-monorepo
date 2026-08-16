@@ -1,4 +1,5 @@
 import { isUndefined } from 'lodash';
+import { AuthenticationError } from 'apollo-server-express';
 import UserModel from '../../models/UserModel';
 import VotesModel from '../../models/VoteModel';
 import * as utils from '../../utils';
@@ -18,6 +19,12 @@ export const findUserById = () => {
         const { ObjectId } = require('mongodb');
         user = await UserModel.findOne({ creatorId: new ObjectId(args.creatorId) });
       } else {
+        // No identifying argument: fall back to "me". Guard the context so an
+        // anonymous caller gets a clean auth error instead of a TypeError on
+        // user._id, which surfaced to clients as HTTP 200 + INTERNAL_SERVER_ERROR.
+        if (!context || !context.user || !context.user._id) {
+          throw new AuthenticationError('Authentication required');
+        }
         userId = context.user._id;
         user = await UserModel.findOne({ _id: userId });
       }
