@@ -20,6 +20,7 @@ import {
 import { schema } from './data/schema';
 import requireAuth from '~/utils/requireAuth';
 import { startPresenceCleanup } from './data/utils/presence/cleanupStalePresence';
+import { startReputationRefresh } from './data/utils/reputation/refreshReputations';
 import PostModel from './data/resolvers/models/PostModel';
 import UserModel from './data/resolvers/models/UserModel';
 
@@ -304,6 +305,7 @@ async function startServer() {
     logger.info(`WebSocket server ready at ws://localhost:${GRAPHQL_PORT}/graphql`);
     // Start presence cleanup job
     startPresenceCleanup();
+    startReputationRefresh();
   });
 }
 
