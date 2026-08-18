@@ -472,6 +472,17 @@ export const GET_USER = gql`
   }
 `
 
+export const GET_USER_BY_ID = gql`
+  query userById($userId: String!) {
+    user(user_id: $userId) {
+      _id
+      name
+      username
+      avatar
+    }
+  }
+`
+
 export const GET_USER_REPUTATION = gql`
   query getUserReputation($userId: String!) {
     getUserReputation(userId: $userId) {
