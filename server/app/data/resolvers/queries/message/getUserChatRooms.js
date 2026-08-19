@@ -14,6 +14,14 @@ export const getUserChatRooms = () => {
       },
       {
         $lookup: {
+          from: 'users',
+          localField: 'users',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
+        $lookup: {
           from: 'posts',
           localField: 'postId',
           foreignField: '_id',
@@ -93,6 +101,52 @@ export const getUserChatRooms = () => {
               else: '$lastActivity', // Fall back to lastActivity if no messages
             },
           },
+          // Get the other user for DM rooms (for avatar and title)
+          otherUser: {
+            $cond: {
+              if: {
+                $and: [
+                  { $eq: ['$messageType', 'USER'] },
+                  { $eq: [{ $size: '$users' }, 2] },
+                ],
+              },
+              then: {
+                $arrayElemAt: [
+                  {
+                    $filter: {
+                      input: '$userDetails',
+                      as: 'u',
+                      cond: {
+                        $ne: ['$$u._id', mongoose.Types.ObjectId(user._id)],
+                      },
+                    },
+                  },
+                  0,
+                ],
+              },
+              else: null,
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          // Derive avatar from otherUser
+          avatar: {
+            $cond: {
+              if: { $ne: ['$otherUser', null] },
+              then: '$otherUser.avatar',
+              else: null,
+            },
+          },
+          // Derive title from otherUser
+          title: {
+            $cond: {
+              if: { $ne: ['$otherUser', null] },
+              then: { $ifNull: ['$otherUser.name', '$otherUser.username'] },
+              else: '$title',
+            },
+          },
         },
       },
       {
@@ -128,6 +182,8 @@ export const getUserChatRooms = () => {
           postId: 1,
           lastActivity: 1,
           lastMessageTime: 1,
+          avatar: 1,
+          title: 1,
           postDetails: {
             _id: 1,
             title: 1,
