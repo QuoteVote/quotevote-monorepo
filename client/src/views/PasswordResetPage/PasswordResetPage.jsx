@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import GridContainer from 'mui-pro/Grid/GridContainer'
-import { tokenValidator } from 'store/user'
+import useTokenValidation from '../../hooks/useTokenValidation'
 import { useDispatch } from 'react-redux'
 import { useHistory, useLocation } from 'react-router-dom'
 import styles from 'assets/jss/material-dashboard-pro-react/views/loginPageStyle'
@@ -26,11 +26,8 @@ export default function PasswordResetPage() {
   })
   const [updateUserPassword] = useMutation(UPDATE_USER_PASSWORD)
   const isValidToken = data && data.verifyUserPasswordResetToken
-  // TODO: Abstract validation into custom hook
-  React.useEffect(() => {
-    if (tokenValidator(dispatch)) history.push('/search')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  useTokenValidation({ redirectToIfValid: '/search' })
+
 
   const classes = useStyles()
   const handleSubmit = async (values) => {

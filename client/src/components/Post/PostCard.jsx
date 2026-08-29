@@ -373,7 +373,6 @@ function PostCard(props) {
     }
   }
 
-  // TODO: show quote up/down
   const { upQuote, downQuote } = useMemo(() => {
     if (!votes || votes?.length === 0) {
 return {
@@ -434,6 +433,29 @@ return {
                 {rejectedBy?.length}
               </Typography>
             </div>
+            {(upQuote > 0 || downQuote > 0) && (
+              <>
+                <Typography className={classes.divider}>|</Typography>
+                <div className={classes.voteItem} title="Quote Upvotes">
+                  <ArrowUpwardIcon
+                    className={classNames(classes.voteIcon, classes.upvoteIcon)}
+                    style={{ fontSize: '14px' }}
+                  />
+                  <Typography className={classes.voteNumber} style={{ fontSize: '12px' }}>
+                    {upQuote}
+                  </Typography>
+                </div>
+                <div className={classes.voteItem} title="Quote Downvotes">
+                  <ArrowDownwardIcon
+                    className={classNames(classes.voteIcon, classes.downvoteIcon)}
+                    style={{ fontSize: '14px' }}
+                  />
+                  <Typography className={classes.voteNumber} style={{ fontSize: '12px' }}>
+                    {downQuote}
+                  </Typography>
+                </div>
+              </>
+            )}
           </div>
           <div className={classes.interactions}>
             <Typography>{interactions.length} interactions</Typography>
