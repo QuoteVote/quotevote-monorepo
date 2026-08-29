@@ -87,8 +87,7 @@ export const sendUserInviteApproval = (pubsub) => {
     }
     const email = await sendGridEmail(mailOptions);
 
-    //  ***   TODO test to see if email was sent   ***
-    if (email) {
+    if (email && email.success) {
       return {
         code: 'SUCCESS',
         message: `User sign-up invite sent successfully to ${mailTo}.`,
