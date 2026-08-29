@@ -181,6 +181,15 @@ export const GET_CHAT_ROOMS = gql`
   }
 `
 
+export const GET_USER_BY_ID = gql`
+  query userById($user_id: String!) {
+    user(user_id: $user_id) {
+      _id
+      username
+    }
+  }
+`
+
 export const GET_ROOM_MESSAGES = gql`
   query messages($messageRoomId: String!) {
     messages(messageRoomId: $messageRoomId) {
@@ -607,13 +616,13 @@ export const GET_USER_ACTIVITY = gql`
           }
           bookmarkedBy
           created
-                  creator {
-          _id
-          name
-          username
-          avatar
-          contributorBadge
-        }
+          creator {
+            _id
+            name
+            username
+            avatar
+            contributorBadge
+          }
         }
         voteId
         vote {
@@ -707,7 +716,7 @@ export const GET_LATEST_QUOTES = gql`
     }
   }
 `
-export const GET_FEATURED_POSTS = gql` 
+export const GET_FEATURED_POSTS = gql`
   query featuredPosts(
     $limit: Int
     $offset: Int

@@ -9,7 +9,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
 } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import SettingsIcon from '@material-ui/icons/Settings'
@@ -17,14 +17,20 @@ import BlockIcon from '@material-ui/icons/Block'
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
-import { useMutation, useQuery } from '@apollo/react-hooks'
+import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
+import { useHistory } from 'react-router-dom'
 import MessageSend from './MessageSend'
 import MessageItemList from './MessageItemList'
 import TypingIndicator from './TypingIndicator'
-import { SELECTED_CHAT_ROOM } from '../../store/chat'
+import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
 import AvatarDisplay from '../Avatar'
 import { READ_MESSAGES } from '../../graphql/mutations'
-import { GET_CHAT_ROOMS, GET_ROOM_MESSAGES, GET_ROSTER } from '../../graphql/query'
+import {
+  GET_CHAT_ROOMS,
+  GET_ROOM_MESSAGES,
+  GET_ROSTER,
+  GET_USER_BY_ID,
+} from '../../graphql/query'
 import useGuestGuard from '../../utils/useGuestGuard'
 import { useRosterManagement } from '../../hooks/useRosterManagement'
 import { SET_SNACKBAR as SET_UI_SNACKBAR } from '../../store/ui'
@@ -53,17 +59,19 @@ function useWindowSize() {
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(to bottom, #1E2329 0%, #15191E 100%)'
-      : 'linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%)',
+    background:
+      theme.palette.mode === 'dark'
+        ? 'linear-gradient(to bottom, #1E2329 0%, #15191E 100%)'
+        : 'linear-gradient(to bottom, #ffffff 0%, #fafbfc 100%)',
     padding: theme.spacing(1.75, 2),
     borderBottom: `1px solid ${theme.palette.divider}`,
     position: 'sticky',
     top: 0,
     zIndex: 10,
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 2px 8px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2)'
-      : '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 2px 8px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2)'
+        : '0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)',
     backdropFilter: 'blur(10px)',
   },
   headerContent: {
@@ -99,6 +107,20 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     letterSpacing: '-0.01em',
+  },
+  titleClickable: {
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+      color: theme.palette.primary.main,
+    },
+  },
+  avatarClickable: {
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 0.8,
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.2)',
+    },
   },
   subtitle: {
     fontSize: '0.8125rem',
@@ -136,12 +158,14 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(to bottom, #0B0E11 0%, #15191E 50%, #0B0E11 100%)'
-      : 'linear-gradient(to bottom, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)',
-    backgroundImage: theme.palette.mode === 'dark'
-      ? 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px)'
-      : 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)',
+    background:
+      theme.palette.mode === 'dark'
+        ? 'linear-gradient(to bottom, #0B0E11 0%, #15191E 50%, #0B0E11 100%)'
+        : 'linear-gradient(to bottom, #f5f7fa 0%, #ffffff 50%, #f5f7fa 100%)',
+    backgroundImage:
+      theme.palette.mode === 'dark'
+        ? 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px)'
+        : 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px)',
     position: 'relative',
   },
   messagesContainer: {
@@ -157,25 +181,33 @@ const useStyles = makeStyles((theme) => ({
       background: 'transparent',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.2)' : theme.palette.grey[400],
+      background:
+        theme.palette.mode === 'dark'
+          ? 'rgba(255,255,255,0.2)'
+          : theme.palette.grey[400],
       borderRadius: 4,
       border: '2px solid transparent',
       backgroundClip: 'padding-box',
       '&:hover': {
-        background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : theme.palette.grey[500],
+        background:
+          theme.palette.mode === 'dark'
+            ? 'rgba(255,255,255,0.3)'
+            : theme.palette.grey[500],
         backgroundClip: 'padding-box',
       },
     },
   },
   footer: {
-    background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(to top, #1E2329 0%, #15191E 100%)'
-      : 'linear-gradient(to top, #ffffff 0%, #fafbfc 100%)',
+    background:
+      theme.palette.mode === 'dark'
+        ? 'linear-gradient(to top, #1E2329 0%, #15191E 100%)'
+        : 'linear-gradient(to top, #ffffff 0%, #fafbfc 100%)',
     borderTop: `1px solid ${theme.palette.divider}`,
     padding: theme.spacing(1.75, 2),
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 -2px 12px rgba(0, 0, 0, 0.3), 0 -1px 4px rgba(0, 0, 0, 0.2)'
-      : '0 -2px 12px rgba(0, 0, 0, 0.06), 0 -1px 4px rgba(0, 0, 0, 0.04)',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 -2px 12px rgba(0, 0, 0, 0.3), 0 -1px 4px rgba(0, 0, 0, 0.2)'
+        : '0 -2px 12px rgba(0, 0, 0, 0.06), 0 -1px 4px rgba(0, 0, 0, 0.04)',
   },
 }))
 
@@ -189,32 +221,77 @@ function Header() {
   const { refetch: refetchChatRooms } = useQuery(GET_CHAT_ROOMS, { skip: true })
   const { data: rosterData } = useQuery(GET_ROSTER, { skip: !currentUser })
 
-  const { title, avatar, messageType, users, _id: messageRoomId } = selectedRoom || {}
+  const { title, avatar, messageType, users, _id: messageRoomId } =
+    selectedRoom || {}
+
+  const history = useHistory()
+
+  const [fetchUserById] = useLazyQuery(GET_USER_BY_ID, {
+    fetchPolicy: 'cache-first',
+  })
 
   // Get the other user's ID for USER type rooms
   const currentUserIdForHeader = currentUser?._id?.toString()
-  const otherUserId = messageType === 'USER' && users?.length === 2
-    ? users.find((id) => {
-      if (!id || !currentUserIdForHeader) return false
+  const otherUserId =
+    messageType === 'USER' && users?.length === 2
+      ? users
+          .find((id) => {
+            if (!id || !currentUserIdForHeader) return false
+            try {
+              return id.toString() !== currentUserIdForHeader
+            } catch (e) {
+              console.warn('Error comparing user IDs in header:', e)
+              return false
+            }
+          })
+          ?.toString() || null
+      : null
+
+  // Determine if header is clickable
+  const isHeaderClickable =
+    (messageType === 'USER' && !!otherUserId) ||
+    (messageType === 'POST' && !!selectedRoom?.postDetails?.url)
+
+  const handleHeaderNavigation = async () => {
+    if (messageType === 'POST' && selectedRoom?.postDetails?.url) {
+      dispatch(SET_CHAT_OPEN(false))
+      history.push(selectedRoom.postDetails.url)
+      return
+    }
+    if (messageType === 'USER' && otherUserId) {
       try {
-        return id.toString() !== currentUserIdForHeader
-      } catch (e) {
-        console.warn('Error comparing user IDs in header:', e)
-        return false
+        const { data: userData } = await fetchUserById({
+          variables: { user_id: otherUserId },
+        })
+        const username = userData?.user?.username
+        if (username) {
+          dispatch(SET_CHAT_OPEN(false))
+          history.push(`/Profile/${username}/`)
+        }
+      } catch (err) {
+        // Silently fail
       }
-    })?.toString() || null
-    : null
+    }
+  }
 
   // Check if user is blocked
-  const isBlocked = otherUserId && rosterData?.getRoster?.some((r) => {
-    const rUserId = r.userId?.toString()
-    const rBuddyId = r.buddyId?.toString()
-    const currentUserId = currentUser?._id?.toString()
-    const otherId = otherUserId.toString()
+  const isBlocked =
+    otherUserId &&
+    rosterData?.getRoster?.some((r) => {
+      const rUserId = r.userId?.toString()
+      const rBuddyId = r.buddyId?.toString()
+      const currentUserId = currentUser?._id?.toString()
+      const otherId = otherUserId.toString()
 
-    return (rUserId === currentUserId && rBuddyId === otherId && r.status === 'blocked') ||
-      (rUserId === otherId && rBuddyId === currentUserId && r.status === 'blocked')
-  })
+      return (
+        (rUserId === currentUserId &&
+          rBuddyId === otherId &&
+          r.status === 'blocked') ||
+        (rUserId === otherId &&
+          rBuddyId === currentUserId &&
+          r.status === 'blocked')
+      )
+    })
 
   const handleBack = () => {
     dispatch(SELECTED_CHAT_ROOM(null))
@@ -236,30 +313,39 @@ function Header() {
         await unblockBuddy(otherUserId)
         // Refetch chat rooms to update the list (chat will reappear after unblocking)
         await refetchChatRooms()
-        dispatch(SET_UI_SNACKBAR({
-          open: true,
-          message: 'User unblocked successfully',
-          type: 'success',
-        }))
+        dispatch(
+          SET_UI_SNACKBAR({
+            open: true,
+            message: 'User unblocked successfully',
+            type: 'success',
+          }),
+        )
       } else {
         await blockBuddy(otherUserId)
         // Refetch chat rooms to update the list (chat remains visible for both users)
         await refetchChatRooms()
-        dispatch(SET_UI_SNACKBAR({
-          open: true,
-          message: 'User blocked successfully. Chat history is preserved, but they cannot send new messages.',
-          type: 'success',
-        }))
+        dispatch(
+          SET_UI_SNACKBAR({
+            open: true,
+            message:
+              'User blocked successfully. Chat history is preserved, but they cannot send new messages.',
+            type: 'success',
+          }),
+        )
         // Keep chat open so both users can see their chat history
         // Only close the menu
       }
       handleMenuClose()
     } catch (error) {
-      dispatch(SET_UI_SNACKBAR({
-        open: true,
-        message: error.message || `Failed to ${isBlocked ? 'unblock' : 'block'} user`,
-        type: 'danger',
-      }))
+      dispatch(
+        SET_UI_SNACKBAR({
+          open: true,
+          message:
+            error.message ||
+            `Failed to ${isBlocked ? 'unblock' : 'block'} user`,
+          type: 'danger',
+        }),
+      )
     }
   }
 
@@ -270,18 +356,22 @@ function Header() {
       await removeBuddy(otherUserId)
       // Refetch chat rooms to update the list
       await refetchChatRooms()
-      dispatch(SET_UI_SNACKBAR({
-        open: true,
-        message: 'Buddy removed successfully',
-        type: 'success',
-      }))
+      dispatch(
+        SET_UI_SNACKBAR({
+          open: true,
+          message: 'Buddy removed successfully',
+          type: 'success',
+        }),
+      )
       handleMenuClose()
     } catch (error) {
-      dispatch(SET_UI_SNACKBAR({
-        open: true,
-        message: error.message || 'Failed to remove buddy',
-        type: 'danger',
-      }))
+      dispatch(
+        SET_UI_SNACKBAR({
+          open: true,
+          message: error.message || 'Failed to remove buddy',
+          type: 'danger',
+        }),
+      )
     }
   }
 
@@ -289,11 +379,13 @@ function Header() {
     // For now, just close the chat
     // In the future, this could archive or delete the chat room
     dispatch(SELECTED_CHAT_ROOM(null))
-    dispatch(SET_UI_SNACKBAR({
-      open: true,
-      message: 'Chat closed',
-      type: 'info',
-    }))
+    dispatch(
+      SET_UI_SNACKBAR({
+        open: true,
+        message: 'Chat closed',
+        type: 'info',
+      }),
+    )
     handleMenuClose()
   }
 
@@ -303,11 +395,20 @@ function Header() {
     <Fade in timeout={300}>
       <div className={classes.header}>
         <div className={classes.headerContent}>
-          <IconButton onClick={handleBack} className={classes.backButton} size="small">
+          <IconButton
+            onClick={handleBack}
+            className={classes.backButton}
+            size="small"
+          >
             <ArrowBackIcon fontSize="small" />
           </IconButton>
 
-          <Avatar className={classes.avatar}>
+          <Avatar
+            className={`${classes.avatar} ${
+              isHeaderClickable ? classes.avatarClickable : ''
+            }`}
+            onClick={isHeaderClickable ? handleHeaderNavigation : undefined}
+          >
             {avatar && Object.keys(avatar).length > 0 ? (
               <AvatarDisplay height={40} width={40} {...avatar} />
             ) : messageType === 'USER' && title ? (
@@ -320,7 +421,21 @@ function Header() {
           </Avatar>
 
           <div className={classes.headerText}>
-            <Typography className={classes.title}>
+            <Typography
+              className={`${classes.title} ${
+                isHeaderClickable ? classes.titleClickable : ''
+              }`}
+              onClick={isHeaderClickable ? handleHeaderNavigation : undefined}
+              role={isHeaderClickable ? 'link' : undefined}
+              tabIndex={isHeaderClickable ? 0 : undefined}
+              onKeyDown={
+                isHeaderClickable
+                  ? (e) => {
+                      if (e.key === 'Enter') handleHeaderNavigation()
+                    }
+                  : undefined
+              }
+            >
               {title || 'Chat'}
             </Typography>
             <Typography className={classes.subtitle}>
@@ -358,29 +473,33 @@ function Header() {
               },
             }}
           >
-            {messageType === 'USER' && otherUserId ? [
-              <MenuItem
-                key="block"
-                onClick={handleBlockUser}
-                className={`${classes.menuItem} ${classes.menuItemDanger}`}
-              >
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <BlockIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary={isBlocked ? 'Unblock User' : 'Block User'} />
-              </MenuItem>,
-              <MenuItem
-                key="remove"
-                onClick={handleRemoveBuddy}
-                className={`${classes.menuItem} ${classes.menuItemDanger}`}
-              >
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <RemoveCircleIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="Remove Buddy" />
-              </MenuItem>,
-              <Divider key="divider" />
-            ] : null}
+            {messageType === 'USER' && otherUserId
+              ? [
+                  <MenuItem
+                    key="block"
+                    onClick={handleBlockUser}
+                    className={`${classes.menuItem} ${classes.menuItemDanger}`}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      <BlockIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={isBlocked ? 'Unblock User' : 'Block User'}
+                    />
+                  </MenuItem>,
+                  <MenuItem
+                    key="remove"
+                    onClick={handleRemoveBuddy}
+                    className={`${classes.menuItem} ${classes.menuItemDanger}`}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      <RemoveCircleIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Remove Buddy" />
+                  </MenuItem>,
+                  <Divider key="divider" />,
+                ]
+              : null}
             <MenuItem
               onClick={handleDeleteChat}
               className={`${classes.menuItem} ${classes.menuItemDanger}`}
@@ -427,22 +546,25 @@ function MessageBox() {
     )
   }
 
-  const { _id: messageRoomId, title, messageType, users } = selectedRoomData || {}
+  const { _id: messageRoomId, title, messageType, users } =
+    selectedRoomData || {}
 
   // Get the other user's ID for DM creation if room doesn't exist yet
   const currentUser = useSelector((state) => state.user?.data)
   const currentUserId = currentUser?._id?.toString()
   const componentId = messageRoomId
     ? null
-    : users?.find((id) => {
-      if (!id || !currentUserId) return false
-      try {
-        return id.toString() !== currentUserId
-      } catch (e) {
-        console.warn('Error comparing user IDs:', e)
-        return false
-      }
-    })?.toString() || null
+    : users
+        ?.find((id) => {
+          if (!id || !currentUserId) return false
+          try {
+            return id.toString() !== currentUserId
+          } catch (e) {
+            console.warn('Error comparing user IDs:', e)
+            return false
+          }
+        })
+        ?.toString() || null
 
   // Helper function to safely extract error message as a string
   // This function never returns objects or null - only safe strings
@@ -468,7 +590,12 @@ function MessageBox() {
       if (Object.prototype.hasOwnProperty.call(err, 'message')) {
         const msg = err.message
         // Check if msg is not null/undefined and is a string
-        if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+        if (
+          msg !== null &&
+          msg !== undefined &&
+          typeof msg === 'string' &&
+          msg.length > 0
+        ) {
           message = msg
         }
       }
@@ -487,7 +614,12 @@ function MessageBox() {
           if (firstErr !== null && firstErr !== undefined) {
             if (Object.prototype.hasOwnProperty.call(firstErr, 'message')) {
               const msg = firstErr.message
-              if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+              if (
+                msg !== null &&
+                msg !== undefined &&
+                typeof msg === 'string' &&
+                msg.length > 0
+              ) {
                 return msg
               }
             }
@@ -508,7 +640,12 @@ function MessageBox() {
           }
           if (Object.prototype.hasOwnProperty.call(netErr, 'message')) {
             const msg = netErr.message
-            if (msg !== null && msg !== undefined && typeof msg === 'string' && msg.length > 0) {
+            if (
+              msg !== null &&
+              msg !== undefined &&
+              typeof msg === 'string' &&
+              msg.length > 0
+            ) {
               return msg
             }
           }
@@ -530,7 +667,12 @@ function MessageBox() {
   // Refetch chat rooms to get updated room data (especially when room doesn't exist yet)
   // Start without polling, we'll control it manually
   // Note: Error handling is suppressed to prevent crashes from Apollo Client's error object serialization
-  const { data: roomsData, error: roomsError, stopPolling, startPolling } = useQuery(GET_CHAT_ROOMS, {
+  const {
+    data: roomsData,
+    error: roomsError,
+    stopPolling,
+    startPolling,
+  } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
     pollInterval: 0, // Start with no polling - we'll control it manually
     errorPolicy: 'all', // Continue to show cached data even if there's an error
@@ -542,7 +684,7 @@ function MessageBox() {
   useEffect(() => {
     if (roomsError) {
       // Silently increment error count without trying to access error properties
-      setErrorRetryCount(prev => {
+      setErrorRetryCount((prev) => {
         const newCount = prev + 1
         if (newCount >= MAX_ERROR_RETRIES) {
           setShouldPoll(false)
@@ -606,7 +748,8 @@ function MessageBox() {
     if (!messageRoomId && roomsData?.messageRooms && selectedRoomData?.users) {
       // Find the room that matches our users
       const matchingRoom = roomsData.messageRooms.find((room) => {
-        if (room.messageType !== 'USER' || room.users?.length !== 2) return false
+        if (room.messageType !== 'USER' || room.users?.length !== 2)
+          return false
         try {
           const roomUserIds = room.users
             .map((id) => {
@@ -632,7 +775,8 @@ function MessageBox() {
             })
             .filter(Boolean)
 
-          if (roomUserIds.length !== 2 || selectedUserIds.length !== 2) return false
+          if (roomUserIds.length !== 2 || selectedUserIds.length !== 2)
+            return false
           return (
             roomUserIds.includes(selectedUserIds[0]) &&
             roomUserIds.includes(selectedUserIds[1])

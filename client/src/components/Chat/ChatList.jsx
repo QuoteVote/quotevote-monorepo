@@ -1,14 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useQuery } from '@apollo/react-hooks';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles, List, ListItem, ListItemAvatar, ListItemText, Typography, Avatar, Chip } from '@material-ui/core';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-import GroupIcon from '@material-ui/icons/Group';
-import { GET_CHAT_ROOMS, GET_USER } from '../../graphql/query';
-import { SELECTED_CHAT_ROOM } from '../../store/chat';
-import LoadingSpinner from '../LoadingSpinner';
-import AvatarDisplay from '../Avatar';
+import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
+import { useQuery, useLazyQuery } from '@apollo/react-hooks'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  makeStyles,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+  Avatar,
+  Chip,
+} from '@material-ui/core'
+import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline'
+import GroupIcon from '@material-ui/icons/Group'
+import { useHistory } from 'react-router-dom'
+import { GET_CHAT_ROOMS, GET_USER, GET_USER_BY_ID } from '../../graphql/query'
+import { SELECTED_CHAT_ROOM, SET_CHAT_OPEN } from '../../store/chat'
+import LoadingSpinner from '../LoadingSpinner'
+import AvatarDisplay from '../Avatar'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,31 +47,45 @@ const useStyles = makeStyles((theme) => ({
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     border: `1px solid transparent`,
     backgroundColor: theme.palette.mode === 'dark' ? '#2A2A2A' : '#ffffff',
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 1px 3px rgba(0, 0, 0, 0.2)'
-      : '0 1px 3px rgba(0, 0, 0, 0.04)',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 1px 3px rgba(0, 0, 0, 0.2)'
+        : '0 1px 3px rgba(0, 0, 0, 0.04)',
     '&:hover': {
       backgroundColor: theme.palette.mode === 'dark' ? '#333333' : '#f8fafc',
-      borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : theme.palette.grey[200],
+      borderColor:
+        theme.palette.mode === 'dark'
+          ? 'rgba(255, 255, 255, 0.1)'
+          : theme.palette.grey[200],
       transform: 'translateX(4px)',
-      boxShadow: theme.palette.mode === 'dark'
-        ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2)'
-        : '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
+      boxShadow:
+        theme.palette.mode === 'dark'
+          ? '0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2)'
+          : '0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04)',
     },
   },
   selectedItem: {
-    background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(135deg, rgba(82, 178, 116, 0.2) 0%, rgba(74, 158, 99, 0.15) 100%)'
-      : 'linear-gradient(135deg, rgba(82, 178, 116, 0.1) 0%, rgba(74, 158, 99, 0.08) 100%)',
-    borderColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.4)' : '#52b274' + '60',
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 4px 12px rgba(82, 178, 116, 0.25), 0 2px 4px rgba(82, 178, 116, 0.15)'
-      : '0 4px 12px rgba(82, 178, 116, 0.15), 0 2px 4px rgba(82, 178, 116, 0.1)',
+    background:
+      theme.palette.mode === 'dark'
+        ? 'linear-gradient(135deg, rgba(82, 178, 116, 0.2) 0%, rgba(74, 158, 99, 0.15) 100%)'
+        : 'linear-gradient(135deg, rgba(82, 178, 116, 0.1) 0%, rgba(74, 158, 99, 0.08) 100%)',
+    borderColor:
+      theme.palette.mode === 'dark'
+        ? 'rgba(82, 178, 116, 0.4)'
+        : '#52b274' + '60',
+    boxShadow:
+      theme.palette.mode === 'dark'
+        ? '0 4px 12px rgba(82, 178, 116, 0.25), 0 2px 4px rgba(82, 178, 116, 0.15)'
+        : '0 4px 12px rgba(82, 178, 116, 0.15), 0 2px 4px rgba(82, 178, 116, 0.1)',
     '&:hover': {
-      background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, rgba(82, 178, 116, 0.25) 0%, rgba(74, 158, 99, 0.2) 100%)'
-        : 'linear-gradient(135deg, rgba(82, 178, 116, 0.15) 0%, rgba(74, 158, 99, 0.12) 100%)',
-      borderColor: theme.palette.mode === 'dark' ? 'rgba(82, 178, 116, 0.5)' : '#52b274' + '80',
+      background:
+        theme.palette.mode === 'dark'
+          ? 'linear-gradient(135deg, rgba(82, 178, 116, 0.25) 0%, rgba(74, 158, 99, 0.2) 100%)'
+          : 'linear-gradient(135deg, rgba(82, 178, 116, 0.15) 0%, rgba(74, 158, 99, 0.12) 100%)',
+      borderColor:
+        theme.palette.mode === 'dark'
+          ? 'rgba(82, 178, 116, 0.5)'
+          : '#52b274' + '80',
       transform: 'translateX(4px)',
     },
   },
@@ -110,7 +134,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.75rem',
     fontWeight: 700,
     padding: '0 8px',
-    boxShadow: '0 3px 10px rgba(82, 178, 116, 0.4), 0 1px 3px rgba(82, 178, 116, 0.3)',
+    boxShadow:
+      '0 3px 10px rgba(82, 178, 116, 0.4), 0 1px 3px rgba(82, 178, 116, 0.3)',
     border: '2px solid white',
   },
   typeChip: {
@@ -132,83 +157,110 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     gap: theme.spacing(0.5),
   },
-}));
+  nameLink: {
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'underline',
+      color: theme.palette.primary.main,
+    },
+  },
+}))
 
 const ChatList = ({ search, filterType }) => {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.data);
-  const selectedRoom = useSelector((state) => state.chat.selectedRoom);
-  const [userCache, setUserCache] = useState({});
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const currentUser = useSelector((state) => state.user.data)
+  const selectedRoom = useSelector((state) => state.chat.selectedRoom)
+  const [userCache, setUserCache] = useState({})
+
+  const [fetchUserById] = useLazyQuery(GET_USER_BY_ID, {
+    fetchPolicy: 'cache-first',
+  })
 
   const { loading, data, refetch } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
     pollInterval: 10000, // Poll every 10 seconds for new messages
-  });
+  })
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    refetch()
+  }, [refetch])
 
-  if (loading && !data) return <LoadingSpinner size={50} />;
+  if (loading && !data) return <LoadingSpinner size={50} />
 
-  const rooms = data?.messageRooms || [];
+  const rooms = data?.messageRooms || []
 
   // Filter by type
   const filteredRooms = rooms.filter((room) => {
     if (filterType === 'chats') {
       // Direct messages - USER type with 2 users
-      return room.messageType === 'USER' && room.users?.length === 2;
+      return room.messageType === 'USER' && room.users?.length === 2
     } else if (filterType === 'groups') {
       // Group chats - POST type or more than 2 users
-      return room.messageType === 'POST' || room.users?.length > 2;
+      return room.messageType === 'POST' || room.users?.length > 2
     }
-    return true;
-  });
+    return true
+  })
 
   // Filter by search (simplified - just filter by title for now)
   const searchFiltered = search
     ? filteredRooms.filter((room) => {
-      const title = room.title || '';
-      return title.toLowerCase().includes(search.toLowerCase());
-    })
-    : filteredRooms;
+        const title = room.title || ''
+        return title.toLowerCase().includes(search.toLowerCase())
+      })
+    : filteredRooms
 
   // Sort by last message time (most recent first), fallback to lastActivity, then created
   const sortedRooms = [...searchFiltered].sort((a, b) => {
     // Use lastMessageTime if available, otherwise use lastActivity, then created
     const aTime = a.lastMessageTime
       ? new Date(a.lastMessageTime).getTime()
-      : (a.lastActivity ? new Date(a.lastActivity).getTime() : new Date(a.created).getTime());
+      : a.lastActivity
+      ? new Date(a.lastActivity).getTime()
+      : new Date(a.created).getTime()
     const bTime = b.lastMessageTime
       ? new Date(b.lastMessageTime).getTime()
-      : (b.lastActivity ? new Date(b.lastActivity).getTime() : new Date(b.created).getTime());
-    return bTime - aTime; // Most recent first
-  });
+      : b.lastActivity
+      ? new Date(b.lastActivity).getTime()
+      : new Date(b.created).getTime()
+    return bTime - aTime // Most recent first
+  })
 
   const handleRoomClick = (room) => {
-    dispatch(SELECTED_CHAT_ROOM({ room }));
-  };
+    dispatch(SELECTED_CHAT_ROOM({ room }))
+  }
+
+  const getOtherUserId = (room) => {
+    if (room.messageType !== 'USER' || room.users?.length !== 2) return null
+    const currentUserId = currentUser?._id?.toString()
+    return room.users.find((id) => id?.toString() !== currentUserId)?.toString() || null
+  }
 
   const getRoomDisplayInfo = (room) => {
     if (room.messageType === 'USER' && room.users?.length === 2) {
       // Direct message - use avatar from GraphQL response (resolved by server)
       return {
         name: room.title || 'Direct Message',
-        avatar: room.avatar || null, // Use avatar from room (resolved by messageRoomRelationship)
+        avatar: room.avatar || null,
         subtitle: `${room.users?.length || 0} participants`,
-      };
+        otherUserId: getOtherUserId(room),
+        linkTo: null, // Resolved on-click via user query
+      }
     } else if (room.messageType === 'POST') {
       // Group chat for post - show post title
-      const postTitle = room.postDetails?.title || room.title || 'Quote Discussion';
-      const postText = room.postDetails?.text || '';
-      const preview = postText.length > 50 ? `${postText.substring(0, 50)}...` : postText;
+      const postTitle =
+        room.postDetails?.title || room.title || 'Quote Discussion'
+      const postText = room.postDetails?.text || ''
+      const preview =
+        postText.length > 50 ? `${postText.substring(0, 50)}...` : postText
       return {
         name: postTitle,
         avatar: room.avatar || null, // Use avatar from room (will be set by server resolver for group chats)
         subtitle: preview || `${room.users?.length || 0} participants`,
         isGroup: true, // Flag to show group icon if no avatar
-      };
+        linkTo: room.postDetails?.url || null,
+      }
     } else {
       // Other group chat - show title or default
       return {
@@ -216,46 +268,80 @@ const ChatList = ({ search, filterType }) => {
         avatar: room.avatar || null, // Use avatar from room
         subtitle: `${room.users?.length || 0} members`,
         isGroup: true, // Flag to show group icon if no avatar
-      };
+        linkTo: null,
+      }
     }
-  };
+  }
+
+  const handleNameClick = async (e, displayInfo) => {
+    e.stopPropagation()
+    // For posts, navigate directly using the URL
+    if (displayInfo.linkTo) {
+      dispatch(SET_CHAT_OPEN(false))
+      history.push(displayInfo.linkTo)
+      return
+    }
+    // For DMs, fetch the other user's username first
+    if (displayInfo.otherUserId) {
+      try {
+        const { data: userData } = await fetchUserById({
+          variables: { user_id: displayInfo.otherUserId },
+        })
+        const username = userData?.user?.username
+        if (username) {
+          dispatch(SET_CHAT_OPEN(false))
+          history.push(`/Profile/${username}/`)
+        }
+      } catch (err) {
+        // Silently fail — user stays on chat
+      }
+    }
+  }
 
   if (sortedRooms.length === 0) {
     return (
       <div className={classes.noMessages}>
         <ChatBubbleOutlineIcon />
-        <Typography variant="h6" style={{ fontWeight: 600, marginBottom: 8, marginTop: 16 }}>
-          {search
-            ? `No ${filterType} found`
-            : `No ${filterType} yet`}
+        <Typography
+          variant="h6"
+          style={{ fontWeight: 600, marginBottom: 8, marginTop: 16 }}
+        >
+          {search ? `No ${filterType} found` : `No ${filterType} yet`}
         </Typography>
         <Typography variant="body2" style={{ opacity: 0.7 }}>
           {search
             ? `Try a different search term`
             : filterType === 'chats'
-              ? 'Add a buddy and start a conversation!'
-              : 'Create a group or post to start chatting'}
+            ? 'Add a buddy and start a conversation!'
+            : 'Create a group or post to start chatting'}
         </Typography>
       </div>
-    );
+    )
   }
 
   return (
     <List className={classes.root}>
       {sortedRooms.map((room) => {
-        const displayInfo = getRoomDisplayInfo(room);
-        const isSelected = selectedRoom?.room?._id === room._id;
+        const displayInfo = getRoomDisplayInfo(room)
+        const isSelected = selectedRoom?.room?._id === room._id
 
         return (
           <ListItem
             key={room._id}
-            className={`${classes.listItem} ${isSelected ? classes.selectedItem : ''}`}
+            className={`${classes.listItem} ${
+              isSelected ? classes.selectedItem : ''
+            }`}
             onClick={() => handleRoomClick(room)}
           >
             <ListItemAvatar>
               <Avatar className={classes.avatar}>
-                {displayInfo.avatar && Object.keys(displayInfo.avatar).length > 0 ? (
-                  <AvatarDisplay height={40} width={40} {...displayInfo.avatar} />
+                {displayInfo.avatar &&
+                Object.keys(displayInfo.avatar).length > 0 ? (
+                  <AvatarDisplay
+                    height={40}
+                    width={40}
+                    {...displayInfo.avatar}
+                  />
                 ) : displayInfo.isGroup ? (
                   <GroupIcon style={{ fontSize: 24, color: '#666' }} />
                 ) : displayInfo.name ? (
@@ -268,17 +354,65 @@ const ChatList = ({ search, filterType }) => {
             <ListItemText
               primary={
                 <div className={classes.primaryTextContainer}>
-                  <span className={classes.primaryText}>{displayInfo.name}</span>
+                  <span
+                    className={`${classes.primaryText} ${
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? classes.nameLink
+                        : ''
+                    }`}
+                    onClick={
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? (e) => handleNameClick(e, displayInfo)
+                        : undefined
+                    }
+                    role={
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? 'link'
+                        : undefined
+                    }
+                    tabIndex={
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? 0
+                        : undefined
+                    }
+                    onKeyDown={
+                      displayInfo.linkTo || displayInfo.otherUserId
+                        ? (e) => {
+                            if (e.key === 'Enter')
+                              handleNameClick(e, displayInfo)
+                          }
+                        : undefined
+                    }
+                  >
+                    {displayInfo.name}
+                  </span>
                   <Chip
                     size="small"
-                    icon={room.messageType === 'USER' && room.users?.length === 2 ? <ChatBubbleOutlineIcon /> : <GroupIcon />}
-                    label={room.messageType === 'USER' && room.users?.length === 2 ? 'DM' : 'GROUP'}
-                    className={`${classes.typeChip} ${room.messageType === 'USER' && room.users?.length === 2 ? classes.dmChip : classes.groupChip}`}
+                    icon={
+                      room.messageType === 'USER' &&
+                      room.users?.length === 2 ? (
+                        <ChatBubbleOutlineIcon />
+                      ) : (
+                        <GroupIcon />
+                      )
+                    }
+                    label={
+                      room.messageType === 'USER' && room.users?.length === 2
+                        ? 'DM'
+                        : 'GROUP'
+                    }
+                    className={`${classes.typeChip} ${
+                      room.messageType === 'USER' && room.users?.length === 2
+                        ? classes.dmChip
+                        : classes.groupChip
+                    }`}
                   />
                 </div>
               }
               secondary={
-                <span className={classes.lastMessage}>{displayInfo.subtitle}</span>
+                <span className={classes.lastMessage}>
+                  {displayInfo.subtitle}
+                </span>
               }
             />
             {room.unreadMessages > 0 && (
@@ -287,20 +421,19 @@ const ChatList = ({ search, filterType }) => {
               </div>
             )}
           </ListItem>
-        );
+        )
       })}
     </List>
-  );
-};
+  )
+}
 
 ChatList.propTypes = {
   search: PropTypes.string,
   filterType: PropTypes.oneOf(['chats', 'groups']).isRequired,
-};
+}
 
 ChatList.defaultProps = {
   search: '',
-};
+}
 
-export default ChatList;
-
+export default ChatList
