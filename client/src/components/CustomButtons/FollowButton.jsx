@@ -53,6 +53,7 @@ function FollowButton({
 
   const user = useSelector((state) => state.user)
   const followingArray = _.get(user, 'data._followingId', [])
+  const isFollowingUser = isFollowing || followingArray.includes(profileUserId)
 
   async function handleClick(action) {
     if (!ensureAuth()) return
@@ -66,8 +67,7 @@ function FollowButton({
     await followMutation({ variables: { user_id: profileUserId, action } })
   }
 
-  // TODO handle data object
-  if (isFollowing) {
+  if (isFollowingUser) {
     const action = 'un-follow'
     return showIcon ? (
       <IconButton onClick={() => handleClick(action)}>
