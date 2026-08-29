@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useQuery } from '@apollo/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { makeStyles, List, ListItem, ListItemAvatar, ListItemText, Typography, Avatar, Chip } from '@material-ui/core';
 import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
 import GroupIcon from '@material-ui/icons/Group';
-import { GET_CHAT_ROOMS, GET_USER } from '../../graphql/query';
+import { GET_CHAT_ROOMS } from '../../graphql/query';
 import { SELECTED_CHAT_ROOM } from '../../store/chat';
 import LoadingSpinner from '../LoadingSpinner';
 import AvatarDisplay from '../Avatar';
+import { getChatRoomNavigationLabel, getChatRoomNavigationPath } from '../../utils/chatNavigation';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,10 +86,34 @@ const useStyles = makeStyles((theme) => ({
     transition: 'all 0.2s ease',
   },
   primaryText: {
+    display: 'block',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
     fontSize: '0.875rem',
     fontWeight: 600,
     color: theme.palette.text.primary,
     letterSpacing: '-0.01em',
+  },
+  itemLink: {
+    flex: '1 1 auto',
+    minWidth: 0,
+    color: 'inherit',
+    textDecoration: 'none',
+    borderRadius: 6,
+    outline: 'none',
+    '&:hover $primaryText': {
+      color: '#52b274',
+      textDecoration: 'underline',
+    },
+    '&:focus $primaryText': {
+      color: '#52b274',
+      textDecoration: 'underline',
+    },
+    '&:focus-visible': {
+      outline: `2px solid ${theme.palette.primary.main}`,
+      outlineOffset: 3,
+    },
   },
   lastMessage: {
     overflow: 'hidden',
@@ -131,15 +157,14 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     gap: theme.spacing(0.5),
+    minWidth: 0,
   },
 }));
 
 const ChatList = ({ search, filterType }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.user.data);
   const selectedRoom = useSelector((state) => state.chat.selectedRoom);
-  const [userCache, setUserCache] = useState({});
 
   const { loading, data, refetch } = useQuery(GET_CHAT_ROOMS, {
     fetchPolicy: 'cache-and-network',
@@ -245,6 +270,8 @@ const ChatList = ({ search, filterType }) => {
       {sortedRooms.map((room) => {
         const displayInfo = getRoomDisplayInfo(room);
         const isSelected = selectedRoom?.room?._id === room._id;
+        const navigationPath = getChatRoomNavigationPath(room);
+        const navigationLabel = getChatRoomNavigationLabel(room, displayInfo.name);
 
         return (
           <ListItem
@@ -268,7 +295,18 @@ const ChatList = ({ search, filterType }) => {
             <ListItemText
               primary={
                 <div className={classes.primaryTextContainer}>
-                  <span className={classes.primaryText}>{displayInfo.name}</span>
+                  {navigationPath ? (
+                    <Link
+                      to={navigationPath}
+                      className={classes.itemLink}
+                      aria-label={navigationLabel}
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <span className={classes.primaryText}>{displayInfo.name}</span>
+                    </Link>
+                  ) : (
+                    <span className={classes.primaryText}>{displayInfo.name}</span>
+                  )}
                   <Chip
                     size="small"
                     icon={room.messageType === 'USER' && room.users?.length === 2 ? <ChatBubbleOutlineIcon /> : <GroupIcon />}
@@ -303,4 +341,3 @@ ChatList.defaultProps = {
 };
 
 export default ChatList;
-
