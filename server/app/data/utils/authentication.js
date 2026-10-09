@@ -7,7 +7,6 @@ import { logger } from './logger';
 import UserModel from '../resolvers/models/UserModel';
 
 export const createGuestUser = (req, res) => {
-  logger.info(req.body);
 
   try {
     const randomUser = crypto.randomBytes(20)
@@ -32,7 +31,6 @@ export const createGuestUser = (req, res) => {
 };
 
 export const register = (req, res) => {
-  logger.info(req.body);
   try {
     const requiredFields = ['name', 'email', 'username', 'password'];
     String.prototype.toProperCase = function () {
@@ -213,7 +211,6 @@ export const login = async (req, res) => {
 };
 
 export const authenticate = async (req, res) => {
-  logger.info('authenticate', { body: req.body });
   let errorMessage = '';
   if (!('username' in req.body)) {
     errorMessage = 'Username is required.';
