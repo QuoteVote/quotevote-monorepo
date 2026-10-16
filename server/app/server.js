@@ -1,5 +1,5 @@
 import express from 'express';
-import { ApolloServer, AuthenticationError } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -18,7 +18,7 @@ import {
 } from './data/utils/authentication';
 
 import { schema } from './data/schema';
-import requireAuth from '~/utils/requireAuth';
+import { assertAllowedWithoutUser, collectRequestQueries, resolveTokenUser } from '~/utils/contextAuth';
 import { startPresenceCleanup } from './data/utils/presence/cleanupStalePresence';
 import PostModel from './data/resolvers/models/PostModel';
 import UserModel from './data/resolvers/models/UserModel';
@@ -198,6 +198,9 @@ const server = new ApolloServer({
   tracing: true,
   cacheControl: true,
   engine: false,
+  // No client sends hash-only persisted queries, and a request without query text
+  // can't be checked against the requireAuth allowlist, so APQ stays off.
+  persistedQueries: false,
   logging: { level: 'DEBUG' },
   playground: {
     settings: {
@@ -215,26 +218,13 @@ const server = new ApolloServer({
       authToken = req.headers.authorization || req.headers.token;
     }
 
-    const isIntrospection = req && req.body.operationName === 'IntrospectionQuery';
+    const user = await resolveTokenUser(authToken, verifyToken);
+    if (user) {
+      return { user, res };
+    }
 
-    if (!isIntrospection) {
-      if (authToken && authToken.length) {
-        try {
-          const user = await verifyToken(authToken);
-          return { user, res };
-        } catch (error) {
-          logger.debug('Invalid token, proceeding without user context:', error.message);
-          return { res };
-        }
-      }
-
-      if (!isSubscription) {
-        const { query } = req && req.body;
-        const authRequired = query && requireAuth(query);
-        if (authRequired) {
-          throw new AuthenticationError('Auth token not found in request');
-        }
-      }
+    if (!isSubscription) {
+      assertAllowedWithoutUser(collectRequestQueries(req));
     }
 
     return { res };

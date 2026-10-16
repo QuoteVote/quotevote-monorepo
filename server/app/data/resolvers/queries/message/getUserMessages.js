@@ -1,16 +1,25 @@
 import { ObjectId } from 'mongodb';
+import { ForbiddenError } from 'apollo-server-express';
 import MessageModel from '../../models/MessageModel';
 import MessageRoomModel from '../../models/MessageRoomModel';
 import UserModel from '../../models/UserModel';
+import { canReadRoom } from '../../../utils/roomAccess';
 
 export const getUserMessages = () => {
-  return async (_, args) => {
+  return async (_, args, context) => {
     const messageRoomObjectId = new ObjectId(args.messageRoomId);
-    const messages = await MessageModel.find({ 
+    const messageRoom = await MessageRoomModel.findById(messageRoomObjectId);
+    if (!messageRoom) {
+      return [];
+    }
+    if (!canReadRoom(messageRoom, context && context.user)) {
+      throw new ForbiddenError('Not authorized to read this conversation');
+    }
+
+    const messages = await MessageModel.find({
       messageRoomId: messageRoomObjectId,
       deleted: { $ne: true }
     });
-    const messageRoom = await MessageRoomModel.findById(messageRoomObjectId);
     const messagesWithUserData = await Promise.all(
       messages.map(async (message) => {
         const {

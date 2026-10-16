@@ -1,10 +1,15 @@
+import { ForbiddenError } from 'apollo-server-express';
 import UserReportModel from '../../models/UserReportModel';
 import { logger } from '../../../utils/logger';
 
 export const getUserReports = () => {
-  return async (_, args) => {
+  return async (_, args, context) => {
+    if (!context || !context.user || !context.user.admin) {
+      throw new ForbiddenError('Admin access required to view user reports');
+    }
+
     const { userId, status } = args;
-    
+
     try {
       const query = { _reportedUserId: userId };
       if (status) {
