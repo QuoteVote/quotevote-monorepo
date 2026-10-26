@@ -48,7 +48,8 @@ describe('Mutations > user > sendPasswordResetEmail', () => {
 
       const result = await sendPasswordResetEmail(mockPubsub)(undefined, args);
 
-      expect(result).to.deep.equal(mockUser);
+      // The account is never returned to the caller.
+      expect(result).to.equal(true);
       
       sinon.assert.calledOnceWithExactly(userModelStub, { email: 'test@example.com' });
 
@@ -80,7 +81,7 @@ describe('Mutations > user > sendPasswordResetEmail', () => {
 
       const result = await sendPasswordResetEmail(mockPubsub)(undefined, args);
 
-      expect(result).to.deep.equal(userWithDifferentEmail);
+      expect(result).to.equal(true);
       sinon.assert.calledOnceWithExactly(userModelStub, { email: 'different@test.com' });
     });
   });

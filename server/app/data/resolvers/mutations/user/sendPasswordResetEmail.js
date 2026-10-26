@@ -38,7 +38,8 @@ export const sendPasswordResetEmail = (pubsub) => {
 
         await sendGridEmail(mailOptions);
 
-        return user;
+        // Public mutation: confirm the send without returning the account.
+        return true;
       }
       throw new UserInputError('Email not found', {
         invalidArgs: Object.keys(args),
