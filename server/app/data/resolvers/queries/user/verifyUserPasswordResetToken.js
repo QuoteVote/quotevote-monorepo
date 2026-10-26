@@ -6,7 +6,11 @@ export const verifyUserPasswordResetToken = () => {
     try {
       const { token } = args;
       const verifyTokenResult = await verifyToken(token);
-      const user = await UserModel.findById(verifyTokenResult._id);
+      // Public query: return the profile fields the signup and reset pages use,
+      // never the password hash or other private fields.
+      const user = await UserModel.findById(verifyTokenResult._id)
+        .select('_id username name email avatar')
+        .lean();
       return user;
     } catch (err) {
       throw new Error(err);

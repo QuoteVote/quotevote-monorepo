@@ -24,10 +24,13 @@ export const findUserByEmail = () => {
         throw new Error('Invalid email format');
       }
 
-      // Find all users with the given email (case-insensitive)
+      // Find all users with the given email (case-insensitive). The input is
+      // escaped so it matches literally, and only the status is read: this
+      // query is public, so no other user field may leave the server.
+      const escapedEmail = email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const duplicateUsers = await UserModel.find({
-        email: { $regex: new RegExp(`^${email}$`, 'i') },
-      });
+        email: { $regex: new RegExp(`^${escapedEmail}$`, 'i') },
+      }).select('status');
 
       logger.debug('Found users with email', { email, count: duplicateUsers.length });
 
@@ -39,14 +42,10 @@ export const findUserByEmail = () => {
         return [];
       }
 
-      // Return duplicate users with additional metadata
-      return duplicateUsers.map((user) => ({
-        ...user.toObject(),
+      // One entry per match. Callers only check whether the list is empty.
+      return duplicateUsers.map(() => ({
         isDuplicate: duplicateUsers.length > 1,
         duplicateCount: duplicateUsers.length,
-        userStatus: user.status,
-        createdAt: user.created,
-        lastLogin: user.lastLogin || null,
       }));
     } catch (err) {
       logger.error('Error in findUserByEmail', { error: err.message, stack: err.stack, email });
